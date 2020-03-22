@@ -8,15 +8,18 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>PowerShell - Mozz Docs</title>
+        <title>Scripts - Mozz Docs</title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <link href="../extra.css" rel="stylesheet">
 
         <script src="../js/jquery-1.10.2.min.js" defer></script>
         <script src="../js/bootstrap.min.js" defer></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/powershell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
         <script>hljs.initHighlightingOnLoad();</script> 
     </head>
 
@@ -37,17 +40,20 @@
                                 <a href=".." class="nav-link">Home</a>
                             </li>
                             <li class="dropdown active">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Coding <b class="caret"></b></a>
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">PowerShell <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="./" class="dropdown-item active">PowerShell</a>
+    <a href="./" class="dropdown-item active">Scripts</a>
 </li>
                                     
 <li>
-    <a href="../python/" class="dropdown-item">Python</a>
+    <a href="../modules/" class="dropdown-item">Modules</a>
 </li>
                                 </ul>
+                            </li>
+                            <li class="navitem">
+                                <a href="../python/" class="nav-link">Python</a>
                             </li>
                             <li class="navitem">
                                 <a href="../about/" class="nav-link">About</a>
@@ -66,9 +72,12 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../python/" class="nav-link">
+                                <a rel="next" href="../modules/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/mozziemozz/PowerShell/edit/master/docs/scripts.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
                             </li>
                     </ul>
                 </div>
@@ -88,16 +97,37 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-level="1"><a href="#powershell" class="nav-link">PowerShell</a>
+            <li class="nav-item" data-level="1"><a href="#scripts" class="nav-link">Scripts</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#scripts" class="nav-link">Scripts</a>
+            <li class="nav-item" data-level="2"><a href="#get-chars" class="nav-link">Get-Chars</a>
               <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#modules" class="nav-link">Modules</a>
+            <li class="nav-item" data-level="3"><a href="#parameters" class="nav-link">Parameters</a>
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="3"><a href="#code" class="nav-link">Code</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="3"><a href="#usage" class="nav-link">Usage</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="3"><a href="#output" class="nav-link">Output</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#export-wlan-profiles" class="nav-link">Export WLAN Profiles</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="1"><a href="#modules" class="nav-link">Modules</a>
+              <ul class="nav flex-column">
               </ul>
             </li>
         </ul>
@@ -105,25 +135,55 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="powershell">PowerShell<a class="headerlink" href="#powershell" title="Permanent link"></a></h1>
-<h2 id="scripts">Scripts<a class="headerlink" href="#scripts" title="Permanent link"></a></h2>
-<p>PowerShell scripts are saved as *.ps1 files.</p>
-<p>Example script:</p>
-<pre><code>Get-Service | ? {$_.Name -match &quot;Xbox&quot;}
+<h1 id="scripts">Scripts<a class="headerlink" href="#scripts" title="Permanent link"></a></h1>
+<h2 id="get-chars">Get-Chars<a class="headerlink" href="#get-chars" title="Permanent link"></a></h2>
+<p>This script/function can be used to count the amount of characters in any string or text you either write or copy from somewhere. This could be handy in either of the following scenarios: Respecting character limit of text messages or tweets, determining the lenght of a password or many more.</p>
+<p><a href="https://github.com/mozziemozz/PowerShell/blob/master/W10%20Scripts/CharCounter.ps1">GitHub</a></p>
+<h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link"></a></h3>
+<pre><code class="no-highlight">Paramter     | Type          | Mandatory
+------------ | ------------- | ------------
+-Text        | String        | True
 </code></pre>
 
+<h3 id="code">Code<a class="headerlink" href="#code" title="Permanent link"></a></h3>
+<pre><code class="powershell">function Get-Chars {
+    param (
+
+        [Parameter(Mandatory=$true)][string]$Text    
+
+    )
+
+    $Measureswitch = $Text | Measure-Object -Character
+
+    $CharCount = $Measureswitch.Characters
+
+    Write-Host &quot;Your switch contains $CharCount characters including spaces!&quot;
+
+}
+
+Get-Chars
+</code></pre>
+
+<h3 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link"></a></h3>
+<p>In order to call this function just run the script with PowerShell. "Text" is a mandatory parameter and can either be specified while calling the function directly or afterwards.</p>
+<p>Calling the function with the parameter -Text:</p>
+<pre><code>Get-Chars -Text "measure me this!"
+</code></pre>
+<p>Calling the function wihtout the parameter:</p>
+<pre><code>Get-Chars
+Supply values for the following parameters:
+Text: measure me this!
+</code></pre>
+<h3 id="output">Output<a class="headerlink" href="#output" title="Permanent link"></a></h3>
+<p>The function will then count the amount of characters in your sting, including spaces and tell the length of it.</p>
+<pre><code>Your string contains 16 characters including spaces.
+</code></pre>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Please don't use Where. Use either ? or Where-Object instead.</p>
+<p>If you call the function including the &lt;-Text&gt; parameter you need to put your sting in quotes. If you choose to call the function without the parameter, you should not use quotes because they will be counted towards the result too.</p>
 </div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Where is an alias of Where-Object but your code is cleaner if you use Where-Object.</p>
-</div>
-<h2 id="modules">Modules<a class="headerlink" href="#modules" title="Permanent link"></a></h2>
-<p>PowerShell modules are saved as *.psm1 files.</p>
-<h3 id="more">More<a class="headerlink" href="#more" title="Permanent link"></a></h3>
-<p>If you want to learn more about Python instead, click <a href="../python/">here.</a></p></div>
+<h2 id="export-wlan-profiles">Export WLAN Profiles<a class="headerlink" href="#export-wlan-profiles" title="Permanent link"></a></h2>
+<h1 id="modules">Modules<a class="headerlink" href="#modules" title="Permanent link"></a></h1></div>
             </div>
         </div>
 
