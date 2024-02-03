@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Outlook on HEUSSER.PRO</title>
+        <link>https://heusser.pro/categories/outlook/</link>
+        <description>Recent content in Outlook on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 08 Jul 2023 08:50:29 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/outlook/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Automate Setting Work Location in Teams/Outlook [PoC]</title>
+        <link>https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/</link>
+        <pubDate>Sat, 08 Jul 2023 08:50:29 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/</guid>
+        <description>&lt;p&gt;Warning: This is another one of those proof of concept &lt;em&gt;“because I can”&lt;/em&gt; kind of things. I’m going to do some things which shouldn’t be done in production. It was just for the fun of it.&lt;/p&gt;
+&lt;p&gt;Microsoft recently released the new &lt;strong&gt;Work location&lt;/strong&gt; feature in Teams and the new Outlook/Outlook on the web. This allows users to set their work location so co-workers can see if their colleagues are working in the &lt;strong&gt;office&lt;/strong&gt; or &lt;strong&gt;remotely&lt;/strong&gt; on any specific day. You can find more information &lt;a class=&#34;link&#34; href=&#34;https://techcommunity.microsoft.com/t5/microsoft-365-blog/coordination-is-the-key-to-spontaneity-with-these-features-in/ba-p/3814143&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://support.microsoft.com/en-au/office/show-your-hybrid-work-location-availability-to-meet-work-hours-and-more-c861198d-f82e-41d7-88ec-c2e716be5ede&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I was extremely disappointed when I learned that there is no support for Microsoft Graph or Power Automate yet, so we could automatically set this each day based on e.g., an IP address or even through geo-fencing on a mobile device.&lt;/p&gt;
+&lt;p&gt;Off I went to try and find a way to do it anyway. First, I opened Teams in Microsoft Edge and used the browser dev tools to see what kind of requests are sent to which APIs when the work location is changed.&lt;/p&gt;
+&lt;p&gt;Here we can see that a &lt;strong&gt;PUT&lt;/strong&gt; request is made to &lt;code&gt;https://presence.teams.microsoft.com/v1/me/workLocation&lt;/code&gt; when the location is edited.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1Ylwjq2bqJUws0kO0nI6SA.png&#34;
+	width=&#34;1435&#34;
+	height=&#34;902&#34;
+	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1Ylwjq2bqJUws0kO0nI6SA_hub93a2b6111ad17327cf969152c680b31_114987_480x0_resize_box_3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1Ylwjq2bqJUws0kO0nI6SA_hub93a2b6111ad17327cf969152c680b31_114987_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;159&#34;
+		data-flex-basis=&#34;381px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;In this case the location was cleared with the following JSON payload.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1TUd3bgXiIp7hyKQIWLDTdA.png&#34;
+	width=&#34;975&#34;
+	height=&#34;278&#34;
+	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1TUd3bgXiIp7hyKQIWLDTdA_hued347d18e67613c9cd99f725b4dc1f6d_37427_480x0_resize_box_3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1TUd3bgXiIp7hyKQIWLDTdA_hued347d18e67613c9cd99f725b4dc1f6d_37427_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;350&#34;
+		data-flex-basis=&#34;841px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The value &lt;strong&gt;0&lt;/strong&gt; clears the location. &lt;strong&gt;1&lt;/strong&gt; is used to set it to &lt;strong&gt;Office&lt;/strong&gt; and &lt;strong&gt;2&lt;/strong&gt; will map to &lt;strong&gt;Remote.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Next, I inspected the token needed for this request with the help of &lt;a class=&#34;link&#34; href=&#34;https://jwt.ms&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;jwt.ms&lt;/a&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{  
+  &amp;quot;typ&amp;quot;: &amp;quot;JWT&amp;quot;,  
+  &amp;quot;nonce&amp;quot;: &amp;quot;xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;,  
+  &amp;quot;alg&amp;quot;: &amp;quot;RS256&amp;quot;,  
+  &amp;quot;x5t&amp;quot;: &amp;quot;-xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;,  
+  &amp;quot;kid&amp;quot;: &amp;quot;-xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;  
+}.{  
+  &amp;quot;aud&amp;quot;: &amp;quot;https://presence.teams.microsoft.com/&amp;quot;,  
+  &amp;quot;iss&amp;quot;: &amp;quot;https://sts.windows.net/4bffbf87-53a0-4fce-b58b-4179cb3a3b7d/&amp;quot;,  
+  &amp;quot;iat&amp;quot;: 1688763565,  
+  &amp;quot;nbf&amp;quot;: 1688763565,  
+  &amp;quot;exp&amp;quot;: 1688841846,  
+  &amp;quot;acr&amp;quot;: &amp;quot;1&amp;quot;,  
+  &amp;quot;aio&amp;quot;: &amp;quot;xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;,  
+  &amp;quot;amr&amp;quot;: [  
+    &amp;quot;pwd&amp;quot;,  
+    &amp;quot;mfa&amp;quot;  
+  ],  
+  &amp;quot;appid&amp;quot;: &amp;quot;5e3ce6c0-2b1f-4285-8d4b-75ee78787346&amp;quot;,  
+  &amp;quot;appidacr&amp;quot;: &amp;quot;0&amp;quot;,  
+  &amp;quot;family_name&amp;quot;: &amp;quot;Mozz&amp;quot;,  
+  &amp;quot;given_name&amp;quot;: &amp;quot;Mozzie&amp;quot;,  
+  &amp;quot;ipaddr&amp;quot;: &amp;quot;xxx.xxx.xxx.xxx&amp;quot;,  
+  &amp;quot;name&amp;quot;: &amp;quot;Mozzism Admin&amp;quot;,  
+  &amp;quot;oid&amp;quot;: &amp;quot;xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx&amp;quot;,  
+  &amp;quot;puid&amp;quot;: &amp;quot;10032000330C6A66&amp;quot;,  
+  &amp;quot;rh&amp;quot;: &amp;quot;xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;,  
+  &amp;quot;scp&amp;quot;: &amp;quot;user_impersonation&amp;quot;,  
+  &amp;quot;sub&amp;quot;: &amp;quot;xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;,  
+  &amp;quot;tid&amp;quot;: &amp;quot;xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx&amp;quot;,  
+  &amp;quot;unique_name&amp;quot;: &amp;quot;mozzie@mozzism.ch&amp;quot;,  
+  &amp;quot;upn&amp;quot;: &amp;quot;mozzie@mozzism.ch&amp;quot;,  
+  &amp;quot;uti&amp;quot;: &amp;quot;xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;,  
+  &amp;quot;ver&amp;quot;: &amp;quot;1.0&amp;quot;,  
+  &amp;quot;xms_cc&amp;quot;: [  
+    &amp;quot;CP1&amp;quot;  
+  ],  
+  &amp;quot;xms_ssm&amp;quot;: &amp;quot;1&amp;quot;  
+}.[Signature]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;aadinternals&#34;&gt;AADInternals&lt;/h4&gt;
+&lt;p&gt;Copying the token from the browser and using it to make a web request with PowerShell is easy. The hard thing was to figure out how I can obtain that token programmatically. Luckily, there’s this awesome PowerShell module called &lt;a class=&#34;link&#34; href=&#34;https://www.powershellgallery.com/packages/AADInternals/0.9.0&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;AADInternals&lt;/strong&gt;&lt;/a&gt; by one Dr. Nestori Syynimaa. This is an amazing resource to test almost anything related to Azure AD and Graph authentication.&lt;/p&gt;
+&lt;p&gt;The documentation for this module can be found &lt;a class=&#34;link&#34; href=&#34;https://aadinternals.com/aadinternals/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;. I discovered that the following command would give me a token for Teams.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$teamsToken&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Get-AADIntAccessTokenForTeams&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;What’s really cool is that now, with PowerShell 7 the whole login process can be done through the CLI without any browser pop-ups! Even MFA is supported!&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1dsPmfR9rFSmCsWYKlb5mA.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1dsPmfR9rFSmCsWYKlb5mA_hu57c1e88072b457ac988aef5100562695_436977_480x0_resize_box_3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1dsPmfR9rFSmCsWYKlb5mA_hu57c1e88072b457ac988aef5100562695_436977_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Even though the audience for this token is &lt;a class=&#34;link&#34; href=&#34;https://api.spaces.skype.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://api.spaces.skype.com&lt;/a&gt; and not &lt;a class=&#34;link&#34; href=&#34;https://presence.teams.microsoft.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://presence.teams.microsoft.com&lt;/a&gt; it still works to change the work location in Teams.&lt;/p&gt;
+&lt;p&gt;Because everything can be done through the CLI I wondered if I could pass the credentials and the MFA secret to the AADInternals functions so that the login process could be automated to be 100% unattended.&lt;/p&gt;
+&lt;p&gt;After some trial and error, I had that figured out too. Not all functions of the AADInternals module are exposed to the user so the key is to make them available to your current PowerShell session by dot sourcing some of the *.ps1 files included in the module.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$functions&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Get-ChildItem&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;C:\\Program Files\\WindowsPowerShell\\Modules\\AADInternals\\0.9.0&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Filter&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;\*.ps1&amp;#34;&lt;/span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$functions&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$functions&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Where-Object&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{$\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;Name&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-match&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;Teams&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-or&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;$\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;Name&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-match&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;AccessToken&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-or&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;$\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;Name&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-match&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CommonUtils&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;foreach&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$function&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$functions&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$function&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;FullName&lt;/span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;By executing this code which uses some of the not exposed functions from AADInternals, we can pass a credential object (and MFA secret) and then get an access token to write Teams presence.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$teamsPresenceToken&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Prompt-Credentials&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-ClientId&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$ClientId&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Resource&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;https://presence.teams.microsoft.com&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Credentials&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$secureCreds&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-OTPSecretKey&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$passwordDecrypted&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;credentials&#34;&gt;Credentials&lt;/h4&gt;
+&lt;p&gt;I’ve put together a script which does everything for you. However, you must install the AADInternals module first and you also need to clone the repo from my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub&lt;/a&gt; account since it has dependencies on other functions.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;git&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;clone&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;https&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;//&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;github&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;com&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;mozziemozz&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;TeamsPhoneAutomation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Even though this was all part of some good Friday night hacking, we obviously don’t want to store the credentials and especially the MFA secret as plain text on our machines. Therefore, I’ve added a couple of &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Modules/SecureCredsMgmt.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;functions&lt;/a&gt; to help handle encrypted credentials. We want to be better than &lt;a class=&#34;link&#34; href=&#34;https://www.theverge.com/2022/9/16/23356213/uber-hack-teen-slack-google-cloud-credentials-powershell&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;UBER&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;When encrypted credentials are stored on a Windows PC, they can only be decrypted using the same &lt;strong&gt;account&lt;/strong&gt; and the same &lt;strong&gt;machine&lt;/strong&gt; because of &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/understand-security-identifiers&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;security identifiers&lt;/a&gt; (SID).&lt;/p&gt;
+&lt;p&gt;If you don’t trust me, see for yourself. Here’ I’m retrieving the password I encrypted on my main PC using my user account.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1W628X8LBOfnUCpplMXMj4w.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1W628X8LBOfnUCpplMXMj4w_hu6c0822f1e2f18d322b0568a75b2659c8_599321_480x0_resize_box_3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1W628X8LBOfnUCpplMXMj4w_hu6c0822f1e2f18d322b0568a75b2659c8_599321_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;I copied the file to a virtual machine where I’m logged in with the same user. This code will let you decrypt the password if the key matches.&lt;br&gt;
+(I found this code years ago, unfortunately I don’t have the source anymore…)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR((Get-Content -Path .\.local\SecureCreds\mozzie@mozzism.ch.txt | ConvertTo-SecureString))) | Out-String
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;When I run this on another machine with the same logged in user, I get an error that the Key is invalid. Which is good.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1xHjGlNGoWxiJ3qTkRNsxBQ.png&#34;
+	width=&#34;1758&#34;
+	height=&#34;928&#34;
+	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1xHjGlNGoWxiJ3qTkRNsxBQ_huae7558fdf5fbe404f2179b835079b366_1073714_480x0_resize_box_3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1xHjGlNGoWxiJ3qTkRNsxBQ_huae7558fdf5fbe404f2179b835079b366_1073714_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;189&#34;
+		data-flex-basis=&#34;454px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;My Function &lt;code&gt;Get-MzzSecureCreds&lt;/code&gt; will automatically create a PS Credential Object when &lt;code&gt;-AdminUser &amp;quot;user@domain.com&amp;quot;&lt;/code&gt; is specified. The username will be set as file name, and it will also be used as the username of the credential object.&lt;/p&gt;
+&lt;h4 id=&#34;the-finalscript&#34;&gt;The Final Script&lt;/h4&gt;
+&lt;p&gt;Here’s the script to change your work location in Teams.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/bd60e4c77623b516333e329660e39142.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;If you run it for the first time, you’ll need to provide the username and password and possibly the MFA secret of the user for which you want to change the work location.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;At this point I want to make clear again that this is a proof of concept. Even though the credentials are encrypted, you should not store production passwords on the device and most importantly, you shouldn’t store the MFA secret in the same place as the password.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;You can determine if you’re working remotely or in the office by specifying either your local or public home/remote IP address.&lt;/p&gt;
+&lt;p&gt;Since my private IP is &lt;strong&gt;192.168.127.117&lt;/strong&gt;, and I specified &lt;strong&gt;192.168.1.10&lt;/strong&gt; my work location is set to &lt;strong&gt;Office.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1H9Jn0x3GNJ1gglcfYmRg.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1H9Jn0x3GNJ1gglcfYmRg_hu2c8b638c458bbce84759dbccf2722fbe_680907_480x0_resize_box_3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1H9Jn0x3GNJ1gglcfYmRg_hu2c8b638c458bbce84759dbccf2722fbe_680907_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When I change the IP address to &lt;strong&gt;192.168.127.117&lt;/strong&gt; the work location is set to remote because that matches my local subnet.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1JCJNuJqCHz2FvGnYBkB0A.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1JCJNuJqCHz2FvGnYBkB0A_hub0be134dccfead36822ec41a8a608fbe_638777_480x0_resize_box_3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1JCJNuJqCHz2FvGnYBkB0A_hub0be134dccfead36822ec41a8a608fbe_638777_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;In case your office and your home network both use the same private address space, you can use &lt;code&gt;-IpType Public&lt;/code&gt; and specify your home/remote public IP.&lt;/p&gt;
+&lt;h4 id=&#34;the-result&#34;&gt;The Result&lt;/h4&gt;
+&lt;p&gt;The updated work location is then visible in both Teams and Outlook.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1rgszjARcTFdFADtwPT9bUg.png&#34;
+	width=&#34;490&#34;
+	height=&#34;396&#34;
+	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1rgszjARcTFdFADtwPT9bUg_hu7f25fb382db34e38ec468b9bfb1740e6_32323_480x0_resize_box_3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1rgszjARcTFdFADtwPT9bUg_hu7f25fb382db34e38ec468b9bfb1740e6_32323_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;123&#34;
+		data-flex-basis=&#34;296px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/16wcOq4ZGJ4e9Oy2J80Nyw.png&#34;
+	width=&#34;686&#34;
+	height=&#34;351&#34;
+	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/16wcOq4ZGJ4e9Oy2J80Nyw_hubd1a54d523e5c7a97cdfb2ddf825199a_16688_480x0_resize_box_3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/16wcOq4ZGJ4e9Oy2J80Nyw_hubd1a54d523e5c7a97cdfb2ddf825199a_16688_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;195&#34;
+		data-flex-basis=&#34;469px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Even though I won’t be using this in production, I had great fun developing this and I also learned a thing or two about AADInternals, Json Web Tokens and encrypted credentials in PowerShell.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

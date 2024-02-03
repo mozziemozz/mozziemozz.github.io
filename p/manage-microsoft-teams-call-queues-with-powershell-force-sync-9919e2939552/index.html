@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='After my last article turned into a twenty-minute read, I want to write a short blog post today. At least I’ll try to. We are talking about…'>
+<title>Manage Microsoft Teams Call Queues with PowerShell (Force-Sync)</title>
+
+<link rel='canonical' href='https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Manage Microsoft Teams Call Queues with PowerShell (Force-Sync)'>
+<meta property='og:description' content='After my last article turned into a twenty-minute read, I want to write a short blog post today. At least I’ll try to. We are talking about…'>
+<meta property='og:url' content='https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/'>
+<meta property='og:site_name' content='HEUSSER.PRO'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2023-04-04T19:42:18&#43;00:00'/><meta property='article:modified_time' content='2023-04-04T19:42:18&#43;00:00'/>
+<meta name="twitter:title" content="Manage Microsoft Teams Call Queues with PowerShell (Force-Sync)">
+<meta name="twitter:description" content="After my last article turned into a twenty-minute read, I want to write a short blog post today. At least I’ll try to. We are talking about…">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "kozb6q2xjn");
+    </script>    
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hud7e6b3cccc21b12ddf35b72eb655064d_860969_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🫡</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
+            <h2 class="site-description">Martin Heusser | M365 Apps &amp; Services MVP</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/mozziemozz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://x.com/@mozzeph'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/imprint/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                
+                <span>Imprint</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li>
+      <ol>
+        <li>
+          <ol>
+            <li><a href="#get-mzzcqagents">Get-MZZCQAgents</a></li>
+            <li><a href="#sync-mzzcqagents">Sync-MZZCQAgents</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/microsoft-teams/" >
+                Microsoft Teams
+            </a>
+        
+            <a href="/categories/powershell/" style="background-color: #141e2c; color: #fff;">
+                PowerShell
+            </a>
+        
+            <a href="/categories/call-queues/" >
+                Call Queues
+            </a>
+        
+            <a href="/categories/teams-admin-center/" >
+                Teams Admin Center
+            </a>
+        
+            <a href="/categories/automation/" >
+                Automation
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/">Manage Microsoft Teams Call Queues with PowerShell (Force-Sync)</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            After my last article turned into a twenty-minute read, I want to write a short blog post today. At least I’ll try to. We are talking about…
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Apr 04, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    4 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>After my last article turned into a twenty-minute read, I want to write a short blog post today. At least I’ll try to. We are talking about managing Microsoft Teams Call Queues with PowerShell again.</p>
+<p><img src="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/0cTgVlbyGhDlU8uu.jpg"
+	width="1024"
+	height="1024"
+	srcset="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/0cTgVlbyGhDlU8uu_hu51cfae8946aa380f91ae6d29e590a061_134458_480x0_resize_q75_box.jpg 480w, /p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/0cTgVlbyGhDlU8uu_hu51cfae8946aa380f91ae6d29e590a061_134458_1024x0_resize_q75_box.jpg 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="100"
+		data-flex-basis="240px"
+	
+></p>
+<p>Pretty much about one year ago, I wrote an article explaining how to force sync a Call Queue which uses a group or a Microsoft Team as its source of agent list.</p>
+<p><a class="link" href="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0" >Microsoft Teams Call Queue Agent Lists (And how to Force-Sync them) | by martin heusser | Medium</a></p>
+<p>Since then, I have refined the code a little bit to make it even easier. I wrote two functions which are available in a new <a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Modules/TeamsPS.psm1"  target="_blank" rel="noopener"
+    ><strong>PowerShell Module</strong></a> which is available in my <a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation"  target="_blank" rel="noopener"
+    ><strong>TeamsPhoneAutomation</strong></a> repository on GitHub.</p>
+<p>To import the module, simply run the following code after you have <a class="link" href="https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository"  target="_blank" rel="noopener"
+    >cloned</a> the repository.</p>
+<p>$localRepoPath = git rev-parse &ndash;show-toplevel<br>
+Import-Module &ldquo;$localRepoPath/Modules/TeamsPS.psm1&rdquo; -Force</p>
+<p><code>git rev-parse --show-toplevel</code> will resolve the cloned repository’s root path to the absolute file path on your system. This is really helpful if different users clone the repo to different folders on their own machine.</p>
+<p><img src="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1gNxBkz6hW4pvFJjOSPniow.png"
+	width="1734"
+	height="957"
+	srcset="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1gNxBkz6hW4pvFJjOSPniow_hu31e17814aa3dda5d87bfc911e30d0762_669941_480x0_resize_box_3.png 480w, /p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1gNxBkz6hW4pvFJjOSPniow_hu31e17814aa3dda5d87bfc911e30d0762_669941_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<p>There are two Call Queue related functions in the module:</p>
+<ul>
+<li><strong>Get-MZZCQAgents</strong></li>
+<li><strong>Sync-MZZCQAgents</strong></li>
+</ul>
+<p>Let’s start with the <strong>Get</strong> function.</p>
+<h4 id="get-mzzcqagents">Get-MZZCQAgents</h4>
+<p>This is essentially what <a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer/blob/main/Functions/Get-CallQueueAgentsStatus.ps1"  target="_blank" rel="noopener"
+    >this script</a> mentioned in <a class="link" href="/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485" >this article</a> does. However, this function doesn’t have exporting capabilities and the code has been adapted so it plays nice with the <strong>Sync</strong> function.</p>
+<p>As we already know, when we check a Call Queues <code>.Agent</code> property, we will only see GUIDs instead of User Principal Names. Thus, my function. It will search for the users by Id and output UPNs instead of Object Ids.</p>
+<p><img src="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1pLYCkYoqD9HkTxl7bVetPw.png"
+	width="1734"
+	height="957"
+	srcset="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1pLYCkYoqD9HkTxl7bVetPw_hu31e17814aa3dda5d87bfc911e30d0762_694355_480x0_resize_box_3.png 480w, /p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1pLYCkYoqD9HkTxl7bVetPw_hu31e17814aa3dda5d87bfc911e30d0762_694355_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<p>If you run the function without parameters, you will be able to choose a Call Queue from a list.</p>
+<p><img src="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/10Zw03oQyVVr3Gp1LcOsQ.png"
+	width="1381"
+	height="659"
+	srcset="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/10Zw03oQyVVr3Gp1LcOsQ_huecd6a3d5b878df5add2f865d951e487d_108016_480x0_resize_box_3.png 480w, /p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/10Zw03oQyVVr3Gp1LcOsQ_huecd6a3d5b878df5add2f865d951e487d_108016_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="209"
+		data-flex-basis="502px"
+	
+></p>
+<p>If you already know the Id of your Call Queue, you can pass it via the <code>-CQIdentity</code> parameter.</p>
+<p>Get-MZZCQAgents -CQIdentity fe77ecb3-f5a5-47ee-9519-cbb3a52d5771</p>
+<p><img src="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1C9HchRKUMR6oQBRLXMBfqg.png"
+	width="1734"
+	height="957"
+	srcset="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1C9HchRKUMR6oQBRLXMBfqg_hu31e17814aa3dda5d87bfc911e30d0762_768562_480x0_resize_box_3.png 480w, /p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1C9HchRKUMR6oQBRLXMBfqg_hu31e17814aa3dda5d87bfc911e30d0762_768562_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<h4 id="sync-mzzcqagents">Sync-MZZCQAgents</h4>
+<p>This Call Queue uses a Microsoft Teams Team as Agent List, but this also applies to Agents which are assigned to a queue via Security or M365 Groups.</p>
+<p>Think about a scenario where a Team owner adds a new employee to a Team which should also start to receive calls to the queue. Without interaction of a Teams Administrator, it’s going to take some time until that’s the case. It will most likely take multiple hours for the change to become effective.</p>
+<p>If we want to speed up that process, we simply need to run <code>Sync-MZZCQAgents</code> .</p>
+<p>It’s the same for this function, if you do not specify <code>-CQIdentity</code> you will be asked to choose <strong>one</strong> or <strong>multiple</strong> queues from the list. To select multiple queues, just hold <strong>CTRL</strong> while selecting list entries.</p>
+<p>Please note that <code>Get-MZZCQAgents</code> only accepts one selection at a time but <code>Sync-MZZCQAgents</code> can actually loop through multiple queues after each other if you want to force-sync all or some of your queues.</p>
+<p>The cool thing about this is that the <strong>Sync</strong> function runs<code>Get-MZZCQAgents</code> before and after the queue’s agent list has been synced. This way you can know if the new agent(s) have already been added.</p>
+<p>If you run the function too soon after the membership of a Team or an M365 Group has been updated, chances are that you will get the following output.</p>
+<p><img src="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1lMTG7LBodcvUifKt7pZVCQ.png"
+	width="1734"
+	height="957"
+	srcset="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1lMTG7LBodcvUifKt7pZVCQ_hu31e17814aa3dda5d87bfc911e30d0762_684893_480x0_resize_box_3.png 480w, /p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1lMTG7LBodcvUifKt7pZVCQ_hu31e17814aa3dda5d87bfc911e30d0762_684893_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<p>First, let’s remove <strong>Mike</strong>, who is also an agent of the queue as a member of the Team. We can now see that <strong>Mike</strong> has been removed from the queue.</p>
+<p><img src="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1XVULfBs8n282RhyFCWBNUw.png"
+	width="1734"
+	height="957"
+	srcset="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1XVULfBs8n282RhyFCWBNUw_hu31e17814aa3dda5d87bfc911e30d0762_772135_480x0_resize_box_3.png 480w, /p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1XVULfBs8n282RhyFCWBNUw_hu31e17814aa3dda5d87bfc911e30d0762_772135_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<p>Now let’s add <strong>Mike</strong> back but remove <strong>Bobby.</strong> You’ll get a nice overview of all the agents that were removed or added.</p>
+<p><img src="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1Q6eapw6UeSnMblJv52ra5Q.png"
+	width="1734"
+	height="957"
+	srcset="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1Q6eapw6UeSnMblJv52ra5Q_hu31e17814aa3dda5d87bfc911e30d0762_716380_480x0_resize_box_3.png 480w, /p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1Q6eapw6UeSnMblJv52ra5Q_hu31e17814aa3dda5d87bfc911e30d0762_716380_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<p>There is no need to run <code>Connect-MicrosoftTeams</code> before you run either of these two functions because a login mechanism, similar to the one the <a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer"  target="_blank" rel="noopener"
+    ><strong>M365 Call Flow Visualizer</strong></a> uses is already built into the function <code>Connect-MZZTeams</code> which is also part of the module. If you’re not already logged in, you’ll be prompted to enter your Teams Admin Credentials.</p>
+<p>For now, it’s only these two or rather three functions (if you count the login function) which are part of this module. I’m sure that I’ll add more useful code over time, so stay tuned and follow me on <a class="link" href="/p" >Medium</a>, <a class="link" href="https://twitter.com/mozzeph"  target="_blank" rel="noopener"
+    >Twitter</a> or <a class="link" href="https://www.linkedin.com/in/martin-heusser117/"  target="_blank" rel="noopener"
+    >LinkedIn</a>. And yes, the <strong>117</strong> in my LinkedIn URL is a reference to Master Chief.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/change-business-hours-of-a-teams-auto-attendant-with-powershell-ed03a15881d2/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Change Business Hours of a Teams Auto Attendant with PowerShell</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Microsoft Teams Call Queue Agent Lists (And how to Force-Sync them)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Advanced Teams Auto Attendant Troubleshooting</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How to Validate Phone Number Assignments in Teams (in Bulk)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Prettify and Sync Teams Phone Numbers to Azure AD</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "heusser-pro" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2024 HEUSSER.PRO
+    </section>
+    
+    <section class="powerby">
+        
+            Hosted on Microsoft Azure <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
+

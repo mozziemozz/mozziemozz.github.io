@@ -1,0 +1,810 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Runbooks on HEUSSER.PRO</title>
+        <link>https://heusser.pro/categories/runbooks/</link>
+        <description>Recent content in Runbooks on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Fri, 03 Mar 2023 10:03:56 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/runbooks/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Fix UTF-8 Encoding When Calling Azure Child Runbooks Inline</title>
+        <link>https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/</link>
+        <pubDate>Fri, 03 Mar 2023 10:03:56 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/</guid>
+        <description>&lt;p&gt;I recently came across a very strange issue with Azure Runbooks and UTF-8 encoding. For most IT folks, it’s no issue if everything is in English but if you work with German speaking users, chances are that you’re going to run into encoding issues with &lt;strong&gt;Umlaute&lt;/strong&gt; or other special characters eventually. For those who have no idea what I’m talking about, Umlaute are special characters like “ä”, “ö” and “ü” which are used very frequently in German.&lt;/p&gt;
+&lt;p&gt;The scenario is the following: I have a very simple Azure Runbook which sends a message card to a Teams channel.&lt;/p&gt;
+&lt;p&gt;$uri = &amp;ldquo;YourWebhookUrl&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;$body = @&amp;rsquo;&lt;br&gt;
+{&lt;br&gt;
+&amp;ldquo;@context&amp;rdquo;: &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://schema.org/extensions%22&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://schema.org/extensions&#34;&lt;/a&gt;,&lt;br&gt;
+&amp;ldquo;@type&amp;rdquo;: &amp;ldquo;MessageCard&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;themeColor&amp;rdquo;: &amp;ldquo;00A4EF&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;title&amp;rdquo;: &amp;ldquo;UTF8 Test&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;text&amp;rdquo;: &amp;ldquo;Hello Wörld!&amp;rdquo;&lt;br&gt;
+}&lt;br&gt;
+&amp;lsquo;@&lt;/p&gt;
+&lt;p&gt;Invoke-RestMethod -uri $uri -Method Post -body $body -ContentType &amp;lsquo;application/json; charset=UTF-8&amp;rsquo;&lt;/p&gt;
+&lt;p&gt;As you can see, I purposely wrote &lt;strong&gt;“Hello Wörld”&lt;/strong&gt; instead of &lt;strong&gt;“Hello World”&lt;/strong&gt; to demonstrate this. If the runbook is run directly (meaning, there’s no child runbook involved), there’s no issue at all and the card is sent to Teams using the correct encoding.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1Fjfq1GaXyavb7ynoRqqpg.png&#34;
+	width=&#34;1209&#34;
+	height=&#34;242&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1Fjfq1GaXyavb7ynoRqqpg_hu2389b36a857bb99be532f7e70b9eb792_19981_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1Fjfq1GaXyavb7ynoRqqpg_hu2389b36a857bb99be532f7e70b9eb792_19981_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;499&#34;
+		data-flex-basis=&#34;1199px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;working-with-childrunbooks&#34;&gt;Working With Child Runbooks&lt;/h4&gt;
+&lt;p&gt;So far so good. In more complex scenarios, you might want to build modular runbooks. An example of that would be where you have some code and some parameters in one runbook (let’s call that &lt;strong&gt;main runbook&lt;/strong&gt; or &lt;strong&gt;child runbook&lt;/strong&gt;) and have a couple of other runbooks which call your main runbook inline. Let’s call these &lt;strong&gt;runner scripts&lt;/strong&gt; because they’re only used to run the main runbook.&lt;/p&gt;
+&lt;p&gt;The advantage of such a setup is that you only need to change the code in one place if you need to update it. For example, if the URL of the webhook changes, we only need to edit the main runbook instead of all the other runbooks as well. You can also read more about that concept in this official Microsoft &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/azure/automation/automation-child-runbooks#call-a-child-runbook-by-using-inline-execution&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Learn article&lt;/a&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;wrong-encoding-in-childrunbooks&#34;&gt;Wrong Encoding in Child Runbooks&lt;/h4&gt;
+&lt;p&gt;However, I have found that somehow the encoding gets messed up and special characters are sent to Teams in the wrong format if a child runbook is called inline from another runbook which runs in front of it.&lt;/p&gt;
+&lt;p&gt;If you want to call another runbook from any runbook in the same automation account, you can just reference it by its name. All that’s needed is the following code which really just points to another script. Note that you do need to add &lt;code&gt;.ps1&lt;/code&gt; at the end of your runbook name.&lt;/p&gt;
+&lt;p&gt;. .\SendMessageCardMain.ps1&lt;/p&gt;
+&lt;p&gt;It doesn’t make any difference if &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/scripting/learn/ps101/10-script-modules?view=powershell-7.3&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;dot sourcing&lt;/a&gt; is used or not. The encoding will be wrong in either case.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RIQJDWuX87n08U80GxZBlw.png&#34;
+	width=&#34;1213&#34;
+	height=&#34;241&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RIQJDWuX87n08U80GxZBlw_hud6f048997161982e95b0c549bee3f3fc_19854_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RIQJDWuX87n08U80GxZBlw_hud6f048997161982e95b0c549bee3f3fc_19854_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;503&#34;
+		data-flex-basis=&#34;1207px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This isn’t just about the message which is sent to Teams through a web request. The encoding is wrong in general and thus when using &lt;code&gt;Write-Output&lt;/code&gt; as well.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RxMMGmOGbr82SmAmzuh3cg.png&#34;
+	width=&#34;1414&#34;
+	height=&#34;493&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RxMMGmOGbr82SmAmzuh3cg_hu15d783e8232fb13d93ba5f80564cf0f1_52876_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RxMMGmOGbr82SmAmzuh3cg_hu15d783e8232fb13d93ba5f80564cf0f1_52876_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;286&#34;
+		data-flex-basis=&#34;688px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;workaround&#34;&gt;Workaround&lt;/h4&gt;
+&lt;p&gt;The trick is to store the special characters inside a variable which is already known to the runner script (the one which will be submitted to the worker), and then calls the child runbook.&lt;/p&gt;
+&lt;p&gt;$externalText = &amp;ldquo;Wörld&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;. .\SendMessageCardMain.ps1&lt;/p&gt;
+&lt;p&gt;The word which contains the special character is replaced by the variable in the main script (child runbook).&lt;/p&gt;
+&lt;p&gt;$uri = &amp;ldquo;YourWebhookUrl&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;$body = @&amp;rdquo;&lt;br&gt;
+{&lt;br&gt;
+&amp;ldquo;@context&amp;rdquo;: &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://schema.org/extensions%22&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://schema.org/extensions&#34;&lt;/a&gt;,&lt;br&gt;
+&amp;ldquo;@type&amp;rdquo;: &amp;ldquo;MessageCard&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;themeColor&amp;rdquo;: &amp;ldquo;00A4EF&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;title&amp;rdquo;: &amp;ldquo;UTF8 Test&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;text&amp;rdquo;: &amp;ldquo;Hello $externalText!&amp;rdquo;&lt;br&gt;
+}&lt;br&gt;
+&amp;ldquo;@&lt;/p&gt;
+&lt;p&gt;Invoke-RestMethod -uri $uri -Method Post -body $body -ContentType &amp;lsquo;application/json; charset=UTF-8&amp;rsquo;&lt;/p&gt;
+&lt;p&gt;This way, the first runbook already knows the correct encoding and it works, just like it did in the first example where we only had one runbook.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SrfMmL5MqVyJJMuygMjA.png&#34;
+	width=&#34;1211&#34;
+	height=&#34;240&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SrfMmL5MqVyJJMuygMjA_hu45160f263fc81e753c1b7fe7beb662f6_19457_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SrfMmL5MqVyJJMuygMjA_hu45160f263fc81e753c1b7fe7beb662f6_19457_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;504&#34;
+		data-flex-basis=&#34;1211px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Let’s assume that we have one main runbook which will just send Message Cards to Teams, but we also have many different runner scripts which will send different kind of messages to Teams.&lt;/p&gt;
+&lt;p&gt;This would make the code quite hard to maintain. Imagine if we want to replace the word “Wörld” with “Zürich” for example. We’d have to do this for each runner script if the variable is stored inside each runner script.&lt;/p&gt;
+&lt;h4 id=&#34;optimized-workaround-1-using-automation-variables&#34;&gt;Optimized Workaround 1 (Using Automation Variables)&lt;/h4&gt;
+&lt;p&gt;Instead, we can just put the code into an Automation Variable as a string. Automation Variables are saved inside the Automation Account but outside of all the runbooks. This effectively gives us a location to store the code once but all runbooks inside that Automation Account will be able to access it.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1MUKW9TSOMNz1gnnQcKeQyA.png&#34;
+	width=&#34;1681&#34;
+	height=&#34;597&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1MUKW9TSOMNz1gnnQcKeQyA_hu6c149f511d2e218ad9a2932b08658834_73454_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1MUKW9TSOMNz1gnnQcKeQyA_hu6c149f511d2e218ad9a2932b08658834_73454_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;281&#34;
+		data-flex-basis=&#34;675px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;In the runner script, we import the Automation Variable using the &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/azure/automation/shared-resources/variables?tabs=azure-powershell#internal-cmdlets-to-access-variables&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;internal Cmdlet&lt;/a&gt;. This is only available in Azure Runbooks and does not require additional authentication.&lt;/p&gt;
+&lt;p&gt;$AutomationVariableCode = Get-AutomationVariable -Name &amp;ldquo;AutomationVariableCode&amp;rdquo; | Out-String&lt;br&gt;
+Invoke-Expression $AutomationVariableCode&lt;/p&gt;
+&lt;p&gt;. .\SendMessageCardMain.ps1&lt;/p&gt;
+&lt;p&gt;There’s no mention of &lt;code&gt;$externalText&lt;/code&gt; inside the runbook but it’s set by &lt;code&gt;Invoke-Expression&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;This allows us to change the value of the variable without touching any of our runner scripts which makes it a lot more scalable and easier to maintain while keeping the correct encoding.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SRNRxJrIZunrddwFIRVKRg.png&#34;
+	width=&#34;1214&#34;
+	height=&#34;241&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SRNRxJrIZunrddwFIRVKRg_hu8b3b51bfdb1e43759be90108b6052381_19163_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SRNRxJrIZunrddwFIRVKRg_hu8b3b51bfdb1e43759be90108b6052381_19163_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;503&#34;
+		data-flex-basis=&#34;1208px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Of course, the Automation Variable could also contain more complex code like a switch statement to define different messages or contain the same message in different language. For demonstration purposes, I kept it simple by just using a single value variable.&lt;/p&gt;
+&lt;p&gt;On the downside, this makes editing the code complicated and error prone, since it’s just a string stored inside a variable without any kind of syntax checking. To tackle that issue, one would need to copy it to a local IDE (e.g. VS Code) each time the code is updated and paste it back into the Automation Variable once it’s done.&lt;/p&gt;
+&lt;h4 id=&#34;optimized-workaround-2-using-powershell-runbooks&#34;&gt;Optimized Workaround 2 (Using PowerShell Runbooks)&lt;/h4&gt;
+&lt;p&gt;What about storing the code in yet another runbook? This would allow for easier editing and testing right in the browser. But is it possible&amp;hellip;? As it turns out, it is!&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1KEZF0gbmFG0gzNvtYMRrg.png&#34;
+	width=&#34;2017&#34;
+	height=&#34;351&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1KEZF0gbmFG0gzNvtYMRrg_hu2a51af41989ae94ed83dbea73120f83b_54690_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1KEZF0gbmFG0gzNvtYMRrg_hu2a51af41989ae94ed83dbea73120f83b_54690_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;574&#34;
+		data-flex-basis=&#34;1379px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1wqc76iVn3V2GHxNTOx8w.png&#34;
+	width=&#34;884&#34;
+	height=&#34;322&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1wqc76iVn3V2GHxNTOx8w_hub09539a59abe0a04ef28a513330bb611_30076_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1wqc76iVn3V2GHxNTOx8w_hub09539a59abe0a04ef28a513330bb611_30076_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;274&#34;
+		data-flex-basis=&#34;658px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;To be able to get the contents/code of what I call the &lt;strong&gt;content runbook&lt;/strong&gt; we need to make sure that the modules &lt;strong&gt;Az.Accounts&lt;/strong&gt; and &lt;strong&gt;Az.Automation&lt;/strong&gt; are installed in our Automation Account.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1azPWChNsXyf25OJAqcoOgQ.png&#34;
+	width=&#34;2792&#34;
+	height=&#34;387&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1azPWChNsXyf25OJAqcoOgQ_hue02207f345e4bba16a99b3f5688f077c_94035_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1azPWChNsXyf25OJAqcoOgQ_hue02207f345e4bba16a99b3f5688f077c_94035_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;721&#34;
+		data-flex-basis=&#34;1731px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1sZzUKlvhywLqZQhTFgIQwg.png&#34;
+	width=&#34;3195&#34;
+	height=&#34;390&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1sZzUKlvhywLqZQhTFgIQwg_hua65cc6657ecb27813df0306c4d75337b_96080_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1sZzUKlvhywLqZQhTFgIQwg_hua65cc6657ecb27813df0306c4d75337b_96080_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;819&#34;
+		data-flex-basis=&#34;1966px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;We also need a &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Managed Identity&lt;/a&gt; to connect to Azure since we’ll be using regular&lt;code&gt;Az*&lt;/code&gt; Cmdlets and not internal ones this time around.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mXMuUMBFEAyxBk9gH7Ad5A.png&#34;
+	width=&#34;2304&#34;
+	height=&#34;1296&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mXMuUMBFEAyxBk9gH7Ad5A_hu7de99e6d55624db6c632667f69153bad_197090_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mXMuUMBFEAyxBk9gH7Ad5A_hu7de99e6d55624db6c632667f69153bad_197090_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;177&#34;
+		data-flex-basis=&#34;426px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Let’s add a little more code to our runner script. My Tenant Id is also stored inside an Automation Variable, thus it’s not visible in the code.&lt;/p&gt;
+&lt;p&gt;$tenantId = Get-AutomationVariable -Name &amp;ldquo;tenantId&amp;rdquo;&lt;br&gt;
+$azAccount = Connect-AzAccount -Identity -TenantId $tenantId&lt;/p&gt;
+&lt;p&gt;$exportRb = Export-AzAutomationRunbook -AutomationAccountName &amp;ldquo;mzz-automation-account-001&amp;rdquo; -ResourceGroupName &amp;ldquo;mzz-rmg-001&amp;rdquo; -Name &amp;ldquo;SendMessageCardContent&amp;rdquo; -OutputFolder $env:temp&lt;/p&gt;
+&lt;p&gt;Get-Content -Path $env:temp\$exportRb -Encoding UTF8 | Out-String | Invoke-Expression&lt;/p&gt;
+&lt;p&gt;. .\SendMessageCardMain.ps1&lt;/p&gt;
+&lt;p&gt;With a Managed Identity, we don’t need to provide any kind of additional authentication. Everything is handled by the Automation Account using the Managed Identity automatically. We only need to provide &lt;code&gt;Connect-AzAccount -Identity -TenantId $tenantId&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;We then export the runbook using &lt;code&gt;Export-AzAutomationRunbook&lt;/code&gt; to &lt;code&gt;$env:temp&lt;/code&gt;. Finally, we import the runbook’s content by using &lt;code&gt;Get-Content&lt;/code&gt; and execute its code by piping it through to &lt;code&gt;Invoke-Expression&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;In case I have lost you at this point, let’s recap very briefly.&lt;/p&gt;
+&lt;p&gt;By using &lt;code&gt;Invoke-Expression&lt;/code&gt; instead of calling the runbook inline, we make sure that the externally stored code is running in the scope of the runner script and not the child runbook, which will keep the encoding intact.&lt;/p&gt;
+&lt;p&gt;And we’re jumping through hoops here by storing the values of the variables in another runbook so that they can be updated without touching each of our runner scripts. If it helps, you can also think about a scenario where you’re hosting some kind of monitoring or reporting solution for different customers inside your own Tenant/Automation Account. Each customer has its own runner script with their own parameters but there’s only one main runbook which contains all the code.&lt;/p&gt;
+&lt;p&gt;If we need to update the script logic, only the main runbook needs to be updated. If we need to make changes to the content of the messages, only the runbook storing these values needs to be updated.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mg0Nja4e5HPo9HbQPgQnA.png&#34;
+	width=&#34;1219&#34;
+	height=&#34;244&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mg0Nja4e5HPo9HbQPgQnA_hu71dafa5ebc1478b4d18648e55377df12_19662_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mg0Nja4e5HPo9HbQPgQnA_hu71dafa5ebc1478b4d18648e55377df12_19662_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;499&#34;
+		data-flex-basis=&#34;1199px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now let’s change the word inside the runbook to something else. Instead of editing an Automation Variable, we can just edit the runbook, which is a lot more user friendly.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1NTgYp7gxGHjy3GN4wNJwMA.png&#34;
+	width=&#34;2019&#34;
+	height=&#34;345&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1NTgYp7gxGHjy3GN4wNJwMA_hu5cbe687375d076b63fe22f93d47eaec6_54546_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1NTgYp7gxGHjy3GN4wNJwMA_hu5cbe687375d076b63fe22f93d47eaec6_54546_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;585&#34;
+		data-flex-basis=&#34;1404px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Don’t forget to publish the runbook. Otherwise, the values won’t be updated. As expected, this works like a charm.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1jYFSVZTopjDmtqdrmufrQ.png&#34;
+	width=&#34;1217&#34;
+	height=&#34;240&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1jYFSVZTopjDmtqdrmufrQ_hu11dd0bea12e3be0cc4551ed15c9e7668_19356_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1jYFSVZTopjDmtqdrmufrQ_hu11dd0bea12e3be0cc4551ed15c9e7668_19356_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;507&#34;
+		data-flex-basis=&#34;1217px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If for some reason you don’t want to read your variables into memory in the runner script and do it in the child runbook instead, you can also use the &lt;code&gt;Invoke-Expression&lt;/code&gt; method from there. This works as well, even if the child runbook is called inline by another runbook and the runner script doesn’t have any reference to the special character variables at all.&lt;/p&gt;
+&lt;p&gt;I have no idea why it doesn’t work if special characters are included explicitly in child runbooks though. And it took me quite some time to figure out a workaround for this. I hope that this article is useful to you, if you’ve been struggling with modular runbooks and encoding issues as well.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Automatically Enable Overflow Action on Call Queues if No Agents are Opted In</title>
+        <link>https://heusser.pro/p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/</link>
+        <pubDate>Sun, 04 Sep 2022 16:07:25 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/</guid>
+        <description>&lt;p&gt;One of the biggest pain points of Microsoft Teams Call Queues is that a configured time out is always honored, even if no agents are available to answer the calls. It doesn’t matter if they have opted out, are offline or even if the queue has no agents configured at all. The call will only be forwarded after the timeout has been reached.&lt;/p&gt;
+&lt;p&gt;To conquer this issue, I’ve created a small PowerShell script which can be implemented and executed on a schedule as an Azure Runbook.&lt;/p&gt;
+&lt;p&gt;The idea is quite simple. The script loops through all Call Queues and checks if there’s at least one agent opted in. If all agents are opted out, the script will set the Queue’s overflow threshold to zero.&lt;/p&gt;
+&lt;p&gt;If there’s at least one agent who’s opted in, it will check if the overflow threshold is still zero. If that’s the case, the script will update the overflow threshold to any value you set in the script.&lt;/p&gt;
+&lt;p&gt;This means that every time the script detects a Queue where no agents are opted in, the configured overflow action will be active immediately. As soon as the script sees that agents are available again, the immediate overflow action is disabled again.&lt;/p&gt;
+&lt;p&gt;I’ve also added a simple alerting mechanism using Teams incoming webhooks. Messages will only be sent when something was changed.&lt;/p&gt;
+&lt;h4 id=&#34;azure-runbook-codeexample&#34;&gt;Azure Runbook Code Example&lt;/h4&gt;
+&lt;p&gt;Here’s the example code. Please keep in mind that this is in fact only an example. All the Message Cards go into the same Teams Channel because there’s no link between a Queue and a Channel which it might be associated with (e.g., a Voice Enabled Channel). I’m also using the same &lt;code&gt;$defaultOverFlowThreshold&lt;/code&gt; for all Call Queues.&lt;/p&gt;
+&lt;p&gt;If you’re not familiar with Azure Runbooks, Automation Credentials and Teams Webhooks, please refer to &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851&#34; &gt;this article&lt;/a&gt;. The steps to create these things are the same.&lt;/p&gt;
+&lt;p&gt;Insert your webhook URL on line 3 and make sure that the name of the Automation Credentials matches yours on line 5.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/a5f7245d99e0752410f8d67cc9a63344.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;Unless the examples of my previous articles, were the Runbooks were triggered by a webhook, we’ll need to create a schedule for this one. I recommend a schedule which runs every 15 minutes. This should be good enough to cover most scenarios.&lt;/p&gt;
+&lt;p&gt;In the Azure Portal, switch to Schedules and click + Add a schedule.&lt;/p&gt;
+&lt;p&gt;Next, click Link a schedule to your runbook.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/1FPVs3DbJVXhXhMR1mS5Tw.png&#34;
+	width=&#34;1422&#34;
+	height=&#34;285&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/1FPVs3DbJVXhXhMR1mS5Tw_hud506e0bc9094da07d629b8c005e7d39e_29120_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/1FPVs3DbJVXhXhMR1mS5Tw_hud506e0bc9094da07d629b8c005e7d39e_29120_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;498&#34;
+		data-flex-basis=&#34;1197px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Click on + Add a schedule.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/1j3DMLkjJkMSam186QP6pWQ.png&#34;
+	width=&#34;1496&#34;
+	height=&#34;147&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/1j3DMLkjJkMSam186QP6pWQ_hu13c5e8790efbd3db8c3514a11940143a_15499_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/1j3DMLkjJkMSam186QP6pWQ_hu13c5e8790efbd3db8c3514a11940143a_15499_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;1017&#34;
+		data-flex-basis=&#34;2442px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Give it a name and use the settings below. The smallest increment Azure Runbooks support is hourly. If we want to run it every 15 minutes, we’ll need to create four schedules where each schedule starts at a different time. Let’s start with the one which will run at every full hour.&lt;/p&gt;
+&lt;p&gt;Repeat the same step three more times using the following start times (based on this example): 15:15, 15:30, 15:45.&lt;/p&gt;
+&lt;p&gt;Once you’re done, it should look like this.&lt;/p&gt;
+&lt;p&gt;The Runbook will now run every 15 minutes and automatically enable or disable the immediate overflow action based on agent availability (opt in status).&lt;/p&gt;
+&lt;p&gt;Let me know if you would be interested in a more sophisticated solution of this Runbook. I’m thinking of a way where we can store and link information about individual Call Queues such as different webhook URLs, different overflow thresholds etc. or even the minimum number of agents which should be available before a Queue is being enabled again. I already have an idea in store how this could be achieved…&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Microsoft Teams Self-Service Call Queue Solution (Part 2)</title>
+        <link>https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/</link>
+        <pubDate>Sat, 03 Sep 2022 13:21:48 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/</guid>
+        <description>&lt;p&gt;There was an issue with my code in this article. The solution described in this article assumes that your call queue overflow and timeout actions already forward to an external PSTN number. If it was set to any other option like voicemail or disconnect, the runbook failed. I’ve updated the &lt;strong&gt;Runbook&lt;/strong&gt; code sample on GitHub accordingly.&lt;/p&gt;
+&lt;h4 id=&#34;original-article&#34;&gt;Original Article&lt;/h4&gt;
+&lt;p&gt;A while ago I published &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851&#34; &gt;this&lt;/a&gt; article which explains how we can build a self-service solution for changing the configurations of Auto Attendants and Call Queues using Azure Automation Tools. The main reason behind this is so that we don’t have to grant admin privileges to users which would like to manage Queues and Attendants.&lt;/p&gt;
+&lt;p&gt;In my last post, I provided an example how an Auto Attendant can be manually closed or opened. Today I’m going to show you an example of how we can let users change some settings on Call Queues.&lt;/p&gt;
+&lt;p&gt;I’ve written the code for the following changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Immediately forward a Call Queue to an external number&lt;/li&gt;
+&lt;li&gt;Disable the immediate forwarding again&lt;/li&gt;
+&lt;li&gt;Change the external number for forwarding on Timeout&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Immediate forwarding is configured through an overflow Threshold of 0 and not a Timeout of 0. This is because, typically, Overflow Threshold is less used than timeout. I always recommend using Overflow Threshold 0 when you want to do an immediate forwarding. Unlike Timeout 0, the call is forwarded directly, without the Queue answering the call first when using Overflow. You can read more about that &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6&#34; &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If the immediate forwarding is disabled again, the value of the Overflow Threshold will be set to 50 again. This is the default value which is configured for new Call Queues. Of course, you change that in the Runbook code.&lt;/p&gt;
+&lt;p&gt;This is what the Message Card looks like when it’s sent by the Azure Function.&lt;/p&gt;
+&lt;h3 id=&#34;lets-buildit&#34;&gt;Let’s Build It&lt;/h3&gt;
+&lt;p&gt;To build this on your own, please refer to my first article since the configuration steps are the same. You just need to replace the code of the Azure Functions and Runbooks from the Gists below.&lt;/p&gt;
+&lt;h4 id=&#34;runbook-code&#34;&gt;Runbook Code&lt;/h4&gt;
+&lt;p&gt;Insert the Webhook URL of your Teams Channel on line 7 and make sure that you’ve created the Automation Credentials as described in the article linked at the beginning of this post.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/30c4ff283d8736f3b1b47acd81d40b95.js&#34;&gt;&lt;/script&gt;
+
+&lt;h4 id=&#34;refresh-card-functioncode&#34;&gt;Refresh Card Function Code&lt;/h4&gt;
+&lt;p&gt;Insert the URL of your Azure Runbook Webhook trigger on line 11.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/7928bf7f6dabcbf0c5283566511488e5.js&#34;&gt;&lt;/script&gt;
+
+&lt;h4 id=&#34;request-card-functioncode&#34;&gt;Request Card Function Code&lt;/h4&gt;
+&lt;p&gt;To get a drop-down list with all your queues, we need to create one first.&lt;/p&gt;
+&lt;p&gt;You can use the following code to create a list, which we’ll insert in our Function code later.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/767ebef524b966842b67436cc2ba9a0a.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;This will create part of the JSON code and put it in your clipboard. You’ll need it later. If you’re already using Windows Clipboard, you will be able to pull it up by pressing Windows + V.&lt;/p&gt;
+&lt;p&gt;Here’s the code for the Azure Function which will send the Update Call Queue Config stuff. Insert your URLs on line 6 and 7 and make sure to paste your list of Call Queue choices on line 27.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/315f3d455144ea86bc2c94c0a8a92a45.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;After you’ve inserted your list, it should look like this. Yours will show real Ids of course.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1DHb1Es27FcAN3yemT5wQ.png&#34;
+	width=&#34;1124&#34;
+	height=&#34;292&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1DHb1Es27FcAN3yemT5wQ_hud1a8715ca2528dda6973d061dd8cd353_75748_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1DHb1Es27FcAN3yemT5wQ_hud1a8715ca2528dda6973d061dd8cd353_75748_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;384&#34;
+		data-flex-basis=&#34;923px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;That’s all. Now your users will be able to request a config change card. Let’s go through the process again.&lt;/p&gt;
+&lt;p&gt;First, the outgoing webhook is mentioned in a channel. The Function will then confirm that the request has been received.&lt;/p&gt;
+&lt;p&gt;The Function will also send the config change card.&lt;/p&gt;
+&lt;p&gt;Once the user has entered all the information, they will be able to submit the config. This will also update the card and confirm the settings.&lt;/p&gt;
+&lt;p&gt;It takes a while until the Runbook has finished. But one it has done its job, it will send us another card, confirming the settings.&lt;/p&gt;
+&lt;p&gt;Note: Setting a new number as the Queue’s Timeout Action will also reset the configured Overflow Threshold to 50. (If the Overflow Threshold would still be 0, the Timeout settings would have no effect at all.)&lt;/p&gt;
+&lt;p&gt;I hope that these code examples help you to build your own self-service solution for your users.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Microsoft Teams Self-Service Auto Attendants (Without Premium Connectors)</title>
+        <link>https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/</link>
+        <pubDate>Tue, 17 May 2022 20:39:01 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/</guid>
+        <description>&lt;p&gt;Hi everybody.&lt;/p&gt;
+&lt;p&gt;Every week more customers are moving to a Microsoft Teams based telephone solution. With that, customers also want more flexibility in managing their auto attendants and call queues. Many of my customers also want their team managers or members to be able to change certain settings of their auto attendants and call queues by themselves. The problem is that all these changes currently require an administrator role for Microsoft Teams. Even though most of the things can be configured in an easy-to-understand GUI in TAC (Teams Admin Center), a user could still potentially break stuff if they’re not 100% aware of what they’re doing. Furthermore, some changes are not as straight forward as they could be. As an example: There’s no switch to manually “open” or “close” an auto attendant since the default and after hours call flows are linked to a weekly recurrent schedule.&lt;/p&gt;
+&lt;p&gt;While Teams is certainly lacking in this area, there’s no denying that the advantages of a Teams Phone solution far outweigh the disadvantages. Microsoft also offers numerous awesome tools to cope with this very issue by allowing us to automate nearly everything. And that ladies and gentlemen, is one of the most awesome and fascinating things to me!&lt;/p&gt;
+&lt;p&gt;Let’s dive in.&lt;/p&gt;
+&lt;h4 id=&#34;credits-and-inspiration&#34;&gt;Credits and Inspiration&lt;/h4&gt;
+&lt;p&gt;This article is inspired by the work of two other fantastic community members and bloggers: MVPs &lt;a class=&#34;link&#34; href=&#34;https://twitter.com/Luca_Vitali&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Luca Vitali&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://twitter.com/AlexHolmeset&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Alexander Holmeset&lt;/a&gt;. Both have written articles on self-service &lt;a class=&#34;link&#34; href=&#34;https://alexholmeset.blog/2021/11/05/self-service-microsoft-teams-auto-attendant-administration/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;auto attendant&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://lucavitali.wordpress.com/2020/11/23/how-to-use-lightweight-bot-and-azure-automation-to-interact-with-teams-call-queue/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;call queue&lt;/a&gt; management using Microsoft automation tools.&lt;/p&gt;
+&lt;p&gt;I don’t think that I would have been able to come up with a solution of my own without their exceptional blog posts. At least not this fast.&lt;/p&gt;
+&lt;p&gt;To fully understand this blog post, please make sure you read their publications first.&lt;/p&gt;
+&lt;h4 id=&#34;the-ever-present-licensing-dilemma&#34;&gt;The Ever-Present Licensing Dilemma&lt;/h4&gt;
+&lt;p&gt;Alex’s solution uses a combination of Microsoft Forms, Power Automate and an Azure Runbook. However, to use an HTTP request either as a trigger or an action in a Flow, you need a premium license for Power Automate. I can understand that requirement from Microsofts business perspective, but such a basic feature shouldn’t require a premium license. Since I don’t have any premium licenses at the moment anyway, I looked for other ways.&lt;/p&gt;
+&lt;p&gt;Luca’s method uses an outgoing webhook in Teams. It’s a great way to invoke a Bot or script directly from Teams. There’s no need to install any apps and you don’t even need to open a website or an App to change some settings on an auto attendant or a call queue.&lt;/p&gt;
+&lt;p&gt;The problem is that Teams can’t really handle the response sent back by the Runbook. This means that a user will always get an error message, even if the Runbook was triggered successfully. This might be very confusing for end users and just doesn’t look nice.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1l4zCsrW8BZdzKBuSOSUEww.png&#34;
+	width=&#34;1769&#34;
+	height=&#34;320&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1l4zCsrW8BZdzKBuSOSUEww_hu372828d406032e44c5b1bd3b6a8b9ef0_44644_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1l4zCsrW8BZdzKBuSOSUEww_hu372828d406032e44c5b1bd3b6a8b9ef0_44644_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;552&#34;
+		data-flex-basis=&#34;1326px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;azure-functions&#34;&gt;Azure Functions&lt;/h4&gt;
+&lt;p&gt;Instead of calling the Azure Runbook directly from the outgoing Teams webhook, I tried to call an Azure Function first. &lt;a class=&#34;link&#34; href=&#34;https://azure.microsoft.com/en-us/services/functions/?ef_id=EAIaIQobChMIrP2Yzfqu9wIVDtxRCh1qvABSEAAYASAAEgK5RfD_BwE%3AG%3As&amp;amp;OCID=AID2200264_SEM_EAIaIQobChMIrP2Yzfqu9wIVDtxRCh1qvABSEAAYASAAEgK5RfD_BwE%3AG%3As&amp;amp;gclid=EAIaIQobChMIrP2Yzfqu9wIVDtxRCh1qvABSEAAYASAAEgK5RfD_BwE&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Azure Functions&lt;/a&gt; are serverless web services which can execute code once they’re called by a trigger. Much like the Runbook in Luca’s blog, my Function is also triggered by a web request by the outgoing webhook.&lt;/p&gt;
+&lt;p&gt;From what I could find &lt;a class=&#34;link&#34; href=&#34;https://stackoverflow.com/questions/45743782/custom-bot-always-replies-with-an-error&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;on the internet&lt;/a&gt;, the webhook expects a reply in JSON format containing &lt;code&gt;&amp;quot;type&amp;quot;: &amp;quot;message&amp;quot;&lt;/code&gt; and &lt;code&gt;&amp;quot;text&amp;quot;: &amp;quot;some message&amp;quot;&lt;/code&gt;. I didn’t find a way to customize the response of the Runbook but it’s easy with an Azure Function. I will show you how later in this post.&lt;/p&gt;
+&lt;h3 id=&#34;override-auto-attendant-businesshours&#34;&gt;Override Auto Attendant Business Hours&lt;/h3&gt;
+&lt;p&gt;Let’s start with the example from the introduction of this article. Let’s assume that we have a small company where the users who answer the phone need to be able to manually open or close an auto attendant.&lt;/p&gt;
+&lt;p&gt;Note: This part assumes that you already have the following components set up. If you don’t have them already, please refer to the external websites linked in this post in order to set them up.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A Microsoft Teams Auto Attendant&lt;/li&gt;
+&lt;li&gt;A Microsoft Teams Team&lt;/li&gt;
+&lt;li&gt;An Azure Automation Account&lt;/li&gt;
+&lt;li&gt;An Azure Function App&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Also, it might be a little confusing at first, because we’re creating each component from the opposite direction in which they are chained together. This way, we only have to touch each component once though.&lt;/p&gt;
+&lt;h4 id=&#34;prepare-the-auto-attendant&#34;&gt;Prepare the Auto Attendant&lt;/h4&gt;
+&lt;p&gt;The easiest way I could think of is to create a special holiday for this scenario. I called it “Manual Override”. The reason I did it in this way is that the actual business hours don’t get changed. If there were multiple hours per day or different hours each day, it would be quite an effort to revert all the changes once the manual override should no longer be active.&lt;/p&gt;
+&lt;p&gt;To start configuring it, head over to TAC and switch to Voice\Holidays. Now create a new holiday and set the dates to anywhere in the past.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/13cZh7wnoXylrJra7g552Xw.png&#34;
+	width=&#34;1307&#34;
+	height=&#34;468&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/13cZh7wnoXylrJra7g552Xw_hua90cd498409d8abcea1be37f4422dbb9_30314_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/13cZh7wnoXylrJra7g552Xw_hua90cd498409d8abcea1be37f4422dbb9_30314_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;279&#34;
+		data-flex-basis=&#34;670px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now go to your auto attendant and link the holiday schedule.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1HmJH2bcY32mdNcD7AbdG8Q.png&#34;
+	width=&#34;1171&#34;
+	height=&#34;527&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1HmJH2bcY32mdNcD7AbdG8Q_hu4367f84d857e8a2fa404e9ed010aac7f_76867_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1HmJH2bcY32mdNcD7AbdG8Q_hu4367f84d857e8a2fa404e9ed010aac7f_76867_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;222&#34;
+		data-flex-basis=&#34;533px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Make sure you click “Submit” after you have saved the holiday. Otherwise, the auto attendant won’t be updated.&lt;/p&gt;
+&lt;p&gt;That’s all you need to do in order to prepare your auto attendant for this self-service solution.&lt;/p&gt;
+&lt;p&gt;Later in this post, I will provide an example script which will log into Teams PowerShell and change the dates of the “Manual Override” Holiday. When an auto attendant should be open, the holiday schedule will be set to past dates. Past dates won’t have any effect on the auto attendants routing decisions and therefore the auto attendant&amp;rsquo;s business hours schedule will be active.&lt;/p&gt;
+&lt;p&gt;When the auto attendant should be manually closed before the configured business hours end, the holiday schedule will be updated to start at today’s date and end at the start of tomorrow’s date.&lt;/p&gt;
+&lt;p&gt;This means that it’s possible to close the attendant if the office closes before the regular business hours on that day. If it’s not manually opened again, it will resume to normal business hours as soon as the next day starts.&lt;/p&gt;
+&lt;p&gt;While it’s possible to close or open the attendant during business hours (e.g., extended lunch break), it’s not possible to extend the configured business hours using the method used by the provided example script.&lt;/p&gt;
+&lt;h4 id=&#34;prepare-your-teamschannel&#34;&gt;Prepare your Teams Channel&lt;/h4&gt;
+&lt;p&gt;First, we will need an incoming webhook in a channel to receive messages in Teams. We will use this webhook to receive message cards sent by an Azure Function or by a Runbook.&lt;/p&gt;
+&lt;p&gt;Go to your desired channel and click on “Connectors”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/13qApQbilVuvLrzFbROq0Kw.png&#34;
+	width=&#34;777&#34;
+	height=&#34;484&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/13qApQbilVuvLrzFbROq0Kw_huec63b6a12b005b0a5bb5c5705ce389c9_35449_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/13qApQbilVuvLrzFbROq0Kw_huec63b6a12b005b0a5bb5c5705ce389c9_35449_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;160&#34;
+		data-flex-basis=&#34;385px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now add an Incoming Webhook.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1luJXKnNDSQWz8WTUCT09A.png&#34;
+	width=&#34;1171&#34;
+	height=&#34;361&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1luJXKnNDSQWz8WTUCT09A_hu419c7001865abce90cad03799c8b3362_58546_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1luJXKnNDSQWz8WTUCT09A_hu419c7001865abce90cad03799c8b3362_58546_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;324&#34;
+		data-flex-basis=&#34;778px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1C6IrFUEq9VLWDZazRGAeRw.png&#34;
+	width=&#34;1315&#34;
+	height=&#34;411&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1C6IrFUEq9VLWDZazRGAeRw_hu374ac68d63ee912cfe47582fd996d400_55993_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1C6IrFUEq9VLWDZazRGAeRw_hu374ac68d63ee912cfe47582fd996d400_55993_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;319&#34;
+		data-flex-basis=&#34;767px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;After clicking “Add” the second time, the window will close. Open “Connectors” again and click “Configure”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1HSglWMuPkJYl3sNQUEYA.png&#34;
+	width=&#34;1149&#34;
+	height=&#34;319&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1HSglWMuPkJYl3sNQUEYA_hu4549a2fe11ae53d5ec6335cd6ac04f3b_58142_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1HSglWMuPkJYl3sNQUEYA_hu4549a2fe11ae53d5ec6335cd6ac04f3b_58142_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;360&#34;
+		data-flex-basis=&#34;864px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Give your Connector a name and upload an Icon (if you want to) and then click “Create”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1qSI9VpKxilxNLqu0ofyMQQ.png&#34;
+	width=&#34;1156&#34;
+	height=&#34;994&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1qSI9VpKxilxNLqu0ofyMQQ_hubb5fe09fd82caaca11594e1008ba6352_105810_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1qSI9VpKxilxNLqu0ofyMQQ_hubb5fe09fd82caaca11594e1008ba6352_105810_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;116&#34;
+		data-flex-basis=&#34;279px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;After you have created the webhook, its URL for your connector will be shown. Copy the URL and save it for later.&lt;/p&gt;
+&lt;h4 id=&#34;create-an-azurerunbook&#34;&gt;Create an Azure Runbook&lt;/h4&gt;
+&lt;p&gt;Let’s create the Runbook which will change the settings on our auto attendant. This script will log into Teams PowerShell and manipulate the holiday schedule called “Manual Override”. Because only the schedule is changed, there’s not even a need to specify an auto attendant explicitly. You could even add the “Manual Override” holiday schedule to all your auto attendants (which are in the same time zone) and open or close them all at once.&lt;/p&gt;
+&lt;p&gt;If you don’t have an Azure Automation Account already, you can read how to create one &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/azure/automation/automation-create-standalone-account?tabs=azureportal&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt; or in Luca Vitali’s article under chapter 1.&lt;/p&gt;
+&lt;p&gt;From within your Automation Account, click “Create a runbook”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1F9IIVDVkgw4TxgdynhcfA.png&#34;
+	width=&#34;1297&#34;
+	height=&#34;142&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1F9IIVDVkgw4TxgdynhcfA_hu55b3bbcd5b90660b7d023ae924055896_30077_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1F9IIVDVkgw4TxgdynhcfA_hu55b3bbcd5b90660b7d023ae924055896_30077_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;913&#34;
+		data-flex-basis=&#34;2192px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Name your Runbook and choose the following settings.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1aiFCtj7JQdEF0FQTqSrxqg.png&#34;
+	width=&#34;1080&#34;
+	height=&#34;525&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1aiFCtj7JQdEF0FQTqSrxqg_hu7cc5eb5dc945874842c33560e3d4841e_37140_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1aiFCtj7JQdEF0FQTqSrxqg_hu7cc5eb5dc945874842c33560e3d4841e_37140_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;205&#34;
+		data-flex-basis=&#34;493px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Paste the following code in the editing pane. Make sure to also insert your webhook URL on line 7 between the double quotes.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/22e54e29fda1304914fecc1b4f73541e.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;For this to work, we obviously need credentials which have the Teams Administrator Role. These are imported on line 17. If you need guidance on how to add them to your automation account, please refer to Luca Vitali’s article under chapter 3.&lt;/p&gt;
+&lt;p&gt;Once you have pasted the script and inserted your webhook URL, save and publish the Runbook.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1DhNPlwQ3grUUNEmrdUfEg.png&#34;
+	width=&#34;752&#34;
+	height=&#34;141&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1DhNPlwQ3grUUNEmrdUfEg_hue1d516e9ceb39efcc1ef789e882fe7a2_21844_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1DhNPlwQ3grUUNEmrdUfEg_hue1d516e9ceb39efcc1ef789e882fe7a2_21844_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;533&#34;
+		data-flex-basis=&#34;1280px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Next, we will add a webhook to the Runbook as well.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1vyUi1t0LaYYugFHyU2NXA.png&#34;
+	width=&#34;1624&#34;
+	height=&#34;203&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1vyUi1t0LaYYugFHyU2NXA_huc8de5951da01576467d82b7d0479181d_45795_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1vyUi1t0LaYYugFHyU2NXA_huc8de5951da01576467d82b7d0479181d_45795_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;800&#34;
+		data-flex-basis=&#34;1920px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;You can also read in detail how to configure the webhook on Luca’s blog.&lt;/p&gt;
+&lt;p&gt;Copy the webhook URL of the Runbook and save it for later.&lt;/p&gt;
+&lt;h4 id=&#34;create-the-refresh-cardfunction&#34;&gt;Create the Refresh Card Function&lt;/h4&gt;
+&lt;p&gt;Next, we will create a new Azure Function. This Function will be called when a user clicks on the “Submit Config” button on a card which was sent by the first Function (which will be created later). Besides triggering the Runbook, it will also update the card which was sent by the first Function.&lt;/p&gt;
+&lt;p&gt;For this, go to portal.azure.com and select Function App. If you don’t have an Azure Function App already, you need to &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-function-app-portal#create-a-function-app&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;create one&lt;/a&gt; first.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1CumuF2zcRMU0JMZWi9LjdA.png&#34;
+	width=&#34;1084&#34;
+	height=&#34;1324&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1CumuF2zcRMU0JMZWi9LjdA_hu2382b6deb8dad946428ea4d39a16ddb7_155624_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1CumuF2zcRMU0JMZWi9LjdA_hu2382b6deb8dad946428ea4d39a16ddb7_155624_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;81&#34;
+		data-flex-basis=&#34;196px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Once the Function App has been deployed you can create the function.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1dBu57rsM9ztmOXanEQsBA.png&#34;
+	width=&#34;821&#34;
+	height=&#34;193&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1dBu57rsM9ztmOXanEQsBA_hu5746fc9f02d4ac9791f5d53188550f27_31151_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1dBu57rsM9ztmOXanEQsBA_hu5746fc9f02d4ac9791f5d53188550f27_31151_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;425&#34;
+		data-flex-basis=&#34;1020px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Choose “HTTP trigger” as the template, name your function and leave the Authorization level at “Function”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1AOtHCDdzmktCrFloLFxCA.png&#34;
+	width=&#34;1244&#34;
+	height=&#34;1228&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1AOtHCDdzmktCrFloLFxCA_hu5ffbe0731727d4e8eb73283dc3d2ca5a_125844_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1AOtHCDdzmktCrFloLFxCA_hu5ffbe0731727d4e8eb73283dc3d2ca5a_125844_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;101&#34;
+		data-flex-basis=&#34;243px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;In the editing pane, paste the following code. Insert the URL from the Runbook webhook on line 8 in between the double quotes.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/a908360198d56dd82798164f9e2c4ce0.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;Save the Function and copy the Function URL by clicking “Get function URL”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1GCEmPpCLTPQk4T100aesg.png&#34;
+	width=&#34;867&#34;
+	height=&#34;85&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1GCEmPpCLTPQk4T100aesg_hu6ac419ccc94a4ac1823aea3d5dd05d7d_12094_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1GCEmPpCLTPQk4T100aesg_hu6ac419ccc94a4ac1823aea3d5dd05d7d_12094_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;1020&#34;
+		data-flex-basis=&#34;2448px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Note: the URL will include a key at the end. Because we’ve chosen “Function” as the Authorization level when we created the function, it will only be possible to call the function by including the key in the URL.&lt;/p&gt;
+&lt;h4 id=&#34;create-the-request-cardfunction&#34;&gt;Create the Request Card Function&lt;/h4&gt;
+&lt;p&gt;Now we create the second Function. This is the Function which will be called from the outgoing webhook in Teams and sends the “Config Change” Card to the channel. It’s actually the Function which will be called first.&lt;/p&gt;
+&lt;p&gt;Paste the following code in the Azure Portal. Again, make sure to populate the variables on line 6 and 7. $uri represents the URL of your Teams incoming webhook and $refreshURI represents the URL of your “RefreshCard” Azure Function.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/0c3b259ab033bd39880a3665f48cd760.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;Don’t forget to save the Function.&lt;/p&gt;
+&lt;h4 id=&#34;create-an-outgoing-webhook-inteams&#34;&gt;Create an Outgoing Webhook in Teams&lt;/h4&gt;
+&lt;p&gt;Finally, we need to create an outgoing webhook in Teams. Users will be able to mention the webhook in the channel. Once the “Bot” is mentioned, a web request will be made to the “RequestCard” Function.&lt;/p&gt;
+&lt;p&gt;To set it up, go to your Team’s settings and switch to the Apps tab. From there, click on “Create an outgoing webhook” on the bottom right.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/11rS272NPQrXX9EE9LbUnQ.png&#34;
+	width=&#34;1896&#34;
+	height=&#34;1041&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/11rS272NPQrXX9EE9LbUnQ_huae7854211a61ee6c10d7ebe891e47eea_175069_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/11rS272NPQrXX9EE9LbUnQ_huae7854211a61ee6c10d7ebe891e47eea_175069_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;182&#34;
+		data-flex-basis=&#34;437px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Name your outgoing webhook and paste the Function URL of the “RequestCard” Function in the “Callback URL” field before you click “Create”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1N4NssEokqJxnX8LCCGuU2A.png&#34;
+	width=&#34;871&#34;
+	height=&#34;792&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1N4NssEokqJxnX8LCCGuU2A_hud76c59a699eb9e8fd744cb092a6cc7ad_100853_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1N4NssEokqJxnX8LCCGuU2A_hud76c59a699eb9e8fd744cb092a6cc7ad_100853_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;109&#34;
+		data-flex-basis=&#34;263px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;You can ignore the security token which will be shown after the webhook has been created. If you like you can still save it somewhere safe.&lt;/p&gt;
+&lt;h3 id=&#34;see-it-inaction&#34;&gt;See it in Action&lt;/h3&gt;
+&lt;p&gt;Now that we have everything set up, any member of the channel can request a card to manually open or close an auto attendant.&lt;/p&gt;
+&lt;p&gt;Here’s the “Manual Override” Holiday Schedule before the config change has been submitted. Today, as of writing this article it’s the 17th of May 2022. The holiday schedule is set to 15.05.2022–16.052022 so it’s non-effective.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/11ZO1uAxt2OUWo0RWzvaXA.png&#34;
+	width=&#34;1156&#34;
+	height=&#34;266&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/11ZO1uAxt2OUWo0RWzvaXA_hu24e738772aa5f336100b6463b020cd10_20698_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/11ZO1uAxt2OUWo0RWzvaXA_hu24e738772aa5f336100b6463b020cd10_20698_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;434&#34;
+		data-flex-basis=&#34;1043px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;And here’s the chronological process:&lt;/p&gt;
+&lt;p&gt;A user requests a card by mentioning the outgoing webhook.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/12pjsanYyHOkHRzO08yZGg.png&#34;
+	width=&#34;1141&#34;
+	height=&#34;134&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/12pjsanYyHOkHRzO08yZGg_hue9af2bc13a1b21b9582b95cefd648d5a_10254_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/12pjsanYyHOkHRzO08yZGg_hue9af2bc13a1b21b9582b95cefd648d5a_10254_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;851&#34;
+		data-flex-basis=&#34;2043px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This will call our first “RequestCard” Azure Function. The Function will then reply with a message that the config change request has been received.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1myTE8zK18Jduhiy9S4k5ng.png&#34;
+	width=&#34;1224&#34;
+	height=&#34;241&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1myTE8zK18Jduhiy9S4k5ng_hu1b4b9a7bbe7b8e8b17a4ef2283138069_33893_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1myTE8zK18Jduhiy9S4k5ng_hu1b4b9a7bbe7b8e8b17a4ef2283138069_33893_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;507&#34;
+		data-flex-basis=&#34;1218px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;At the same time, the Function will also send a new card to the channel which contains the options to open or close the auto attendant and a “Submit Config” button.&lt;/p&gt;
+&lt;p&gt;Note: Unfortunately, it’s not possible to send the card as an answer to the invocation of the webhook. This answer can only support text.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1PkeQQeNPtIuNbd3j65f0w.png&#34;
+	width=&#34;1223&#34;
+	height=&#34;435&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1PkeQQeNPtIuNbd3j65f0w_huca52d10e7fdafe57b57d019d438f38bd_44000_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1PkeQQeNPtIuNbd3j65f0w_huca52d10e7fdafe57b57d019d438f38bd_44000_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;281&#34;
+		data-flex-basis=&#34;674px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Once a user has chosen an option and submitted the config change, the “RefreshCard” Function will be called.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1HgOp80zmMgDaDdcL0N510Q.png&#34;
+	width=&#34;1226&#34;
+	height=&#34;434&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1HgOp80zmMgDaDdcL0N510Q_huc64eb73fec64e4a684dc003490a4b2f8_40195_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1HgOp80zmMgDaDdcL0N510Q_huc64eb73fec64e4a684dc003490a4b2f8_40195_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;282&#34;
+		data-flex-basis=&#34;677px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This Function will update the “Config Change Request” card, trigger the Runbook, and lets the user know that their config change request has been received.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1YJROpRLPOQxKxe6VI86wAw.png&#34;
+	width=&#34;1225&#34;
+	height=&#34;247&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1YJROpRLPOQxKxe6VI86wAw_hue8a1e662d446de1d8351412d2e6ef7b4_35216_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1YJROpRLPOQxKxe6VI86wAw_hue8a1e662d446de1d8351412d2e6ef7b4_35216_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;495&#34;
+		data-flex-basis=&#34;1190px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Once the Runbook has finished, it will also post a new card to the channel, informing the user that the auto attendant has been opened or closed.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1ui2yuTIb1O1yC1qTJgxkdA.png&#34;
+	width=&#34;1222&#34;
+	height=&#34;239&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1ui2yuTIb1O1yC1qTJgxkdA_hu94349a4aa09e2b7a7acac3ce67d7df01_26800_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1ui2yuTIb1O1yC1qTJgxkdA_hu94349a4aa09e2b7a7acac3ce67d7df01_26800_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;511&#34;
+		data-flex-basis=&#34;1227px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If we check the holiday schedule again, we can see that it has been updated and set from 17.05.2022 to 18.05.2022. This means that any calls which are received by the auto attendant today, go into the holiday call handling and not into the default call flow. Thus, this auto attendant is now closed.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1Uh6LLtUaj5nDUQwOiIDNJQ.png&#34;
+	width=&#34;1144&#34;
+	height=&#34;262&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1Uh6LLtUaj5nDUQwOiIDNJQ_hub6852f717f63b21c0b0322c53ec0956c_20692_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1Uh6LLtUaj5nDUQwOiIDNJQ_hub6852f717f63b21c0b0322c53ec0956c_20692_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;436&#34;
+		data-flex-basis=&#34;1047px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;summary&#34;&gt;Summary&lt;/h3&gt;
+&lt;p&gt;This is a great proof of concept on how to build a self-service auto attendant or call queue solution which doesn’t require any Premium Licenses for Power Automate or Power Apps. Of course, Azure Functions and Runbooks are not free either but I’m almost certain that it will still be much cheaper at scale.&lt;/p&gt;
+&lt;p&gt;From my point of view this is a great showcase of what one can achieve with Azure Automation. I also like that everything stays in Teams from an end user perspective. There’s no need to open any other website or App and even Teams mobile App experiences are supported.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1f9rH3SVsdeBaCT4jm29dA.png&#34;
+	width=&#34;1050&#34;
+	height=&#34;892&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1f9rH3SVsdeBaCT4jm29dA_hu0d2eeddf9dcacbb318cbf03027fe51b5_331703_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1f9rH3SVsdeBaCT4jm29dA_hu0d2eeddf9dcacbb318cbf03027fe51b5_331703_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;117&#34;
+		data-flex-basis=&#34;282px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This article only scatched the surface by covering only one example of endless possible scenarios. For example, it’s also possible to write an Azure Function in a way in which it can receive parameters from the outgoing webhook. Instead of just mentioning the webhook by “@RequestCard” we could also mention it like this: “@RequestCard CQ ” or “@RequestCard AA” and then respond with a different config change card, one for each type of voice app or even different change scenarios. Or we could even do stuff like check the username from which the outgoing webhook was invoked and do a security filtering on it by only allowing certain users to submit changes to auto attendants or call queues. The sky really is the limit.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Emergency Location on HEUSSER.PRO</title>
+        <link>https://heusser.pro/categories/emergency-location/</link>
+        <description>Recent content in Emergency Location on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Fri, 11 Aug 2023 16:23:20 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/emergency-location/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>PowerShell Script: Set Emergency Location for Unassigned Numbers in Teams</title>
+        <link>https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/</link>
+        <pubDate>Fri, 11 Aug 2023 16:23:20 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/</guid>
+        <description>&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/0rgv90To2E1EOPe.jpg&#34;
+	width=&#34;1024&#34;
+	height=&#34;1024&#34;
+	srcset=&#34;https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/0rgv90To2E1EOPe_hu39db2329fd12307d9d2a9a3dd1079567_90198_480x0_resize_q75_box.jpg 480w, https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/0rgv90To2E1EOPe_hu39db2329fd12307d9d2a9a3dd1079567_90198_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;100&#34;
+		data-flex-basis=&#34;240px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;With the MicrosoftTeams PowerShell module version &lt;strong&gt;5.4.0.&lt;/strong&gt; Microsoft has added the possibility to set the emergency location on unassigned numbers.&lt;/p&gt;
+&lt;p&gt;Typically, whenever new numbers are bought or ported to Microsoft, an admin needs to specify the emergency address which should be assigned to the new numbers. In some cases, this process can fail which means that you could end up with user/subscriber numbers which don’t have an emergency address linked to it.&lt;/p&gt;
+&lt;p&gt;When you try to assign a number wich does not have an emergency location assigned, you’ll get an error, and you need to assign it again, including the &lt;code&gt;-LocationId&lt;/code&gt; .&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Set-CsPhoneNumberAssignment&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-PhoneNumber&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$number&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;TelephoneNumber&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-LocationId&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$matchingEmergencyLocationId&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;This is an operational risk since scripts that may have been working fine for months suddenly stop working properly for certain numbers and new users could end up without a phone number. To mitigate this risk, it’s best to make sure that all your numbers have an emergency address linked to them from the get-go.&lt;/p&gt;
+&lt;p&gt;Up until now, the only way to solve this issue was to create a case for Microsoft’s PSTN service desk team and ask them to assign a location Id to your unassigned number.&lt;/p&gt;
+&lt;p&gt;Previously, I’ve tackled this issue by making sure that my scripts checked if the number was assigned successfully. If it wasn’t I made sure that the number got assigned again including the location Id.&lt;/p&gt;
+&lt;p&gt;I also thought about creating a dummy user and a script which I could (mis)use. The script would get all unassigned numbers which don’t have a location Id assigned and processes all numbers after each other. Each time, the user’s usage location would be set to the country of the current number, the number would be assigned to the dummy user including the location Id and then unassigned again. However, that sounded like a waste of time to me, so I never pursued that idea.&lt;/p&gt;
+&lt;p&gt;The possibilities now are much better, and the recent update allowed me to create a simple script which makes sure that all unassigned numbers also have a location Id assigned.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Please note that the script assumes that there’s only ever 1 emergency address per city and that there’s at least 1 other number which already uses the correct emergency address.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;If your environment does not meet the above criteria, you can’t use this script without tailoring it specifically to your needs. Use it at your own risk!&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Also note that you need to clone or download the &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub repo&lt;/a&gt; since it depends on other functions present in the repo.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/3d750fef739c17a73832f542459fac72.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;I hope this helps you in streamlining and optimizing your phone number inventory.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

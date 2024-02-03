@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Teams Presence on HEUSSER.PRO</title>
+        <link>https://heusser.pro/categories/teams-presence/</link>
+        <description>Recent content in Teams Presence on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 16 Jul 2022 11:46:03 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/teams-presence/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Use Siri Shortcuts to make Microsoft Graph Requests</title>
+        <link>https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/</link>
+        <pubDate>Sat, 16 Jul 2022 11:46:03 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/</guid>
+        <description>&lt;p&gt;Just two days ago I published &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6&#34; &gt;Set your Teams Status to In a Call when using other Calling &amp;amp; Meeting Apps on iOS&lt;/a&gt;. In this article, I explained how we can leverage Siri Shortcuts on iOS to call an Azure Function which then executes web requests against the Microsoft Graph API.&lt;/p&gt;
+&lt;p&gt;Today I wanted to see if I’m able to get it working without the use of an Azure Function as a middleman. Spoiler alert: I totally was.&lt;/p&gt;
+&lt;p&gt;You can import the Siri Shortcut from &lt;a class=&#34;link&#34; href=&#34;https://www.icloud.com/shortcuts/0c59afb62e5d401f80341e86e0492ad6&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Of course, you need to have an Azure App Registration with the desired permissions ready to use this. Once you’ve imported the shortcut, just fill in the required information in the text fileds. We need the App Id, the App secret and the name (domain) or Id of the tenant.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1e3EoKpzxjpK6m0Ii7Wsw.png&#34;
+	width=&#34;750&#34;
+	height=&#34;1334&#34;
+	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1e3EoKpzxjpK6m0Ii7Wsw_hu15cb2d495087f2f1d55235b328a8221e_150793_480x0_resize_box_3.png 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1e3EoKpzxjpK6m0Ii7Wsw_hu15cb2d495087f2f1d55235b328a8221e_150793_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;56&#34;
+		data-flex-basis=&#34;134px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Let’s take a detailed look of what’s going on inside the Shortcut.&lt;/p&gt;
+&lt;p&gt;First, an http POST request is made to request the access token. Client_id and client_secret are passed to the request body as variables from the Text fields you populated at the top of the Shortcut.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;V:%5cGitHub%5cheusser-pro-v2%5ccontent%5cpost%5cmedium-export%5cposts%5cmd_1702475460664%5cimg%5c1__QlYK0AE2DSj3SKPpfSJaug.jpeg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The Microsoft authentication endpoint returns a JSON string which is similar to what you get when you use &lt;code&gt;Invoke-WebRequest&lt;/code&gt; instead of &lt;code&gt;Invoke-RestMethod&lt;/code&gt; in PowerShell.&lt;/p&gt;
+&lt;p&gt;{&amp;ldquo;token_type&amp;rdquo;:&amp;ldquo;Bearer&amp;rdquo;,&amp;ldquo;expires_in&amp;rdquo;:3599,&amp;ldquo;ext_expires_in&amp;rdquo;:3599,&amp;ldquo;access_token&amp;rdquo;:&amp;ldquo;eyJ0eXAixboxOiJKV1QiLCJub25jZSI6ITUROWEtpblE4THcwNVN1Z1JMOU1aUUpwdXlqedasd1VpQXNjU3ciLseriesCJhbGciOiJSUzI1NiIsIng1dCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSIsImtpZCI6IXjJaUXBKM1VBWVhZR2FYRUp&amp;rdquo;}&lt;/p&gt;
+&lt;p&gt;This means that we’ll have to get the &lt;code&gt;value&lt;/code&gt; of both the &lt;code&gt;keys&lt;/code&gt; “token_type” and “access_token”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;V:%5cGitHub%5cheusser-pro-v2%5ccontent%5cpost%5cmedium-export%5cposts%5cmd_1702475460664%5cimg%5c1__VKksWkNAJ7ESWUEjkQWd7Q.jpeg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The access token is now stored in the variables &lt;code&gt;token_type&lt;/code&gt; (Bearer ) and &lt;code&gt;access_token&lt;/code&gt; (Actual token) and available to use in this Shortcut and subsequent web requests. To see if it’s working, we’re just going to make a GET request and return some Azure AD Users.&lt;/p&gt;
+&lt;p&gt;Here you can see that we use both variables to include the access token in the &lt;code&gt;Authorization&lt;/code&gt; Header.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;V:%5cGitHub%5cheusser-pro-v2%5ccontent%5cpost%5cmedium-export%5cposts%5cmd_1702475460664%5cimg%5c1__RCYyCinwNHAg14Dd1DKWUw.jpeg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Because this is an OData query, the values will be stored in the &lt;code&gt;value&lt;/code&gt; key. So we need to get the value of the &lt;code&gt;value&lt;/code&gt; key one more time to see some results.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/12rVXLaYUXZyyNAMla6kjGA.png&#34;
+	width=&#34;750&#34;
+	height=&#34;1334&#34;
+	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/12rVXLaYUXZyyNAMla6kjGA_hu2e5576774935fc798c3461eb71d5e818_280158_480x0_resize_box_3.png 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/12rVXLaYUXZyyNAMla6kjGA_hu2e5576774935fc798c3461eb71d5e818_280158_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;56&#34;
+		data-flex-basis=&#34;134px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Of course, this is just an example to prove that the authentication is working without an Azure Function or any PowerShell code. Everything is running on an iOS device. Receiving data from Graph on an iPhone is probably not what people want to use this for, but it was the easiest example.&lt;/p&gt;
+&lt;p&gt;Using Shortcuts to make http Post requests is much more interesting. Think about all the possibilities here for a second. We could basically do any Post request we want. And then, we can add Shortcuts to the iPhone Homescreen, ask Siri to run Shortcuts or even launch them from an Apple Watch. Amazing.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Set your Teams Status to In a Call when using other Calling &amp; Meeting Apps on iOS</title>
+        <link>https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/</link>
+        <pubDate>Thu, 14 Jul 2022 21:59:48 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/</guid>
+        <description>&lt;p&gt;Hello everybody. I try my best to blog about new and unique Microsoft Teams related stuff at least once a month. If you’re new to my stories, feel free to check out my previous articles &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p&#34; &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Today we’re going to take a look at something very cool. A few months ago, I wrote this little code snippet which lets you change a Teams user’s presence by using PowerShell and the Microsoft Graph API. The API endpoint is documented &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/graph/api/presence-setpresence?view=graph-rest-1.0&amp;amp;tabs=http&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;. You might be asking yourself: why would we want to do this in the first place? Teams already updates our presence if we’re in a call, a meeting or just busy because of an Outlook appointment, right?&lt;/p&gt;
+&lt;h4 id=&#34;use-cases&#34;&gt;Use Cases&lt;/h4&gt;
+&lt;p&gt;Setting the presence of a user can be very useful if for example not all your users are on Teams yet. Let’s say that we’ve still got a legacy PBX system with SIP devices registered to it, but we use Teams for internal calls. There’s no way to know that a user is already on the phone unless the user specifically updates his status to Busy or Do not disturb. A user can’t set his own status to “In a call” or “In a meeting” though.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ.png&#34;
+	width=&#34;548&#34;
+	height=&#34;680&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ_huce2d2f03c713521e4f452d4d43e9a1ce_48580_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ_huce2d2f03c713521e4f452d4d43e9a1ce_48580_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;80&#34;
+		data-flex-basis=&#34;193px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If we’re using an &lt;a class=&#34;link&#34; href=&#34;https://www.anynode.de/supervision/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;anynode SBC&lt;/a&gt; for example, we could implement a Route Supervision which calls an Azure Function, whenever a user receives or starts a call on a legacy PBX system. The Azure Function would then send an http POST request to the Graph API to change the presence status of the user.&lt;/p&gt;
+&lt;p&gt;Since Microsoft has now released the &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/microsoftteams/sip-gateway-plan&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;SIP Gateway&lt;/a&gt; the need for such a solution has significantly decreased because the SIP Gateway already handles Teams presence out of the box. If you’re interested in learning more about the SIP Gateway for Teams, please check out this session from Commsverse from my colleague &lt;a class=&#34;link&#34; href=&#34;https://twitter.com/tpickhan&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Thorsten Pickhan&lt;/a&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;what-about-other-usecases&#34;&gt;What about other use cases?&lt;/h4&gt;
+&lt;p&gt;I know, we all love Teams but sometimes we do need to use other calling and meeting apps such as Skype, Zoom, WhatsApp, or Discord. Don’t you just hate it that Teams doesn’t know when you’re already on a call in another app? Today, we’re going to change that!&lt;/p&gt;
+&lt;h4 id=&#34;the-power-ofsiri&#34;&gt;The Power of Siri&lt;/h4&gt;
+&lt;p&gt;If you have an iPhone or iPad you probably know about Siri Shortcuts and Automations. If you don’t know them already, I highly recommend checking them out. Shortcuts and automations are like local Power Automate Flows which are created and executed on your iOS device. Today I discovered that you can actually do http POST requests with Shortcuts. How cool is that?&lt;/p&gt;
+&lt;p&gt;Granted, coding or building shortcuts is quite a hassle on such a small screen but there’s an easy workaround for that. We’re just using the Shortcut to call an Azure Function and let the Function do all the work for us.&lt;/p&gt;
+&lt;h4 id=&#34;creating-an-azure-ad-app-registration&#34;&gt;Creating an Azure AD App Registration&lt;/h4&gt;
+&lt;p&gt;First, we need an Azure AD App where we can grant the required permissions to set and clear the Teams presence. There’s an exceptional tutorial &lt;a class=&#34;link&#34; href=&#34;https://adamtheautomator.com/powershell-graph-api/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;. (I also used the example code to acquire the token from this website.)&lt;/p&gt;
+&lt;p&gt;“Presence.ReadWrite.All” is the permission we need.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA.png&#34;
+	width=&#34;851&#34;
+	height=&#34;537&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA_hu90c29336af7900a9bcc837fa4413389d_47241_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA_hu90c29336af7900a9bcc837fa4413389d_47241_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;158&#34;
+		data-flex-basis=&#34;380px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;create-an-azurefunction&#34;&gt;Create an Azure Function&lt;/h4&gt;
+&lt;p&gt;Next, we create an Azure Function. If you’re not familiar with Azure Functions, please read this &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851&#34; &gt;article&lt;/a&gt;. The creating of a Function App and a Function is described under “Create the Refresh Card Function”.&lt;/p&gt;
+&lt;p&gt;Copy and paste the following code into your function. Populate the variables on lines 10–14 with your tenant specific information.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/5b08518eff2dd7c579c61cab23e25e95.js&#34;&gt;&lt;/script&gt;
+
+&lt;h4 id=&#34;create-the-sirishortcut&#34;&gt;Create the Siri Shortcut&lt;/h4&gt;
+&lt;p&gt;Now, we’ll create a new Siri Shortcut. Choose “Get contents of URL” as your first action. Now go back to your Azure Function and copy its URL.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g.png&#34;
+	width=&#34;1840&#34;
+	height=&#34;247&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g_hu0a9d03c473db92f91ef58447bb04026d_43868_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g_hu0a9d03c473db92f91ef58447bb04026d_43868_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;744&#34;
+		data-flex-basis=&#34;1787px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Paste the URL into the Shortcut. I always use Sticky Notes to quickly synchronize text between my Windows PC and my iPhone.&lt;/p&gt;
+&lt;p&gt;Next, expand the action by clicking on the circled arrow which points right. This will reveal additional options. Change the Method to POST and add a key and a value (Text) to the Request Body. I used “Name”: “Azure”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;V:%5cGitHub%5cheusser-pro-v2%5ccontent%5cpost%5cmedium-export%5cposts%5cmd_1702475460664%5cimg%5c1__JPlHNIr6mVHsBIA1HLoOqA.jpeg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;That’s it for the shortcut. You should now be able to run the shortcut. Every time you do so, your iOS device will call the Azure Function which will request a token and then set the defined user&amp;rsquo;s presence to In a Call.&lt;/p&gt;
+&lt;p&gt;By now, I hope you can understand why I didn’t bother to try and also build the authentication flow using only Shortcuts.&lt;/p&gt;
+&lt;h4 id=&#34;building-the-siri-automation&#34;&gt;Building the Siri Automation&lt;/h4&gt;
+&lt;p&gt;The last piece we need to do is to create an Automation which will trigger the Shortcut. Unfortunately, there aren’t as many triggers as I had wished but using “When an App is opened” does the trick, sort of.&lt;/p&gt;
+&lt;p&gt;In Shortcuts, switch from My Shortcuts to Automation on the bottom. Click + to create a new Automation. You want to create a Personal Automation.&lt;/p&gt;
+&lt;p&gt;Select “App” as your trigger and then select one or multiple calling Apps.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA.png&#34;
+	width=&#34;750&#34;
+	height=&#34;1334&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA_hub968f2c7cf86104968b4dbe83e65d0ea_52403_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA_hub968f2c7cf86104968b4dbe83e65d0ea_52403_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;56&#34;
+		data-flex-basis=&#34;134px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Then, add an action and search for “Run Shortcut”. Click on Shortcut and select the previously created Shortcut from the list.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA.png&#34;
+	width=&#34;750&#34;
+	height=&#34;1334&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA_huf2ced6342da4c84ab44a20c0be9377c1_125532_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA_huf2ced6342da4c84ab44a20c0be9377c1_125532_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;56&#34;
+		data-flex-basis=&#34;134px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Click Next and then Done. Leave “Ask Before Running” enabled. This way you’ll be asked if you want to update your Teams presence each time you open one of the selected Apps. If you’re not making a call, you can just ignore or close the notification banner.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg.png&#34;
+	width=&#34;750&#34;
+	height=&#34;1334&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg_hu7eae1344531cb80e88c90e1ab05064f7_64626_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg_hu7eae1344531cb80e88c90e1ab05064f7_64626_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;56&#34;
+		data-flex-basis=&#34;134px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now you’re all set. Every time you open one of your selected Apps (just Skype in my case) the automation will be triggered and ask you, if you want to set your Teams presence to In a call.&lt;/p&gt;
+&lt;p&gt;If you like, you can repeat all the steps and create another Function, Shortcut and Automation to clear the presence again, if you’re done with your call on the other App.&lt;/p&gt;
+&lt;p&gt;In this case, just replace line 42–51 with this code in the “Clear Presence Function” and choose “When an App is closed” as the Siri Automation trigger.&lt;/p&gt;
+&lt;p&gt;$Body = @&amp;quot;&lt;/p&gt;
+&lt;p&gt;{&lt;/p&gt;
+&lt;p&gt;&amp;ldquo;sessionId&amp;rdquo;: &amp;ldquo;bf3cbc08-e5b0-47bb-a4f0-89e3e3f7adac&amp;rdquo;,&lt;/p&gt;
+&lt;p&gt;}&lt;/p&gt;
+&lt;p&gt;&amp;ldquo;@&lt;/p&gt;
+&lt;p&gt;Invoke-RestMethod -Method Post -Uri &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://graph.microsoft.com/v1.0/users/$UserId/presence/clearPresence%22&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://graph.microsoft.com/v1.0/users/$UserId/presence/clearPresence&#34;&lt;/a&gt; -Headers $Header -Body $Body -ContentType &amp;ldquo;application/json&amp;rdquo;&lt;/p&gt;
+&lt;h4 id=&#34;demo&#34;&gt;Demo&lt;/h4&gt;
+&lt;p&gt;Here you can see the Automation in Action. At first, the user’s Teams presence is “Available”. When Skype is opened, the Automation is triggered and confirmed by the user. When Teams is opened again, we can see that the status has changed from “Available” to “In a call”. Because Skype was closed/minimized when Teams was opened, the second Automation, which clears the Teams presence again is triggered and allowed to run. This resets the Teams presence to its original state. Teams is closed and opened again to force a refresh of the presence.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1WA9VV3zTsQF3ov8DnQGfog.gif&#34;
+	width=&#34;600&#34;
+	height=&#34;1067&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1WA9VV3zTsQF3ov8DnQGfog_hu01675812143c9f23e6321f2114a19f84_9202471_480x0_resize_box_1.gif 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1WA9VV3zTsQF3ov8DnQGfog_hu01675812143c9f23e6321f2114a19f84_9202471_1024x0_resize_box_1.gif 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;56&#34;
+		data-flex-basis=&#34;134px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;What’s cool is that this even works when you’re getting an incoming call in an App like Skype, WhatsApp etc. When you accept the call, the App is opened and thus triggers the automation. I can’t record that on video because iOS screen recording is stopped if an incoming call gets accepted and the notification does not show up, when screen sharing through AirPlay is active.&lt;/p&gt;
+&lt;h4 id=&#34;bonus&#34;&gt;Bonus&lt;/h4&gt;
+&lt;p&gt;Because we now have Shortcuts to set our Teams presence to “In a call” or clear the presence again, we can also use Siri to execute these Shortcuts. All we have to say is Hey Siri, followed by the name of the Shortcut. E.g. “Hey Siri, Set Teams Presence” or “Hey Siri, Clear Teams Presence”.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

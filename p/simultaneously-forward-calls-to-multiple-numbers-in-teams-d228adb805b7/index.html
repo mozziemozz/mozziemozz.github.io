@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='When configuring call flows in Microsoft Teams, one question I hear a lot is if a call can be forwarded to multiple external numbers at…'>
+<title>Simultaneously Forward Calls to Multiple Numbers in Teams</title>
+
+<link rel='canonical' href='https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Simultaneously Forward Calls to Multiple Numbers in Teams'>
+<meta property='og:description' content='When configuring call flows in Microsoft Teams, one question I hear a lot is if a call can be forwarded to multiple external numbers at…'>
+<meta property='og:url' content='https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/'>
+<meta property='og:site_name' content='HEUSSER.PRO'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2023-05-14T08:23:26&#43;00:00'/><meta property='article:modified_time' content='2023-05-14T08:23:26&#43;00:00'/>
+<meta name="twitter:title" content="Simultaneously Forward Calls to Multiple Numbers in Teams">
+<meta name="twitter:description" content="When configuring call flows in Microsoft Teams, one question I hear a lot is if a call can be forwarded to multiple external numbers at…">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "kozb6q2xjn");
+    </script>    
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hud7e6b3cccc21b12ddf35b72eb655064d_860969_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🫡</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
+            <h2 class="site-description">Martin Heusser | M365 Apps &amp; Services MVP</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/mozziemozz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://x.com/@mozzeph'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/imprint/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                
+                <span>Imprint</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li>
+      <ol>
+        <li>
+          <ol>
+            <li><a href="#how-to-configure-it">How To Configure It</a></li>
+            <li><a href="#call-flowdiagram">Call Flow Diagram</a></li>
+            <li><a href="#other-options">Other Options</a></li>
+            <li><a href="#caveats">Caveats</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/microsoft-teams/" >
+                Microsoft Teams
+            </a>
+        
+            <a href="/categories/teams-phone/" >
+                Teams Phone
+            </a>
+        
+            <a href="/categories/call-flows/" >
+                Call Flows
+            </a>
+        
+            <a href="/categories/m365-call-flow-visualizer/" >
+                M365 Call Flow Visualizer
+            </a>
+        
+            <a href="/categories/call-settings/" >
+                Call Settings
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/">Simultaneously Forward Calls to Multiple Numbers in Teams</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            When configuring call flows in Microsoft Teams, one question I hear a lot is if a call can be forwarded to multiple external numbers at…
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">May 14, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    7 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>When configuring call flows in Microsoft Teams, one question I hear a lot is if a call can be forwarded to multiple external numbers at the same time.</p>
+<p>This most likely applies to after-hours on-call scenarios where it’s absolutely crucial that somebody will eventually answer the call.</p>
+<p><img src="/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/0rL2fJDRh74kKQK7Z.jpg"
+	width="1024"
+	height="1024"
+	srcset="/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/0rL2fJDRh74kKQK7Z_hu2ad6c7f72232edae2cd2c9c9db7e2c67_98921_480x0_resize_q75_box.jpg 480w, /p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/0rL2fJDRh74kKQK7Z_hu2ad6c7f72232edae2cd2c9c9db7e2c67_98921_1024x0_resize_q75_box.jpg 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="100"
+		data-flex-basis="240px"
+	
+></p>
+<p>Currently, this is impossible with Teams call queues. However, this is by design. The purpose of a queue is that the call stays within the queue and the company has control over the call for the entire flow of the call. In other words, the queue makes sure that the call stays within company boundaries by ignoring all user configured call answering rules. So, if a user has configured his calls to immediately forward to a personal cell phone, the queue simply doesn’t care and will present the call to the user in Teams anyway.</p>
+<p>If you must forward the call to multiple numbers at the same time, you can use regular Teams (Microsoft 365) users. I always suggest using dedicated, generic accounts for this, even though it’s an additional license cost. This will make management easier and ensures that no user is able to change the forwarding settings and mess with the call flow on their own.</p>
+<p>Since I did this in my lab, I used the users I already had to demonstrate this. This means that they have real sounding names and are not generically named accounts like I would use in a real-world scenario.</p>
+<h4 id="how-to-configure-it">How To Configure It</h4>
+<p>To configure forwarding to multiple external numbers simultaneously, identify where in your auto attendant or call queue the call must be forwarded.</p>
+<p>Next, think about to how many numbers the call must be forwarded. Create one Teams enterprise voice enabled user for each external target number. Then create one more Teams voice enabled user. On this user, configure a call group and add all the users which forward to external numbers immediately.</p>
+<p>Set this user’s call forwarding settings to either immediately forward to or also ring the call group.</p>
+<p><img src="/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1GFWLa0rX87G1PIvrBqX0jg.png"
+	width="1251"
+	height="640"
+	srcset="/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1GFWLa0rX87G1PIvrBqX0jg_hub0eccbd257ba91d0aa89c5be8d8b36ad_70703_480x0_resize_box_3.png 480w, /p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1GFWLa0rX87G1PIvrBqX0jg_hub0eccbd257ba91d0aa89c5be8d8b36ad_70703_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="195"
+		data-flex-basis="469px"
+	
+>
+<img src="/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1Y70lmU10yu9gbNH8JZeJaQ.png"
+	width="1248"
+	height="787"
+	srcset="/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1Y70lmU10yu9gbNH8JZeJaQ_huf3eb10202199579ef277959d7cb9875b_85825_480x0_resize_box_3.png 480w, /p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1Y70lmU10yu9gbNH8JZeJaQ_huf3eb10202199579ef277959d7cb9875b_85825_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="158"
+		data-flex-basis="380px"
+	
+></p>
+<p>The accounts which are members of the call group must all be configured like this.</p>
+<p><img src="/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1XH5BluccXOhJiCrPyMkDQ.png"
+	width="1243"
+	height="650"
+	srcset="/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1XH5BluccXOhJiCrPyMkDQ_hub286ce9cf621796e8b3d36ba6cc30767_74228_480x0_resize_box_3.png 480w, /p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1XH5BluccXOhJiCrPyMkDQ_hub286ce9cf621796e8b3d36ba6cc30767_74228_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="191"
+		data-flex-basis="458px"
+	
+></p>
+<p>While the first user can be configured to either also ring or immediately forward to the call group, the call group members must be configured to <strong>immediately forward</strong>. If they’re set to also ring to an external number, it will not work.</p>
+<h4 id="call-flowdiagram">Call Flow Diagram</h4>
+<p>I updated the M365 Call Flow Visualizer and added two new parameters.</p>
+<pre><code>-ShowNestedUserCallGroups  
+    Specifies if call groups of users should be expanded and included into the diagram.  
+    Required:           false  
+    Type:               boolean  
+    Default value:      false  
+
+-ShowNestedUserDelegates  
+    Specifies if delegates s of users should be expanded and included into the diagram.  
+    Required:           false  
+    Type:               boolean  
+    Default value:      false
+</code></pre>
+<p>This allows us to indefinitely expand and display the user calling settings of call group members and delegates in the diagrams as well.</p>
+<p>Please note that these features are currently only available in the <a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer/tree/dev"  target="_blank" rel="noopener"
+    >DEV</a> branch of the GitHub repo. I did my best to thoroughly test this but since there are basically unlimited possibilities of how users are interlinked within user call groups and delegates this is quite hard. There may still be some bugs, if you encounter any, please let me know.</p>
+<p><img src="/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1dgXzEKcsD0wZF74b5qg.png"
+	width="674"
+	height="1694"
+	srcset="/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1dgXzEKcsD0wZF74b5qg_hu8968c148c4e326bdf2cd2894dfc6106b_90447_480x0_resize_box_3.png 480w, /p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1dgXzEKcsD0wZF74b5qg_hu8968c148c4e326bdf2cd2894dfc6106b_90447_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="39"
+		data-flex-basis="95px"
+	
+>
+<img src="/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1R6tSs1eHHGO255tRCxAkg.png"
+	width="637"
+	height="1694"
+	srcset="/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1R6tSs1eHHGO255tRCxAkg_huf0a4e1baf4a8951c61543da928555726_94829_480x0_resize_box_3.png 480w, /p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1R6tSs1eHHGO255tRCxAkg_huf0a4e1baf4a8951c61543da928555726_94829_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="37"
+		data-flex-basis="90px"
+	
+></p>
+<h4 id="other-options">Other Options</h4>
+<p>This also works if you use call delegation instead of a call group with both immediately forward and also ring on the first user. I tested it with Microsoft Calling Plans, but it should work with Direct Routing or Operator Connect as well. The maximum amount of simultaneous external forwards via call group I tested was three and that still worked as expected.</p>
+<p>I recommend using a call group over delegates because this gives you a little more flexibility. While delegates will always simultaneously ring all delegates, a call group can be configured for serial ring as well. In this case, it will always ring for <strong>20 seconds</strong> per call group member before the next one is tried. This time out cannot be changed as of today.</p>
+<h4 id="caveats">Caveats</h4>
+<p>When you do this, you need to be aware of issues that might occur. At the beginning of this article, I briefly mentioned that the purpose of a queue is to stay in control of the call for the entire time. That’s not the case when using external forwarding on user calling settings. For example, if one of the external targets is not reachable by e.g. having a rather short voicemail timeout, is in flight mode or just has no reception, calls might get lost on personal voicemail boxes outside of a company’s control. Once a call hits any voicemail box, the call is technically connected and will stop ringing the other targets, even if parallel ringing is configured on the call group. This also applies to call groups configured in serial ring. If e.g. the first target is not reachable, and the call goes to voicemail the other targets won’t even be tried anymore.</p>
+<p>It’s also noteworthy that user configured calling settings can become extremely complex and it’s easy for users (or admins for that matter) to build loops or enable forwards without knowing about it.</p>
+<p>The same goes for the M365 Call Flow Visualizer, I don’t think that it’s possible to accurately display everything that’s configured in nested user calling settings. I tried my best to render call flows where a serial ring is configured on a user configured call group though. As an example, I configured the same call group which was already shown in the above diagram for serial ring. Now all the call group targets are displayed in chronological order, and you can see how the call trickles down to the next target after 20 seconds.</p>
+<p><img src="/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/14omtG0AeKdTOD4TzNItlA.png"
+	width="690"
+	height="2971"
+	srcset="/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/14omtG0AeKdTOD4TzNItlA_hu12f6c71221e7d8c038019ced665f10d5_171663_480x0_resize_box_3.png 480w, /p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/14omtG0AeKdTOD4TzNItlA_hu12f6c71221e7d8c038019ced665f10d5_171663_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="23"
+		data-flex-basis="55px"
+	
+></p>
+<p>Unlike with call queues and auto attendants, where the M365 Call Flow Visualizer does a fantastic job displaying things as they are, please take complicated nested user call groups and delegate flows with a grain of salt. At least for now.</p>
+<p>Look at this call flow for example. When the call gets to <strong>Bill Stearn</strong> it will also ring his call group in serial order. Thus, it will ring the mobile number <strong>+4178857****</strong> for 20 seconds. Because there is an unanswered timeout of 20s configured for <strong>Bill</strong> the call will then be forwarded to his delegates where the call will be forwarded to <strong>Bobby</strong> and <strong>Mike</strong> and they have an immediate forwarding configured to their mobiles.</p>
+<p><img src="/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1cZyXiLxV40aMOM5YsXkbUw.png"
+	width="882"
+	height="3730"
+	srcset="/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1cZyXiLxV40aMOM5YsXkbUw_hu59a321b23c096be65035986b86105a5a_236702_480x0_resize_box_3.png 480w, /p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1cZyXiLxV40aMOM5YsXkbUw_hu59a321b23c096be65035986b86105a5a_236702_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="23"
+		data-flex-basis="56px"
+	
+></p>
+<p>All the users who are members of the call group are linked after each other because the call group is configured in serial ring. The links which point from the delegate sub graph (which is always parallel ring) to the delegate users are still linked to the correct user but it’s not very easy to understand what’s going on.</p>
+<p>When we think about the delegate flow, the chaining from <strong>Bobby’s</strong> time out of 20s doesn’t actually apply anymore and the call won’t be forwarded to <strong>Mike</strong> because that part of the diagram only applies to the serial order of <strong>Bill’s</strong> call group.</p>
+<p>Last but not least, <strong>Wendy</strong> is also included in the call flow even though a call could never go this far in that specific call flow because of the applied time outs.</p>
+<p>Unfortunately, I currently don’t see any way I could solve this with the visualizer script.</p>
+<p>I’d like to point out that configuring both a call group and delegates on the same user seems extremely unlikely and is something I would generally refrain from.</p>
+<h4 id="conclusion">Conclusion</h4>
+<p>Although it’s not an ideal solution, using generic user accounts and call groups for certain scenarios is for sure a creative one. In some cases, this might help you solve a very specific niche scenario which previously seemed impossible.</p>
+<p>I do recommend using auto attendants and call queues to build your call flows whenever possible. If you must use call groups, I advise you to keep it simple and create generic accounts to which only Teams admins have access to. Otherwise, it’s free-for-all kind of situation and users can mess with your configuration as they please.</p>
+<p>If you stick with simple scenarios (like shown in the first three diagrams in this article) and avoid building call group loops or timeouts which cancel each other out, I don’t see any issues why you shouldn’t do this if you really need to.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Automatically Render Diagrams of Teams User Calling Settings</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Pick Up Held and Join Active Calls for Boss/Delegate Scenarios in Microsoft Teams</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Minimize Downtime when Porting Numbers to Microsoft Teams Calling Plans</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Advanced Teams Auto Attendant Troubleshooting</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">PowerShell Script: Set Emergency Location for Unassigned Numbers in Teams</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "heusser-pro" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2024 HEUSSER.PRO
+    </section>
+    
+    <section class="powerby">
+        
+            Hosted on Microsoft Azure <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
+

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Teams App on HEUSSER.PRO</title>
+        <link>https://heusser.pro/categories/teams-app/</link>
+        <description>Recent content in Teams App on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sun, 10 Sep 2023 11:08:37 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/teams-app/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>How to Pin a Phone Number to the Teams Side Rail</title>
+        <link>https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/</link>
+        <pubDate>Sun, 10 Sep 2023 11:08:37 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/</guid>
+        <description>&lt;p&gt;Many companies have internal emergency response teams which often also have their own internal/local emergency number. Businesses usually want these numbers to be very prominently placed on a user&amp;rsquo;s computer, like in the taskbar, the start menu or on the desktop. What about Microsoft Teams though? Can we place a link to start a call to a phone number on the Teams side rail? (The left rail where all the apps like Activity, Chat, Teams, Calendar, Calls etc. are pinned.)&lt;/p&gt;
+&lt;p&gt;From &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd&#34; &gt;this&lt;/a&gt; blog post, we already know how to construct a deep link which starts a call to a phone number.&lt;/p&gt;
+&lt;p&gt;When I was researching something entirely different, I stumbled over &lt;a class=&#34;link&#34; href=&#34;https://tech-peanuts.com/2021/01/07/how-to-run-any-website-as-a-teams-app/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this&lt;/a&gt; interesting blog post from Tech Peanuts. When I read this article, I noticed that all that the author is doing is executing a Teams deep link to a tab in a Teams channel. I immediately asked myself if this would work with a Teams calling deep link too?&lt;/p&gt;
+&lt;p&gt;The answer is yes. To do this, we need two things:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;A Teams App&lt;/li&gt;
+&lt;li&gt;Any kind of web server to host one or multiple html files&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;create-and-host-the-htmlfiles&#34;&gt;Create and host the html file(s)&lt;/h4&gt;
+&lt;p&gt;Let’s start with the web server. This can be any kind of platform or service that can host and serve a html file publicly. Tech Peanuts uses an Azure storage account in their tutorial. It makes total sense since it’s amazingly easy to create and configure a storage account from within VS Code. You can refer to their article to learn how to upload files to Azure Storage directly from VS Code.&lt;/p&gt;
+&lt;p&gt;Here’s the html code we need to create a calling deep link. Just replace the phone number after &lt;code&gt;4:%2b&lt;/code&gt; with your phone number. &lt;code&gt;%2b&lt;/code&gt; is a &lt;code&gt;+&lt;/code&gt; sign in URL encoded format.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/e1b387e07589c7f0fc486a14b2570604.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;Please note that storing the number with a leading plus sign did not work in the new Teams client yet. I had to replace the &lt;code&gt;+&lt;/code&gt; with &lt;code&gt;00&lt;/code&gt; to get it working. Even though it doesn’t look as nice as the plus does, at least 00 is working in both the old and the new Teams client.&lt;/p&gt;
+&lt;p&gt;If you want this to work in the new Teams client as well, use the following link format:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;https://teams.microsoft.com/l/call/0/0?users=4:0041123456789&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Then upload the file to your web server of choice. If you have multiple locations with different emergency numbers, you can create multiple html files with different names and numbers. You can still upload them to the same location as the first file. There’s no need to create a separate storage account or web app for each html file/number.&lt;/p&gt;
+&lt;h4 id=&#34;create-the-teamsapp&#34;&gt;Create the Teams App&lt;/h4&gt;
+&lt;p&gt;Next, go to &lt;a class=&#34;link&#34; href=&#34;https://dev.teams.microsoft.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://dev.teams.microsoft.com&lt;/a&gt; and sign in with a Teams admin account.&lt;/p&gt;
+&lt;p&gt;Go to &lt;strong&gt;Apps&lt;/strong&gt; and click &lt;strong&gt;+ New app&lt;/strong&gt; and give your app a name.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1T1jm9F4WsGlBZC8i4blxvA.png&#34;
+	width=&#34;882&#34;
+	height=&#34;305&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1T1jm9F4WsGlBZC8i4blxvA_hu584e6f8782752b67c93e41d86f714caf_14137_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1T1jm9F4WsGlBZC8i4blxvA_hu584e6f8782752b67c93e41d86f714caf_14137_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;289&#34;
+		data-flex-basis=&#34;694px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Next, fill out the &lt;strong&gt;Basic information&lt;/strong&gt; portion of the app. You can copy your &lt;strong&gt;App ID&lt;/strong&gt; and paste it under &lt;strong&gt;Application (client) ID.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/16ZZdpshqTSEsTAWd4pB7g.png&#34;
+	width=&#34;1308&#34;
+	height=&#34;1452&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/16ZZdpshqTSEsTAWd4pB7g_huabb39e3d94990d19c5ad2df460e2ec13_150109_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/16ZZdpshqTSEsTAWd4pB7g_huabb39e3d94990d19c5ad2df460e2ec13_150109_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;90&#34;
+		data-flex-basis=&#34;216px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Then go to &lt;strong&gt;App features&lt;/strong&gt; and click on &lt;strong&gt;Personal app&lt;/strong&gt; and then &lt;strong&gt;Create your first personal app tab&lt;/strong&gt;. Fill in the details such as the tab name and the content URL. The content URL is the link to where your html file is hosted. If you have multiple files and don’t use an index.html file, the url must be an absolute path. Set the scope to &lt;strong&gt;personal&lt;/strong&gt; and the context to &lt;strong&gt;personalTab&lt;/strong&gt; and &lt;strong&gt;confirm&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1lfTXEyWS0I7tBpbJ3kMSRQ.png&#34;
+	width=&#34;863&#34;
+	height=&#34;883&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1lfTXEyWS0I7tBpbJ3kMSRQ_hudaa083e32aa7f2b6b70b7c26ef9ef9d6_65364_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1lfTXEyWS0I7tBpbJ3kMSRQ_hudaa083e32aa7f2b6b70b7c26ef9ef9d6_65364_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;97&#34;
+		data-flex-basis=&#34;234px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Save&lt;/strong&gt; your tab app.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1y6twx4IlKDCiKBsF0athug.png&#34;
+	width=&#34;1655&#34;
+	height=&#34;412&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1y6twx4IlKDCiKBsF0athug_huefc4d63d436b20a913ee76688f89178c_52285_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1y6twx4IlKDCiKBsF0athug_huefc4d63d436b20a913ee76688f89178c_52285_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;401&#34;
+		data-flex-basis=&#34;964px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;That’s it. If you want to, you can click &lt;strong&gt;Preview in Teams&lt;/strong&gt; if you want to test it in the Teams web client.&lt;/p&gt;
+&lt;p&gt;If you want to test it in the Teams client, click on &lt;strong&gt;Publish&lt;/strong&gt; and then &lt;strong&gt;Download the app package.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1NHO9Br7TMFi6ElrQP1Q.png&#34;
+	width=&#34;865&#34;
+	height=&#34;581&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1NHO9Br7TMFi6ElrQP1Q_hu26a51dbcd2137248a37e7d1aa7f1d7a9_53548_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1NHO9Br7TMFi6ElrQP1Q_hu26a51dbcd2137248a37e7d1aa7f1d7a9_53548_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;148&#34;
+		data-flex-basis=&#34;357px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;In Teams, go to &lt;strong&gt;Apps&lt;/strong&gt;, &lt;strong&gt;Manage your apps&lt;/strong&gt; and then select &lt;strong&gt;Upload an app&lt;/strong&gt; to upload your app.&lt;/p&gt;
+&lt;p&gt;Note: Your admin must allow sideloading apps for this.&lt;/p&gt;
+&lt;h4 id=&#34;see-it-inaction&#34;&gt;See it in Action&lt;/h4&gt;
+&lt;p&gt;Now you have an app in the siderail which can start a call. The only thing that’s left to do is to publish the app in your tenant.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1FfN90woT9tQGuHUS0DYJZQ.png&#34;
+	width=&#34;2325&#34;
+	height=&#34;1370&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1FfN90woT9tQGuHUS0DYJZQ_hu74fadd3c6594c85fd73fee68132e8133_88419_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1FfN90woT9tQGuHUS0DYJZQ_hu74fadd3c6594c85fd73fee68132e8133_88419_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;169&#34;
+		data-flex-basis=&#34;407px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If you’ve never published an app in Teams before, I suggest starting with &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-US/microsoftteams/manage-apps?WT.mc_id=TeamsAdminCenterCSH&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this&lt;/a&gt; Microsoft Learn article. If you only have one location, it will be fairly easy to add the app just to the global app setup policy.&lt;/p&gt;
+&lt;p&gt;If you have multiple offices in different locations or countries, it will be a little more complex. You will need to create a separate app for each number and then also create and assign different Teams app setup policies to the users based on their location. Each policy will then pin a different app where each app will ultimately link to a different html file (containing a different phone number) on your web server.&lt;/p&gt;
+&lt;h4 id=&#34;summary&#34;&gt;Summary&lt;/h4&gt;
+&lt;p&gt;I think it’s really cool that we can leverage Teams deep links to pin different actions in Teams to the side rail instead of just normal apps. I really hope that Microsoft will fix the bug where the leading plus is not recognized in deep links. It not only looks bad, but it also causes calls to file.&lt;/p&gt;
+&lt;p&gt;While pinning emergency numbers might be the most obvious use case, you could use this for any number. I could also see some companies wanting to pin their IT service desk hotline to the side rail for example.&lt;/p&gt;
+&lt;p&gt;One last thing I want to mention is to keep in mind that the phone number you put in the html file can theoretically be viewed/obtained by anybody with internet access. Of course, you must know the URL to access it but that probably won’t protect it from web scrapers or other data gathering tools. However, since your company’s main number is probably listed on your home page anyway, I don’t see too big of a risk here.&lt;/p&gt;
+&lt;p&gt;If you do think it’s a risk, &lt;a class=&#34;link&#34; href=&#34;https://www.linkedin.com/in/anthony-drozdek-9a3a188/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Anthony Drozdek&lt;/a&gt; might just have the solution for you. He suggests using a fake number, e.g. &lt;code&gt;+4199...&lt;/code&gt; which is then translated into the real number using a Teams &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/microsoftteams/create-and-manage-dial-plans&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;dial plan&lt;/a&gt;. You can read the original comment &lt;a class=&#34;link&#34; href=&#34;https://www.linkedin.com/feed/update/urn:li:activity:7106597293469880320?commentUrn=urn%3Ali%3Acomment%3A%28activity%3A7106597293469880320%2C7106602482113339392%29&amp;amp;dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287106602482113339392%2Curn%3Ali%3Aactivity%3A7106597293469880320%29&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

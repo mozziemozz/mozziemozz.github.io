@@ -1,0 +1,938 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Troubleshooting on HEUSSER.PRO</title>
+        <link>https://heusser.pro/categories/troubleshooting/</link>
+        <description>Recent content in Troubleshooting on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Tue, 07 Nov 2023 13:41:33 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/troubleshooting/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Advanced Teams Auto Attendant Troubleshooting</title>
+        <link>https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/</link>
+        <pubDate>Tue, 07 Nov 2023 13:41:33 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/</guid>
+        <description>&lt;p&gt;It’s that time of the year again. The holidays are right around the corner. Which begs the question: &lt;strong&gt;&lt;em&gt;Did you update the holiday schedules for your Teams Auto Attendants already? And if so, are you sure they’re configured correctly?&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/0y1IZwOr6MkdJ2v48.jpg&#34;
+	width=&#34;1024&#34;
+	height=&#34;1024&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/0y1IZwOr6MkdJ2v48_hu2a4aae59a5b93bfdfc80aa25393f077d_159112_480x0_resize_q75_box.jpg 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/0y1IZwOr6MkdJ2v48_hu2a4aae59a5b93bfdfc80aa25393f077d_159112_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;100&#34;
+		data-flex-basis=&#34;240px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;No? Me neither. But I do remember that I wrote a comprehensive guide about &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743&#34; &gt;&lt;strong&gt;Everything You Ever Wanted to Know About Teams Holidays&lt;/strong&gt;&lt;/a&gt; about a year ago. This is a great resource to read up on some of my personal best practices and some lesser-known things about Teams Holidays and how they work.&lt;/p&gt;
+&lt;p&gt;If you’d rather outsource this to end users for next year, &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471&#34; &gt;this&lt;/a&gt; article might be interesting to you as well.&lt;/p&gt;
+&lt;h4 id=&#34;what-is-todays-blog-post-allabout&#34;&gt;What is today’s blog post all about?&lt;/h4&gt;
+&lt;p&gt;I recently built a very large &lt;strong&gt;&lt;em&gt;follow the sun&lt;/em&gt;&lt;/strong&gt; type of call flow which consists of about ten different Auto Attendants and Call Queues. Each Auto Attendant has different business hours, and many Auto Attendants have a different time zone configured as well. This can get quite complicated to build, verify and troubleshoot. How can something like this be tested and verified that it works as intended?&lt;/p&gt;
+&lt;p&gt;Since this was not live yet, I started out by adding a greeting to each Call Queue which said the name of the Queue whenever a call was routed to a Call Queue. Then I just made a couple of test calls during the day to see if calls were routed to the correct Queue.&lt;/p&gt;
+&lt;p&gt;But then I thought of something much better. I’ve already got the &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;M365 Call Flow Visualizer&lt;/a&gt; script in place which is capable of reading all nested voice apps recursively from any starting point. I only had to code some additional stuff to check whether an Auto Attendant is currently in business hours, after hours or in a holiday schedule. The best part about this is that it works for any date. Past, present and future. And of course, any date and time is converted to the time zone which is configured on each Auto Attendant in your call flow. Just as if you would call the Auto Attendant.&lt;/p&gt;
+&lt;h4 id=&#34;demo-callflow&#34;&gt;Demo Call Flow&lt;/h4&gt;
+&lt;p&gt;This is the demo call flow I’ll be using to demonstrate and explain the new feature. Nothing crazy, just an Auto Attendant with two holiday call handlings and schedules and some business hours.&lt;/p&gt;
+&lt;p&gt;Note that the Auto Attendant is configured in &lt;strong&gt;Pacific Standard Time&lt;/strong&gt; while I live in &lt;strong&gt;W. Europe Standard Time&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1fiPIdMocTgqdYRHlZE1kw.png&#34;
+	width=&#34;7840&#34;
+	height=&#34;20020&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1fiPIdMocTgqdYRHlZE1kw_hu364d04df2fb9b740a985c2f64f7034c5_2813947_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1fiPIdMocTgqdYRHlZE1kw_hu364d04df2fb9b740a985c2f64f7034c5_2813947_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;39&#34;
+		data-flex-basis=&#34;93px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;how-to-check-business-hours-andholidays&#34;&gt;How to Check Business Hours and Holidays&lt;/h3&gt;
+&lt;p&gt;To check if any Auto Attendant is currently in business hours or after hours or in a holiday schedule, simply run the M365 CFV script with the switch parameter &lt;code&gt;-CheckCallFlowRouting&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;Note that the&lt;code&gt;-CheckCallFlowRouting&lt;/code&gt; parameter is not mutually exclusive from the Visualizer. You can generate a diagram and check business hours/holiday in the same script run.&lt;/p&gt;
+&lt;p&gt;. .\M365CallFlowVisualizerV2.ps1 -CheckCallFlowRouting -Identity edde8e13-1a73-434b-a724-xxxxxxxxxxxx&lt;/p&gt;
+&lt;p&gt;This will use your local system time and convert it to whatever time zone is set on the Auto Attendant. The script will output the local and the Auto Attendant time and time zones.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/18EknlCjKIUMexJCdJGpDHQ.png&#34;
+	width=&#34;1645&#34;
+	height=&#34;209&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/18EknlCjKIUMexJCdJGpDHQ_hu4ae0cca88246422bfbffa14e6ba85119_229232_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/18EknlCjKIUMexJCdJGpDHQ_hu4ae0cca88246422bfbffa14e6ba85119_229232_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;787&#34;
+		data-flex-basis=&#34;1888px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;As you can see, it’s already &lt;strong&gt;Tuesday&lt;/strong&gt; in Switzerland but it’s still &lt;strong&gt;Monday&lt;/strong&gt; in Pacific Standard Time. Since the business hours for Monday are only configured to &lt;strong&gt;17:45 PST&lt;/strong&gt; the Auto Attendant is closed.&lt;/p&gt;
+&lt;p&gt;Further down in the output, we’ll see the information about holidays as well. In this case, the Auto Attendant has actually multiple holidays which match my local date and time. While an Auto Attendant can’t have two holidays with the same start date, it’s possible to have holidays which enclose others and/or have the same end date. In that case, the holiday which is most precise (smallest time range) will be active. (This is also explained in the &lt;em&gt;Everything You Ever Wanted to Know About Teams Holidays&lt;/em&gt; article linked at the beginning of this post.)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1TH5IO8IG0dZ33HdI6t4vRA.png&#34;
+	width=&#34;2264&#34;
+	height=&#34;645&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1TH5IO8IG0dZ33HdI6t4vRA_hu6c41503451db235cbfcdf453e96666b1_766765_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1TH5IO8IG0dZ33HdI6t4vRA_hu6c41503451db235cbfcdf453e96666b1_766765_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;351&#34;
+		data-flex-basis=&#34;842px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;In PST, it’s still Monday, November 6th and there are three holidays starting on this date. One starts at &lt;code&gt;00:00:00&lt;/code&gt; one at &lt;code&gt;17:15:00&lt;/code&gt; and one at &lt;code&gt;17:30:00&lt;/code&gt; . The time in PST is currently &lt;code&gt;23:50:00&lt;/code&gt; so it’s already past all start times of the aforementioned holidays which means, the one starting at &lt;code&gt;17:30:00&lt;/code&gt; is the currently active one, because its start time is closest to the current time. You can see the name of the active holiday call handling and holiday schedule in the output. But that’s not all. You can also see that it lists the actual time range of the schedule on the line which starts with &lt;code&gt;Holiday Schedule:&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;If nobody can answer a call, during business hours, after hours, this demo Auto Attendant (&lt;strong&gt;USA Toll Free Test&lt;/strong&gt;) just forwards to another Auto Attendant called &lt;strong&gt;Main Number Busy AA&lt;/strong&gt; which will just play a greeting and disconnect. This Auto Attendant does not have any business hours or holidays configured, which is also visible in the console output when the &lt;code&gt;-CheckCallFlowRouting&lt;/code&gt; switch is used.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1ivagCv8KIVIHLMSGyABkXA.png&#34;
+	width=&#34;2276&#34;
+	height=&#34;206&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1ivagCv8KIVIHLMSGyABkXA_huc258f6b614ba1ead50a1ae2127e8530d_391289_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1ivagCv8KIVIHLMSGyABkXA_huc258f6b614ba1ead50a1ae2127e8530d_391289_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;1104&#34;
+		data-flex-basis=&#34;2651px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;It even tells you that it’s a nested Auto Attendant and which was the initially queried Auto Attendant.&lt;/p&gt;
+&lt;h4 id=&#34;advanced-check&#34;&gt;Advanced Check&lt;/h4&gt;
+&lt;p&gt;Obviously, we won’t always have the time or the patience to stay up all night just to verify that business hours or holidays are configured correctly on an Auto Attendant which serves customers on the other end of the world.&lt;/p&gt;
+&lt;p&gt;To check the call flow routing for any specific date we can just pass an additional parameter to the script. &lt;strong&gt;It doesn’t matter if the date lies in the past or in the future.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-CheckCallFlowRouting -CheckCallFlowRoutingSpecificDate &amp;quot;07.11.2024 17:00:01&amp;quot;&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;The only thing you need to consider is that you need to enter it in a format which is expected by your system. This depends on your regional settings in Windows.&lt;/p&gt;
+&lt;p&gt;For me that would be &lt;code&gt;dd.MM.yyyy HH:mm:ss&lt;/code&gt; . You can test this using the following code.&lt;/p&gt;
+&lt;p&gt;Get-Date -Date &amp;ldquo;08.11.2023 17:00:01&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;If you for example, typically use &lt;code&gt;MM/dd/yyyy HH:mm:ss&lt;/code&gt; you have to specify it like this.&lt;/p&gt;
+&lt;p&gt;Get-Date -Date &amp;ldquo;11/08/2023 17:00:01&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;As long as this doesn’t throw an error and the returned date is correct, you should be fine.&lt;/p&gt;
+&lt;p&gt;When I queried the Auto Attendant in the first example it was &lt;code&gt;08:50:00&lt;/code&gt; in my local time. Now, I’m going to query the same Auto Attendant again but this time, I’m specifying a date and time which was &lt;strong&gt;7 hours&lt;/strong&gt; before at &lt;code&gt;07.11.2023 01:50:00&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;. .\M365CallFlowVisualizerV2.ps1 -CheckCallFlowRouting -Identity edde8e13-1a73-434b-a724-xxxxxxxxxxxx -CheckCallFlowRoutingSpecificDateTime &amp;ldquo;07.11.2023 01:50:00&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;At this time, which is &lt;code&gt;16:50:00&lt;/code&gt; in PST, the Auto Attendant was still open. Even though there are multiple schedules configured for Monday (which are also listed in the output) the script is still able to determine which time range from the Monday schedule is the currently active one.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1LvC58oq2DdhSty9qGzEeg.png&#34;
+	width=&#34;1663&#34;
+	height=&#34;236&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1LvC58oq2DdhSty9qGzEeg_hu4baff0ea48164f93fcab51b5ba26b26e_232519_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1LvC58oq2DdhSty9qGzEeg_hu4baff0ea48164f93fcab51b5ba26b26e_232519_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;704&#34;
+		data-flex-basis=&#34;1691px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;And because it’s not &lt;code&gt;17:15:00&lt;/code&gt; or &lt;code&gt;17:30:00&lt;/code&gt; in PST yet, there are only two matching holiday schedules returned now.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/10kkp2EAk917jOWxqftxcfA.png&#34;
+	width=&#34;2270&#34;
+	height=&#34;583&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/10kkp2EAk917jOWxqftxcfA_huf8dfb89860557ffa24d033034ff3de6f_743531_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/10kkp2EAk917jOWxqftxcfA_huf8dfb89860557ffa24d033034ff3de6f_743531_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;389&#34;
+		data-flex-basis=&#34;934px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Let’s check what happens if we query it again after the holiday on &lt;strong&gt;18.11.2023&lt;/strong&gt; has ended. Pacific Standard Time is currently -9 hours from W. Europe Standard Time. So, I need to check for &lt;code&gt;18.11.2023&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;If I check for &lt;code&gt;18.11.2023 00:00:00&lt;/code&gt; it’s still in the holiday schedule.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/17hQxglSj5V9eOGQ4rtzw.png&#34;
+	width=&#34;1634&#34;
+	height=&#34;299&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/17hQxglSj5V9eOGQ4rtzw_hu57189fc9f2100ede6aee69b57b6515d1_320179_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/17hQxglSj5V9eOGQ4rtzw_hu57189fc9f2100ede6aee69b57b6515d1_320179_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;546&#34;
+		data-flex-basis=&#34;1311px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;But if I check for &lt;code&gt;18.11.2023 00:00:01&lt;/code&gt; the holiday is over, but since this is a Saturday, the Auto Attendant is closed because of business hours anyway.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1oXnJNbrAq0Fp6yzadsQiA.png&#34;
+	width=&#34;1654&#34;
+	height=&#34;326&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1oXnJNbrAq0Fp6yzadsQiA_hue878b3b67a41717d05b0ae4ce0c3d342_328629_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1oXnJNbrAq0Fp6yzadsQiA_hue878b3b67a41717d05b0ae4ce0c3d342_328629_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;507&#34;
+		data-flex-basis=&#34;1217px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Let’s try Monday &lt;code&gt;20.11.2023 17:15:00.&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1ZyD35XzHgy0QYEquOBL6WQ.png&#34;
+	width=&#34;1668&#34;
+	height=&#34;526&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1ZyD35XzHgy0QYEquOBL6WQ_huc6ee406f8d53aaf0df6dc194a3255222_523641_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1ZyD35XzHgy0QYEquOBL6WQ_huc6ee406f8d53aaf0df6dc194a3255222_523641_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;317&#34;
+		data-flex-basis=&#34;761px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Looks good, the Auto Attendant is open again. However, there is one caveat. There is another holiday scheduled on &lt;strong&gt;20.11.2023&lt;/strong&gt; (which can be seen in the diagram above as well). &lt;strong&gt;Holidays always take precedence over business hours.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The M365 CFV was built in a way, where it first checks the business hours and then the holidays. So, there’s no easy way to properly reflect that in the output, because the script is unaware of possible holidays at the time it outputs the information about business hours. I’m sure it’s possible somehow but I don’t know how much work that would require.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;For now, we must accept that and just pay attention to all the output. If there’s an active holiday, business hours will be disregarded until that holiday is over.&lt;/strong&gt; On the other hand, I think it’s great to get all the information, so one could check how the call would have been routed at that date and time, if it weren’t a holiday.&lt;/p&gt;
+&lt;p&gt;Let’s do one more check to see if everything will be back to normal on &lt;code&gt;21.11.2023&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1nbQvsvu4WRLHKWmVhZsBww.png&#34;
+	width=&#34;2280&#34;
+	height=&#34;845&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1nbQvsvu4WRLHKWmVhZsBww_huca85eba2563d7f759f2837ff32b9b942_1241222_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1nbQvsvu4WRLHKWmVhZsBww_huca85eba2563d7f759f2837ff32b9b942_1241222_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;269&#34;
+		data-flex-basis=&#34;647px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;I set the time to &lt;code&gt;21.11.2023 23:30:00&lt;/code&gt; so that it would be &lt;code&gt;21.11.2023 14:30:00&lt;/code&gt; in PST which is covered by the second date time range on Tuesday’s schedule. Looks good to me.&lt;/p&gt;
+&lt;h3 id=&#34;deep-dive-on-auto-attendant-schedules&#34;&gt;Deep Dive on Auto Attendant Schedules&lt;/h3&gt;
+&lt;p&gt;There’s one more thing I want to mention. You might have noticed the &lt;code&gt;Complement: Enabled&lt;/code&gt; output in the screenshots above. This is a parameter which belongs to &lt;code&gt;New-CsOnlineSchedule&lt;/code&gt; or &lt;code&gt;Set-CsOnlineSchedule&lt;/code&gt; which is used to create/update business hours schedules for Auto Attendants. You can find the official parameter description &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/skype/new-csonlineschedule?view=skype-ps#-complement&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/14vYbtKJq4sQwPuvSXuvYPw.png&#34;
+	width=&#34;1054&#34;
+	height=&#34;297&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/14vYbtKJq4sQwPuvSXuvYPw_hueebb2270aac0e7b0521f79efe55824f6_174773_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/14vYbtKJq4sQwPuvSXuvYPw_hueebb2270aac0e7b0521f79efe55824f6_174773_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;354&#34;
+		data-flex-basis=&#34;851px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;As of writing this article, it says the following:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The Complement parameter indicates how the schedule is used. When Complement is enabled, the schedule is used as the inverse of the provided configuration. For example, if Complement is enabled and the schedule only contains time ranges of Monday to Friday from 9AM to 5PM, then the schedule is active at all times other than the specified time ranges.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;If you think about this from looking at Teams Admin Center and how business hours are configured under &lt;strong&gt;Call flow for after hours&lt;/strong&gt; in TAC it makes sense. There is no way to configure business hours under &lt;strong&gt;Call flow&lt;/strong&gt; (which is the default call flow). So, when you configure &lt;strong&gt;Business and after hours&lt;/strong&gt;, the time ranges you define will be the times during which the default call flow is active. Outside of the configured times, the after hours call flow will be active. This is 100% in line with what the docs say for the &lt;code&gt;-Complement&lt;/code&gt; switch parameter.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1XR0AamDozStlUDLTSQugZQ.png&#34;
+	width=&#34;1670&#34;
+	height=&#34;1515&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1XR0AamDozStlUDLTSQugZQ_hu0ea8f8ad7a99ec93b962fe4f9e9cc5ee_173918_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1XR0AamDozStlUDLTSQugZQ_hu0ea8f8ad7a99ec93b962fe4f9e9cc5ee_173918_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;110&#34;
+		data-flex-basis=&#34;264px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;It’s not possible to set &lt;code&gt;ComplementEnabled&lt;/code&gt; to &lt;code&gt;$false&lt;/code&gt; using Teams Admin Center. It’s only possible through PowerShell. This will set &lt;code&gt;ComplementEnabled&lt;/code&gt; to &lt;code&gt;$false&lt;/code&gt; on an Auto Attendant’s after hours schedule.&lt;/p&gt;
+&lt;p&gt;# Define Auto Attendant&lt;br&gt;
+$aaId = &amp;ldquo;b74da106-ea89-4786-b8aa-xxxxxxxxxxxx&amp;rdquo;&lt;br&gt;
+$aa = Get-CsAutoAttendant -Identity $aaId&lt;/p&gt;
+&lt;p&gt;# Get schedule&lt;br&gt;
+$schedule = Get-CsOnlineSchedule -Id $aa.Schedules.Id&lt;/p&gt;
+&lt;p&gt;# Disable ComplementEnabled&lt;br&gt;
+$schedule.WeeklyRecurrentSchedule.ComplementEnabled = $false&lt;/p&gt;
+&lt;p&gt;# Check value in schedule variable&lt;br&gt;
+$schedule.WeeklyRecurrentSchedule&lt;/p&gt;
+&lt;p&gt;# Set new (disabled) value for the schedule&lt;br&gt;
+Set-CsOnlineSchedule -Instance $schedule&lt;/p&gt;
+&lt;p&gt;# Check result&lt;br&gt;
+$aa = Get-CsAutoAttendant -Identity $aaId&lt;br&gt;
+$aa.Schedules.WeeklyRecurrentSchedule&lt;/p&gt;
+&lt;p&gt;In this case, the after hours call flow will be active during the specified time ranges.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/14lvuctyk7szFS7knkmIO8g.png&#34;
+	width=&#34;1177&#34;
+	height=&#34;300&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/14lvuctyk7szFS7knkmIO8g_hu75aa77b6643ef1b056d1429e6566c458_293462_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/14lvuctyk7szFS7knkmIO8g_hu75aa77b6643ef1b056d1429e6566c458_293462_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;392&#34;
+		data-flex-basis=&#34;941px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This is where it gets complicated. &lt;strong&gt;Any time you change business hours in Teams Admin Center, complement will be ENABLED again without any warning.&lt;/strong&gt; I haven’t figured out changing which properties exactly trigger TAC to reset the Complement setting but it’s definitely not just editing business hours. A change to the default and after hours call flow greeting resulted in TAC overwritting &lt;code&gt;ComplementEnabled&lt;/code&gt;to &lt;code&gt;$true&lt;/code&gt; too.&lt;/p&gt;
+&lt;p&gt;Also, Teams Admin Center won’t display open/closed hours correctly when complement is off. When I view the after hours call flow in TAC, it says, it’s closed during that time when in fact it should say open.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1I6KmVUwo2s8ICzHMfN0Jg.png&#34;
+	width=&#34;1189&#34;
+	height=&#34;145&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1I6KmVUwo2s8ICzHMfN0Jg_huc09ab670f36f34d9124806ca704b114b_18624_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1I6KmVUwo2s8ICzHMfN0Jg_huc09ab670f36f34d9124806ca704b114b_18624_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;820&#34;
+		data-flex-basis=&#34;1968px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;I verified that the schedule is in fact not inverted by calling the Auto Attendant at &lt;code&gt;11:26&lt;/code&gt; which is within the defined time range of &lt;code&gt;09:30-12:00&lt;/code&gt; . I was indeed able to hear the greeting which was configured for the after hours call flow. To summarize: setting &lt;code&gt;ComplementEnabled&lt;/code&gt; to &lt;code&gt;$false&lt;/code&gt; through PowerShell is working, but TAC won’t display it correctly.&lt;/p&gt;
+&lt;p&gt;I’ve enabled complement again to verify if there’s any change in how TAC displays things. There isn’t. TAC simply doesn’t care if &lt;code&gt;ComlementEnabled&lt;/code&gt; is enabled or disabled.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1qzcjJD557Se3KN4Kn7yG0w.png&#34;
+	width=&#34;1205&#34;
+	height=&#34;159&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1qzcjJD557Se3KN4Kn7yG0w_hu6657c481ab5a30539bad6659c4e509bb_18850_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1qzcjJD557Se3KN4Kn7yG0w_hu6657c481ab5a30539bad6659c4e509bb_18850_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;757&#34;
+		data-flex-basis=&#34;1818px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;After I enabled &lt;code&gt;ComplementEnabled&lt;/code&gt; I called the Auto Attendant again, still between &lt;code&gt;09:30-12:00&lt;/code&gt; and was able to hear the greeting which is configured for the default call flow.&lt;/p&gt;
+&lt;p&gt;Sadly, I didn’t consider this in the CFV so here, the output &lt;strong&gt;&lt;em&gt;was&lt;/em&gt;&lt;/strong&gt; wrong, when Complement is disabled.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1zYKhgZhp4yPg9XhI8oHEyQ.png&#34;
+	width=&#34;7040&#34;
+	height=&#34;11030&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1zYKhgZhp4yPg9XhI8oHEyQ_hu2900296a33fcd6694a04f885df5a58ca_1419117_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1zYKhgZhp4yPg9XhI8oHEyQ_hu2900296a33fcd6694a04f885df5a58ca_1419117_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;63&#34;
+		data-flex-basis=&#34;153px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When Complement is disabled, the &lt;code&gt;Yes&lt;/code&gt; and &lt;code&gt;No&lt;/code&gt; nodes should be switched.&lt;/p&gt;
+&lt;p&gt;The output of the &lt;strong&gt;CheckCallFlowRouting&lt;/strong&gt; is correct though. Even though the checked time of &lt;code&gt;11:41&lt;/code&gt; is within the schedule &lt;code&gt;09:30:00-12:00:00&lt;/code&gt; it says it’s closed because Complement is disabled. In this case, the colors (red/green) are also inverted, and it says &lt;strong&gt;Active After Hours Time Range&lt;/strong&gt; instead of &lt;strong&gt;Active Business Hours Time Range.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1K99P060upRCKbWvXKWteLQ.png&#34;
+	width=&#34;2159&#34;
+	height=&#34;378&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1K99P060upRCKbWvXKWteLQ_hud40808cac77be16509e53f6638e1edd0_564995_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1K99P060upRCKbWvXKWteLQ_hud40808cac77be16509e53f6638e1edd0_564995_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;571&#34;
+		data-flex-basis=&#34;1370px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When I check it for &lt;code&gt;13:49&lt;/code&gt; which is not part of the specified schedule, the Auto Attendant is open, and the default call flow is active.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1h4UB7jz6S2MK5IPbazlF4A.png&#34;
+	width=&#34;2161&#34;
+	height=&#34;354&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1h4UB7jz6S2MK5IPbazlF4A_hu1d839c1ac3f6bc47f1002e7089f43b47_534798_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1h4UB7jz6S2MK5IPbazlF4A_hu1d839c1ac3f6bc47f1002e7089f43b47_534798_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;610&#34;
+		data-flex-basis=&#34;1465px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Luckily, it was easy enough to fix the CFV and add support for Complement disabled schedules in Version 3.1.1. Even when you don’t use the &lt;strong&gt;CheckCallFlowRouting&lt;/strong&gt; paraemeter, you’ll still see a warning when &lt;code&gt;ComplementEnabled&lt;/code&gt; is &lt;code&gt;$false&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1ZCUHgh103T16ksqNPm5OTw.png&#34;
+	width=&#34;2243&#34;
+	height=&#34;470&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1ZCUHgh103T16ksqNPm5OTw_hu3c457a67b0e9cf665f39e4170e4df02c_1164507_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1ZCUHgh103T16ksqNPm5OTw_hu3c457a67b0e9cf665f39e4170e4df02c_1164507_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;477&#34;
+		data-flex-basis=&#34;1145px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Here we can see an Auto Attendant, which has two nested AAs. One has Complement disabled and the other one enabled and everything is displayed correctly now. You can see that on the left side, for &lt;strong&gt;Complement Disabled AA&lt;/strong&gt; the &lt;strong&gt;Yes&lt;/strong&gt; option for the business hours goes to the after hours call flow greeting. On the right side for &lt;strong&gt;Complement Enabled AA&lt;/strong&gt; it’s the opposite. (This is the standard.)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1qwwbJaahEpCKTyEBKlRCQ.png&#34;
+	width=&#34;7840&#34;
+	height=&#34;8470&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1qwwbJaahEpCKTyEBKlRCQ_hu59e0b5e9d2b27e4ed4c1f4586bb39978_1403031_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1qwwbJaahEpCKTyEBKlRCQ_hu59e0b5e9d2b27e4ed4c1f4586bb39978_1403031_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;92&#34;
+		data-flex-basis=&#34;222px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;And here you can see, that the after hours call flow greeting in TAC for &lt;strong&gt;Complement Disabled AA&lt;/strong&gt; says: &lt;em&gt;This is the after hours greeting&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1dQgyhp4ak1B3jq6lFs4FDA.png&#34;
+	width=&#34;1351&#34;
+	height=&#34;498&#34;
+	srcset=&#34;https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1dQgyhp4ak1B3jq6lFs4FDA_huf63417c1de09802989ada13ad7517599_39684_480x0_resize_box_3.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1dQgyhp4ak1B3jq6lFs4FDA_huf63417c1de09802989ada13ad7517599_39684_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;271&#34;
+		data-flex-basis=&#34;651px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;You can get Version 3.1.1 of the M365 CFV from my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Anyway, this doesn’t change the fact that &lt;strong&gt;I strongly recommend not to use&lt;/strong&gt; &lt;code&gt;**ComplementEnabled: $false**&lt;/code&gt; &lt;strong&gt;in any case&lt;/strong&gt;. There’s no point in using it since TAC won’t display it correctly and even more important, will always set it to &lt;code&gt;$true&lt;/code&gt; again if you update the Auto Attendant through TAC.&lt;/p&gt;
+&lt;p&gt;Using schedules with Complement enabled (inverted) schedules makes total sense because the business hours are configured under &lt;strong&gt;Call flow for after hours&lt;/strong&gt; and the title says &lt;strong&gt;Set business hours&lt;/strong&gt; in TAC, so, it’s only logical that the schedules are inverted and that the after hours call flow is active outside of the configured business hours and business hours (default call flow) are active during the specified time ranges.&lt;/p&gt;
+&lt;p&gt;I hope that this new feature, to check any Auto Attendant’s schedules for any given date and time, also helps you to verify and troubleshoot complex call flows more efficiently. By the way, thanks to a Pull Request from a community member, the CFV now also supports export to PDF!&lt;/p&gt;
+&lt;p&gt;If you like my work, feel free to consider sponsoring my work through my &lt;a class=&#34;link&#34; href=&#34;https://github.com/sponsors/mozziemozz&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub Sponsors Profile&lt;/a&gt;.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>How to Validate Phone Number Assignments in Teams (in Bulk)</title>
+        <link>https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/</link>
+        <pubDate>Fri, 25 Aug 2023 12:22:29 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/</guid>
+        <description>&lt;p&gt;I’ve been assigning phone numbers in Teams for pretty much five years now. I remember when it all started for me with Direct Routing in 2018.&lt;/p&gt;
+&lt;p&gt;Numbers were assigned by using something like this:&lt;br&gt;
+&lt;code&gt;Set-CsUser -Identity &amp;quot;user@domain.com&amp;quot; -OnPremLineUri &amp;quot;tel:+12345678900&amp;quot; -EnterpriseVoiceEnabled $true&lt;/code&gt; . Later on, &lt;code&gt;OnPremLineUri&lt;/code&gt; was replaced by the &lt;code&gt;LineUri&lt;/code&gt; attribute before Microsoft finally introduced the new &lt;code&gt;Set-CsPhoneNumberAssignment&lt;/code&gt; cmdlet.&lt;/p&gt;
+&lt;p&gt;I don’t know how many phone numbers I’ve assigned in Teams over the years but one thing I know for sure is that I’ve had my fair share of assignment failures. Granted, it’s gotten way better and more reliable in recent years, but sadly, I still run into number assignment issues occasionally.&lt;/p&gt;
+&lt;p&gt;By assignment issues I mean that after a number has been assigned to users, they either don’t receive inbound calls, can’t make outbound calls or both. The nasty thing about this is that in Teams Admin Center or PowerShell everything looks ok. I can see that the users in question indeed have a phone number assigned.&lt;/p&gt;
+&lt;p&gt;In other words, you can’t always trust that a number is successfully assigned when you can see it in TAC or in PowerShell.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/10GLcAACWKdy8YmRwiDTKA.png&#34;
+	width=&#34;680&#34;
+	height=&#34;227&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/10GLcAACWKdy8YmRwiDTKA_hude0c2885f476e9de0941923028e196b6_35745_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/10GLcAACWKdy8YmRwiDTKA_hude0c2885f476e9de0941923028e196b6_35745_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;299&#34;
+		data-flex-basis=&#34;718px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/16CTFxF1hiseqWnVFjd1eKQ.png&#34;
+	width=&#34;744&#34;
+	height=&#34;153&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/16CTFxF1hiseqWnVFjd1eKQ_hufdb09d7c4ef8ee8cd8d6124c31a92088_59342_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/16CTFxF1hiseqWnVFjd1eKQ_hufdb09d7c4ef8ee8cd8d6124c31a92088_59342_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;486&#34;
+		data-flex-basis=&#34;1167px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;But when you check a user’s calls app in Teams or ask them to send you a screenshot of it, you notice that they don’t have a work phone number listed beneath the dial pad.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1WvODGT0lZqv9ByCh1xnEvg.png&#34;
+	width=&#34;348&#34;
+	height=&#34;525&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1WvODGT0lZqv9ByCh1xnEvg_hufceba0c1082ecd9cffaeddee9a9c222c_16706_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1WvODGT0lZqv9ByCh1xnEvg_hufceba0c1082ecd9cffaeddee9a9c222c_16706_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;66&#34;
+		data-flex-basis=&#34;159px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now obviously there are legit scenarios where users don’t have their own &lt;strong&gt;LineUri&lt;/strong&gt; but in most cases, each user gets assigned a phone number.&lt;/p&gt;
+&lt;p&gt;This is how it’s supposed to look after a number has been assigned.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1caNWs4I4L0XByceG6zw.png&#34;
+	width=&#34;352&#34;
+	height=&#34;556&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1caNWs4I4L0XByceG6zw_hu98f7a2fd72a56a30a93270a77d334c91_19287_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1caNWs4I4L0XByceG6zw_hu98f7a2fd72a56a30a93270a77d334c91_19287_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;63&#34;
+		data-flex-basis=&#34;151px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This is very much undocumented, but I believe that the Teams client and TAC/PowerShell are reading/pulling the number from different systems. It has to be this way since they both display different information.&lt;/p&gt;
+&lt;p&gt;If you’re setting up Teams phone for a bunch of users at once, it’s not like we can just go and ask each user if they can see the number in their Teams client. &lt;strong&gt;That would make IT look bad&lt;/strong&gt;. On the other hand, trying to assign the number a few more times until it hopefully sticks doesn’t seem like an ideal solution either.&lt;/p&gt;
+&lt;h4 id=&#34;reverse-number-lookup-rnl-to-validate-the-assignment&#34;&gt;Reverse Number Lookup (RNL) to validate the assignment&lt;/h4&gt;
+&lt;p&gt;As you might know, I run a &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/discord.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Discord Server&lt;/a&gt; for Teams Phone Admins. When the issue reoccurred for me earlier this year, I decided to ask the Discord community if they have a clever way of remotely checking if a phone number assignment has been successful?&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/0GpvfcYavklU7iIg.jpg&#34;
+	width=&#34;2615&#34;
+	height=&#34;300&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/0GpvfcYavklU7iIg_hu51561f2da7b07c5e8a7a4c0d3d51d683_110328_480x0_resize_q75_box.jpg 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/0GpvfcYavklU7iIg_hu51561f2da7b07c5e8a7a4c0d3d51d683_110328_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;871&#34;
+		data-flex-basis=&#34;2092px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Our member &lt;strong&gt;Ashish Mishra&lt;/strong&gt; suggested to type in the number in my own Teams client to see if anything comes up on the RNL (reverse number lookup). As it turns out, this is a genius idea.&lt;/p&gt;
+&lt;p&gt;Last week, I stumbled over this issue again when a few users who have recently gotten a new Teams phone number reported to me that outbound calls were not working. Luckily, there were only a handful, and I was able to ask them directly if they could see the phone number in Teams. They couldn’t.&lt;/p&gt;
+&lt;p&gt;I then went on to my Teams client and entered some of the numbers to see if they return anything or not.&lt;/p&gt;
+&lt;p&gt;If the number is not successfully (or not at all) assigned, only the number but no name will be returned.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/13G7UzNqHtfp4Tx0z5UN8Lg.png&#34;
+	width=&#34;353&#34;
+	height=&#34;164&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/13G7UzNqHtfp4Tx0z5UN8Lg_hu18362e2a6a668f2348c68f10db7fdc84_8930_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/13G7UzNqHtfp4Tx0z5UN8Lg_hu18362e2a6a668f2348c68f10db7fdc84_8930_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;215&#34;
+		data-flex-basis=&#34;516px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;As soon as the number is successfully assigned, the name of the user will be returned.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1tJCCTL3n5C8U8nD9IthSGw.png&#34;
+	width=&#34;353&#34;
+	height=&#34;166&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1tJCCTL3n5C8U8nD9IthSGw_hud47cf269b60c4f6e1db35fe0ff397c19_10682_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1tJCCTL3n5C8U8nD9IthSGw_hud47cf269b60c4f6e1db35fe0ff397c19_10682_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;212&#34;
+		data-flex-basis=&#34;510px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Because I’ve encountered the issue before, I didn’t even bother to check the M365 service health dashboard. But apparently, there was indeed an issue related to numbers assigned during a time frame which matched my errors.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1xgYbaKQOPjo221dBXR6cJA.png&#34;
+	width=&#34;818&#34;
+	height=&#34;649&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1xgYbaKQOPjo221dBXR6cJA_huac2666c501ef566e78231e83ce5ede2e_80061_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1xgYbaKQOPjo221dBXR6cJA_huac2666c501ef566e78231e83ce5ede2e_80061_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;126&#34;
+		data-flex-basis=&#34;302px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Title: Users can’t make or receive Public Switched Telephone Network (PSTN) calls in Microsoft Teams&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;User impact: Users couldn’t make or receive any PSTN calls from any connection method of Microsoft Teams.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;More info: This only impacted users who had their phone numbers assigned between Monday, August 14, 2023 at 10:30 PM GMT+2 , and Wednesday, August 16, 2023 at 4:00 AM GMT+2.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;In that particular case, I was able to fix the issue by reassigning the numbers. But that didn’t stop me from looking for a more practical, permanent solution.&lt;/p&gt;
+&lt;h4 id=&#34;reverse-engineering&#34;&gt;Reverse engineering&lt;/h4&gt;
+&lt;p&gt;Once again, we go back to Microsoft Edge’s dev tools to see what’s going on when RNL is done. All it does is to send a request to the following endpoint:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;https://teams.microsoft.com/api/mt/emea/beta/phone/numbers/+41438833079/teamsidentity&lt;/code&gt;
+&lt;img src=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1xJ60RmW1XFqmugU9KQKwIg.png&#34;
+	width=&#34;794&#34;
+	height=&#34;644&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1xJ60RmW1XFqmugU9KQKwIg_hu0c6dcf4328d2fc5015be71fcd3b5d3d5_57278_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1xJ60RmW1XFqmugU9KQKwIg_hu0c6dcf4328d2fc5015be71fcd3b5d3d5_57278_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;123&#34;
+		data-flex-basis=&#34;295px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If there is a user found for the phone number, a user object Id will be returned.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1kPrP0SJW3a55aANVK75tVg.png&#34;
+	width=&#34;682&#34;
+	height=&#34;154&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1kPrP0SJW3a55aANVK75tVg_hu9fe18f5405e127390d95ea6ce499898f_10697_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1kPrP0SJW3a55aANVK75tVg_hu9fe18f5405e127390d95ea6ce499898f_10697_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;442&#34;
+		data-flex-basis=&#34;1062px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If no users are found, the API returns an error.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1c2LsbM1AUmW4PgU9MQozhA.png&#34;
+	width=&#34;691&#34;
+	height=&#34;146&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1c2LsbM1AUmW4PgU9MQozhA_hub8f115a142de48d23f2828bdbc271a50_8018_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1c2LsbM1AUmW4PgU9MQozhA_hub8f115a142de48d23f2828bdbc271a50_8018_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;473&#34;
+		data-flex-basis=&#34;1135px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;It’s noteworthy that only numbers assigned in a user’s own tenant can be checked. You can’t use this API to scrape numbers of other tenants.&lt;/p&gt;
+&lt;p&gt;If we want to send these kinds of requests using PowerShell, we obviously need to get a valid bearer token first. For this, we can reuse much of the code I’ve already written for &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d&#34; &gt;this&lt;/a&gt; blog post. We’re using the same function to either create or read our encrypted credentials which we then use to get a token using the AADInternals PowerShell module/functions.&lt;/p&gt;
+&lt;p&gt;Please note that you don’t need the credentials of a Teams admin user. Since any Teams enterprise voice enabled user can dial a number and trigger RNL, non-admin credentials of any Teams phone enabled user work just fine.&lt;/p&gt;
+&lt;p&gt;What’s interesting is that doing RNL through the API also worked using the bearer token of a user which isn’t even enterprise voice enabled.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Please bear in mind that this means that a user’s password and possibly an OTP secret (albeit both encrypted) are saved to your local disk. Treat the files with care and remove them once you don’t need them anymore!&lt;/strong&gt;&lt;/p&gt;
+&lt;h4 id=&#34;the-scriptfunctions&#34;&gt;The Script/Functions&lt;/h4&gt;
+&lt;p&gt;Finally, here’s the PowerShell code to make it all happen.&lt;/p&gt;
+&lt;p&gt;Please make sure that you clone the &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;repository&lt;/a&gt; from my GitHub because of the dependencies. Simply copying the script from the gist won’t work.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;# Run this in PowerShell to clone the repository  &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;git&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;clone&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;https&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;//&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;github&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;com&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;mozziemozz&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;TeamsPhoneAutomation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;I made this in a way that you can use it in your own scripts. I purposely made this a lightweight function without any requests to Teams or Graph.&lt;/p&gt;
+&lt;p&gt;I did, however, create an example script to show you how you can use the function to validate phone number assignments in bulk.&lt;/p&gt;
+&lt;p&gt;If you want to read users/numbers from a CSV or directly from Teams/Graph, you’ll need to write your own code to build the &lt;code&gt;$lineURIs&lt;/code&gt; array.&lt;/p&gt;
+&lt;p&gt;Use &lt;code&gt;-AdminUser&lt;/code&gt; to specify the user you want to get a Teams token for via the AADInternals module. Use either &lt;code&gt;-MFA $true&lt;/code&gt; or &lt;code&gt;-MFA $false&lt;/code&gt; to tell the function if the account specified is MFA enabled or not.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/7d986581c385c9aeb04ce8a403dff19d.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;The example script will create an object in &lt;code&gt;$results&lt;/code&gt; which includes all the checked phone numbers and if they’re assigned successfully. If a number is assigned correctly, the object id of the user will be included as well if you keep &lt;code&gt;$hideObjectId $false&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1Sid8Gir1zmeKHCmgPg5qgA.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1Sid8Gir1zmeKHCmgPg5qgA_huc3da1b988c26e3cbaf35241ef5aef343_1198040_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1Sid8Gir1zmeKHCmgPg5qgA_huc3da1b988c26e3cbaf35241ef5aef343_1198040_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The actual function doing the RNL can be found &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/ValidateTeamsReverseNumberLookup/ValidateTeamsReverseNumberLookup.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I hope that this bit of code helps you the next time you need to check if a Teams phone number is assigned 100% correctly.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>What’s Up with Teams Auto Attendants Suddenly Using a Male Voice for TTS?</title>
+        <link>https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/</link>
+        <pubDate>Sun, 22 Jan 2023 23:52:58 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/</guid>
+        <description>&lt;p&gt;If you’re reading this article; it probably means that you’re wondering why suddenly some of your auto attendants are using male voices in greetings. Just as I was. You might also have noticed, that Microsoft introduced a few new supported languages for Teams auto attendant and call queue text-to-speech (TTS) greetings a couple of months ago.&lt;/p&gt;
+&lt;p&gt;Which is very nice — in theory. But in reality, they messed up, at least to some exent. All newly created or any existing auto attendant where you change the language will now default to a male voice in TTS greetings for many languages. Before that it was female for at least all the languages I had worked with in the past.&lt;/p&gt;
+&lt;h4 id=&#34;why-is-that-aproblem&#34;&gt;Why Is That a Problem?&lt;/h4&gt;
+&lt;p&gt;There’s no option to change the &lt;strong&gt;VoiceId&lt;/strong&gt; (female/male) from Teams Admin Center for either auto attendants or call queues. Call Queues still default to a female VoiceId while auto attendants now default to a male voice for most major languages. This means that if your call flow uses both, attendants and queues (like most call flows do), you will face a rather unpleasant inconsistency. In one part of the call flow, your callers will hear male voices and in other parts they will hear female voices in greetings and announcements. This is not a good user experience.&lt;/p&gt;
+&lt;h4 id=&#34;what-about-powershell&#34;&gt;What About PowerShell?&lt;/h4&gt;
+&lt;p&gt;While it’s possible to change the voice (female/male) on an auto attendant with PowerShell, it’s not possible to do the same for call queues.&lt;/p&gt;
+&lt;p&gt;This means that greetings of call queues will always be synthesized by a female voice. There’s not even a &lt;strong&gt;VoiceId&lt;/strong&gt; property returned by PowerShell, only &lt;strong&gt;LanguageId&lt;/strong&gt;. The only way to verify this is to actually call the queue and listen to the announcements.&lt;/p&gt;
+&lt;p&gt;I did just that. I created a new call queue with &lt;strong&gt;en-US&lt;/strong&gt; set as it’s language and configured a TTS welcome greeting. Once I called the number, I was indeed greeted by a female voice, like it’s always been.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1Ru2MOHg0zn9BLAreKRV5PQ.png&#34;
+	width=&#34;1719&#34;
+	height=&#34;559&#34;
+	srcset=&#34;https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1Ru2MOHg0zn9BLAreKRV5PQ_hubbb8ee9d8a3eb0fed8117c56e0943dc6_71602_480x0_resize_box_3.png 480w, https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1Ru2MOHg0zn9BLAreKRV5PQ_hubbb8ee9d8a3eb0fed8117c56e0943dc6_71602_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;307&#34;
+		data-flex-basis=&#34;738px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Welcome greetings are not the only greetings a caller can hear when interacting with a call queue though. Other scenarios are shared voicemail on timeout or overflow. The funny thing with the welcome TTS greeting is that as of the time of drafting this article, there’s still no option to set or even view this property in PowerShell. Not even in Teams PowerShell 4.9.1.&lt;/p&gt;
+&lt;p&gt;If you’re using TTS welcome greetings on your call queues in production, please read the following section very carefully. &lt;strong&gt;Because there’s no PowerShell support for TTS welcome greetings on call queues yet, any configured TTS welcome greeting will be deleted from your queues, every time you save a queue using PowerShell!&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Don’t believe me? I’m going to show you. Notice how I only changed the overflow threshold. This doesn’t even remotely have anything to do with greetings or language settings.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1XOkmcCdXA0ImkELMcYqjQ.gif&#34;
+	width=&#34;3819&#34;
+	height=&#34;1761&#34;
+	srcset=&#34;https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1XOkmcCdXA0ImkELMcYqjQ_hucee136f1013434a3256a6bde3f0a657a_3622221_480x0_resize_box_1.gif 480w, https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1XOkmcCdXA0ImkELMcYqjQ_hucee136f1013434a3256a6bde3f0a657a_3622221_1024x0_resize_box_1.gif 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;216&#34;
+		data-flex-basis=&#34;520px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;After the queue has been updated by PowerShell, the TTS welcome greeting is gone. For Teams Voice Admins, this means that we either can’t use TTS welcome greetings, if we frequently use PS to update our queues, we can only use TAC to update queues or that we have to think about setting the greeting in TAC again, every time a change was made via PowerShell. None of them are good options and the last of them certainly defeats the purpose of PowerShell entirely. The only real option here is to use an audio file as welcome greeting until Microsoft has fixed this.&lt;/p&gt;
+&lt;h4 id=&#34;what-about-auto-attendants&#34;&gt;What About Auto Attendants?&lt;/h4&gt;
+&lt;p&gt;So far, we’ve established that call queues always use a female voice for TTS greetings. On auto attendants it’s actually possible to change the VoiceId by PowerShell.&lt;/p&gt;
+&lt;p&gt;Here’s a newly created auto attendant with en-US language.&lt;/p&gt;
+&lt;p&gt;$aa =  Get-CsAutoAttendant -Identity 77b1706a-59a8-4832-9f49-f7ff80e0da97&lt;br&gt;
+$aa&lt;/p&gt;
+&lt;p&gt;Identity                 : 77b1706a-59a8-4832-9f49-f7ff80e0da97&lt;br&gt;
+TenantId                 : 4bffbf87-53a0-4fce-b58b-4179cb3a3b7d&lt;br&gt;
+Name                     : Test Voice&lt;br&gt;
+LanguageId               : en-US&lt;br&gt;
+VoiceId                  : Male&lt;br&gt;
+DefaultCallFlow          : Test Voice Default call flow&lt;br&gt;
+Operator                 :&lt;br&gt;
+TimeZoneId               : W. Europe Standard Time&lt;br&gt;
+VoiceResponseEnabled     : False&lt;br&gt;
+CallFlows                : Test Voice After hours call flow&lt;br&gt;
+Schedules                : After hours Test Voice&lt;br&gt;
+CallHandlingAssociations : AfterHours(1)&lt;br&gt;
+Status                   :&lt;br&gt;
+DialByNameResourceId     :&lt;br&gt;
+DirectoryLookupScope     :&lt;br&gt;
+ApplicationInstances     : {}&lt;br&gt;
+AuthorizedUsers          : {}&lt;/p&gt;
+&lt;p&gt;To change the VoiceId we can use the following code.&lt;/p&gt;
+&lt;p&gt;$aa.VoiceId = &amp;ldquo;Female&amp;rdquo;&lt;br&gt;
+Set-CsAutoAttendant -Instance $aa&lt;/p&gt;
+&lt;p&gt;This will return the following output. Notice how the VoiceId changed to Female.&lt;/p&gt;
+&lt;p&gt;Identity                 : 77b1706a-59a8-4832-9f49-f7ff80e0da97&lt;br&gt;
+TenantId                 : 4bffbf87-53a0-4fce-b58b-4179cb3a3b7d&lt;br&gt;
+Name                     : Test Voice&lt;br&gt;
+LanguageId               : en-US&lt;br&gt;
+VoiceId                  : Female&lt;br&gt;
+DefaultCallFlow          : Test Voice Default call flow&lt;br&gt;
+Operator                 :&lt;br&gt;
+TimeZoneId               : W. Europe Standard Time&lt;br&gt;
+VoiceResponseEnabled     : False&lt;br&gt;
+CallFlows                : Test Voice After hours call flow&lt;br&gt;
+Schedules                : After hours Test Voice&lt;br&gt;
+CallHandlingAssociations : AfterHours(1)&lt;br&gt;
+Status                   :&lt;br&gt;
+DialByNameResourceId     :&lt;br&gt;
+DirectoryLookupScope     :&lt;br&gt;
+ApplicationInstances     : {}&lt;br&gt;
+AuthorizedUsers          : {}&lt;/p&gt;
+&lt;p&gt;When I initially discovered this a couple of months ago, I could have sworn that every time I changed something in TAC, that the VoiceId was reset to male. While writing this article I did some further tests, and I was not able to reproduce this 100% or recognize a pattern anymore. Sometimes, it defaulted back to male, sometimes it stayed on female, no matter which setting I changed in TAC. Therefore, I’m going to leave it like that and just tell you to be extra careful, when updating auto attendants through TAC, if you want to keep a female voice. You definitely shouldn’t count on TAC preserving your configured VoiceId.&lt;/p&gt;
+&lt;p&gt;One thing is for sure though, every time you change the language of an auto attendant through TAC, it will default to male for all the affected languages. We’re going to see which they are in a bit.&lt;/p&gt;
+&lt;p&gt;Again, this is very bad news for Teams Voice Admins as this basically restricts us to either using TAC only (if we’re fine with male voices even though call queues use female voices) or using PowerShell only, if we want to make sure that we’re always using a female voice.&lt;/p&gt;
+&lt;h4 id=&#34;why-has-this-happened&#34;&gt;Why Has This Happened?&lt;/h4&gt;
+&lt;p&gt;Auto attendants and call queues use the Azure Cognitive Services TTS API, which is actually available to all Azure customers. You can try the different voices &lt;a class=&#34;link&#34; href=&#34;https://azure.microsoft.com/en-us/products/cognitive-services/text-to-speech/#features&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;. Many of them are also used by Teams. Over time, some of these voices get imporved or some languages even get entirely new voices. I don’t know when it happend exactly, but Microsoft added support for new voices a couple of months ago. For example, there’s an option for my native language, Swiss German available now.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1QTgYIJQa3uUyIBBUwF0elA.png&#34;
+	width=&#34;1125&#34;
+	height=&#34;253&#34;
+	srcset=&#34;https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1QTgYIJQa3uUyIBBUwF0elA_hu07e35648648906500488e3c56c4d4ae1_20523_480x0_resize_box_3.png 480w, https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1QTgYIJQa3uUyIBBUwF0elA_hu07e35648648906500488e3c56c4d4ae1_20523_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;444&#34;
+		data-flex-basis=&#34;1067px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Available voices on Teams auto attendants are not particularly easy to find. There’s &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/skype/new-csautoattendant?view=skype-ps#-voiceid&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this&lt;/a&gt; Learn article which has some info on it though.&lt;/p&gt;
+&lt;p&gt;By using this code, we can get all the available voices for e.g., en-US.&lt;/p&gt;
+&lt;p&gt;PS C:\Temp&amp;gt; (Get-CsAutoAttendantSupportedLanguage -Identity &amp;ldquo;en-US&amp;rdquo;).Voices&lt;/p&gt;
+&lt;p&gt;Name : GuyNeural&lt;br&gt;
+Id   : Male&lt;/p&gt;
+&lt;p&gt;Name : JessaNeural&lt;br&gt;
+Id   : Female&lt;/p&gt;
+&lt;p&gt;Name : AriaNeural&lt;br&gt;
+Id   : Female&lt;/p&gt;
+&lt;p&gt;Name : JennyNeural&lt;br&gt;
+Id   : Female&lt;/p&gt;
+&lt;p&gt;Let’s do the same for Swiss German, which is a newly supported language.&lt;/p&gt;
+&lt;p&gt;PS C:\Temp&amp;gt; (Get-CsAutoAttendantSupportedLanguage -Identity &amp;ldquo;de-CH&amp;rdquo;).Voices&lt;/p&gt;
+&lt;p&gt;Name : JanNeural&lt;br&gt;
+Id   : Male&lt;/p&gt;
+&lt;p&gt;Name : LeniNeural&lt;br&gt;
+Id   : Female&lt;/p&gt;
+&lt;p&gt;The docs say that we can retrieve the default voice used for any language by using this code.&lt;/p&gt;
+&lt;p&gt;PS C:\Temp&amp;gt; (Get-CsAutoAttendantSupportedLanguage -Identity &amp;ldquo;en-US&amp;rdquo;).Voices.Id[0]&lt;br&gt;
+Male&lt;/p&gt;
+&lt;p&gt;I can’t say for sure, but I’m fairly confident that TAC just reads the array of supported languages and uses whichever comes first as the default voice. That’s why en-US or de-CH now have male voices by default now.&lt;/p&gt;
+&lt;p&gt;Here’s a little script I wrote to extract the default VoiceId for all the supported languages and export them to CSV.&lt;/p&gt;
+&lt;p&gt;Connect-MicrosoftTeams&lt;/p&gt;
+&lt;p&gt;$allLanguages = Get-CsAutoAttendantSupportedLanguage&lt;/p&gt;
+&lt;p&gt;$languageVoiceTable = @()&lt;/p&gt;
+&lt;p&gt;foreach ($language in $allLanguages) {&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$currentLanguageVoice = New-Object -TypeName psobject  
+
+$currentLanguageVoice | Add-Member -MemberType NoteProperty -Name &amp;quot;LanguageId&amp;quot; -Value $language.Id  
+$currentLanguageVoice | Add-Member -MemberType NoteProperty -Name &amp;quot;LanguageName&amp;quot; -Value $language.DisplayName  
+$currentLanguageVoice | Add-Member -MemberType NoteProperty -Name &amp;quot;VoiceId&amp;quot; -Value $language.Voices\[0\].Id  
+
+$languageVoiceTable += $currentLanguageVoice  
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;}&lt;/p&gt;
+&lt;p&gt;$languageVoiceTable | Export-Csv -Path C:\Temp\autoAttendantLanguageVoiceTable.csv -Delimiter &amp;ldquo;;&amp;rdquo; -NoTypeInformation -Encoding UTF8 -Force&lt;/p&gt;
+&lt;p&gt;Here’s the full list which should help you identify if you’re using any affected languages.&lt;/p&gt;
+&lt;p&gt;LanguageId LanguageName VoiceId&lt;br&gt;
+ar-EG Arabic (Egypt) Female&lt;br&gt;
+ar-SA Arabic (Saudi Arabia) Female&lt;br&gt;
+bg-BG Bulgarian (Bulgaria) Female&lt;br&gt;
+ca-ES Catalan (Spain) Female&lt;br&gt;
+cs-CZ Czech (Czech) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+cy-GB Welsh (United Kingdom) Female&lt;br&gt;
+da-DK Danish (Denmark) Female&lt;br&gt;
+de-AT German (Austria) Female&lt;br&gt;
+de-CH German (Switzerland) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+de-DE German (Germany) Female&lt;br&gt;
+el-GR Greek (Greek) Female&lt;br&gt;
+en-AU English (Australia) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+en-CA English (Canada) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+en-GB English (United Kingdom) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+en-IE English (Ireland) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+en-IN English (India) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+en-PH English (Philippines) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+en-US English (United States) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+en-ZA English (South Africa) Female&lt;br&gt;
+es-ES Spanish (Spain) Female&lt;br&gt;
+es-MX Spanish (Mexico) Female&lt;br&gt;
+et-EE Estonian (Estonia) Female&lt;br&gt;
+fi-FI Finnish (Finland) Female&lt;br&gt;
+fr-BE French (Belgium) Female&lt;br&gt;
+fr-CA French (Canada) Female&lt;br&gt;
+fr-CH French (Switzerland) Female&lt;br&gt;
+fr-FR French (France) Female&lt;br&gt;
+he-IL Hebrew (Israel) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+hi-IN Hindi (India) Female&lt;br&gt;
+hr-HR Croatian (Croatia) Female&lt;br&gt;
+hu-HU Hungarian (Hungary) Female&lt;br&gt;
+id-ID Indonesian (Indonesia) Female&lt;br&gt;
+it-IT Italian (Italy) Female&lt;br&gt;
+lt-LT Lithuanian (Lithuania) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+lv-LV Latvian (Latvia) Female&lt;br&gt;
+ja-JP Japanese (Japan) Female&lt;br&gt;
+ko-KR Korean (Korea) Female&lt;br&gt;
+nb-NO Norwegian, Bokmål (Norway) Female&lt;br&gt;
+nl-BE Dutch (Belgium) Female&lt;br&gt;
+nl-NL Dutch (Netherlands) Female&lt;br&gt;
+pl-PL Polish (Poland) Female&lt;br&gt;
+pt-BR Portuguese (Brazil) Female&lt;br&gt;
+pt-PT Portuguese (Portugal) Female&lt;br&gt;
+ro-RO Romanian (Romania) Female&lt;br&gt;
+ru-RU Russian (Russia) Female&lt;br&gt;
+sk-SK Slovak (Slovakia) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+sl-SI Slovenian (Slovenia) Female&lt;br&gt;
+sv-SE Swedish (Sweden) Female&lt;br&gt;
+th-TH Thai (Thai) Female&lt;br&gt;
+tr-TR Turkish (Turkey) Female&lt;br&gt;
+vi-VN Vietnamese (Vietnam) Female&lt;br&gt;
+zh-CN Chinese (Simplified, PRC) Female&lt;br&gt;
+zh-HK Chinese (Traditional, Hong Kong S.A.R.) Female&lt;br&gt;
+zh-TW Chinese (Traditional, Taiwan) Female&lt;/p&gt;
+&lt;p&gt;You can use this one-liner to check if any of your existing auto attendants are currently using a male voice.&lt;/p&gt;
+&lt;p&gt;Get-CsAutoAttendant -First 1000 | ft Name, LanguageId, VoiceId&lt;/p&gt;
+&lt;p&gt;I really hope that Microsofts recognizes that this is a major annoyance and that they fix it rather sooner than later. In the meantime, I hope that I was able to provide you with some useful insight and hope that it helps you keeping the problem in check.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Microsoft Teams Enterprise Voice Diagnostic Tool</title>
+        <link>https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/</link>
+        <pubDate>Mon, 18 Apr 2022 15:00:30 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/</guid>
+        <description>&lt;p&gt;This will be a quick one. I promise. In &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0&#34; &gt;another blog post&lt;/a&gt; I claimed, or rather said, that I don’t know of any other way to check if a Teams user is enterprise voice enabled via GUI than to try to add the user to a call queue.&lt;/p&gt;
+&lt;h4 id=&#34;gui-method1&#34;&gt;GUI Method 1&lt;/h4&gt;
+&lt;p&gt;If you try to add a user which is not EV enabled to a call queue, TAC will show the following error message:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/0aWqaqGt1Or7uQVh9.png&#34;
+	width=&#34;568&#34;
+	height=&#34;101&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/0aWqaqGt1Or7uQVh9_hu009de6f420205d75c979630f40762a20_12841_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/0aWqaqGt1Or7uQVh9_hu009de6f420205d75c979630f40762a20_12841_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;562&#34;
+		data-flex-basis=&#34;1349px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;gui-method2&#34;&gt;GUI Method 2&lt;/h4&gt;
+&lt;p&gt;When I wrote this, I totally forgot about the &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/MicrosoftTeams/troubleshoot/teams-conferencing/no-dial-pad#run-a-self-diagnostics-tool&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;diagnostic tool&lt;/a&gt; which is built into the Microsoft 365 Admin Portals “Support” section. If you click the following button on Microsoft Docs, you will be redirected to the self diagnostic test tool within the Admin Portal.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1yfUuMJX9oR9GbZtad81asA.png&#34;
+	width=&#34;1022&#34;
+	height=&#34;147&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1yfUuMJX9oR9GbZtad81asA_hue7d006ba532c05001752e9a4720ca98d_20485_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1yfUuMJX9oR9GbZtad81asA_hue7d006ba532c05001752e9a4720ca98d_20485_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;695&#34;
+		data-flex-basis=&#34;1668px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;You can also use &lt;a class=&#34;link&#34; href=&#34;https://admin.microsoft.com/AdminPortal/?searchSolutions=Diag%3A%20Teams%20Dial%20Pad%20Missing#/homepage&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this&lt;/a&gt; direct link or type “Diag: Teams Dial Pad Missing” in the search field when opening a new request.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1246GSvZbEAHamjHDwr57A.png&#34;
+	width=&#34;689&#34;
+	height=&#34;311&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1246GSvZbEAHamjHDwr57A_hu4c783a19cedc7a76518ee901a98afd37_26408_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1246GSvZbEAHamjHDwr57A_hu4c783a19cedc7a76518ee901a98afd37_26408_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;221&#34;
+		data-flex-basis=&#34;531px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;You will then see a field where you need to enter the username of the user you’d like to check. Click on “Run Tests” to run the diagnostics.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/16lzI1o4VkniWWacOvFCBg.png&#34;
+	width=&#34;666&#34;
+	height=&#34;454&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/16lzI1o4VkniWWacOvFCBg_huc4188912650116e693ddbcb51223883e_37408_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/16lzI1o4VkniWWacOvFCBg_huc4188912650116e693ddbcb51223883e_37408_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;146&#34;
+		data-flex-basis=&#34;352px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This will also check if the user is enterprise voice enabled and tell you if that’s not the case.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1kAoytUHlXPzCvBpcJJtrw.png&#34;
+	width=&#34;631&#34;
+	height=&#34;640&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1kAoytUHlXPzCvBpcJJtrw_hu86748371914011f6b8e9daa944ea066f_110574_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1kAoytUHlXPzCvBpcJJtrw_hu86748371914011f6b8e9daa944ea066f_110574_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;98&#34;
+		data-flex-basis=&#34;236px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;It doesn’t seem to also check the licenses properly because this user already has a Teams Phone Standard License, but EV is not enabled yet.&lt;/p&gt;
+&lt;p&gt;If we run the same test for a user which is EV enabled, the diagnostics come up empty which means that there are no issues / EV is indeed enabled.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1pa39FpQQ9RyJSLfGCI5ubA.png&#34;
+	width=&#34;668&#34;
+	height=&#34;301&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1pa39FpQQ9RyJSLfGCI5ubA_hub0c69cdf66313e0bf487eaf4094c9f45_29803_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1pa39FpQQ9RyJSLfGCI5ubA_hub0c69cdf66313e0bf487eaf4094c9f45_29803_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;221&#34;
+		data-flex-basis=&#34;532px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;other-cases&#34;&gt;Other Cases&lt;/h4&gt;
+&lt;p&gt;The diagnostics tool can also help you discover other issues like check for not assigned phone numbers or voice routing policies.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1W9hcjAkup6op4l2g6H1w.png&#34;
+	width=&#34;629&#34;
+	height=&#34;586&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1W9hcjAkup6op4l2g6H1w_hu0415d94b31ddbf2d5725a724fed082d8_79952_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1W9hcjAkup6op4l2g6H1w_hu0415d94b31ddbf2d5725a724fed082d8_79952_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;107&#34;
+		data-flex-basis=&#34;257px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/11BKjYuP0gbcIZGdSUJSedQ.png&#34;
+	width=&#34;652&#34;
+	height=&#34;381&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/11BKjYuP0gbcIZGdSUJSedQ_hu4890d428a550e58e46f2ab862ffeb3f1_53839_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/11BKjYuP0gbcIZGdSUJSedQ_hu4890d428a550e58e46f2ab862ffeb3f1_53839_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;171&#34;
+		data-flex-basis=&#34;410px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;powershell-method&#34;&gt;PowerShell Method&lt;/h4&gt;
+&lt;p&gt;Of course, there’s always PowerShell. To query the information we need, we can just run the following:&lt;/p&gt;
+&lt;p&gt;Get-CsOnlineUser -Identity &lt;a class=&#34;link&#34; href=&#34;mailto:user@domain.com&#34; &gt;user@domain.com&lt;/a&gt; | Format-Table DisplayName, EnterpriseVoiceEnabled, OnlineVoiceRoutingPolicy, LineURI, FeatureTypes&lt;/p&gt;
+&lt;p&gt;This will tell us all the interesting information like if the user is EV enabled, if it has an online voice routing policy and what kind of feature types are supported.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1rwv9JbnYmzE66PIORAWg.png&#34;
+	width=&#34;1254&#34;
+	height=&#34;126&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1rwv9JbnYmzE66PIORAWg_hu18f8623c3f9bc5990f4cb1cd8f27dec0_81564_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1rwv9JbnYmzE66PIORAWg_hu18f8623c3f9bc5990f4cb1cd8f27dec0_81564_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;995&#34;
+		data-flex-basis=&#34;2388px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Note: Microsoft recently introduced the FeatureTypes attribute in the MicrosoftTeams PowerShell module. (I’m using 4.2.0 as of writing this article). This means that there’s no need to check for a valid license via other PowerShell Modules like MSOnline, AzureAD or Microsoft.Graph anymore.&lt;/p&gt;
+&lt;p&gt;Users which don’t have a Teams Phone Standard license assigned, won’t show “PhoneSystem” in their supported feature types.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1WWcmQkflsk6uRrFMd0gH2Q.png&#34;
+	width=&#34;1199&#34;
+	height=&#34;133&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1WWcmQkflsk6uRrFMd0gH2Q_huaab5621d6a53e25f355ef733d1a50aad_122232_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1WWcmQkflsk6uRrFMd0gH2Q_huaab5621d6a53e25f355ef733d1a50aad_122232_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;901&#34;
+		data-flex-basis=&#34;2163px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;summary&#34;&gt;Summary&lt;/h4&gt;
+&lt;p&gt;I’d still wish that TAC would reflect somewhere if a user is EV enabled or not. But at least there are some workarounds to check if a user is EV enabled if PowerShell isn’t available at a given time for any reason.&lt;/p&gt;
+&lt;p&gt;Even though this tool has been around for quite some time, I don’t think that many Teams Admins know about it. How about you, did you know that something like this existed?&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

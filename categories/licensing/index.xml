@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Licensing on HEUSSER.PRO</title>
+        <link>https://heusser.pro/categories/licensing/</link>
+        <description>Recent content in Licensing on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Fri, 02 Jun 2023 19:57:48 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/licensing/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Translate Microsoft 365 License GUIDs to Product Names in PowerShell</title>
+        <link>https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/</link>
+        <pubDate>Fri, 02 Jun 2023 19:57:48 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/</guid>
+        <description>&lt;p&gt;Working with Microsoft 365 and Azure AD licenses and understanding them can be quite the task for many system administrators. Did you know that the official &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/azure/active-directory/enterprise-users/licensing-service-plan-reference&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Microsoft Learn article&lt;/a&gt; lists more than &lt;strong&gt;3230&lt;/strong&gt; different SKU IDs and names as of June 1st 2023?&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/00pCCCvKg0Z8d8u1L.jpg&#34;
+	width=&#34;1024&#34;
+	height=&#34;1024&#34;
+	srcset=&#34;https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/00pCCCvKg0Z8d8u1L_hue5daad1676a4bfc1112cdf474447d42d_169032_480x0_resize_q75_box.jpg 480w, https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/00pCCCvKg0Z8d8u1L_hue5daad1676a4bfc1112cdf474447d42d_169032_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;100&#34;
+		data-flex-basis=&#34;240px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The problem is that Graph or PowerShell Modules never return a product name that actually means something to an admin. The names you’ll see there are not the same ones we’re used to from the Azure or M365 Admin Portals.&lt;/p&gt;
+&lt;p&gt;Let’s take a look at what the &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/graph/api/subscribedsku-list?view=graph-rest-1.0&amp;amp;tabs=http&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;subscribedSkus&lt;/strong&gt;&lt;/a&gt; Graph Endpoint returns. &lt;br&gt;
+This is how we get a list of all SKUs a tenant is subscribed to.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$licenseSkus&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Invoke-RestMethod&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Method&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Get&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Headers&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$Header&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Uri&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;https://graph.microsoft.com/v1.0/subscribedSkus&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Obviously, most tenants have many different SKUs. For the sake of simplicity, I’ll just show the details of the last entry returned by Graph.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;PS C:\Temp\\GitHub\TeamsPhoneAutomation&amp;gt; $sku = $licenseSkus.value[-1]  
+PS C:\Temp\\GitHub\TeamsPhoneAutomation&amp;gt; $sku  
+  
+  
+accountName      : company  
+accountId        : 4bffbf87-53a0-4fce-b58b-xxxxxxxxxxxx  
+appliesTo        : User  
+capabilityStatus : Enabled  
+consumedUnits    : 7  
+id               : 4bffbf87-53a0-4fce-b58b-xxxxxxxxxxxx_18181a46-0d4e-45cd-891e-60aabd171b4e  
+skuId            : 18181a46-0d4e-45cd-891e-60aabd171b4e  
+skuPartNumber    : STANDARDPACK  
+subscriptionIds  : {3474312c-2333-47bc-9d87-da1cfcb75f85}  
+prepaidUnits     : @{enabled=9; suspended=0; warning=0}  
+servicePlans     : {@{servicePlanId=a82fbf69-b4d7-49f4-83a6-915b2cf354f4; servicePlanName=VIVAENGAGE_CORE; provisioningStatus=PendingProvisioning;   
+                   appliesTo=User}, @{servicePlanId=199a5c09-e0ca-4e37-8f7c-b05d533e1ea2; servicePlanName=MICROSOFTBOOKINGS; provisioningStatus=Success;   
+                   appliesTo=User}, @{servicePlanId=b76fb638-6ba6-402a-b9f9-83d28acb3d86; servicePlanName=VIVA_LEARNING_SEEDED; provisioningStatus=Success;   
+                   appliesTo=User}, @{servicePlanId=db4d623d-b514-490b-b7ef-8885eee514de; servicePlanName=Nucleus; provisioningStatus=Success;   
+                   appliesTo=Company}...}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;strong&gt;skuPartNumber&lt;/strong&gt; is what Microsoft calls &lt;strong&gt;String ID&lt;/strong&gt; on their learn article. As we all know, Microsoft is no stranger to changing or rebranding product names. I have never seen them change an skuPartNumber though. Even though we can count on that name staying the same, it most likely won’t mean much to most people. Now what the heck is a &lt;strong&gt;STANDARDPACK!?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A quick search on the Microsoft Learn article will do the trick and give us the desired information. STANDARDPACK = Office 365 E1. &lt;br&gt;
+But there’s a better way!&lt;/p&gt;
+&lt;p&gt;What’s really nice is that Microsoft also provides a download link to a CSV file which contains all the SKUs, Ids and names. If it can be downloaded by using a browser, it can also be downloaded by PowerShell.&lt;/p&gt;
+&lt;p&gt;All we need to do is &lt;code&gt;Invoke-RestMethod&lt;/code&gt; and use &lt;code&gt;| ConvertFrom-CSV&lt;/code&gt; to convert the retrieved content to a PowerShell object.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$translationTable&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Invoke-RestMethod&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Method&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Get&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Uri&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;https://download.microsoft.com/download/e/3/e/e3e9faf2-f28b-490a-9ada-c6089a1fc5b0/Product%20names%20and%20service%20plan%20identifiers%20for%20licensing.csv&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;ConvertFrom-Csv&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;The SKU information retrieved by graph is already in our &lt;code&gt;$sku&lt;/code&gt; variable. So, all that’s left to do is a simple one-liner to search the &lt;code&gt;$translationTable.GUID&lt;/code&gt; for a matching &lt;code&gt;$sku.skuId&lt;/code&gt; .&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$skuNamePretty&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$translationTable&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Where-Object&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{$\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;GUID&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-eq&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$sku&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;skuId&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Sort-Object&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Product&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_Display&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_Name&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Unique&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Product&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_Display&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_Name&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;This will translate the skuPartNumber to the familiar License name known from the admin portals.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;PS C:\Temp\GitHub\TeamsPhoneAutomation&amp;gt; $skuNamePretty  
+Office 365 E1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I’ve put all the above code snippets together and created a little more sophisticated, yet still very basic script which will output a table with all the available license names. Please note that you’ll need an existing Azure AD App Registration/Service Principal which has at least the &lt;strong&gt;Organization.Read.All&lt;/strong&gt; Graph permission.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/174b665e5aa94cbd3c1421665032cbb0.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;The output will look like this.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1wQy6obQWLE2uVOhZjoPcw.png&#34;
+	width=&#34;1014&#34;
+	height=&#34;622&#34;
+	srcset=&#34;https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1wQy6obQWLE2uVOhZjoPcw_hu28f1369469739556c26ad4a6a459e9e6_167292_480x0_resize_box_3.png 480w, https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1wQy6obQWLE2uVOhZjoPcw_hu28f1369469739556c26ad4a6a459e9e6_167292_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;163&#34;
+		data-flex-basis=&#34;391px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;As far as I understand, the download URL of the CSV should not be changed once a new version is uploaded. I verified this by viewing GitHubs &lt;a class=&#34;link&#34; href=&#34;https://github.com/MicrosoftDocs/azure-docs/commit/f75ae8190c08cffd5c73088b723226ece4176fc7&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;commit history for that article&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1q9Oz2Udf4ttHNvk94SCEPQ.png&#34;
+	width=&#34;1812&#34;
+	height=&#34;799&#34;
+	srcset=&#34;https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1q9Oz2Udf4ttHNvk94SCEPQ_hu3f8cc75de4dc08d546c08d8aedc6b266_110155_480x0_resize_box_3.png 480w, https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1q9Oz2Udf4ttHNvk94SCEPQ_hu3f8cc75de4dc08d546c08d8aedc6b266_110155_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;226&#34;
+		data-flex-basis=&#34;544px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;As you can see, even though the date in the note was updated, the URL stayed the same. That’s why it should be safe to assume that we won’t need to update that URL in any script where we download that list.&lt;/p&gt;
+&lt;p&gt;If you’re wondering what my use case for this was… I was creating an Azure runbook which monitors remaining free licenses and sends alerts to a Teams channel in case any of the licenses fall below a certain threshold. Obviously, I wanted to mention the well-known license name and not the string ID returned by Graph on the messages sent to Teams. Thanks to the CSV file hosted by Microsoft my scripts can now always grab the latest data and use that to transalte any license GUID into something more recognizable.&lt;/p&gt;
+&lt;p&gt;I hope that this helps you too create more robust and better scripts when you need to deal with licensing in MS Graph or PowerShell.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Microsoft Teams Enterprise Voice Diagnostic Tool</title>
+        <link>https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/</link>
+        <pubDate>Mon, 18 Apr 2022 15:00:30 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/</guid>
+        <description>&lt;p&gt;This will be a quick one. I promise. In &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0&#34; &gt;another blog post&lt;/a&gt; I claimed, or rather said, that I don’t know of any other way to check if a Teams user is enterprise voice enabled via GUI than to try to add the user to a call queue.&lt;/p&gt;
+&lt;h4 id=&#34;gui-method1&#34;&gt;GUI Method 1&lt;/h4&gt;
+&lt;p&gt;If you try to add a user which is not EV enabled to a call queue, TAC will show the following error message:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/0aWqaqGt1Or7uQVh9.png&#34;
+	width=&#34;568&#34;
+	height=&#34;101&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/0aWqaqGt1Or7uQVh9_hu009de6f420205d75c979630f40762a20_12841_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/0aWqaqGt1Or7uQVh9_hu009de6f420205d75c979630f40762a20_12841_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;562&#34;
+		data-flex-basis=&#34;1349px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;gui-method2&#34;&gt;GUI Method 2&lt;/h4&gt;
+&lt;p&gt;When I wrote this, I totally forgot about the &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/MicrosoftTeams/troubleshoot/teams-conferencing/no-dial-pad#run-a-self-diagnostics-tool&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;diagnostic tool&lt;/a&gt; which is built into the Microsoft 365 Admin Portals “Support” section. If you click the following button on Microsoft Docs, you will be redirected to the self diagnostic test tool within the Admin Portal.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1yfUuMJX9oR9GbZtad81asA.png&#34;
+	width=&#34;1022&#34;
+	height=&#34;147&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1yfUuMJX9oR9GbZtad81asA_hue7d006ba532c05001752e9a4720ca98d_20485_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1yfUuMJX9oR9GbZtad81asA_hue7d006ba532c05001752e9a4720ca98d_20485_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;695&#34;
+		data-flex-basis=&#34;1668px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;You can also use &lt;a class=&#34;link&#34; href=&#34;https://admin.microsoft.com/AdminPortal/?searchSolutions=Diag%3A%20Teams%20Dial%20Pad%20Missing#/homepage&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this&lt;/a&gt; direct link or type “Diag: Teams Dial Pad Missing” in the search field when opening a new request.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1246GSvZbEAHamjHDwr57A.png&#34;
+	width=&#34;689&#34;
+	height=&#34;311&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1246GSvZbEAHamjHDwr57A_hu4c783a19cedc7a76518ee901a98afd37_26408_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1246GSvZbEAHamjHDwr57A_hu4c783a19cedc7a76518ee901a98afd37_26408_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;221&#34;
+		data-flex-basis=&#34;531px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;You will then see a field where you need to enter the username of the user you’d like to check. Click on “Run Tests” to run the diagnostics.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/16lzI1o4VkniWWacOvFCBg.png&#34;
+	width=&#34;666&#34;
+	height=&#34;454&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/16lzI1o4VkniWWacOvFCBg_huc4188912650116e693ddbcb51223883e_37408_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/16lzI1o4VkniWWacOvFCBg_huc4188912650116e693ddbcb51223883e_37408_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;146&#34;
+		data-flex-basis=&#34;352px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This will also check if the user is enterprise voice enabled and tell you if that’s not the case.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1kAoytUHlXPzCvBpcJJtrw.png&#34;
+	width=&#34;631&#34;
+	height=&#34;640&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1kAoytUHlXPzCvBpcJJtrw_hu86748371914011f6b8e9daa944ea066f_110574_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1kAoytUHlXPzCvBpcJJtrw_hu86748371914011f6b8e9daa944ea066f_110574_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;98&#34;
+		data-flex-basis=&#34;236px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;It doesn’t seem to also check the licenses properly because this user already has a Teams Phone Standard License, but EV is not enabled yet.&lt;/p&gt;
+&lt;p&gt;If we run the same test for a user which is EV enabled, the diagnostics come up empty which means that there are no issues / EV is indeed enabled.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1pa39FpQQ9RyJSLfGCI5ubA.png&#34;
+	width=&#34;668&#34;
+	height=&#34;301&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1pa39FpQQ9RyJSLfGCI5ubA_hub0c69cdf66313e0bf487eaf4094c9f45_29803_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1pa39FpQQ9RyJSLfGCI5ubA_hub0c69cdf66313e0bf487eaf4094c9f45_29803_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;221&#34;
+		data-flex-basis=&#34;532px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;other-cases&#34;&gt;Other Cases&lt;/h4&gt;
+&lt;p&gt;The diagnostics tool can also help you discover other issues like check for not assigned phone numbers or voice routing policies.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1W9hcjAkup6op4l2g6H1w.png&#34;
+	width=&#34;629&#34;
+	height=&#34;586&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1W9hcjAkup6op4l2g6H1w_hu0415d94b31ddbf2d5725a724fed082d8_79952_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1W9hcjAkup6op4l2g6H1w_hu0415d94b31ddbf2d5725a724fed082d8_79952_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;107&#34;
+		data-flex-basis=&#34;257px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/11BKjYuP0gbcIZGdSUJSedQ.png&#34;
+	width=&#34;652&#34;
+	height=&#34;381&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/11BKjYuP0gbcIZGdSUJSedQ_hu4890d428a550e58e46f2ab862ffeb3f1_53839_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/11BKjYuP0gbcIZGdSUJSedQ_hu4890d428a550e58e46f2ab862ffeb3f1_53839_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;171&#34;
+		data-flex-basis=&#34;410px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;powershell-method&#34;&gt;PowerShell Method&lt;/h4&gt;
+&lt;p&gt;Of course, there’s always PowerShell. To query the information we need, we can just run the following:&lt;/p&gt;
+&lt;p&gt;Get-CsOnlineUser -Identity &lt;a class=&#34;link&#34; href=&#34;mailto:user@domain.com&#34; &gt;user@domain.com&lt;/a&gt; | Format-Table DisplayName, EnterpriseVoiceEnabled, OnlineVoiceRoutingPolicy, LineURI, FeatureTypes&lt;/p&gt;
+&lt;p&gt;This will tell us all the interesting information like if the user is EV enabled, if it has an online voice routing policy and what kind of feature types are supported.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1rwv9JbnYmzE66PIORAWg.png&#34;
+	width=&#34;1254&#34;
+	height=&#34;126&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1rwv9JbnYmzE66PIORAWg_hu18f8623c3f9bc5990f4cb1cd8f27dec0_81564_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1rwv9JbnYmzE66PIORAWg_hu18f8623c3f9bc5990f4cb1cd8f27dec0_81564_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;995&#34;
+		data-flex-basis=&#34;2388px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Note: Microsoft recently introduced the FeatureTypes attribute in the MicrosoftTeams PowerShell module. (I’m using 4.2.0 as of writing this article). This means that there’s no need to check for a valid license via other PowerShell Modules like MSOnline, AzureAD or Microsoft.Graph anymore.&lt;/p&gt;
+&lt;p&gt;Users which don’t have a Teams Phone Standard license assigned, won’t show “PhoneSystem” in their supported feature types.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1WWcmQkflsk6uRrFMd0gH2Q.png&#34;
+	width=&#34;1199&#34;
+	height=&#34;133&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1WWcmQkflsk6uRrFMd0gH2Q_huaab5621d6a53e25f355ef733d1a50aad_122232_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1WWcmQkflsk6uRrFMd0gH2Q_huaab5621d6a53e25f355ef733d1a50aad_122232_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;901&#34;
+		data-flex-basis=&#34;2163px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;summary&#34;&gt;Summary&lt;/h4&gt;
+&lt;p&gt;I’d still wish that TAC would reflect somewhere if a user is EV enabled or not. But at least there are some workarounds to check if a user is EV enabled if PowerShell isn’t available at a given time for any reason.&lt;/p&gt;
+&lt;p&gt;Even though this tool has been around for quite some time, I don’t think that many Teams Admins know about it. How about you, did you know that something like this existed?&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Create a Dynamic Azure AD Group with all Teams Phone Standard Licensed Users</title>
+        <link>https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/</link>
+        <pubDate>Mon, 28 Mar 2022 15:01:16 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/</guid>
+        <description>&lt;p&gt;When it comes to Azure AD and licensing, we usually use Azure AD Groups to assign certain licenses to group members. It’s an effective way to assign different licenses to different teams within your organization. For example, you could have a group which assigns a Microsoft 365 E5 license to all the IT-Staff.&lt;/p&gt;
+&lt;p&gt;Is there a need to do the opposite? Add all users who have a specific service plan assigned to an Azure AD group? Although this scenario might not be as common as the first one, there’s certainly a use case for it.&lt;/p&gt;
+&lt;p&gt;Think about a Teams call queue in a small to mid-sized firm which distributes incoming calls to, let’s say 5–10 call agents. If none of these agents are able to answer the call within a certain time, the call is then escalated to a second call queue which contains all the company’s Teams Phone Standard enabled users. A call queue can have up to &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/microsoftteams/create-a-phone-system-call-queue#teams-channel&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;two hundred&lt;/a&gt; call agents, if they’re added via a Teams Channel or a group.&lt;/p&gt;
+&lt;p&gt;Instead of adding all phone enabled users manually we can create an Azure AD group which uses a dynamic query to include all users which have the service plan “MCOEV” assigned.&lt;/p&gt;
+&lt;h4 id=&#34;heres-how-to-doit&#34;&gt;Here’s how to do it&lt;/h4&gt;
+&lt;p&gt;First, head over to &lt;a class=&#34;link&#34; href=&#34;https://portal.azure.com/#blade/Microsoft_AAD_IAM/GroupsManagementMenuBlade/AllGroups&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;portal.azure.com&lt;/a&gt; and go to Azure AD, Groups. Then click New group.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1gDIaXRlNKUOM1U71nGgEvg.png&#34;
+	width=&#34;1422&#34;
+	height=&#34;324&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1gDIaXRlNKUOM1U71nGgEvg_huc9b2e618b9b96aa8b6e494a55e689da4_52396_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1gDIaXRlNKUOM1U71nGgEvg_huc9b2e618b9b96aa8b6e494a55e689da4_52396_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;438&#34;
+		data-flex-basis=&#34;1053px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;You can choose between a Microsoft 365 Group or a Security Group. For the Membership type, choose Dynamic User and then Add dynamic query.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1myN3vL9tTOdiDlRKgoQdyQ.png&#34;
+	width=&#34;1035&#34;
+	height=&#34;892&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1myN3vL9tTOdiDlRKgoQdyQ_hu824f2c985134642ae141667afab7730d_87507_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1myN3vL9tTOdiDlRKgoQdyQ_hu824f2c985134642ae141667afab7730d_87507_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;116&#34;
+		data-flex-basis=&#34;278px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Click the Edit button on Rule syntax.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1y3zKCrheFFtZhMuefUHg.png&#34;
+	width=&#34;1556&#34;
+	height=&#34;677&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1y3zKCrheFFtZhMuefUHg_hu6172bfd86123ef115f365a18f9e89ede_67221_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1y3zKCrheFFtZhMuefUHg_hu6172bfd86123ef115f365a18f9e89ede_67221_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;229&#34;
+		data-flex-basis=&#34;551px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now enter the following query and click OK.&lt;/p&gt;
+&lt;p&gt;USER.ASSIGNEDPLANS -ANY (ASSIGNEDPLAN.SERVICEPLANID -EQ &amp;ldquo;4828c8ec-dc2e-4779-b502-87ac9ce28ab7&amp;rdquo; -AND ASSIGNEDPLAN.CAPABILITYSTATUS -EQ &amp;ldquo;ENABLED&amp;rdquo;)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1RWeLgN5BP5RFAkr7lS50Q.png&#34;
+	width=&#34;1257&#34;
+	height=&#34;447&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1RWeLgN5BP5RFAkr7lS50Q_hu1bd13b4dc8c3bab958f42da1688b5b23_41386_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1RWeLgN5BP5RFAkr7lS50Q_hu1bd13b4dc8c3bab958f42da1688b5b23_41386_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;281&#34;
+		data-flex-basis=&#34;674px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The Id we are querying is the Id for the service plan “MCOEV” which can be seen &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/azure/active-directory/enterprise-users/licensing-service-plan-reference&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;. Since we’re looking for the service plan Id, it doesn’t matter if the license is assigned to a user via the Teams Phone Standard add-on, E5 or even Common Area Phone SKU. With the second part of the query (-AND) we’re also making sure, that we’re only including users where the service plan is actually enabled.&lt;/p&gt;
+&lt;p&gt;Click Save.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1HMIASp06A45oOvCFOU4i6g.png&#34;
+	width=&#34;1549&#34;
+	height=&#34;710&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1HMIASp06A45oOvCFOU4i6g_hub7f425d430ba3cdfa0bb2d5b8c5c162c_94707_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1HMIASp06A45oOvCFOU4i6g_hub7f425d430ba3cdfa0bb2d5b8c5c162c_94707_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;218&#34;
+		data-flex-basis=&#34;523px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;And finally, click Create.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1LsdWbsig2hQJzrErXoUTw.png&#34;
+	width=&#34;1026&#34;
+	height=&#34;1166&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1LsdWbsig2hQJzrErXoUTw_huf1b4bdec47b8a4a323475e2d2b31fa0f_95851_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1LsdWbsig2hQJzrErXoUTw_huf1b4bdec47b8a4a323475e2d2b31fa0f_95851_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;87&#34;
+		data-flex-basis=&#34;211px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;It will take a while until all the members have been added. We can check if our rule works by clicking on Dynamic membership rules and navigating to Validate Rules (preview). Let’s add some users and check if they meet the criteria.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1MFwrIBncdH8pWcWrwXFLw.png&#34;
+	width=&#34;1551&#34;
+	height=&#34;872&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1MFwrIBncdH8pWcWrwXFLw_hud61c41663de72d2f9cf20c8bf0c973bf_184490_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1MFwrIBncdH8pWcWrwXFLw_hud61c41663de72d2f9cf20c8bf0c973bf_184490_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;177&#34;
+		data-flex-basis=&#34;426px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;By clicking View details we can examine the query and see exactly why a user will be included or not.&lt;/p&gt;
+&lt;p&gt;Here’s an example of a user where the service plan is assigned and also enabled.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1mz1us2OGznfSo1FaVQG8qA.png&#34;
+	width=&#34;1243&#34;
+	height=&#34;467&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1mz1us2OGznfSo1FaVQG8qA_hu9347a5c5179c7beebff4b079810516a0_71081_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1mz1us2OGznfSo1FaVQG8qA_hu9347a5c5179c7beebff4b079810516a0_71081_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;266&#34;
+		data-flex-basis=&#34;638px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The user Bill has a Teams Phone Standard License but won’t be added to the group because the service plan is disabled.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1xeKYbn5MmNhGywENqNvKdw.png&#34;
+	width=&#34;1553&#34;
+	height=&#34;364&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1xeKYbn5MmNhGywENqNvKdw_huec94ab3e83c7f053d4dd8ff95d1b01dc_58799_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1xeKYbn5MmNhGywENqNvKdw_huec94ab3e83c7f053d4dd8ff95d1b01dc_58799_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;426&#34;
+		data-flex-basis=&#34;1023px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now you can use this group to assign it to a call queue. Whenever you license newly created users for the service plan MCOEV, the agent list of the call queue will automatically be updated. From my experience it can take some time until the agent lists of call queues are updated if you’re using group or channel assignments. I will write another article on how to force an agent list sync for call queues which use group assignments. So stay tuned!&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

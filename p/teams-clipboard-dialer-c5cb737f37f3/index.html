@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='As you may know, I try to blog at least once a month. Although I’m a little behind this month, I’m still well on track to reach my goal in…'>
+<title>Teams Clipboard Dialer</title>
+
+<link rel='canonical' href='https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Teams Clipboard Dialer'>
+<meta property='og:description' content='As you may know, I try to blog at least once a month. Although I’m a little behind this month, I’m still well on track to reach my goal in…'>
+<meta property='og:url' content='https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/'>
+<meta property='og:site_name' content='HEUSSER.PRO'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2023-10-26T19:22:01&#43;00:00'/><meta property='article:modified_time' content='2023-10-26T19:22:01&#43;00:00'/>
+<meta name="twitter:title" content="Teams Clipboard Dialer">
+<meta name="twitter:description" content="As you may know, I try to blog at least once a month. Although I’m a little behind this month, I’m still well on track to reach my goal in…">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "kozb6q2xjn");
+    </script>    
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hud7e6b3cccc21b12ddf35b72eb655064d_860969_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🫡</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
+            <h2 class="site-description">Martin Heusser | M365 Apps &amp; Services MVP</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/mozziemozz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://x.com/@mozzeph'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/imprint/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                
+                <span>Imprint</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li>
+      <ol>
+        <li>
+          <ol>
+            <li><a href="#tldr">TLDR;</a></li>
+          </ol>
+        </li>
+        <li><a href="#what-are-dial-plans-and-normalization-rules">What are Dial Plans and Normalization Rules?</a>
+          <ol>
+            <li><a href="#tenant-dialplans">Tenant Dial Plans</a></li>
+          </ol>
+        </li>
+        <li><a href="#testing-with-powershell">Testing with PowerShell</a>
+          <ol>
+            <li><a href="#what-about-the-teamsclient">What about the Teams Client?</a></li>
+            <li><a href="#starting-calls-fromoutlook">Starting Calls from Outlook</a></li>
+          </ol>
+        </li>
+        <li><a href="#alternative-solutions">Alternative Solutions</a></li>
+        <li><a href="#i-proudly-present-teams-clipboard-dialer">I Proudly Present: Teams Clipboard Dialer</a>
+          <ol>
+            <li><a href="#setup">Setup</a></li>
+          </ol>
+        </li>
+        <li><a href="#hold-on-i-am-not-doneyet">Hold on… I Am Not Done Yet!</a>
+          <ol>
+            <li><a href="#get-theshortcut">Get the Shortcut</a></li>
+            <li><a href="#showtime">Showtime</a></li>
+          </ol>
+        </li>
+        <li><a href="#summary">Summary</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/ios-shortcuts/" >
+                iOS Shortcuts
+            </a>
+        
+            <a href="/categories/microsoft-teams/" >
+                Microsoft Teams
+            </a>
+        
+            <a href="/categories/teams-apps/" >
+                Teams Apps
+            </a>
+        
+            <a href="/categories/powershell/" style="background-color: #141e2c; color: #fff;">
+                PowerShell
+            </a>
+        
+            <a href="/categories/deep-links/" >
+                Deep Links
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/teams-clipboard-dialer-c5cb737f37f3/">Teams Clipboard Dialer</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            As you may know, I try to blog at least once a month. Although I’m a little behind this month, I’m still well on track to reach my goal in…
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Oct 26, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    12 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>As you may know, I try to blog at least once a month. Although I’m a little behind this month, I’m still well on track to reach my goal in 2023 again.</p>
+<p>I still got plenty of topics to blog about in my backlog but what I like most is when I discover something new and get so hyped out about it that I can’t just not blog about it right away.</p>
+<p>Thanks to my awesome Discord community (join <a class="link" href="https://heusser.pro/discord.html"  target="_blank" rel="noopener"
+    >here</a>) which is full of enthusiastic Teams Phone admins like myself, it was brought to my attention that Microsoft is making some changes to how normalization rules in Teams dial plans are applied.</p>
+<h4 id="tldr">TLDR;</h4>
+<p>I’ve created an app which allows you to call any phone number which has been copied to the clipboard simply by clicking an app on the taskbar or by pressing a hotkey. Skip to the bottom of this post if you’re only interested in the app.</p>
+<h3 id="what-are-dial-plans-and-normalization-rules">What are Dial Plans and Normalization Rules?</h3>
+<p>Normalization rules are regular expressions which change certain phone numbers before they’re dialed in Teams. An easy example is e.g. that any Swiss phone number which is entered in the national format (with a leading <code>0</code>) is converted to <a class="link" href="https://en.wikipedia.org/wiki/E.164"  target="_blank" rel="noopener"
+    ><strong><em>E.164</em></strong></a>.</p>
+<p>E.g. <code>044 123 45 67</code> is changed to <code>+41441234567</code> before it’s dialed.</p>
+<p>This rule is actually part of the system dial plans which are already included in Teams. Admins can create their own dial plans by creating so called <strong>Tenant Dial Plans</strong>.</p>
+<p>You can view the built-in dial plans by entering the following in a Teams PowerShell session. Replace <code>CH</code> with the country you want to check.</p>
+<p>Get-CsDialPlan -Identity CH</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/18JxlggrooV95RMwJMIRvA.png"
+	width="1734"
+	height="870"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/18JxlggrooV95RMwJMIRvA_hue4de0b8f2b34af5767e39cae768b389f_823623_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/18JxlggrooV95RMwJMIRvA_hue4de0b8f2b34af5767e39cae768b389f_823623_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="199"
+		data-flex-basis="478px"
+	
+></p>
+<h4 id="tenant-dialplans">Tenant Dial Plans</h4>
+<p>With tenant dial plans, it’s possible to create much more complex rules such as <a class="link" href="https://ucken.blogspot.com/2016/03/trunk-prefixes-in-skype4b.html"  target="_blank" rel="noopener"
+    >this</a> one which contains a monster regular expression created by no other than Ken Lasko (<a class="link" href="https://www.ucdialplans.com/"  target="_blank" rel="noopener"
+    >UCDialPlans.com — Dial Plan Tools</a>).</p>
+<p>I don’t know why there are still people on this planet who think it’s a good idea to list a phone number in a format in which it <strong><em>simply does not exist</em></strong>. <code>+41 (0) 44 123 45 67</code> or <code>+41 0 44 123 45 67</code> are not valid phone numbers. That’s effectively the same as if I told people that my email address is <code>mozzie(0)@heusser.pro</code> when in fact it’s <code>mozzie@heusser.pro</code> . It’s either <code>+41 44 123 45 67</code> (when calling internationally) or <code>044 123 45 67</code> (when calling from the same country).</p>
+<p>From my experience many people also don’t know that you can dial an E.164 number even when calling from the same country. I wouldn’t be surprised if there is an exception to this rule in some countries, but it works in almost every case.</p>
+<p>Unfortunately, the normalization rules which are built into Teams, don’t fix these numbers for us. If people dial a number with an <strong><em>illegal zero</em></strong> after the international prefix, the call will fail, since it’s an invalid number.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/14YWX8uJZeF4KVKsxtPQE3A.png"
+	width="2136"
+	height="957"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/14YWX8uJZeF4KVKsxtPQE3A_hu5806c1102942d747a553c73e23f94089_745613_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/14YWX8uJZeF4KVKsxtPQE3A_hu5806c1102942d747a553c73e23f94089_745613_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="223"
+		data-flex-basis="535px"
+	
+></p>
+<p>Since we can’t possibly knock some sense into every website owner that lists their phone number incorrectly or access and fix everybody’s precious personal Outlook contacts, adding Ken’s rule to a tenant dial plan <strong><em>was</em></strong> a great way of solving this particular issue.</p>
+<p><strong><em>But now Microsoft is taking this away from us.</em></strong></p>
+<p>This was the link that was shared on Discord: <br>
+<a class="link" href="https://petri.com/microsoft-changelog/m365-changelog-changes-in-normalization/"  target="_blank" rel="noopener"
+    >M365 Changelog: (Updated) Changes in Normalization — Petri IT Knowledgebase</a></p>
+<p>There is a Message Center post about this as well: <strong>MC536885</strong>. It mentions the following:</p>
+<blockquote>
+<p><strong>Stopping normalization on number that starts with plus sign (+)</strong></p>
+</blockquote>
+<blockquote>
+<p>Normalization in Microsoft Teams was not designed to do normalization when the phone number starts with plus sign (+) as documented, but we’ve never enforced this in the Teams desktop or Web client. We are planning to enforce this in the future but for now we recommend avoiding this pattern.</p>
+</blockquote>
+<blockquote>
+<p>We are making this change to align with our Calling Service, other Teams services, Azure Communication Services SDKs, and other Microsoft services. Numbers that start with a plus sign (+) will not pass through any normalization rules.</p>
+</blockquote>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/1wyBIMDRn3qkDKckT1EsU0Q.png"
+	width="759"
+	height="499"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/1wyBIMDRn3qkDKckT1EsU0Q_hu9b3499ea3905bb5166fbe05e742ff9bf_314425_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/1wyBIMDRn3qkDKckT1EsU0Q_hu9b3499ea3905bb5166fbe05e742ff9bf_314425_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="152"
+		data-flex-basis="365px"
+	
+></p>
+<p><strong>Update 10.11.2023</strong></p>
+<p><strong>The Message Center post was updated by Microsoft. They’re not following through with this anymore.</strong></p>
+<blockquote>
+<p>Updated November 2, 2023: Based on customer feedback we will not be moving forward with this change at this time. You can safely disregard this message. Thank you for your feedback.</p>
+</blockquote>
+<p><strong>/Update</strong></p>
+<h3 id="testing-with-powershell">Testing with PowerShell</h3>
+<p>I’ve noticed that something was not right, when the PowerShell commands to test dialed numbers against a tenant dial plan stopped matching numbers which start with a plus.</p>
+<p>I have a tenant dial plan in Teams which contains Ken Lasko’s awesome normalization rule.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/1WteEwba1CLM2fqkpj4joYg.png"
+	width="1885"
+	height="481"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/1WteEwba1CLM2fqkpj4joYg_hu8449a14af48aa3ceb841b76f018616b9_75151_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/1WteEwba1CLM2fqkpj4joYg_hu8449a14af48aa3ceb841b76f018616b9_75151_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="391"
+		data-flex-basis="940px"
+	
+></p>
+<p>We can use the following PowerShell command to test a user’s normalization rules.</p>
+<p>Get-CsEffectiveTenantDialPlan -Identity <a class="link" href="mailto:user@domain.com" >user@domain.com</a> | Test-CsEffectiveTenantDialPlan -DialedNumber +410441234567 -TenantScopeOnly</p>
+<p>As you can see in the screenshot below, the number starting with <code>+</code> does not match any rules despite the fact the rule exists. The number starting with <code>00</code> is matched by another rule in the same dial plan.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/1uvHzgIINJYK9QYvItJig.png"
+	width="2122"
+	height="957"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/1uvHzgIINJYK9QYvItJig_hue2cb3169f3873c87e1b687d3d8180dcb_874220_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/1uvHzgIINJYK9QYvItJig_hue2cb3169f3873c87e1b687d3d8180dcb_874220_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="221"
+		data-flex-basis="532px"
+	
+></p>
+<p>Verifying Ken Lasko’s regular expression with <a class="link" href="https://regex101.com/"  target="_blank" rel="noopener"
+    >regex101.com</a> proves that it’s 100% correct.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/1OSqAxfdvyF5gUfUXDihhdQ.png"
+	width="1224"
+	height="1191"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/1OSqAxfdvyF5gUfUXDihhdQ_hue2048e428df3dfc0b8bdf0656da7159e_80332_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/1OSqAxfdvyF5gUfUXDihhdQ_hue2048e428df3dfc0b8bdf0656da7159e_80332_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="102"
+		data-flex-basis="246px"
+	
+></p>
+<h4 id="what-about-the-teamsclient">What about the Teams Client?</h4>
+<p>Interesting enough, the Teams client still seems to match the rule from the tenant dial plan.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/1M60DOscRIwosemXqbylQbQ.png"
+	width="2135"
+	height="1422"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/1M60DOscRIwosemXqbylQbQ_hu19b43908cab1a0d03d946077c6863f35_160961_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/1M60DOscRIwosemXqbylQbQ_hu19b43908cab1a0d03d946077c6863f35_160961_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="150"
+		data-flex-basis="360px"
+	
+></p>
+<p>However, I suspect it’s only a matter of time before this stops working too.</p>
+<h4 id="starting-calls-fromoutlook">Starting Calls from Outlook</h4>
+<p>If Teams is registered as the chat app for Microsoft 365 Apps (such as Outlook) we can call numbers which are stored on Outlook contacts.</p>
+<p>The problem with this is that classic Outlook does not apply any normalization rules either. The number is called as it’s stored on the contact.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/1WFO6dkLuWfJOYCPJliJlcw.png"
+	width="943"
+	height="497"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/1WFO6dkLuWfJOYCPJliJlcw_hu74881908b72e001b1ffc37dd00b44329_44422_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/1WFO6dkLuWfJOYCPJliJlcw_hu74881908b72e001b1ffc37dd00b44329_44422_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="189"
+		data-flex-basis="455px"
+	
+></p>
+<p>When I try to call this number, the call fails. You can see that the illegal zero was not dropped in the title bar of the call window.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/18VYzjecFvrfoqqiYl4Fuog.png"
+	width="1451"
+	height="996"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/18VYzjecFvrfoqqiYl4Fuog_huaf5e274138f0ef671264de17ceac51eb_45797_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/18VYzjecFvrfoqqiYl4Fuog_huaf5e274138f0ef671264de17ceac51eb_45797_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="145"
+		data-flex-basis="349px"
+	
+></p>
+<p>It’s noteworthy that clicking a number in the old Outlook will start a call directly without prompting you to start the call in Teams.</p>
+<p>In my tests with the new Outlook, the number was normalized correctly, even for a user who didn’t have a tenant dial plan assigned. This makes me believe that it’s actually the new Outlook which is applying the normalization rules. When you click a number in the new Outlook, you’ll get a prompt to start the call in Teams.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/1Z5Jm7DSGlTyJLl3YYr8ww.png"
+	width="883"
+	height="232"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/1Z5Jm7DSGlTyJLl3YYr8ww_huf4e1f8f56efd714d79e6ace1155c7f8b_16261_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/1Z5Jm7DSGlTyJLl3YYr8ww_huf4e1f8f56efd714d79e6ace1155c7f8b_16261_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="380"
+		data-flex-basis="913px"
+	
+></p>
+<p>However, every time a number is clicked in the new Outlook, an annoying blank pop up is opened and it doesn’t even close once you have made the call.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/1q1b8uLbj997HaUMbFxMVg.png"
+	width="1211"
+	height="322"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/1q1b8uLbj997HaUMbFxMVg_hub05fc11c31048437bc666e38546fc052_59042_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/1q1b8uLbj997HaUMbFxMVg_hub05fc11c31048437bc666e38546fc052_59042_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="376"
+		data-flex-basis="902px"
+	
+></p>
+<p>Time to look for alternatives.</p>
+<h3 id="alternative-solutions">Alternative Solutions</h3>
+<p>Dialing phone numbers from other apps and links or even through a hotkey is not an uncommon ask from users.</p>
+<p>If you’ve received this request before, you’ve probably stumbled upon this free app called <a class="link" href="http://www.lyncwizard.com/products.html"  target="_blank" rel="noopener"
+    ><strong>Teams Wizard</strong></a>. This will allow you to start Teams PSTN calls by selecting a phone number and pressing the configured hotkey.</p>
+<p>In Teams Wizard’s settings, there’s a setting called <strong>Enable normalization of phone numbers</strong> (Normalisierung der Telefonnummern aktivieren).</p>
+<p>On first sight, it looks like this only goes as far as the Teams built in dial plans and won’t drop the illegal zero after the E.164 prefix.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/16e4K0bnpbbbU5jRv1aWYA.png"
+	width="1321"
+	height="495"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/16e4K0bnpbbbU5jRv1aWYA_hu71d9d16211561959248643d0029ce493_105238_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/16e4K0bnpbbbU5jRv1aWYA_hu71d9d16211561959248643d0029ce493_105238_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="266"
+		data-flex-basis="640px"
+	
+></p>
+<p>However, when you click on <strong>Yes</strong> (Ja) the number appears correct in Teams, even if the user does not have a special tenant dial plan assigned.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/1oqAqO3GVoYrPRFPJJVYw.png"
+	width="877"
+	height="231"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/1oqAqO3GVoYrPRFPJJVYw_hu881aba82e18622567db091c9f6358048_17177_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/1oqAqO3GVoYrPRFPJJVYw_hu881aba82e18622567db091c9f6358048_17177_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="379"
+		data-flex-basis="911px"
+	
+></p>
+<p>So far so good. But the hotkey only works when you’ve selected a phone number with your mouse. Although it’s possible to just select a contact in old Outlook and then press the hotkey, the success rate is quite low. First of all, many contacts hold multiple numbers and it’s not possible to tell Teams Wizard which number should be called. Secondly, it’s not possible to select a number with your mouse in old Outlook. They can only be copied. But Teams Wizard does not monitor your clipboard. And copy/paste the number into another app (like Notepad) just to select it and then press the hotkey seems like one step too many.</p>
+<p>While it’s possible to select phone numbers of contacts in the new Outlook, the experience isn’t great either. Because the new Outlook is also based on web technology, selecting a number with your mouse without triggering the calling link is a very tricky undertaking. And don’t forget all the ugly blank pop ups this will open.</p>
+<p>If the new Outlook really does (and keeps on doing) number normalization, then I guess this problem will be mitigated at <strong><em>some point</em></strong> in the future. But a future where everybody only uses the new Outlook is likely still very far off. But I don’t even want to go into a discussion of new vs. classic Outlook and how some folks will cope (<strong><em>or not</em></strong>) with the new Outlook.</p>
+<p>Therefore, I don’t think that it hurts to prepare ourselves for a world in which we can apply normalization rules outside of Teams and Outlook.</p>
+<p>All of this got me thinking… <strong><em>wouldn’t it be awesome if we could have a way to instantly normalize and dial any number that has been copied to the clipboard…?</em></strong></p>
+<p>…Because copying a number with only <strong>one click</strong> is possible in both the <strong>new</strong> and the <strong>old</strong> Outlook.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/1PPyoBA3xszRe0nDk5cNOHQ.png"
+	width="1335"
+	height="405"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/1PPyoBA3xszRe0nDk5cNOHQ_hu6142a933fd8b4c92769cbc11b18136a3_44500_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/1PPyoBA3xszRe0nDk5cNOHQ_hu6142a933fd8b4c92769cbc11b18136a3_44500_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="329"
+		data-flex-basis="791px"
+	
+>
+<img src="/p/teams-clipboard-dialer-c5cb737f37f3/10qv6ML4d6FBZkV9LCg4Yxg.png"
+	width="986"
+	height="462"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/10qv6ML4d6FBZkV9LCg4Yxg_hu0b087bff1a6494367710845816fc2942_43929_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/10qv6ML4d6FBZkV9LCg4Yxg_hu0b087bff1a6494367710845816fc2942_43929_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="213"
+		data-flex-basis="512px"
+	
+></p>
+<p>Copying the number before calling it also provides great flexibility. Be it multiple numbers on a single contact or any phone number in any app or website. Heck, we could even use PowerToys’ text extractor feature (<code>Win + Shift + T</code> ) or the new Snipping Tool to extract and copy phone numbers from screenshots which got sent our way by people who were too lazy to put the number in a reusable format.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/1vSbtxT9dKxd0bCYVaEzlw.png"
+	width="1182"
+	height="742"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/1vSbtxT9dKxd0bCYVaEzlw_hu9e1c6006965e066c14b898ba559876bd_57723_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/1vSbtxT9dKxd0bCYVaEzlw_hu9e1c6006965e066c14b898ba559876bd_57723_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="159"
+		data-flex-basis="382px"
+	
+></p>
+<h3 id="i-proudly-present-teams-clipboard-dialer">I Proudly Present: Teams Clipboard Dialer</h3>
+<p>I don’t know how to write and compile a proper app, but I like to think that I do know my way around PowerShell. And I think I’ve come up with a very neat solution here.</p>
+<p>The <strong>Teams Clipboard Dialer</strong> consists of a PowerShell script and a Desktop shortcut which calls that script. The script reads phone numbers from the clipboard, normalizes the number, and then passes it to Teams to start the call.</p>
+<p>All you have to do to start a call is to copy a phone number and either click the icon on the taskbar or press the configured hotkey.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/1KtHkD1MmZaahl5R81h7W5Q.png"
+	width="1181"
+	height="71"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/1KtHkD1MmZaahl5R81h7W5Q_hucf8f6818dab62dffd373b4a98872df76_55789_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/1KtHkD1MmZaahl5R81h7W5Q_hucf8f6818dab62dffd373b4a98872df76_55789_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="1663"
+		data-flex-basis="3992px"
+	
+></p>
+<p>If your clipboard is empty or doesn’t contain a phone number, a notification will be shown.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/1rxi8ME2LgGTx4g9ioQdSKg.png"
+	width="1110"
+	height="251"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/1rxi8ME2LgGTx4g9ioQdSKg_huc83179eb723359ed1c3de1e367188a61_228686_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/1rxi8ME2LgGTx4g9ioQdSKg_huc83179eb723359ed1c3de1e367188a61_228686_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="442"
+		data-flex-basis="1061px"
+	
+></p>
+<p>If your clipboard does contain a phone number, Teams will launch and ask you to start the call.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/1NlTAypYtlbm83Q6xFjlKg.png"
+	width="2141"
+	height="1383"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/1NlTAypYtlbm83Q6xFjlKg_huabd2f6d21721ccef66dfb3e825cb1570_218040_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/1NlTAypYtlbm83Q6xFjlKg_huabd2f6d21721ccef66dfb3e825cb1570_218040_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="154"
+		data-flex-basis="371px"
+	
+></p>
+<p>It’s even possible to call 1–4 digit long extension numbers or emergency numbers. Because these numbers don’t start with a <code>+</code> the Teams tenant dial plan (if you have one configured) will still apply the normalization rules and convert the extensions to full E.164 numbers.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/1z4gcS6aqm4MUiWPbGm6Dg.png"
+	width="882"
+	height="231"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/1z4gcS6aqm4MUiWPbGm6Dg_hu17e256268d26b48e864bd0e74479a43b_12004_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/1z4gcS6aqm4MUiWPbGm6Dg_hu17e256268d26b48e864bd0e74479a43b_12004_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="381"
+		data-flex-basis="916px"
+	
+></p>
+<p><strong><em>And no, there’s no browser pop up.</em></strong> Teams is opened directly. Luckily, I remembered that I blogged about <a class="link" href="/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd#:~:text=By%20adding%20the%20prefix%20msteams%3A%2F%2F%20in%20front%20of,plus%20sign%20as%20%E2%80%9C%252b%E2%80%9D%20for%20it%20to%20work." >creating Teams calling deep links</a> a while ago, so I already knew how to create calling deep links. The part about how I can open Teams directly (without the detour in Edge) <strong>and</strong> have it start a call, I figured out by <strong><em>mere luck</em></strong>.</p>
+<p># Launch Teams to dial the number<br>
+Start-Process ms-teams &ldquo;<a class="link" href="https://teams.microsoft.com/l/call/0/0?users=4:$phoneNumber%22"  target="_blank" rel="noopener"
+    >https://teams.microsoft.com/l/call/0/0?users=4:$phoneNumber"</a></p>
+<p><strong>I’ve only tested the Teams Clipboard Dialer on Windows 11 and Teams 2.1.</strong></p>
+<h4 id="setup">Setup</h4>
+<p>I also created an install script which copies the script to <code>$env:APPDATA\OneDrive\TeamsClipboardDialer</code> and creates a shortcut in <code>$env:OneDrive\Desktop</code> . Unfortunately, I didn’t find a way to automatically pin the app to the taskbar. When you run the script, you’ll see a pop up message which will pause the script and give you time to pin the app manually to the taskbar.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/078v39dCn4iWwIiR6.png"
+	width="1749"
+	height="739"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/078v39dCn4iWwIiR6_hudaa9661d447b5461eb843726e80585a0_548084_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/078v39dCn4iWwIiR6_hudaa9661d447b5461eb843726e80585a0_548084_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="236"
+		data-flex-basis="568px"
+	
+></p>
+<p>By default, the hotkey <code>Ctrl + Shift + F8</code> is assigned to launch the app and dial numbers. You can change this by running the <code>Createshortcut.ps1</code> script with the parameter <code>-HotKey &quot;Your hotkey combo&quot;</code> .</p>
+<p>You can find all the files in my <a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/tree/main/TeamsClipboardDialer"  target="_blank" rel="noopener"
+    >GitHub repo</a>. Also make sure to read the script headers carefully for more information on the available parameters.</p>
+<p>If you’re interested in what normalization rules are applied, you can examine the script <a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/TeamsClipboardDialer/TeamsClipboardDialer.ps1"  target="_blank" rel="noopener"
+    >here</a>. Basically, it removes any special characters like whitespaces, brackets, hyphens, dots etc. from copied phone numbers and then also applies Ken Lasko’s rule to get rid of those damn illegal zeros. You can read more about it in detail <a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/TeamsClipboardDialer/ReadMe.md#normalization-rule-behavior"  target="_blank" rel="noopener"
+    >here</a>.</p>
+<p>By applying the normalization rules outside of Outlook and Teams, we get more control over it since we can do whatever we want. I guess if Microsoft won’t let us match numbers starting with <code>+</code> any longer, we have to do it ourselves. Compared to the Teams Wizard, my solution gives us way more flexibility and visibility in terms of how numbers are normalized before they’re dialed.</p>
+<h3 id="hold-on-i-am-not-doneyet">Hold on… I Am Not Done Yet!</h3>
+<p>When I realized that I was on to something, I just couldn’t let it go. <strong><em>I replicated the whole functionality in an iOS shortcut</em></strong>. I don’t know why but every time an Android Fanboy asks me why I prefer the iPhone over Android I forget to mention Shortcuts. <strong><em>It’s literally the most underrated feature of iOS.</em></strong></p>
+<p>The shortcut uses the exact same regular expressions as the PowerShell script to normalize the numbers. (Yes, that’s possible in Shortcuts.) It also gets the phone number from the clipboard and will display the same hints if there’s no phone number stored in the clipboard.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/1ZvBMJVHFO1jdr8Bl5rESrg.png"
+	width="2279"
+	height="890"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/1ZvBMJVHFO1jdr8Bl5rESrg_hu257a4cc28321710dba9b35d80b3bcbd3_827070_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/1ZvBMJVHFO1jdr8Bl5rESrg_hu257a4cc28321710dba9b35d80b3bcbd3_827070_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="256"
+		data-flex-basis="614px"
+	
+></p>
+<p>Once the number has been normalized, the Shortcut will ask you to start or cancel the call. On iOS this step is handled by the Shortcut and not in the Teams app itself like it is the case on the Teams desktop client.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/13qugvQ8xQsLHYZKjNKAbZQ.png"
+	width="1125"
+	height="725"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/13qugvQ8xQsLHYZKjNKAbZQ_hu0f65417d07c71a5b5a861fdccb00ea77_316029_480x0_resize_box_3.png 480w, /p/teams-clipboard-dialer-c5cb737f37f3/13qugvQ8xQsLHYZKjNKAbZQ_hu0f65417d07c71a5b5a861fdccb00ea77_316029_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="155"
+		data-flex-basis="372px"
+	
+></p>
+<h4 id="get-theshortcut">Get the Shortcut</h4>
+<p>You can download and import the Shortcut via <a class="link" href="https://www.icloud.com/shortcuts/45b99b70ef0f40adab6726e220cf4e7b"  target="_blank" rel="noopener"
+    >iCould</a>.</p>
+<p>I’ve tested the shortcut on an iPad and an iPhone both running iOS/iPad OS 17.0.3. When you run it for the first time, you will need to confirm a couple of privacy prompts and allow it to run all the actions without asking again. After that, you’re good to go.</p>
+<h4 id="showtime">Showtime</h4>
+<p>This animated gif demonstrates how it works on iOS. The number has already been copied to the clipboard before the shortcut was executed.</p>
+<p><img src="/p/teams-clipboard-dialer-c5cb737f37f3/1sCzx0j6auIV4gBlO343cQ.gif"
+	width="886"
+	height="1920"
+	srcset="/p/teams-clipboard-dialer-c5cb737f37f3/1sCzx0j6auIV4gBlO343cQ_hu09e55dee48d2dce00624399b6a86ff8f_7320335_480x0_resize_box_1.gif 480w, /p/teams-clipboard-dialer-c5cb737f37f3/1sCzx0j6auIV4gBlO343cQ_hu09e55dee48d2dce00624399b6a86ff8f_7320335_1024x0_resize_box_1.gif 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="46"
+		data-flex-basis="110px"
+	
+></p>
+<h3 id="summary">Summary</h3>
+<p>When I first read the MC post about normalization rules no longer matching numbers starting with a <code>+</code> I panicked a little. But now that I’ve done the research and came to the conclusion that having an app which normalizes and calls numbers from the clipboard, is actually a very nice and versatile solution and I’m very much relieved. And having the same functionality on iOS is an awesome bonus.</p>
+<p>I hope you like what I’ve done and that you can make use of it as well. As always, all the code for the Teams Clipboard Dialer is provided free of charge. If you would still like to support my work, feel free to buy me a coffee over at <a class="link" href="https://github.com/sponsors/mozziemozz?frequency=one-time"  target="_blank" rel="noopener"
+    >GitHub Sponsors</a>.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Creating Microsoft Teams Calling Deep Links</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/clear-teams-2-1-cache-windows-11-be3e76ff6ea2/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Clear Teams 2.1 Cache (Windows 11)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Advanced Teams Auto Attendant Troubleshooting</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How to Pin a Phone Number to the Teams Side Rail</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How to Validate Phone Number Assignments in Teams (in Bulk)</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "heusser-pro" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2024 HEUSSER.PRO
+    </section>
+    
+    <section class="powerby">
+        
+            Hosted on Microsoft Azure <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
+

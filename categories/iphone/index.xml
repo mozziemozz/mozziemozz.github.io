@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>iPhone on HEUSSER.PRO</title>
+        <link>https://heusser.pro/categories/iphone/</link>
+        <description>Recent content in iPhone on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sun, 27 Nov 2022 12:46:25 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/iphone/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Forward SMS Verification Codes From iPhone To a Windows PC</title>
+        <link>https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/</link>
+        <pubDate>Sun, 27 Nov 2022 12:46:25 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/</guid>
+        <description>&lt;p&gt;A few days ago, I wrote “&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6&#34; &gt;How To Handle Password and 2FA Madness Like a Pro&lt;/a&gt;”. In this article I explained why I think it’s better to use a full-fledged password manager instead of a basic Authenticator App such as Microsoft or Google Authenticator to handle your 2FA codes.&lt;/p&gt;
+&lt;p&gt;These types of apps work well when the service for which you want to enable 2FA allows you to add a secret key to your authenticator app. But what about services which don’t support such apps and instead only send you an SMS with a verification code? Unfortunately, there are still some services which will only allow one-time codes sent by SMS.&lt;/p&gt;
+&lt;p&gt;If you’re using an iPhone and a MAC for example, this shouldn’t be too big of an issue since you can seamlessly sync your clipboard across devices (at least that’s what I’ve heard).&lt;/p&gt;
+&lt;p&gt;If you’re using an Android phone together with Phone Link on Windows, you can easily access your SMS from there. But if you use an iPhone and a Windows PC, there’s no way to seamlessly transfer a code received by SMS on your iPhone to your PC.&lt;/p&gt;
+&lt;p&gt;![]( which allows you to transfer content between an iPhone and a Windows PC through their Chromium extension.)&lt;/p&gt;
+&lt;p&gt;When you use this method, you must open the message containing the verification code and manually select and copy it. Once the code is in your iPhone&amp;rsquo;s clipboard, you need to open Clipt and click Send. The copied content will be added to your PCs clipboard automatically and you’re ready to paste it.&lt;/p&gt;
+&lt;p&gt;I didn’t quite like the manual steps involved on the iPhone. So I thought why not tinker around with Siri Shortcuts again, like I did in &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa&#34; &gt;this&lt;/a&gt; article.&lt;/p&gt;
+&lt;h3 id=&#34;siri-automation&#34;&gt;Siri Automation&lt;/h3&gt;
+&lt;h4 id=&#34;building-the-automation&#34;&gt;Building the Automation&lt;/h4&gt;
+&lt;p&gt;The good thing is that there is a trigger for &lt;em&gt;“When I get a message containing &lt;keyword&gt;”.&lt;/em&gt; The bad thing is that there’s no way of running it truly automated. You will still need to confirm running the automation each time it’s triggered.&lt;/p&gt;
+&lt;p&gt;But that’s only one manual interaction on the iPhone compared to four with Clipt (Open messages, copy code, open clipt, send content).&lt;/p&gt;
+&lt;p&gt;I set the trigger to match all messages which contain the string &lt;strong&gt;“verification code”&lt;/strong&gt;. If that should not work for the messages you receive, you can adjust it to your liking or create multiple automations with different words.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1hvOkUTfWoJtXfbbsied89g.png&#34;
+	width=&#34;1125&#34;
+	height=&#34;2436&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1hvOkUTfWoJtXfbbsied89g_hu5b82676aad449807e4a7c3c84bf0a47c_129695_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1hvOkUTfWoJtXfbbsied89g_hu5b82676aad449807e4a7c3c84bf0a47c_129695_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;46&#34;
+		data-flex-basis=&#34;110px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Let’s take a look at the actions. First, we’re going to use the regular expression &lt;code&gt;\d{6,}&lt;/code&gt; to match all strings which consist of only numbers and are at least six digits long.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FUqHjHbQq1UXAqH7gkHug.png&#34;
+	width=&#34;1361&#34;
+	height=&#34;263&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FUqHjHbQq1UXAqH7gkHug_hu4770951244912b439604a7c58dea49a3_61402_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FUqHjHbQq1UXAqH7gkHug_hu4770951244912b439604a7c58dea49a3_61402_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;517&#34;
+		data-flex-basis=&#34;1241px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Then we’re going to create a note in Apple Notes with the extracted verification code. After 60 seconds, we’re going to delete the note.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1KUBIIWC2Zk7hIm6K29sD2A.png&#34;
+	width=&#34;1125&#34;
+	height=&#34;2436&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1KUBIIWC2Zk7hIm6K29sD2A_huacc27952ce482fabbb8d9e4cd0acd40f_357756_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1KUBIIWC2Zk7hIm6K29sD2A_huacc27952ce482fabbb8d9e4cd0acd40f_357756_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;46&#34;
+		data-flex-basis=&#34;110px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;configuring-ios&#34;&gt;Configuring iOS&lt;/h4&gt;
+&lt;p&gt;You might ask yourself what good does it do if the verification code is stored in Apple Notes when I want to access it on my PC?&lt;/p&gt;
+&lt;p&gt;If you configure your Outlook.com or work or school account as the default account for Notes in iOS settings, your notes will automatically synchronize with Microsoft Sticky Notes. Of course, I’m assuming that you’ve already added a Microsoft Account to iOS at this point.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1eK5EzyD2ps2osajFS6Zmw.png&#34;
+	width=&#34;1125&#34;
+	height=&#34;2436&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1eK5EzyD2ps2osajFS6Zmw_hu701ebc559fbb12b62bf7eaacaae64349_231517_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1eK5EzyD2ps2osajFS6Zmw_hu701ebc559fbb12b62bf7eaacaae64349_231517_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;46&#34;
+		data-flex-basis=&#34;110px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;demo-of-the-automation-inaction&#34;&gt;Demo of the Automation in Action&lt;/h4&gt;
+&lt;p&gt;To show off the automation, I just sent myself an SMS from Skype to my mobile number containing the following text.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Here’s your verification code: 456789. Thanks for using it.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;I added the code between other text and added a full stop right after the code to demonstrate how powerful regular expressions are.&lt;/p&gt;
+&lt;p&gt;This is what it looks like on an iPhone. First there will be a notification for the new message. Shortly after, the automation will be triggered, and we’ll need to click it, and then click &lt;em&gt;“Ausführen”&lt;/em&gt; (German for &lt;em&gt;“Run”&lt;/em&gt;).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1Cd58DqlhiHJsmyJ43qnR1Q.gif&#34;
+	width=&#34;886&#34;
+	height=&#34;1920&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1Cd58DqlhiHJsmyJ43qnR1Q_hufa0e164960fd256a060446e2e59dc4e9_8831390_480x0_resize_box_1.gif 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1Cd58DqlhiHJsmyJ43qnR1Q_hufa0e164960fd256a060446e2e59dc4e9_8831390_1024x0_resize_box_1.gif 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;46&#34;
+		data-flex-basis=&#34;110px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;accessing-copied-codes-onwindows&#34;&gt;Accessing Copied Codes on Windows&lt;/h4&gt;
+&lt;p&gt;There are many Apps from which you access to your Sticky Notes on Windows.&lt;/p&gt;
+&lt;p&gt;The most obvious one is &lt;strong&gt;Sticky Notes&lt;/strong&gt; of course.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1gj6ozy5v4BuGa4RWlxETNw.png&#34;
+	width=&#34;648&#34;
+	height=&#34;1035&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1gj6ozy5v4BuGa4RWlxETNw_hu0c1f55614f410c6405fa29f8bace575d_33785_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1gj6ozy5v4BuGa4RWlxETNw_hu0c1f55614f410c6405fa29f8bace575d_33785_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;62&#34;
+		data-flex-basis=&#34;150px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;You can also access them in &lt;strong&gt;Outlook&lt;/strong&gt; or &lt;strong&gt;Outlook on the Web&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1UOcsgxeQRRwdEEur32BwRg.png&#34;
+	width=&#34;1684&#34;
+	height=&#34;873&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1UOcsgxeQRRwdEEur32BwRg_hu049811ba8e08b6af09fb17e2680d30e1_108408_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1UOcsgxeQRRwdEEur32BwRg_hu049811ba8e08b6af09fb17e2680d30e1_108408_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;192&#34;
+		data-flex-basis=&#34;462px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;And finally, they’re also available in your &lt;strong&gt;OneNote&lt;/strong&gt; Feed.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1MYZQMg0ggzjHrsx6lBk0w.png&#34;
+	width=&#34;471&#34;
+	height=&#34;1103&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1MYZQMg0ggzjHrsx6lBk0w_hu3c7f1b97347a656561a5e2e6bf190fb6_44953_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1MYZQMg0ggzjHrsx6lBk0w_hu3c7f1b97347a656561a5e2e6bf190fb6_44953_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;42&#34;
+		data-flex-basis=&#34;102px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;copying-the-verification-code&#34;&gt;Copying the Verification Code&lt;/h4&gt;
+&lt;p&gt;Unfortunately, Stick Notes does not support copying the contents of a note from a right-click.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1T3wMGAbPW9enWGJClr1Q.png&#34;
+	width=&#34;697&#34;
+	height=&#34;489&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1T3wMGAbPW9enWGJClr1Q_hu62e0ecc303454fa148ce57b76f5d15b4_45451_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1T3wMGAbPW9enWGJClr1Q_hu62e0ecc303454fa148ce57b76f5d15b4_45451_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;142&#34;
+		data-flex-basis=&#34;342px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;We need to open the note, select the text, and then copy it.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1vrDPnDLy9MS7pR4ynTxCEw.png&#34;
+	width=&#34;462&#34;
+	height=&#34;471&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1vrDPnDLy9MS7pR4ynTxCEw_hu89a35953cacabfb66c22fb60e0f7b91f_42853_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1vrDPnDLy9MS7pR4ynTxCEw_hu89a35953cacabfb66c22fb60e0f7b91f_42853_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;98&#34;
+		data-flex-basis=&#34;235px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;a class=&#34;link&#34; href=&#34;https://apps.microsoft.com/store/detail/outlook-for-windows/9NRX63209R7B&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;new Outlook&lt;/a&gt; or Outlook on the Web or OneNote allow you to copy the contents of the note using a right-click though.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1w0YaPyh8JvP8zGVeXsMag.png&#34;
+	width=&#34;620&#34;
+	height=&#34;620&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1w0YaPyh8JvP8zGVeXsMag_hu06679e72f657804c1ad6d61349688c44_59910_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1w0YaPyh8JvP8zGVeXsMag_hu06679e72f657804c1ad6d61349688c44_59910_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;100&#34;
+		data-flex-basis=&#34;240px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This also works well in the OneNote (for Windows 10) Feed. While it does work in the new, &lt;a class=&#34;link&#34; href=&#34;https://techcommunity.microsoft.com/t5/microsoft-365-blog/refreshing-the-onenote-app-on-windows/ba-p/3401914&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;refreshed version of OneNote&lt;/a&gt;, it was quite buggy and sluggish for me. I’ll let that slide since that’s an Insider Build.&lt;/p&gt;
+&lt;p&gt;OneNote for Windows 10 is not listed in Microsoft Store Search anymore, but you can still get it from &lt;a class=&#34;link&#34; href=&#34;https://www.microsoft.com/store/productId/9WZDNCRFHVJL&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this&lt;/a&gt; link. I will keep using OneNote for Windows 10 until the new OneNote also supports vertical sections in &lt;a class=&#34;link&#34; href=&#34;https://www.microsoft.com/en-us/microsoft-365/roadmap?filters=&amp;amp;searchterms=100492&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;March 2023&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FhUKm1MGidjVrNEd74YA.png&#34;
+	width=&#34;463&#34;
+	height=&#34;746&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FhUKm1MGidjVrNEd74YA_hua4ddc1710f36b63890470fe470c4fb27_31698_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FhUKm1MGidjVrNEd74YA_hua4ddc1710f36b63890470fe470c4fb27_31698_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;62&#34;
+		data-flex-basis=&#34;148px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Once the code has been copied from Outlook or OneNote for Windows 10, it will be in your clipboard as plain text without any trailing whitespaces or line breaks so that you’re ready to paste it wherever you need it.&lt;/p&gt;
+&lt;p&gt;This was not the case with the new OneNote App. In this case there were two line breaks before the code and one after.&lt;/p&gt;
+&lt;p&gt;While it’s theoretically possible to also copy the code from the classic Outlook App, the experience is not the same as with the modern Outlook or OWA.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1HXrJSz8Q8JxGFYiZ0kGvCw.png&#34;
+	width=&#34;1007&#34;
+	height=&#34;308&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1HXrJSz8Q8JxGFYiZ0kGvCw_hu972e6eb3448d1c7d8c67fd8424cf9f22_25358_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1HXrJSz8Q8JxGFYiZ0kGvCw_hu972e6eb3448d1c7d8c67fd8424cf9f22_25358_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;326&#34;
+		data-flex-basis=&#34;784px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When you copy the code from there, it will include additional, unwanted metadata such as the subject and date created.&lt;/p&gt;
+&lt;p&gt;Subject Created Categories&lt;/p&gt;
+&lt;p&gt;456789 So 27.11.2022 11:59&lt;/p&gt;
+&lt;p&gt;I like the experience of copying the verification code from the modern Outlook or OWA the best. It will only show Sticky Notes and allows me to copy the raw code by a right-click. I usually have Outlook open all day anyway so it’s very convenient to just switch from inbox to notes to copy a new verification code.&lt;/p&gt;
+&lt;p&gt;Because the note is only used to store a temporary verification code and we want to avoid clutter, the Automation will remove the note 60 seconds after it has been created. This should give you plenty of time to copy it from your notes.&lt;/p&gt;
+&lt;h3 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h3&gt;
+&lt;p&gt;Both methods, Clipt and Automation + Sticky Notes require manual user interaction, so none of them are perfect. Clipt requires you to do more manual tasks on the phone and Sticky Notes needs more actions on Windows. I like using the Automation + Sticky Notes more because I believe that working on a Desktop with mouse and keyboard is still king in terms of how fast things can get done. I also like that no additional apps or services are required, especially that no Chromium Extension which runs in the background, even when the browser is closed is needed.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

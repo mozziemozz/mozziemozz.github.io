@@ -1,0 +1,2033 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Teams Phone on HEUSSER.PRO</title>
+        <link>https://heusser.pro/categories/teams-phone/</link>
+        <description>Recent content in Teams Phone on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 03 Feb 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/teams-phone/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Minimize Downtime when Porting Numbers to Microsoft Teams Calling Plans</title>
+        <link>https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/</link>
+        <pubDate>Sat, 03 Feb 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/</guid>
+        <description>&lt;p&gt;Number porting can sometimes be a tedious process but Microsoft actually does a really good job with their Porting Wizard in the Microsoft Teams Admin Center (TAC). I recently had to port a lot of numbers from a previous carrier to Microsoft. As you may know, there are two main types for numbers with Calling Plans and Operator Connect: &lt;code&gt;Subscriber&lt;/code&gt; and &lt;code&gt;Service&lt;/code&gt; numbers. Subscriber numbers can be assigned to users and Service numbers are for use with voice apps (auto attendants and call queues) or dedicated conference bridges. By default, all numbers are created in your tenant as Subscriber numbers but you will be able to change the usage to Service for specific numbers during the port order creation process.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-45-03-19-45-27.png&#34;
+	width=&#34;1239&#34;
+	height=&#34;173&#34;
+	srcset=&#34;https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-45-03-19-45-27_hu9598837a3343c9b4b5c9a9bd0fb6bfd1_20290_480x0_resize_box_3.png 480w, https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-45-03-19-45-27_hu9598837a3343c9b4b5c9a9bd0fb6bfd1_20290_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Usages of numbers can only be changed during the initial creation of the port request.&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;716&#34;
+		data-flex-basis=&#34;1718px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When you&amp;rsquo;re porting hundreds of numbers, it&amp;rsquo;s easy to forget or overlook an important number that should have been labelled as Service but unfortunately, was missed. Once the port order has been submitted, there&amp;rsquo;s no way of changing the usage anymore until the numbers have been fully ported to your tenant. I confirmed this with Microsoft through a PSTN Service Desk support request. At this point, your only two options are to either cancel the port order request and start over or accept that you can only change the usage after the numbers have been ported. Since cancelling and starting over will mean that there will be an unwelcome delay of at least a couple of days, that&amp;rsquo;s not really a viable option in most cases. Today, I&amp;rsquo;m going to show you a very easy workaround how you can make sure that your auto attendant or call queue will still be reachable by their phone number as soon as the port order has completed.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-47-03-19-47-17.png&#34;
+	width=&#34;2046&#34;
+	height=&#34;666&#34;
+	srcset=&#34;https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-47-03-19-47-17_huba2e3f4c8deac5b4ac7c56c17755df3b_79156_480x0_resize_box_3.png 480w, https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-47-03-19-47-17_huba2e3f4c8deac5b4ac7c56c17755df3b_79156_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;User = Subscriber / Conference, Voice app = Service&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;307&#34;
+		data-flex-basis=&#34;737px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;workaround&#34;&gt;Workaround&lt;/h2&gt;
+&lt;p&gt;When a number gets created as a Subscriber number, you won&amp;rsquo;t be able to assign it to an auto attendant or a call queue. But you can still create the resource account that&amp;rsquo;s linked to the voice app in advance. All you need to do to ensure that the voice app is reachable via it&amp;rsquo;s phone number is to create a temporary routing rule. To do so, navigate to &lt;strong&gt;Voice\Phone numbers&lt;/strong&gt; in TAC and switch to &lt;strong&gt;Routing rules&lt;/strong&gt;. Click &lt;strong&gt;+ Add&lt;/strong&gt; to create a new rule. Give the rule a name and fill out the description. Then choose &lt;code&gt;Single number&lt;/code&gt; and enter your number. Under &lt;strong&gt;Routing options&lt;/strong&gt; choose &lt;code&gt;Voice application&lt;/code&gt; and select your auto attendant or call queue from the list. If you already have other rules, set the &lt;code&gt;Evaluation order&lt;/code&gt; to a value that&amp;rsquo;s not already in use. If you don&amp;rsquo;t already have other rules with a lower evaluation order and which use regular expressions which could also match your number, it doesn&amp;rsquo;t really matter what you set this value to.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-56-03-19-56-02.png&#34;
+	width=&#34;541&#34;
+	height=&#34;1302&#34;
+	srcset=&#34;https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-56-03-19-56-02_huac60bebe093b01ae5f780463ff94ae66_51814_480x0_resize_box_3.png 480w, https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-56-03-19-56-02_huac60bebe093b01ae5f780463ff94ae66_51814_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Unassigned routing rule for the number that was accidentally left on User instead of Voice app.&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;41&#34;
+		data-flex-basis=&#34;99px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s very important that you don&amp;rsquo;t assign this number to any user. The rule is only effective for unassigned numbers. Usually, it takes a couple of hours until these rules become effective but if you do it at least one day before the porting date, you should be fine. Of course you could also set up a temporary user and forward all calls to that user to your voice app but that requires more work and more importantly a paid license.&lt;/p&gt;
+&lt;p&gt;If somebody calls that number before you were able to change the usage to Service and assign it to the voice app, the calls will show as &lt;code&gt;unassigned_in&lt;/code&gt; in the PSTN usage report in TAC. However, the calls will be routed to the voice app you specified in your routing rule without any issues.&lt;/p&gt;
+&lt;p&gt;Once the numbers have been ported, you can go to &lt;code&gt;Voice\Phone numbers&lt;/code&gt; in TAC again and search for the number in question. Sometimes you can change the usage directly from TAC. If you don&amp;rsquo;t see that option, create a new support request at the PSTN service desk. They&amp;rsquo;re usually quite fast and will change the usage within a couple of hours after creating the request.&lt;/p&gt;
+&lt;p&gt;When you receive confirmation from Microsoft that the usage has been changed, you can assign the number to the resource account of the voice app directly and delete the routing rule. As soon as the number is assigned to the resource account, the unassigned routing rule will not match anymore. This little workaround will allow you to keep the downtime to a minimum. In fact, you won&amp;rsquo;t have any downtime except the time it takes your old carrier to switch the routing to Microsoft.&lt;/p&gt;
+&lt;h2 id=&#34;caveats&#34;&gt;Caveats&lt;/h2&gt;
+&lt;p&gt;The only caveat you have to consider is when you want to use that number as an outgoing caller ID. Since you can&amp;rsquo;t assign it to a resource account before the usage was switched to Service, you won&amp;rsquo;t be able to configure it as caller ID for call queues or to a Caller ID policy. If you can live with the fact that you can&amp;rsquo;t use the number as outgoing caller ID for a couple of hours, there&amp;rsquo;s really no reason to panic and cancel the port request because you forgot to change the usage of some numbers.&lt;/p&gt;
+&lt;h2 id=&#34;closing-words&#34;&gt;Closing Words&lt;/h2&gt;
+&lt;p&gt;To me that was a gentle reminder that mistakes can happen to all of us. But as always, I tried to keep a clear head and look for a solution and most importantly share it with the awesome Teams community so all of you can take advantage of this knowledge as well.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Pick Up Held and Join Active Calls for Boss/Delegate Scenarios in Microsoft Teams</title>
+        <link>https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/</link>
+        <pubDate>Mon, 18 Sep 2023 08:28:01 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/</guid>
+        <description>&lt;p&gt;Microsoft recently introduced a big update to call delegation in Microsoft Teams. The last substantial change was when Microsoft rolled out &lt;code&gt;Set-CsUserCallingSettings&lt;/code&gt; and the possibility to change a Teams user’s call forwarding settings through Teams Admin Center.&lt;/p&gt;
+&lt;p&gt;The new features include the ability for delegates or delegators to pick up held calls or join active calls. There’s a small catch though. When a new delegate is added through TAC or PowerShell, permission to join active calls can’t be granted. It needs to be granted by the delegator itself or through the workaround I will teach you in this blog.&lt;/p&gt;
+&lt;p&gt;In TAC, it’s only possible to flip a toggle switch for &lt;strong&gt;Allow changing call settings.&lt;/strong&gt; There’s no specific option for join or pickup calls yet.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1jDMcHylHOX8704yzYzNuBA.png&#34;
+	width=&#34;1534&#34;
+	height=&#34;1086&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1jDMcHylHOX8704yzYzNuBA_hudc954b2bb790d0cd92efb4fc7e55e983_130585_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1jDMcHylHOX8704yzYzNuBA_hudc954b2bb790d0cd92efb4fc7e55e983_130585_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;141&#34;
+		data-flex-basis=&#34;339px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;It’s the same in PowerShell unfortunately.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1G9MQGdfTpyLsScrMP1iDw.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1G9MQGdfTpyLsScrMP1iDw_huabf3634478cc73584b7669516f4545b1_885560_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1G9MQGdfTpyLsScrMP1iDw_huabf3634478cc73584b7669516f4545b1_885560_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;test-scenario&#34;&gt;Test Scenario&lt;/h3&gt;
+&lt;p&gt;I’ve added the user &lt;strong&gt;Bill Stearn&lt;/strong&gt; as a delegate of &lt;strong&gt;Mike Wagner&lt;/strong&gt; in this case. As Bill, I can view the granted permissions in his Teams client.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1PiILqDdHXeVHnsQG47xVyA.png&#34;
+	width=&#34;1156&#34;
+	height=&#34;474&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1PiILqDdHXeVHnsQG47xVyA_hu8a0ed29fd27354519a0e5287cb21cddd_48939_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1PiILqDdHXeVHnsQG47xVyA_hu8a0ed29fd27354519a0e5287cb21cddd_48939_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;243&#34;
+		data-flex-basis=&#34;585px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Here we can see that &lt;strong&gt;Join active calls&lt;/strong&gt; is disabled and greyed out because the delegate permissions were granted by an admin through TAC and not by the delegator himself.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1TZ7zQhnEfpTyWlZj3p9zg.png&#34;
+	width=&#34;650&#34;
+	height=&#34;815&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1TZ7zQhnEfpTyWlZj3p9zg_hu86f336e392f041741c23e9a99414356b_60430_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1TZ7zQhnEfpTyWlZj3p9zg_hu86f336e392f041741c23e9a99414356b_60430_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;79&#34;
+		data-flex-basis=&#34;191px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Mike has set up &lt;strong&gt;Wendy Rhoades&lt;/strong&gt; as an additional delegate. This delegate was added through TAC as well, so her permissions look exactly the same and she can’t enable &lt;strong&gt;Join active calls&lt;/strong&gt; either.&lt;/p&gt;
+&lt;p&gt;Let’s take a look at Mike’s call settings in Teams. From there, he would be able to enable the &lt;strong&gt;Join active calls&lt;/strong&gt; permission for his delegates.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/19PL9m1NtORRcFXPHtg6w.png&#34;
+	width=&#34;655&#34;
+	height=&#34;969&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/19PL9m1NtORRcFXPHtg6w_hua9732eb04a147ca1c2b46cb7467c0e99_79346_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/19PL9m1NtORRcFXPHtg6w_hua9732eb04a147ca1c2b46cb7467c0e99_79346_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;67&#34;
+		data-flex-basis=&#34;162px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Here’s the thing though. Because both delegates were granted the &lt;strong&gt;Allow changing call settings&lt;/strong&gt; permission through TAC, they’re both allowed to change Mike’s call settings, which does in fact allow them to set the delegate permissions as well.&lt;/p&gt;
+&lt;p&gt;If you want to do &lt;em&gt;Ninja IT&lt;/em&gt; and set up full delegate permissions without bothering Mike at all, you’ll need to set up two delegates and they’ll need to enable the missing permission of each other.&lt;/p&gt;
+&lt;p&gt;Let’s see how Wendy would enable Bill to join Mike’s active calls. From &lt;strong&gt;Manage delegates&lt;/strong&gt; she’ll need to click on the three dots on Mike’s entry and select &lt;strong&gt;Change delegates.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1vWd26yJKv2WY6Djkr1lvSQ.png&#34;
+	width=&#34;1154&#34;
+	height=&#34;563&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1vWd26yJKv2WY6Djkr1lvSQ_hua00f1e5ec781c21d25c16288ff866f65_60851_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1vWd26yJKv2WY6Djkr1lvSQ_hua00f1e5ec781c21d25c16288ff866f65_60851_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;204&#34;
+		data-flex-basis=&#34;491px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;In Mike’s delegate settings, she then has to click the three dots on Bill’s entry and select &lt;strong&gt;Edit permissions&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1KwYgPYD4gnIDjkBYrKBK9A.png&#34;
+	width=&#34;1160&#34;
+	height=&#34;416&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1KwYgPYD4gnIDjkBYrKBK9A_hu2dfe5288dd39ae16610eb29d5fe8f59c_50854_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1KwYgPYD4gnIDjkBYrKBK9A_hu2dfe5288dd39ae16610eb29d5fe8f59c_50854_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;278&#34;
+		data-flex-basis=&#34;669px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This will allow Wendy to enable &lt;strong&gt;Join active calls&lt;/strong&gt; on Mike’s delegate permissions for Bill.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1TjdJa5vFr7d7UTtbtC6qWA.png&#34;
+	width=&#34;639&#34;
+	height=&#34;872&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1TjdJa5vFr7d7UTtbtC6qWA_hu2c952509ed8c9a04dad1098a6b0b1e98_73074_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1TjdJa5vFr7d7UTtbtC6qWA_hu2c952509ed8c9a04dad1098a6b0b1e98_73074_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;73&#34;
+		data-flex-basis=&#34;175px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If Bill now goes back to view his delegate permissions for Mike, he can see that &lt;strong&gt;Join active calls&lt;/strong&gt; was enabled.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1EcDgPRLMjYe6z3XJEwgldw.png&#34;
+	width=&#34;650&#34;
+	height=&#34;816&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1EcDgPRLMjYe6z3XJEwgldw_hu3241235b211f5298407742801bc3e4a3_60554_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1EcDgPRLMjYe6z3XJEwgldw_hu3241235b211f5298407742801bc3e4a3_60554_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;79&#34;
+		data-flex-basis=&#34;191px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;As you can see, multiple delegates can help each other set up full delegate permissions for their shared boss without bothering them as long as at least one delegate is added by an admin through TAC.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;If there’s only going to be one delegate, you can temporarily add your own Teams account as a delegate through TAC. Then you can use your own Teams client to add the real delegate with full permissions and remove your own account through TAC again.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I hope that Microsoft will soon update TAC so that the new permission can be granted without the need of my workaround.&lt;/p&gt;
+&lt;h3 id=&#34;new-delegate-user-interface&#34;&gt;New Delegate User Interface&lt;/h3&gt;
+&lt;p&gt;Finally, here are some screenshots of how the new UI for call delegation works. Mike’s call settings are configured to also ring his delegates for these example calling scenarios.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1UZcfAKqnO1FJhbS9Mirxsw.png&#34;
+	width=&#34;799&#34;
+	height=&#34;606&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1UZcfAKqnO1FJhbS9Mirxsw_hu15540f62f7b3f528550130a9931a2815_43182_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1UZcfAKqnO1FJhbS9Mirxsw_hu15540f62f7b3f528550130a9931a2815_43182_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;131&#34;
+		data-flex-basis=&#34;316px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The new delegate tabs in the Calls app are available in both the new and the old Teams client.&lt;/p&gt;
+&lt;p&gt;Delegates can also see other people supporting the same person. In this case, Wendy can see that Bill is supporting Mike as well.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1NiQ6zHfGQ4rxW1PmjXAg.png&#34;
+	width=&#34;2004&#34;
+	height=&#34;1176&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1NiQ6zHfGQ4rxW1PmjXAg_hu615f00667a9b2b318ba31c7f93892503_179361_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1NiQ6zHfGQ4rxW1PmjXAg_hu615f00667a9b2b318ba31c7f93892503_179361_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;170&#34;
+		data-flex-basis=&#34;408px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;An inbound call which is intended for a delegator but forwarded to delegates will look like this.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1m2B6ebHrfMX34ckn1Yn6hQ.png&#34;
+	width=&#34;541&#34;
+	height=&#34;417&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1m2B6ebHrfMX34ckn1Yn6hQ_hu3cb5e99f4eb1e0f49f1f5f26301982d4_34572_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1m2B6ebHrfMX34ckn1Yn6hQ_hu3cb5e99f4eb1e0f49f1f5f26301982d4_34572_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;129&#34;
+		data-flex-basis=&#34;311px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;For the record, this is how it looked in the old Teams client.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1lMmaHnyIl0angFvf7VXw.png&#34;
+	width=&#34;452&#34;
+	height=&#34;438&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1lMmaHnyIl0angFvf7VXw_hud830d10a3cdf9978f3df4fe0dafa6e42_70827_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1lMmaHnyIl0angFvf7VXw_hud830d10a3cdf9978f3df4fe0dafa6e42_70827_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;103&#34;
+		data-flex-basis=&#34;247px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The new Teams client will also show an indicator for missed calls on a delegator’s line.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1vvSkRWSA2Clu1XIZoLw4w.png&#34;
+	width=&#34;718&#34;
+	height=&#34;91&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1vvSkRWSA2Clu1XIZoLw4w_hubf09715d2417f834869fb09bae00b279_15605_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1vvSkRWSA2Clu1XIZoLw4w_hubf09715d2417f834869fb09bae00b279_15605_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;789&#34;
+		data-flex-basis=&#34;1893px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;join-and-pick-upcalls&#34;&gt;Join and Pick Up Calls&lt;/h3&gt;
+&lt;p&gt;In this example, Mike (the delegator) accepted the call himself. Wendy can see that there’s an active call in Mike’s call tab. She can also see that the call is managed by Mike himself. If need be, she could join the call too.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1ahR0QvgKAIaJF2pt493tg.png&#34;
+	width=&#34;2004&#34;
+	height=&#34;1176&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1ahR0QvgKAIaJF2pt493tg_huf2f6be3062cfc13f4c619b2e3fe705a8_196147_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1ahR0QvgKAIaJF2pt493tg_huf2f6be3062cfc13f4c619b2e3fe705a8_196147_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;170&#34;
+		data-flex-basis=&#34;408px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If Mike puts the call on hold, Wendy can see that, and the &lt;strong&gt;Join&lt;/strong&gt; button changes to a &lt;strong&gt;Resume&lt;/strong&gt; button.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1b1TGVydKd4Uvdde1BvJpQ.png&#34;
+	width=&#34;2004&#34;
+	height=&#34;1176&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1b1TGVydKd4Uvdde1BvJpQ_hub86bd222dc611ee49744188c03550896_205692_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1b1TGVydKd4Uvdde1BvJpQ_hub86bd222dc611ee49744188c03550896_205692_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;170&#34;
+		data-flex-basis=&#34;408px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Of course, the call cannot just be picked up by Wendy but by all of Mike’s delegates who have that permission. Or he could just resume the call himself.&lt;/p&gt;
+&lt;p&gt;In this example, Bill who is another delegate picked up the call and Wendy can see that Mike’s call is connected to Bill now.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1iBbYB6G1CEbUYGn1YjYWA.png&#34;
+	width=&#34;2004&#34;
+	height=&#34;1176&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1iBbYB6G1CEbUYGn1YjYWA_hu16791d4cfca2219cb8f3758a0633a89c_206643_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1iBbYB6G1CEbUYGn1YjYWA_hu16791d4cfca2219cb8f3758a0633a89c_206643_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;170&#34;
+		data-flex-basis=&#34;408px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If Mike decides to Join the call with the external caller and Bill, Wendy will be able to see that too, and she still has the option to join the three people who are already on the call.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1oux26xT5AHEV3mLaIarpzA.png&#34;
+	width=&#34;2004&#34;
+	height=&#34;1176&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1oux26xT5AHEV3mLaIarpzA_hua9b9ea74565cb9abdcf3c13036b41773_220513_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1oux26xT5AHEV3mLaIarpzA_hua9b9ea74565cb9abdcf3c13036b41773_220513_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;170&#34;
+		data-flex-basis=&#34;408px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1lNACYe4LWgltcvxRxthbig.png&#34;
+	width=&#34;2004&#34;
+	height=&#34;1176&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1lNACYe4LWgltcvxRxthbig_hu81d6cba101831bee588725990c9a46d5_217915_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1lNACYe4LWgltcvxRxthbig_hu81d6cba101831bee588725990c9a46d5_217915_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;170&#34;
+		data-flex-basis=&#34;408px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This works in the opposite direction too. If Wendy answers a call which was forwarded to her by Mike and puts that call on hold, Mike will be able to pick up the call.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/17fiLpMRJ8LxJy0XNpvLoQ.png&#34;
+	width=&#34;2004&#34;
+	height=&#34;1169&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/17fiLpMRJ8LxJy0XNpvLoQ_hu04e6908531e2f204a3dec4bb2020ee82_238723_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/17fiLpMRJ8LxJy0XNpvLoQ_hu04e6908531e2f204a3dec4bb2020ee82_238723_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;171&#34;
+		data-flex-basis=&#34;411px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;And last but not least, delegates can also see the call history of their delegators and for example see when another delegate answered a call of their shared delegator.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/16eqh8GUuZO2ZL0ffXqiaHg.png&#34;
+	width=&#34;2004&#34;
+	height=&#34;1169&#34;
+	srcset=&#34;https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/16eqh8GUuZO2ZL0ffXqiaHg_hucb478619d169aa594df74e55ef6f3929_220260_480x0_resize_box_3.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/16eqh8GUuZO2ZL0ffXqiaHg_hucb478619d169aa594df74e55ef6f3929_220260_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;171&#34;
+		data-flex-basis=&#34;411px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;wrapping-up&#34;&gt;Wrapping Up&lt;/h4&gt;
+&lt;p&gt;The new delegate features are a huge improvement and finally fill a big void in Microsoft Teams Phone. Everything is super easy and intuitive. The new Teams client is looking great as well, and I really like the style of the new calling notifications. The fact that missed calls on a delegator line are only visible in the new Teams client makes me believe that we’re going to see lots of calling related improvements in the new Teams over the next coming months. Exciting times lie ahead. The only thing that remains a little cumbersome is that you can’t grant the &lt;strong&gt;Join active calls&lt;/strong&gt; permission through TAC or PowerShell yet. However, the workaround outlined in this article should do the trick until Microsoft adds official support in TAC and PowerShell.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>PowerShell Script: Set Emergency Location for Unassigned Numbers in Teams</title>
+        <link>https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/</link>
+        <pubDate>Fri, 11 Aug 2023 16:23:20 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/</guid>
+        <description>&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/0rgv90To2E1EOPe.jpg&#34;
+	width=&#34;1024&#34;
+	height=&#34;1024&#34;
+	srcset=&#34;https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/0rgv90To2E1EOPe_hu39db2329fd12307d9d2a9a3dd1079567_90198_480x0_resize_q75_box.jpg 480w, https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/0rgv90To2E1EOPe_hu39db2329fd12307d9d2a9a3dd1079567_90198_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;100&#34;
+		data-flex-basis=&#34;240px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;With the MicrosoftTeams PowerShell module version &lt;strong&gt;5.4.0.&lt;/strong&gt; Microsoft has added the possibility to set the emergency location on unassigned numbers.&lt;/p&gt;
+&lt;p&gt;Typically, whenever new numbers are bought or ported to Microsoft, an admin needs to specify the emergency address which should be assigned to the new numbers. In some cases, this process can fail which means that you could end up with user/subscriber numbers which don’t have an emergency address linked to it.&lt;/p&gt;
+&lt;p&gt;When you try to assign a number wich does not have an emergency location assigned, you’ll get an error, and you need to assign it again, including the &lt;code&gt;-LocationId&lt;/code&gt; .&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Set-CsPhoneNumberAssignment&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-PhoneNumber&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$number&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;TelephoneNumber&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-LocationId&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$matchingEmergencyLocationId&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;This is an operational risk since scripts that may have been working fine for months suddenly stop working properly for certain numbers and new users could end up without a phone number. To mitigate this risk, it’s best to make sure that all your numbers have an emergency address linked to them from the get-go.&lt;/p&gt;
+&lt;p&gt;Up until now, the only way to solve this issue was to create a case for Microsoft’s PSTN service desk team and ask them to assign a location Id to your unassigned number.&lt;/p&gt;
+&lt;p&gt;Previously, I’ve tackled this issue by making sure that my scripts checked if the number was assigned successfully. If it wasn’t I made sure that the number got assigned again including the location Id.&lt;/p&gt;
+&lt;p&gt;I also thought about creating a dummy user and a script which I could (mis)use. The script would get all unassigned numbers which don’t have a location Id assigned and processes all numbers after each other. Each time, the user’s usage location would be set to the country of the current number, the number would be assigned to the dummy user including the location Id and then unassigned again. However, that sounded like a waste of time to me, so I never pursued that idea.&lt;/p&gt;
+&lt;p&gt;The possibilities now are much better, and the recent update allowed me to create a simple script which makes sure that all unassigned numbers also have a location Id assigned.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Please note that the script assumes that there’s only ever 1 emergency address per city and that there’s at least 1 other number which already uses the correct emergency address.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;If your environment does not meet the above criteria, you can’t use this script without tailoring it specifically to your needs. Use it at your own risk!&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Also note that you need to clone or download the &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub repo&lt;/a&gt; since it depends on other functions present in the repo.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/3d750fef739c17a73832f542459fac72.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;I hope this helps you in streamlining and optimizing your phone number inventory.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Simultaneously Forward Calls to Multiple Numbers in Teams</title>
+        <link>https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/</link>
+        <pubDate>Sun, 14 May 2023 08:23:26 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/</guid>
+        <description>&lt;p&gt;When configuring call flows in Microsoft Teams, one question I hear a lot is if a call can be forwarded to multiple external numbers at the same time.&lt;/p&gt;
+&lt;p&gt;This most likely applies to after-hours on-call scenarios where it’s absolutely crucial that somebody will eventually answer the call.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/0rL2fJDRh74kKQK7Z.jpg&#34;
+	width=&#34;1024&#34;
+	height=&#34;1024&#34;
+	srcset=&#34;https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/0rL2fJDRh74kKQK7Z_hu2ad6c7f72232edae2cd2c9c9db7e2c67_98921_480x0_resize_q75_box.jpg 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/0rL2fJDRh74kKQK7Z_hu2ad6c7f72232edae2cd2c9c9db7e2c67_98921_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;100&#34;
+		data-flex-basis=&#34;240px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Currently, this is impossible with Teams call queues. However, this is by design. The purpose of a queue is that the call stays within the queue and the company has control over the call for the entire flow of the call. In other words, the queue makes sure that the call stays within company boundaries by ignoring all user configured call answering rules. So, if a user has configured his calls to immediately forward to a personal cell phone, the queue simply doesn’t care and will present the call to the user in Teams anyway.&lt;/p&gt;
+&lt;p&gt;If you must forward the call to multiple numbers at the same time, you can use regular Teams (Microsoft 365) users. I always suggest using dedicated, generic accounts for this, even though it’s an additional license cost. This will make management easier and ensures that no user is able to change the forwarding settings and mess with the call flow on their own.&lt;/p&gt;
+&lt;p&gt;Since I did this in my lab, I used the users I already had to demonstrate this. This means that they have real sounding names and are not generically named accounts like I would use in a real-world scenario.&lt;/p&gt;
+&lt;h4 id=&#34;how-to-configure-it&#34;&gt;How To Configure It&lt;/h4&gt;
+&lt;p&gt;To configure forwarding to multiple external numbers simultaneously, identify where in your auto attendant or call queue the call must be forwarded.&lt;/p&gt;
+&lt;p&gt;Next, think about to how many numbers the call must be forwarded. Create one Teams enterprise voice enabled user for each external target number. Then create one more Teams voice enabled user. On this user, configure a call group and add all the users which forward to external numbers immediately.&lt;/p&gt;
+&lt;p&gt;Set this user’s call forwarding settings to either immediately forward to or also ring the call group.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1GFWLa0rX87G1PIvrBqX0jg.png&#34;
+	width=&#34;1251&#34;
+	height=&#34;640&#34;
+	srcset=&#34;https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1GFWLa0rX87G1PIvrBqX0jg_hub0eccbd257ba91d0aa89c5be8d8b36ad_70703_480x0_resize_box_3.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1GFWLa0rX87G1PIvrBqX0jg_hub0eccbd257ba91d0aa89c5be8d8b36ad_70703_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;195&#34;
+		data-flex-basis=&#34;469px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1Y70lmU10yu9gbNH8JZeJaQ.png&#34;
+	width=&#34;1248&#34;
+	height=&#34;787&#34;
+	srcset=&#34;https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1Y70lmU10yu9gbNH8JZeJaQ_huf3eb10202199579ef277959d7cb9875b_85825_480x0_resize_box_3.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1Y70lmU10yu9gbNH8JZeJaQ_huf3eb10202199579ef277959d7cb9875b_85825_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;158&#34;
+		data-flex-basis=&#34;380px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The accounts which are members of the call group must all be configured like this.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1XH5BluccXOhJiCrPyMkDQ.png&#34;
+	width=&#34;1243&#34;
+	height=&#34;650&#34;
+	srcset=&#34;https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1XH5BluccXOhJiCrPyMkDQ_hub286ce9cf621796e8b3d36ba6cc30767_74228_480x0_resize_box_3.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1XH5BluccXOhJiCrPyMkDQ_hub286ce9cf621796e8b3d36ba6cc30767_74228_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;191&#34;
+		data-flex-basis=&#34;458px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;While the first user can be configured to either also ring or immediately forward to the call group, the call group members must be configured to &lt;strong&gt;immediately forward&lt;/strong&gt;. If they’re set to also ring to an external number, it will not work.&lt;/p&gt;
+&lt;h4 id=&#34;call-flowdiagram&#34;&gt;Call Flow Diagram&lt;/h4&gt;
+&lt;p&gt;I updated the M365 Call Flow Visualizer and added two new parameters.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-ShowNestedUserCallGroups  
+    Specifies if call groups of users should be expanded and included into the diagram.  
+    Required:           false  
+    Type:               boolean  
+    Default value:      false  
+
+-ShowNestedUserDelegates  
+    Specifies if delegates s of users should be expanded and included into the diagram.  
+    Required:           false  
+    Type:               boolean  
+    Default value:      false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This allows us to indefinitely expand and display the user calling settings of call group members and delegates in the diagrams as well.&lt;/p&gt;
+&lt;p&gt;Please note that these features are currently only available in the &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer/tree/dev&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;DEV&lt;/a&gt; branch of the GitHub repo. I did my best to thoroughly test this but since there are basically unlimited possibilities of how users are interlinked within user call groups and delegates this is quite hard. There may still be some bugs, if you encounter any, please let me know.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1dgXzEKcsD0wZF74b5qg.png&#34;
+	width=&#34;674&#34;
+	height=&#34;1694&#34;
+	srcset=&#34;https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1dgXzEKcsD0wZF74b5qg_hu8968c148c4e326bdf2cd2894dfc6106b_90447_480x0_resize_box_3.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1dgXzEKcsD0wZF74b5qg_hu8968c148c4e326bdf2cd2894dfc6106b_90447_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;39&#34;
+		data-flex-basis=&#34;95px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1R6tSs1eHHGO255tRCxAkg.png&#34;
+	width=&#34;637&#34;
+	height=&#34;1694&#34;
+	srcset=&#34;https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1R6tSs1eHHGO255tRCxAkg_huf0a4e1baf4a8951c61543da928555726_94829_480x0_resize_box_3.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1R6tSs1eHHGO255tRCxAkg_huf0a4e1baf4a8951c61543da928555726_94829_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;37&#34;
+		data-flex-basis=&#34;90px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;other-options&#34;&gt;Other Options&lt;/h4&gt;
+&lt;p&gt;This also works if you use call delegation instead of a call group with both immediately forward and also ring on the first user. I tested it with Microsoft Calling Plans, but it should work with Direct Routing or Operator Connect as well. The maximum amount of simultaneous external forwards via call group I tested was three and that still worked as expected.&lt;/p&gt;
+&lt;p&gt;I recommend using a call group over delegates because this gives you a little more flexibility. While delegates will always simultaneously ring all delegates, a call group can be configured for serial ring as well. In this case, it will always ring for &lt;strong&gt;20 seconds&lt;/strong&gt; per call group member before the next one is tried. This time out cannot be changed as of today.&lt;/p&gt;
+&lt;h4 id=&#34;caveats&#34;&gt;Caveats&lt;/h4&gt;
+&lt;p&gt;When you do this, you need to be aware of issues that might occur. At the beginning of this article, I briefly mentioned that the purpose of a queue is to stay in control of the call for the entire time. That’s not the case when using external forwarding on user calling settings. For example, if one of the external targets is not reachable by e.g. having a rather short voicemail timeout, is in flight mode or just has no reception, calls might get lost on personal voicemail boxes outside of a company’s control. Once a call hits any voicemail box, the call is technically connected and will stop ringing the other targets, even if parallel ringing is configured on the call group. This also applies to call groups configured in serial ring. If e.g. the first target is not reachable, and the call goes to voicemail the other targets won’t even be tried anymore.&lt;/p&gt;
+&lt;p&gt;It’s also noteworthy that user configured calling settings can become extremely complex and it’s easy for users (or admins for that matter) to build loops or enable forwards without knowing about it.&lt;/p&gt;
+&lt;p&gt;The same goes for the M365 Call Flow Visualizer, I don’t think that it’s possible to accurately display everything that’s configured in nested user calling settings. I tried my best to render call flows where a serial ring is configured on a user configured call group though. As an example, I configured the same call group which was already shown in the above diagram for serial ring. Now all the call group targets are displayed in chronological order, and you can see how the call trickles down to the next target after 20 seconds.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/14omtG0AeKdTOD4TzNItlA.png&#34;
+	width=&#34;690&#34;
+	height=&#34;2971&#34;
+	srcset=&#34;https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/14omtG0AeKdTOD4TzNItlA_hu12f6c71221e7d8c038019ced665f10d5_171663_480x0_resize_box_3.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/14omtG0AeKdTOD4TzNItlA_hu12f6c71221e7d8c038019ced665f10d5_171663_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;23&#34;
+		data-flex-basis=&#34;55px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Unlike with call queues and auto attendants, where the M365 Call Flow Visualizer does a fantastic job displaying things as they are, please take complicated nested user call groups and delegate flows with a grain of salt. At least for now.&lt;/p&gt;
+&lt;p&gt;Look at this call flow for example. When the call gets to &lt;strong&gt;Bill Stearn&lt;/strong&gt; it will also ring his call group in serial order. Thus, it will ring the mobile number &lt;strong&gt;+4178857****&lt;/strong&gt; for 20 seconds. Because there is an unanswered timeout of 20s configured for &lt;strong&gt;Bill&lt;/strong&gt; the call will then be forwarded to his delegates where the call will be forwarded to &lt;strong&gt;Bobby&lt;/strong&gt; and &lt;strong&gt;Mike&lt;/strong&gt; and they have an immediate forwarding configured to their mobiles.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1cZyXiLxV40aMOM5YsXkbUw.png&#34;
+	width=&#34;882&#34;
+	height=&#34;3730&#34;
+	srcset=&#34;https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1cZyXiLxV40aMOM5YsXkbUw_hu59a321b23c096be65035986b86105a5a_236702_480x0_resize_box_3.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1cZyXiLxV40aMOM5YsXkbUw_hu59a321b23c096be65035986b86105a5a_236702_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;23&#34;
+		data-flex-basis=&#34;56px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;All the users who are members of the call group are linked after each other because the call group is configured in serial ring. The links which point from the delegate sub graph (which is always parallel ring) to the delegate users are still linked to the correct user but it’s not very easy to understand what’s going on.&lt;/p&gt;
+&lt;p&gt;When we think about the delegate flow, the chaining from &lt;strong&gt;Bobby’s&lt;/strong&gt; time out of 20s doesn’t actually apply anymore and the call won’t be forwarded to &lt;strong&gt;Mike&lt;/strong&gt; because that part of the diagram only applies to the serial order of &lt;strong&gt;Bill’s&lt;/strong&gt; call group.&lt;/p&gt;
+&lt;p&gt;Last but not least, &lt;strong&gt;Wendy&lt;/strong&gt; is also included in the call flow even though a call could never go this far in that specific call flow because of the applied time outs.&lt;/p&gt;
+&lt;p&gt;Unfortunately, I currently don’t see any way I could solve this with the visualizer script.&lt;/p&gt;
+&lt;p&gt;I’d like to point out that configuring both a call group and delegates on the same user seems extremely unlikely and is something I would generally refrain from.&lt;/p&gt;
+&lt;h4 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h4&gt;
+&lt;p&gt;Although it’s not an ideal solution, using generic user accounts and call groups for certain scenarios is for sure a creative one. In some cases, this might help you solve a very specific niche scenario which previously seemed impossible.&lt;/p&gt;
+&lt;p&gt;I do recommend using auto attendants and call queues to build your call flows whenever possible. If you must use call groups, I advise you to keep it simple and create generic accounts to which only Teams admins have access to. Otherwise, it’s free-for-all kind of situation and users can mess with your configuration as they please.&lt;/p&gt;
+&lt;p&gt;If you stick with simple scenarios (like shown in the first three diagrams in this article) and avoid building call group loops or timeouts which cancel each other out, I don’t see any issues why you shouldn’t do this if you really need to.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Updated Calling UI on Teams Desk Phones</title>
+        <link>https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/</link>
+        <pubDate>Thu, 29 Sep 2022 20:31:53 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/</guid>
+        <description>&lt;p&gt;It’s been a while since I’ve used my Yealink MP56 Teams certified Desk Phone. I only bought it for testing purposes anyway… But today I noticed that the call control UI has been completely revamped.&lt;/p&gt;
+&lt;p&gt;I’m running Firmware Version 1449/1.0.94.2022090705/0907. (And yes, I used the awesome PowerToys Text Extractor (Win + Shift + T) to copy the text from the screenshot below.)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1GC3ucFmSDUefZHlDJh2Ig.jpeg&#34;
+	width=&#34;800&#34;
+	height=&#34;480&#34;
+	srcset=&#34;https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1GC3ucFmSDUefZHlDJh2Ig_hub1c6977932a8b95daa922e9b8266b0f7_19592_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1GC3ucFmSDUefZHlDJh2Ig_hub1c6977932a8b95daa922e9b8266b0f7_19592_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;166&#34;
+		data-flex-basis=&#34;400px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;An incoming call now looks like this. If I remember correctly, the buttons used to be much smaller and located next to each other at the bottom of the screen.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1AegRntILpLiXhzwKM16Q.jpeg&#34;
+	width=&#34;800&#34;
+	height=&#34;480&#34;
+	srcset=&#34;https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1AegRntILpLiXhzwKM16Q_hudbbf0a83c75b03d5ec7871acd25b2d95_12538_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1AegRntILpLiXhzwKM16Q_hudbbf0a83c75b03d5ec7871acd25b2d95_12538_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;166&#34;
+		data-flex-basis=&#34;400px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The in-call controls also feature larger, centered buttons now.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1ukiZX9MRAIrIca4TTYAQ2Q.jpeg&#34;
+	width=&#34;800&#34;
+	height=&#34;480&#34;
+	srcset=&#34;https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1ukiZX9MRAIrIca4TTYAQ2Q_hu4dbda62c3e976473a63e8c9d17f0dfc8_14552_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1ukiZX9MRAIrIca4TTYAQ2Q_hu4dbda62c3e976473a63e8c9d17f0dfc8_14552_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;166&#34;
+		data-flex-basis=&#34;400px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The transfer button has been moved to the main screen, which means that you’ll need one tap less to initiate a transfer now.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1Q3TrkssZ05qBSiENlfxM1w.jpeg&#34;
+	width=&#34;800&#34;
+	height=&#34;480&#34;
+	srcset=&#34;https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1Q3TrkssZ05qBSiENlfxM1w_hu09872964ff934fea69f08af3f11cc2cb_10517_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1Q3TrkssZ05qBSiENlfxM1w_hu09872964ff934fea69f08af3f11cc2cb_10517_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;166&#34;
+		data-flex-basis=&#34;400px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1fu0FAoGzkPiKzst5U9wfQ.jpeg&#34;
+	width=&#34;800&#34;
+	height=&#34;480&#34;
+	srcset=&#34;https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1fu0FAoGzkPiKzst5U9wfQ_hu617404fcf985abcacac65782d6a16c4e_28514_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1fu0FAoGzkPiKzst5U9wfQ_hu617404fcf985abcacac65782d6a16c4e_28514_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;166&#34;
+		data-flex-basis=&#34;400px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The menu for the actual transfer / search looks the same in both the new and the old UI.&lt;/p&gt;
+&lt;p&gt;You can still bring back the old view by tapping &lt;strong&gt;…More&lt;/strong&gt;. and then &lt;strong&gt;Change view.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1zKuewvudu7c7RwrJgZKw.jpeg&#34;
+	width=&#34;800&#34;
+	height=&#34;480&#34;
+	srcset=&#34;https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1zKuewvudu7c7RwrJgZKw_hu1aa2ca1d7ce4f63bf0b9dd9c94affb9e_12665_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1zKuewvudu7c7RwrJgZKw_hu1aa2ca1d7ce4f63bf0b9dd9c94affb9e_12665_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;166&#34;
+		data-flex-basis=&#34;400px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This will transition into the old UI where everything is located at the bottom of the screen.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1qE72elvoIwvZ26ObznmP1g.png&#34;
+	width=&#34;800&#34;
+	height=&#34;480&#34;
+	srcset=&#34;https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1qE72elvoIwvZ26ObznmP1g_hu0863ac67ae6b58790cdeeaa7f47e452c_41690_480x0_resize_box_3.png 480w, https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1qE72elvoIwvZ26ObznmP1g_hu0863ac67ae6b58790cdeeaa7f47e452c_41690_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;166&#34;
+		data-flex-basis=&#34;400px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Funny enough, there’s no option to switch back to the new look once you’ve changed the view.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/17YI7KnZsSDfyPws1bdWHA.jpeg&#34;
+	width=&#34;800&#34;
+	height=&#34;480&#34;
+	srcset=&#34;https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/17YI7KnZsSDfyPws1bdWHA_hubebc17b38653dbb85925eae442166da5_10535_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/17YI7KnZsSDfyPws1bdWHA_hubebc17b38653dbb85925eae442166da5_10535_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;166&#34;
+		data-flex-basis=&#34;400px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The only way to get back to the new view is if you tap the &lt;strong&gt;←&lt;/strong&gt; arrow and then &lt;strong&gt;Tap to return to call.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1GekqCj551lsyzSTrdKAQg.png&#34;
+	width=&#34;800&#34;
+	height=&#34;97&#34;
+	srcset=&#34;https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1GekqCj551lsyzSTrdKAQg_hu7201c93d5266cbd3ee912ecb547208a4_20965_480x0_resize_box_3.png 480w, https://heusser.pro/p/updated-calling-ui-on-teams-desk-phones-9e8f18790f5a/1GekqCj551lsyzSTrdKAQg_hu7201c93d5266cbd3ee912ecb547208a4_20965_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;824&#34;
+		data-flex-basis=&#34;1979px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This will bring back the revamped UI for the active call. I suspect that the old UI will be removed entirely sooner or later. I don’t see any reason why one would need or want two different calling UIs. I also don’t think that Microsoft wants to maintain two different UIs. Especially if the new one features a lot of improvements and welcome changes.&lt;/p&gt;
+&lt;p&gt;Oh, and thanks to MVP James Cussen for the awesome &lt;a class=&#34;link&#34; href=&#34;https://www.myteamslab.com/2020/10/teams-phone-screen-capture-tool.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Teams Phone Screen Capture Tool&lt;/a&gt;.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Everything you ever wanted to know about Microsoft Teams Phone and Shared Voicemail</title>
+        <link>https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/</link>
+        <pubDate>Sat, 07 May 2022 20:16:33 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/</guid>
+        <description>&lt;p&gt;Shared Voicemail has been available in Teams Phone for quite some time now. I still thought that it would be helpful to do a proper write up.&lt;/p&gt;
+&lt;h4 id=&#34;the-basics&#34;&gt;The Basics&lt;/h4&gt;
+&lt;p&gt;A shared voicemail always has to be a Microsoft 365 Group. This group doesn’t need to be Teams enabled but it can be. As of the time of writing, I do not know of a way to forward a call straight to shared voicemail without configuring an auto attendant or a call queue in front of it.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Update 27.01.2023&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;As it turns out, it’s now possible to also set Distribution Lists or Mail Enabled Security Groups as shared voicemail targets. I’ve put together a new article about that &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1&#34; &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;/Update&lt;/strong&gt;&lt;/p&gt;
+&lt;h4 id=&#34;skimping-onlicenses&#34;&gt;Skimping on Licenses&lt;/h4&gt;
+&lt;p&gt;If Teams &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/microsoftteams/teams-add-on-licensing/virtual-user#virtual-user-license-allocation&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Phone Standard — Virtual User Licenses&lt;/a&gt; are scarce in your tenant, this trick might help you out. &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/microsoftteams/routing-calls-to-unassigned-numbers&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Teams Unassigned Number treatments&lt;/a&gt; are usually used to handle incoming calls to numbers which are not assigned to any user or resource account. Since you specify the matching rule with a regular expression, it’s also possible to match whole numbers explicitly.&lt;/p&gt;
+&lt;p&gt;An Unassigned Number Treatment can only be configured to forward to a resource account or an announcement. It’s not possible to forward directly to a shared voicemail. If you match the whole number without any wildcards, it’s possible to forward external calls to a shared voicemail without assigning a Teams Phone Standard — Virtual User License. However, an auto attendant or a call queue is still needed to forward the call to voicemail.&lt;/p&gt;
+&lt;p&gt;Bonus Tip for Unassigned Number Treatments: While it’s possible to play back an announcement without having to setup an auto attendant or a call queue, an announcement will only play back the call and not disconnect the call after the announcement has been played back. If you want to automatically disconnect the call after playing back a message, choose an auto attendant to play back your announcement.&lt;/p&gt;
+&lt;h4 id=&#34;setup-shared-voicemail&#34;&gt;Setup Shared Voicemail&lt;/h4&gt;
+&lt;p&gt;I won’t go into the details on how to setup a complete auto attendant or a call queue in this article. This is only to show you where you would configure a redirection to a shared voicemail. Anywhere where you can choose a redirection target on an auto attendant or a call queue, you can choose to forward to shared voicemail. Remember, this has to be a Microsoft 365 Group.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1SJZHPoU2AeDf3sIREfdA.png&#34;
+	width=&#34;1389&#34;
+	height=&#34;667&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1SJZHPoU2AeDf3sIREfdA_hu6be489b4a4275ae0e0679107ab36b5f6_62830_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1SJZHPoU2AeDf3sIREfdA_hu6be489b4a4275ae0e0679107ab36b5f6_62830_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;208&#34;
+		data-flex-basis=&#34;499px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now let’s see where shared voicemails land, once a customer has left a message.&lt;/p&gt;
+&lt;h4 id=&#34;microsoft-365groups&#34;&gt;Microsoft 365 Groups&lt;/h4&gt;
+&lt;p&gt;Shared voicemails are delivered to M365 Group’s inboxes, not to a channel email address or similar. A customer might tell you which users need to be able to receive and access these voicemails. Naturally, you start adding members to this group in M365 Admin or Azure AD.&lt;/p&gt;
+&lt;p&gt;Based on my personal experience this usually results in two problems.&lt;/p&gt;
+&lt;p&gt;1. Group inboxes are often neglected or completely forgotten by users, even though they’re visible and accessible in most Outlook clients. This can lead to potentially unhappy customers because their calls are never returned.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1UB44J9XqnSeuSmsiFVgRw.png&#34;
+	width=&#34;1894&#34;
+	height=&#34;1020&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1UB44J9XqnSeuSmsiFVgRw_hu6aa1b23f968cf88db6911079c794f614_248621_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1UB44J9XqnSeuSmsiFVgRw_hu6aa1b23f968cf88db6911079c794f614_248621_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;185&#34;
+		data-flex-basis=&#34;445px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Microsoft 365 Groups offer various settings which can be configured. Some of these settings can only be configured after the group has been created.&lt;/p&gt;
+&lt;p&gt;By default, the “Send copies of team emails and events to team member’s inboxes” is disabled.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1ACMhAeuVmlXodIbuKfpGw.png&#34;
+	width=&#34;881&#34;
+	height=&#34;768&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1ACMhAeuVmlXodIbuKfpGw_hu1d8e9338672ab4173386edddab1de927_77531_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1ACMhAeuVmlXodIbuKfpGw_hu1d8e9338672ab4173386edddab1de927_77531_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;114&#34;
+		data-flex-basis=&#34;275px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This means that emails to this group will not find it’s way to the member’s inboxes. Members have to open the group mailbox proactively.&lt;/p&gt;
+&lt;p&gt;From a user’s perspective, their settings look like this. This is the default setting for new groups.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/12dq53yL2p15n9Pg4yHBbZw.png&#34;
+	width=&#34;428&#34;
+	height=&#34;718&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/12dq53yL2p15n9Pg4yHBbZw_hua7d4d665d30cec3954b4dd024c77fe38_56815_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/12dq53yL2p15n9Pg4yHBbZw_hua7d4d665d30cec3954b4dd024c77fe38_56815_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;59&#34;
+		data-flex-basis=&#34;143px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;So, let’s head back to M365 Admin and change the setting for “Send copies of team emails and events to team member’s inboxes”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1dvOIE9fcyqLSV6lzA4EEg.png&#34;
+	width=&#34;873&#34;
+	height=&#34;481&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1dvOIE9fcyqLSV6lzA4EEg_hu4cec13d4162cab0eea139c4d716477aa_55532_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1dvOIE9fcyqLSV6lzA4EEg_hu4cec13d4162cab0eea139c4d716477aa_55532_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;435px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;After a few seconds, this change will be reflected in the user’s mailbox settings as well.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1Hah5CoH3mR9L4Oz3LTJSg.png&#34;
+	width=&#34;428&#34;
+	height=&#34;705&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1Hah5CoH3mR9L4Oz3LTJSg_hu7f67957208905548a2568af6d7f70b03_56647_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1Hah5CoH3mR9L4Oz3LTJSg_hu7f67957208905548a2568af6d7f70b03_56647_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;60&#34;
+		data-flex-basis=&#34;145px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Of course, a user can always override his own settings by going into groups and clicking on settings.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1OSjGMbMU8oB1CWAEe3zvg.png&#34;
+	width=&#34;664&#34;
+	height=&#34;400&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1OSjGMbMU8oB1CWAEe3zvg_hu9b3ee55ea9f613490f63cc710b1e5f05_44865_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1OSjGMbMU8oB1CWAEe3zvg_hu9b3ee55ea9f613490f63cc710b1e5f05_44865_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;166&#34;
+		data-flex-basis=&#34;398px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When I last tested this about 1–2 years ago, the setting would only apply to new members for the group. Already existing member’s settings were not changed. It seems like Microsoft has updated this behavior which is a very welcome change. However, disabling it again from M365 Admin doesn’t seem to also disable it for the group&amp;rsquo;s members again.&lt;/p&gt;
+&lt;p&gt;The equivalent PowerShell parameter for this setting is still called &lt;code&gt;AutoSubscribeNewMembers&lt;/code&gt;and the &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/powershell/module/exchange/set-unifiedgroup?view=exchange-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;official documentation&lt;/a&gt; says the following.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The AutoSubscribeNewMembers switch specifies whether to automatically subscribe new members that are added to the Microsoft 365 Group to conversations and calendar events. &lt;strong&gt;Only users that are added to the group after you enable this setting are automatically subscribed to the group.&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Based on my testing, setting it via PowerShell really does not enable “Follow in Inbox” for existing users. The setting is only enabled if it’s configured via the portal. If you disable, save and enable it again from the portal, existing members will be subscribed to all emails again.&lt;/p&gt;
+&lt;p&gt;While that solves the problem of users missing voicemails because they’re lost in a group inbox, it introduces problem number two.&lt;/p&gt;
+&lt;p&gt;2. When multiple people get an email with a voicemail message, coordination and clear communication within the team is key to prevent either multiple people calling back a customer or nobody at all calling back a customer.&lt;/p&gt;
+&lt;h4 id=&#34;what-about-shared-mailboxes&#34;&gt;What about Shared Mailboxes?&lt;/h4&gt;
+&lt;p&gt;Can’t we just use a shared mailbox as a target for shared voicemail where we already have established routines, rules and shifts on who processes which messages on which days etc.?&lt;/p&gt;
+&lt;p&gt;The answer is both yeas and no. Technically no. At least can’t we choose a shared mailbox as voicemail target in Teams Admin Center. It is however possible to just add a shared mailbox as the only member of a M365 Group and enable “Follow in Inbox” for the group&amp;rsquo;s members. This way, all voicemails will be delivered to a shared mailbox and the group’s actual inbox can be completely ignored without feeling guilty at all.&lt;/p&gt;
+&lt;h3 id=&#34;voicemails-in-teamsclient&#34;&gt;Voicemails in Teams Client&lt;/h3&gt;
+&lt;h4 id=&#34;personal-voicemails&#34;&gt;Personal Voicemails&lt;/h4&gt;
+&lt;p&gt;Let’s check out all the places a user can see voicemail notifications. Even though this article is focusing on shared voicemail, I’ll start with personal voicemails for a complete overview.&lt;/p&gt;
+&lt;p&gt;The first thing you will probably notice when you get a new voicemail is the Teams feed notification which looks like this.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1xJeMRVve3aCWVRwYhX5fkw.png&#34;
+	width=&#34;581&#34;
+	height=&#34;237&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1xJeMRVve3aCWVRwYhX5fkw_hud9ab453260cfff8346ae119b83a4ff48_17621_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1xJeMRVve3aCWVRwYhX5fkw_hud9ab453260cfff8346ae119b83a4ff48_17621_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;245&#34;
+		data-flex-basis=&#34;588px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Of course, you can also go to the Calls app and filter your history by “Voicemail”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1LVXePzkv5dPv7rSQWfdHA.png&#34;
+	width=&#34;1896&#34;
+	height=&#34;1020&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1LVXePzkv5dPv7rSQWfdHA_hu7569ab46627ac8239a246568070c6e8d_130394_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1LVXePzkv5dPv7rSQWfdHA_hu7569ab46627ac8239a246568070c6e8d_130394_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;185&#34;
+		data-flex-basis=&#34;446px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;You can also find your voicemails as an *.mp3 attachment in your personal inbox.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1gCb35wXXp7uOa0RC3lu9A.png&#34;
+	width=&#34;2736&#34;
+	height=&#34;1248&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1gCb35wXXp7uOa0RC3lu9A_huc526ca66c9bf3e11df59d9f6da9050e0_241934_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1gCb35wXXp7uOa0RC3lu9A_huc526ca66c9bf3e11df59d9f6da9050e0_241934_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;219&#34;
+		data-flex-basis=&#34;526px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The Teams client actually searches your inbox for emails which meet certain criteria to display them in the Teams Client. Unfortunately, I don’t know the exact criteria Teams is evaluating but I’ve seen some cases where voicemails did not show up in a user&amp;rsquo;s Teams Client because an external anti-virus solution was scanning emails and manipulated the message headers before they were delivered into the user’s inboxes. That is definitely something to keep in mind if you’re facing similar issues.&lt;/p&gt;
+&lt;h4 id=&#34;shared-voicemails&#34;&gt;Shared Voicemails&lt;/h4&gt;
+&lt;p&gt;The interesting part is that this also applies to shared voicemails. If a user has subscribed to receive all group emails in their inbox, the shared voicemail will also be delivered into the personal inbox of the user.&lt;/p&gt;
+&lt;p&gt;As you can see, the email received at 19:17 is a shared voicemail. The subject contains “Geteilte Voicemail” which means “Shared Voicemail” in English and also includes the Name of the Call Queue on which the voicemail was received.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1OCbUZEp7MkfiJ28fJQj4ig.png&#34;
+	width=&#34;2736&#34;
+	height=&#34;1179&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1OCbUZEp7MkfiJ28fJQj4ig_hub608c251b5966d8c921c16f1ad18ba1f_262759_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1OCbUZEp7MkfiJ28fJQj4ig_hub608c251b5966d8c921c16f1ad18ba1f_262759_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;232&#34;
+		data-flex-basis=&#34;556px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;In this case, it’s indeed the name of a call queue or auto attendant and not the display name of the resource account associated with one of the afore mentioned voice apps.&lt;/p&gt;
+&lt;p&gt;Here you can see that I have a call queue named “MS Test CQ” but the associated resource account is actually called “Team Green CQ”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1RRrb2OMw41FgNW2LZe0zg.png&#34;
+	width=&#34;1860&#34;
+	height=&#34;702&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1RRrb2OMw41FgNW2LZe0zg_hu0cbd96cba08bd5873772f35b44557543_47526_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1RRrb2OMw41FgNW2LZe0zg_hu0cbd96cba08bd5873772f35b44557543_47526_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;264&#34;
+		data-flex-basis=&#34;635px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;And here you can see that the subject shows the call queue’s name.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1O3VPwMqCVfPXvvbWSBNjNQ.png&#34;
+	width=&#34;1265&#34;
+	height=&#34;833&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1O3VPwMqCVfPXvvbWSBNjNQ_hu8eacae23d80d16c558ad8d7d1dada88b_81482_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1O3VPwMqCVfPXvvbWSBNjNQ_hu8eacae23d80d16c558ad8d7d1dada88b_81482_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;151&#34;
+		data-flex-basis=&#34;364px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;But let’s get back to Teams. The call history now shows both the personal and the shared voicemail in the user’s personal call history. There’s no indication whatsoever that the voicemail received at 19:17 is a shared one. The user can only get this information in Outlook.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/15B2FqT5vcqKs0E5Ot3cGA.png&#34;
+	width=&#34;2736&#34;
+	height=&#34;1738&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/15B2FqT5vcqKs0E5Ot3cGA_hu7d393c5f03c7d4418ce9b8e52aea14ef_226422_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/15B2FqT5vcqKs0E5Ot3cGA_hu7d393c5f03c7d4418ce9b8e52aea14ef_226422_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;157&#34;
+		data-flex-basis=&#34;377px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;voice-enabledchannels&#34;&gt;Voice Enabled Channels&lt;/h4&gt;
+&lt;p&gt;Teams Channels can also be configured as “Voice Enabled Channels”, also known as “Collaborative Calling Channels”. A channel becomes voice enabled if a Team and a Channel are used as a call queue’s &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0&#34; &gt;agent list&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Here you can see that I’ve selected the “General” channel from the Team “CQ Agents Escalation” as the call queue’s agent list.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1Pipfuped1OuKx47jS1nIA.png&#34;
+	width=&#34;1833&#34;
+	height=&#34;515&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1Pipfuped1OuKx47jS1nIA_huf41810d3b91826d88a535864b042e906_42042_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1Pipfuped1OuKx47jS1nIA_huf41810d3b91826d88a535864b042e906_42042_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;355&#34;
+		data-flex-basis=&#34;854px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Voice enabled channels are only visible/available on Desktop Clients. Web, mobile or desk phones are not supported yet. It’s important to mention that this has absolutely no impact on the delivery of call queue calls. Even if a channel is used for the agent list, mobile, web and desk phone clients can still receive calls from the call queue. They just won’t be able to see the “Calls” tab inside the channel.&lt;/p&gt;
+&lt;p&gt;On the Desktop Client, the “Calls” tab is added automatically when a channel is configured to receive calls. This tab cannot be added from the Teams Client itself. Assigning it to a call queue in TAC is the only way to do it.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1oOGcAgu4wPmwWGHlv8Wo8w.png&#34;
+	width=&#34;1295&#34;
+	height=&#34;355&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1oOGcAgu4wPmwWGHlv8Wo8w_hu058b4a5559e8f27c8111e16bbefbf89d_42638_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1oOGcAgu4wPmwWGHlv8Wo8w_hu058b4a5559e8f27c8111e16bbefbf89d_42638_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;364&#34;
+		data-flex-basis=&#34;875px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The Calls Tab includes its own call history. Unfortunately, this is a bit misleading. The history will only show incoming calls which were answered by the signed in user. It doesn’t show missed calls on the queue at all.&lt;/p&gt;
+&lt;p&gt;If notifications about missed calls on call queues are essential to you, I suggest to take a look at &lt;a class=&#34;link&#34; href=&#34;https://twincapfirst.ch/teams-easy-call-report-en/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;the service&lt;/a&gt; I developed at my previous employer which does just that.&lt;/p&gt;
+&lt;p&gt;If we switch the filter to Voicemail, it gets even weirder. Here we can see the same shared voicemail from 19:17.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1iC0xQLcRWs72b0Ke13osfQ.png&#34;
+	width=&#34;1295&#34;
+	height=&#34;351&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1iC0xQLcRWs72b0Ke13osfQ_hu6e163ac26b8ab090e8212037bc3298e4_40982_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1iC0xQLcRWs72b0Ke13osfQ_hu6e163ac26b8ab090e8212037bc3298e4_40982_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;368&#34;
+		data-flex-basis=&#34;885px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Note that I’ve set a different group as shared voicemail target than the Team which is configured as voice enabled channel. It seems that the Teams Client is evaluating all the M365 Groups which are configured on this particular call queue and whether or not the signed in user is a member of these groups. A call queue can have a maximum of two different voicemail targets. One for the overflow action and one for the timeout action.&lt;/p&gt;
+&lt;p&gt;Right now, I’ve only configured shared voicemail as the overflow action.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1aINhOLqNZ1Rxc0FhyDldQ.png&#34;
+	width=&#34;1851&#34;
+	height=&#34;870&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1aINhOLqNZ1Rxc0FhyDldQ_hu255f86ac847a51704f74b4ca232d2c37_85369_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1aINhOLqNZ1Rxc0FhyDldQ_hu255f86ac847a51704f74b4ca232d2c37_85369_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;212&#34;
+		data-flex-basis=&#34;510px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Since the signed in user is a member of that group, the voicemails will show up in the voice enabled channel.&lt;/p&gt;
+&lt;p&gt;If I remove the shared voicemail target from the queue in TAC and refresh the Teams Client, the entry is gone.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1pkYwDCSYzHnoFLI6wrF5w.png&#34;
+	width=&#34;1278&#34;
+	height=&#34;341&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1pkYwDCSYzHnoFLI6wrF5w_huff2d25a04f1d9d8aa2ba74333baa6862_23379_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1pkYwDCSYzHnoFLI6wrF5w_huff2d25a04f1d9d8aa2ba74333baa6862_23379_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;374&#34;
+		data-flex-basis=&#34;899px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This call queue also has shared voicemail configured for its timeout action. The M365 Group for voicemail on timeout is called “Axe Capital Reception Voicemail”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1ctREaNsrYDpLO6R2XJeMpw.png&#34;
+	width=&#34;1843&#34;
+	height=&#34;879&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1ctREaNsrYDpLO6R2XJeMpw_hu19ea726caf47e022e3bde72263df9297_82250_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1ctREaNsrYDpLO6R2XJeMpw_hu19ea726caf47e022e3bde72263df9297_82250_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;209&#34;
+		data-flex-basis=&#34;503px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The signed in user is not a member of this group yet, hence the voicemails in the group mailbox do not show up in the calls tab. I’ve now added the user to this group as well and signed out and in again in Teams.&lt;/p&gt;
+&lt;p&gt;Suddenly, the user sees a lot more shared voicemails in the calls tab because they have been fetched from the M365 Group “Axe Capital Reception Voicemail”. The list is now aggregated across both M365 Groups which are configured in the call queue and the user is a member of. As you can see, the first entry is still the shared voicemail from the “Shared Voicemail Demo” group from 19:17.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1KyPwYmmbvi75WvFtovFygg.png&#34;
+	width=&#34;1292&#34;
+	height=&#34;625&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1KyPwYmmbvi75WvFtovFygg_hub3253da1fd8b8ae71a215e0a6ce95e80_100154_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1KyPwYmmbvi75WvFtovFygg_hub3253da1fd8b8ae71a215e0a6ce95e80_100154_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;206&#34;
+		data-flex-basis=&#34;496px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;best-practices&#34;&gt;Best Practices&lt;/h4&gt;
+&lt;p&gt;These are my recommendations for most shared voicemail scenarios.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Create a new, dedicated M365 Group without a Team for shared voicemails.&lt;/li&gt;
+&lt;li&gt;Make sure “Send copies of team emails and events to team member’s inboxes” is enabled.&lt;/li&gt;
+&lt;li&gt;Add an existing or new shared mailbox as the group’s only member.&lt;/li&gt;
+&lt;li&gt;Manage responsibilities of calling back or delegating through existing processes and staff for already existing shared mailboxes.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;By creating a new, dedicated group instead of using an existing group or Team we can make sure that this group only ever receives voicemail messages and prevent unwanted emails from making its way into the shared mailbox.&lt;/p&gt;
+&lt;p&gt;If you’re going to use voice enabled channels, also use the same Team as shared voicemail target. Otherwise, you need to make sure that all the Team’s members are also members of the M365 groups used for shared voicemail. Different users seeing different voicemails in their Calls tab will only create confusion among them. Unless of course you deliberately want only select members of the Team to see shared voicemails.&lt;/p&gt;
+&lt;p&gt;Another way of efficiently handling shared voicemails would be to set up a Power Automate Flow which triggers on new emails in a shared mailbox, saves the audio files to SharePoint and sends an adaptive card with the link to the mp3 file to a channel. I plan to do a separate post about that though.&lt;/p&gt;
+&lt;h3 id=&#34;bonus-tips&#34;&gt;Bonus Tips&lt;/h3&gt;
+&lt;p&gt;Even though call queues and auto attendants are quite similar, there are some differences which can be quite significant to some customers.&lt;/p&gt;
+&lt;h4 id=&#34;voicemail-on-an-auto-attendant&#34;&gt;Voicemail on an Auto Attendant&lt;/h4&gt;
+&lt;p&gt;When you configure shared voicemail on an auto attendant, there’s no option to configure the greeting for the voicemail itself. Instead, you configure the greeting one layer above, on the call flow.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/15Pi1yTy8oNo9uSYzbNhS0Q.png&#34;
+	width=&#34;950&#34;
+	height=&#34;822&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/15Pi1yTy8oNo9uSYzbNhS0Q_hu1f0d7fad2eec396e62a76a8d34cba0bc_68663_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/15Pi1yTy8oNo9uSYzbNhS0Q_hu1f0d7fad2eec396e62a76a8d34cba0bc_68663_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;115&#34;
+		data-flex-basis=&#34;277px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;By default, an auto attendant will play a “system greeting” after your custom greeting has been played back or synthesized by the Azure Text-To-Speech service. The system greeting will sound like this:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Please leave a message after the tone. When you have finished, please hang up.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;You can suppress the system greeting by enabling the toggle switch for “Skip voicemail system message”. Because the greeting is configured outside of the scope of the call routing options, this can be configured for both TTS and audio file greetings.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1kx6GV9cGcWgew5uwhoDgpw.png&#34;
+	width=&#34;1348&#34;
+	height=&#34;801&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1kx6GV9cGcWgew5uwhoDgpw_hu8901daf5ae4373c0df872cf96cb08f4b_65306_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1kx6GV9cGcWgew5uwhoDgpw_hu8901daf5ae4373c0df872cf96cb08f4b_65306_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;168&#34;
+		data-flex-basis=&#34;403px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;voicemail-on-a-callqueue&#34;&gt;Voicemail on a Call Queue&lt;/h4&gt;
+&lt;p&gt;For call queues, this is slightly different. There is no option to suppress the system greeting. A call queue’s primary purpose is to route calls to agents so there are only routing options for overflow or timeout scenarios. This also means that there’s no option to configure a greeting inside the scope of an overflow or a timeout action.&lt;/p&gt;
+&lt;p&gt;When you upload your own audio file, the system greeting is automatically suppressed by the call queue. There’s no option to enable it. (Why would you anyway?)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1UqMt8oNZmM3JyqMp3sCUA.png&#34;
+	width=&#34;1394&#34;
+	height=&#34;1057&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1UqMt8oNZmM3JyqMp3sCUA_hua7217d05d90570318dbcfcc405b0d7da_95492_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1UqMt8oNZmM3JyqMp3sCUA_hua7217d05d90570318dbcfcc405b0d7da_95492_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;131&#34;
+		data-flex-basis=&#34;316px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If you’re using a TTS greeting, there’s no option to disable it. In this case the system greeting is always played back after your custom TTS greeting.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1frpCn0up1cMvTHed5cEXg.png&#34;
+	width=&#34;1389&#34;
+	height=&#34;606&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1frpCn0up1cMvTHed5cEXg_hu6f41a142341aaf7d6c1d4f992fe4ddaa_48932_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1frpCn0up1cMvTHed5cEXg_hu6f41a142341aaf7d6c1d4f992fe4ddaa_48932_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;229&#34;
+		data-flex-basis=&#34;550px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If you absolutely need to have a TTS greeting but also need to suppress the system greeting your only options are to use Azure Cognitive Services to generate and upload an audio file from your TTS greeting or to create another auto attendant which will have the sole purpose of playing back the TTS greeting and then forward to shared voicemail.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Update 06.04.2023&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Skip voicemail system message&lt;/strong&gt; is now available in TAC. It now supports both audio files and TTS greetings. I don’t remember when exactly it was added but it was a long time ago since I already wrote about it in &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb&#34; &gt;this article&lt;/a&gt; in December 2023.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;/Update&lt;/strong&gt;&lt;/p&gt;
+&lt;h4 id=&#34;one-lastcaveat&#34;&gt;One Last Caveat&lt;/h4&gt;
+&lt;p&gt;But there’s another catch I recently discovered with this approach. If an auto attendant forwards to shared voicemail, the caller will hear two different beeps before the message can be recorded.&lt;/p&gt;
+&lt;p&gt;The auto attendant will play back the greeting and then transfer the call to shared voicemail. The caller will hear one beep for the transfer and most likely starts to record the message while the call is still being transferred to shared voicemail. Once the transfer has been completed, there will be a second beep which sounds slightly different. This is the actual beep which will indicate that the recording has started. This can be quite confusing for both the caller and the callee. It’s possible that the first one or two seconds or so are cut off from the recording or that the caller gets confused and loses focus because his recording is interrupted by the second beep.&lt;/p&gt;
+&lt;p&gt;To mitigate this issue, the only workaround at the moment is to forward the call to a call queue which goes straight to voicemail by using an &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6&#34; &gt;overflow threshold of 0&lt;/a&gt;. But keep in mind that you can’t use a TTS greeting if you also want to suppress the system greeting when using this method. This will, however, play back one beep for the transfer to the queue, play back your configured greeting on the queue and then play the second beep to indicate that the recording has started.&lt;/p&gt;
+&lt;p&gt;Even though these seem like minor issues, I hope that Microsoft addresses them in a timely manner. I think that’s all I know about Teams Phone and Voicemail. I hope it helped you demystify some stuff.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Microsoft Teams Enterprise Voice Diagnostic Tool</title>
+        <link>https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/</link>
+        <pubDate>Mon, 18 Apr 2022 15:00:30 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/</guid>
+        <description>&lt;p&gt;This will be a quick one. I promise. In &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0&#34; &gt;another blog post&lt;/a&gt; I claimed, or rather said, that I don’t know of any other way to check if a Teams user is enterprise voice enabled via GUI than to try to add the user to a call queue.&lt;/p&gt;
+&lt;h4 id=&#34;gui-method1&#34;&gt;GUI Method 1&lt;/h4&gt;
+&lt;p&gt;If you try to add a user which is not EV enabled to a call queue, TAC will show the following error message:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/0aWqaqGt1Or7uQVh9.png&#34;
+	width=&#34;568&#34;
+	height=&#34;101&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/0aWqaqGt1Or7uQVh9_hu009de6f420205d75c979630f40762a20_12841_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/0aWqaqGt1Or7uQVh9_hu009de6f420205d75c979630f40762a20_12841_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;562&#34;
+		data-flex-basis=&#34;1349px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;gui-method2&#34;&gt;GUI Method 2&lt;/h4&gt;
+&lt;p&gt;When I wrote this, I totally forgot about the &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/MicrosoftTeams/troubleshoot/teams-conferencing/no-dial-pad#run-a-self-diagnostics-tool&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;diagnostic tool&lt;/a&gt; which is built into the Microsoft 365 Admin Portals “Support” section. If you click the following button on Microsoft Docs, you will be redirected to the self diagnostic test tool within the Admin Portal.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1yfUuMJX9oR9GbZtad81asA.png&#34;
+	width=&#34;1022&#34;
+	height=&#34;147&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1yfUuMJX9oR9GbZtad81asA_hue7d006ba532c05001752e9a4720ca98d_20485_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1yfUuMJX9oR9GbZtad81asA_hue7d006ba532c05001752e9a4720ca98d_20485_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;695&#34;
+		data-flex-basis=&#34;1668px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;You can also use &lt;a class=&#34;link&#34; href=&#34;https://admin.microsoft.com/AdminPortal/?searchSolutions=Diag%3A%20Teams%20Dial%20Pad%20Missing#/homepage&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this&lt;/a&gt; direct link or type “Diag: Teams Dial Pad Missing” in the search field when opening a new request.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1246GSvZbEAHamjHDwr57A.png&#34;
+	width=&#34;689&#34;
+	height=&#34;311&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1246GSvZbEAHamjHDwr57A_hu4c783a19cedc7a76518ee901a98afd37_26408_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1246GSvZbEAHamjHDwr57A_hu4c783a19cedc7a76518ee901a98afd37_26408_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;221&#34;
+		data-flex-basis=&#34;531px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;You will then see a field where you need to enter the username of the user you’d like to check. Click on “Run Tests” to run the diagnostics.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/16lzI1o4VkniWWacOvFCBg.png&#34;
+	width=&#34;666&#34;
+	height=&#34;454&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/16lzI1o4VkniWWacOvFCBg_huc4188912650116e693ddbcb51223883e_37408_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/16lzI1o4VkniWWacOvFCBg_huc4188912650116e693ddbcb51223883e_37408_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;146&#34;
+		data-flex-basis=&#34;352px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This will also check if the user is enterprise voice enabled and tell you if that’s not the case.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1kAoytUHlXPzCvBpcJJtrw.png&#34;
+	width=&#34;631&#34;
+	height=&#34;640&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1kAoytUHlXPzCvBpcJJtrw_hu86748371914011f6b8e9daa944ea066f_110574_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1kAoytUHlXPzCvBpcJJtrw_hu86748371914011f6b8e9daa944ea066f_110574_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;98&#34;
+		data-flex-basis=&#34;236px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;It doesn’t seem to also check the licenses properly because this user already has a Teams Phone Standard License, but EV is not enabled yet.&lt;/p&gt;
+&lt;p&gt;If we run the same test for a user which is EV enabled, the diagnostics come up empty which means that there are no issues / EV is indeed enabled.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1pa39FpQQ9RyJSLfGCI5ubA.png&#34;
+	width=&#34;668&#34;
+	height=&#34;301&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1pa39FpQQ9RyJSLfGCI5ubA_hub0c69cdf66313e0bf487eaf4094c9f45_29803_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1pa39FpQQ9RyJSLfGCI5ubA_hub0c69cdf66313e0bf487eaf4094c9f45_29803_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;221&#34;
+		data-flex-basis=&#34;532px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;other-cases&#34;&gt;Other Cases&lt;/h4&gt;
+&lt;p&gt;The diagnostics tool can also help you discover other issues like check for not assigned phone numbers or voice routing policies.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1W9hcjAkup6op4l2g6H1w.png&#34;
+	width=&#34;629&#34;
+	height=&#34;586&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1W9hcjAkup6op4l2g6H1w_hu0415d94b31ddbf2d5725a724fed082d8_79952_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1W9hcjAkup6op4l2g6H1w_hu0415d94b31ddbf2d5725a724fed082d8_79952_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;107&#34;
+		data-flex-basis=&#34;257px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/11BKjYuP0gbcIZGdSUJSedQ.png&#34;
+	width=&#34;652&#34;
+	height=&#34;381&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/11BKjYuP0gbcIZGdSUJSedQ_hu4890d428a550e58e46f2ab862ffeb3f1_53839_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/11BKjYuP0gbcIZGdSUJSedQ_hu4890d428a550e58e46f2ab862ffeb3f1_53839_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;171&#34;
+		data-flex-basis=&#34;410px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;powershell-method&#34;&gt;PowerShell Method&lt;/h4&gt;
+&lt;p&gt;Of course, there’s always PowerShell. To query the information we need, we can just run the following:&lt;/p&gt;
+&lt;p&gt;Get-CsOnlineUser -Identity &lt;a class=&#34;link&#34; href=&#34;mailto:user@domain.com&#34; &gt;user@domain.com&lt;/a&gt; | Format-Table DisplayName, EnterpriseVoiceEnabled, OnlineVoiceRoutingPolicy, LineURI, FeatureTypes&lt;/p&gt;
+&lt;p&gt;This will tell us all the interesting information like if the user is EV enabled, if it has an online voice routing policy and what kind of feature types are supported.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1rwv9JbnYmzE66PIORAWg.png&#34;
+	width=&#34;1254&#34;
+	height=&#34;126&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1rwv9JbnYmzE66PIORAWg_hu18f8623c3f9bc5990f4cb1cd8f27dec0_81564_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1rwv9JbnYmzE66PIORAWg_hu18f8623c3f9bc5990f4cb1cd8f27dec0_81564_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;995&#34;
+		data-flex-basis=&#34;2388px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Note: Microsoft recently introduced the FeatureTypes attribute in the MicrosoftTeams PowerShell module. (I’m using 4.2.0 as of writing this article). This means that there’s no need to check for a valid license via other PowerShell Modules like MSOnline, AzureAD or Microsoft.Graph anymore.&lt;/p&gt;
+&lt;p&gt;Users which don’t have a Teams Phone Standard license assigned, won’t show “PhoneSystem” in their supported feature types.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1WWcmQkflsk6uRrFMd0gH2Q.png&#34;
+	width=&#34;1199&#34;
+	height=&#34;133&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1WWcmQkflsk6uRrFMd0gH2Q_huaab5621d6a53e25f355ef733d1a50aad_122232_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1WWcmQkflsk6uRrFMd0gH2Q_huaab5621d6a53e25f355ef733d1a50aad_122232_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;901&#34;
+		data-flex-basis=&#34;2163px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;summary&#34;&gt;Summary&lt;/h4&gt;
+&lt;p&gt;I’d still wish that TAC would reflect somewhere if a user is EV enabled or not. But at least there are some workarounds to check if a user is EV enabled if PowerShell isn’t available at a given time for any reason.&lt;/p&gt;
+&lt;p&gt;Even though this tool has been around for quite some time, I don’t think that many Teams Admins know about it. How about you, did you know that something like this existed?&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Automatically Render Diagrams of Teams User Calling Settings</title>
+        <link>https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/</link>
+        <pubDate>Sun, 17 Apr 2022 10:38:04 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/</guid>
+        <description>&lt;p&gt;Hello friends.&lt;/p&gt;
+&lt;p&gt;A few weeks ago, Microsoft made a lot of Teams admins happy by rolling out a new feature which allows admins to change (or view) a Teams user’s calling settings directly from the Teams admin center. Gone are the days were we admins needed to be delegates of users to change these kinds of settings.&lt;/p&gt;
+&lt;p&gt;Those of you who know me a little better might know that I don’t have much experience with Skype for Business and thus only ever heard stories about SEFAUtil (secondary extension feature activation). From what I can see, this new feature is basically SEFAUtil for Teams.&lt;/p&gt;
+&lt;p&gt;I won’t go into detail about the functionalities in TAC as these has been covered plenty by other community bloggers already. As it’s often the case, this functionality has been available with PowerShell before it has made its way to the TAC. But anyways, here’s how it looks like in TAC.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/161NOVj8fF2bSwiLrlp2BHA.png&#34;
+	width=&#34;1799&#34;
+	height=&#34;1279&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/161NOVj8fF2bSwiLrlp2BHA_huf5b008126f9dfd1ba0d71b3e5e019bbf_168844_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/161NOVj8fF2bSwiLrlp2BHA_huf5b008126f9dfd1ba0d71b3e5e019bbf_168844_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;140&#34;
+		data-flex-basis=&#34;337px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;I haven’t used it much yet but one time I urgently needed to change a user’s forwarding settings, TAC was repeatedly throwing errors at me. I had no choice than to fall back to PowerShell.&lt;/p&gt;
+&lt;h4 id=&#34;reading-user-calling-settings-with-powershell&#34;&gt;Reading User Calling Settings with PowerShell&lt;/h4&gt;
+&lt;p&gt;Of course, we can not only set them by PS but also read them:&lt;/p&gt;
+&lt;p&gt;Get-CsUserCallingSettings -Identity &lt;a class=&#34;link&#34; href=&#34;mailto:user@domain.com&#34; &gt;user@domain.com&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Since I’ve already done much more complex things by &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/automatically-render-microsoft-teams-call-flow-diagrams-607b89df4154&#34; &gt;generating a diagram of huge Auto Attendant and Call Queue call flows&lt;/a&gt;, I figured why not leverage PowerShell to also draw diagrams from user calling settings?&lt;/p&gt;
+&lt;p&gt;I must admit that it turned out a little more complex than I anticipated. During final testing, I generated a diagram for each possible scenario, and I counted no less than 64 different ways an enterprise voice enabled user can configure his calling settings. This also includes simultaneous and serial ring for call groups. At least I already had a lot of practice on how to structure the code and how to draw the diagrams.&lt;/p&gt;
+&lt;h4 id=&#34;user-calling-settings-diagramexamples&#34;&gt;User Calling Settings Diagram Examples&lt;/h4&gt;
+&lt;p&gt;Here are some examples, including the corresponding Teams client settings.&lt;/p&gt;
+&lt;p&gt;In this example, “Also ring” and “If unanswered” are the same. Call group is the only forwarding target which supports this scenario.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1TlJx5ucG8YIsZDtamLyzjw.png&#34;
+	width=&#34;639&#34;
+	height=&#34;544&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1TlJx5ucG8YIsZDtamLyzjw_hu98e70babcf37e16b7732826e90e8b1d6_55466_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1TlJx5ucG8YIsZDtamLyzjw_hu98e70babcf37e16b7732826e90e8b1d6_55466_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;117&#34;
+		data-flex-basis=&#34;281px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/13oEWK0gZhI7y34lBQ40sQ.png&#34;
+	width=&#34;951&#34;
+	height=&#34;1747&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/13oEWK0gZhI7y34lBQ40sQ_hu10bf7d20d09fa5c743837fe48311c2fb_98739_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/13oEWK0gZhI7y34lBQ40sQ_hu10bf7d20d09fa5c743837fe48311c2fb_98739_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;54&#34;
+		data-flex-basis=&#34;130px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Here’s one where immediate forwarding is enabled:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/174NDGhlNdC2jWmfcns2gA.png&#34;
+	width=&#34;637&#34;
+	height=&#34;527&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/174NDGhlNdC2jWmfcns2gA_hud77542b4f162f36f8390cb43bdb3b83f_56038_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/174NDGhlNdC2jWmfcns2gA_hud77542b4f162f36f8390cb43bdb3b83f_56038_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;120&#34;
+		data-flex-basis=&#34;290px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1en6dkpg1L1BeJJCVH3lrA.png&#34;
+	width=&#34;909&#34;
+	height=&#34;1612&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1en6dkpg1L1BeJJCVH3lrA_hu48e3e1d7243ee236a1d5b1c4fafeadca_89205_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1en6dkpg1L1BeJJCVH3lrA_hu48e3e1d7243ee236a1d5b1c4fafeadca_89205_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;56&#34;
+		data-flex-basis=&#34;135px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When immediately forwarding to delegates, an “If unanswered target is required”. “Do nothing” is not available in this case.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1kMUtWPH8Sg9kq0ZXqnvBug.png&#34;
+	width=&#34;632&#34;
+	height=&#34;571&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1kMUtWPH8Sg9kq0ZXqnvBug_hub579e83581f271816aa1964e17f321aa_46653_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1kMUtWPH8Sg9kq0ZXqnvBug_hub579e83581f271816aa1964e17f321aa_46653_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;110&#34;
+		data-flex-basis=&#34;265px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;In this case, only “Also ring” is configured and “If unanswered” is set to “Do nothing”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1X0hbtVapj1mEJsp8HHaNJQ.png&#34;
+	width=&#34;635&#34;
+	height=&#34;535&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1X0hbtVapj1mEJsp8HHaNJQ_hu30debc4564b1be708ac403de523c5053_54370_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1X0hbtVapj1mEJsp8HHaNJQ_hu30debc4564b1be708ac403de523c5053_54370_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;118&#34;
+		data-flex-basis=&#34;284px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1gbiySQUKuer0byUExkceg.png&#34;
+	width=&#34;526&#34;
+	height=&#34;491&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1gbiySQUKuer0byUExkceg_hu0fc36a649f15682900ca163e561661fc_24655_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1gbiySQUKuer0byUExkceg_hu0fc36a649f15682900ca163e561661fc_24655_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;107&#34;
+		data-flex-basis=&#34;257px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;And here, “Also ring” is set to “No one else” but “If unanswered” is set to an external phone number with a timeout of 50 seconds.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1poPeDhcPwlEdO1KRPojg.png&#34;
+	width=&#34;638&#34;
+	height=&#34;544&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1poPeDhcPwlEdO1KRPojg_hu5fc78906502af3340939ef347b3ea8b7_54188_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1poPeDhcPwlEdO1KRPojg_hu5fc78906502af3340939ef347b3ea8b7_54188_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;117&#34;
+		data-flex-basis=&#34;281px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1XRyPWHckC3MglldUVHgw.png&#34;
+	width=&#34;633&#34;
+	height=&#34;1138&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1XRyPWHckC3MglldUVHgw_hu3a66929bef0d44d404007e2cb755fe69_53956_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1XRyPWHckC3MglldUVHgw_hu3a66929bef0d44d404007e2cb755fe69_53956_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;55&#34;
+		data-flex-basis=&#34;133px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If you like, you can check out all the examples &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer/tree/main/Examples/UserCallingSettings&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;render-and-export-diagrams-like-apro&#34;&gt;Render and Export Diagrams like a Pro!&lt;/h4&gt;
+&lt;p&gt;Or you can head over to my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub Repo&lt;/a&gt; to clone it from there to try it for yourself. For now, the function is intended for standalone usage. Meaning, it’s not yet implemented into the M365 Call Flow Visualizer.&lt;/p&gt;
+&lt;p&gt;Once the repo is cloned, you can import the function by dot sourcing it in your terminal:&lt;/p&gt;
+&lt;p&gt;. .\Functions\Get-TeamsUserCallFlow.ps1&lt;/p&gt;
+&lt;p&gt;After that, you can just run the function by either using the &lt;code&gt;-UserPrincipalName&lt;/code&gt; or the &lt;code&gt;-UserId&lt;/code&gt; parameter where &lt;code&gt;-UserId&lt;/code&gt; expects an Azure AD User Object Id from your tenant.&lt;/p&gt;
+&lt;p&gt;Get-TeamsUserCallFlow -UserPrincipalName &lt;a class=&#34;link&#34; href=&#34;mailto:user@domain.com&#34; &gt;user@domain.com&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;There are a few parameters to play with. By default, the function will generate an SVG image of the diagram and opens it in your default browser by leveraging the &lt;a class=&#34;link&#34; href=&#34;https://mermaid.ink/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;mermaid.ink&lt;/a&gt; service. It will also save the diagram to&lt;code&gt;.\Output\UserCallingSettings&lt;/code&gt; by default. You can change this by specifying the &lt;code&gt;-CustomFilePath&lt;/code&gt; parameter.&lt;/p&gt;
+&lt;p&gt;Although it has cost me a lot of time, I was finally able to pull off directly exporting an SVG image without using any additional, local dependencies. I’m doing this by encoding the diagram in Base64 and calling mermaid.ink. During testing I noticed that mermaid.ink is quite picky when it comes to these base 64 encoded URLs. At first, a lot of my diagrams failed due to illegal padding characters and so on. I believe that I was able to fix most of that. If any of your diagrams fail to render on mermaid ink, please let me know.&lt;/p&gt;
+&lt;h4 id=&#34;create-a-diagram-for-all-yourusers&#34;&gt;Create a Diagram for all your users&lt;/h4&gt;
+&lt;p&gt;I’ve also included an example of how to draw a diagram for each enabled user in your tenant. You can copy it from this gist or run it directly from the root of the cloned repo.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/2687f5fe0a2fae48739d71bbd5a86909.js&#34;&gt;&lt;/script&gt;
+
+&lt;h4 id=&#34;some-notes-on-recursive-user-callingsettings&#34;&gt;Some Notes on Recursive User Calling Settings&lt;/h4&gt;
+&lt;p&gt;I do not support recursive user calling settings in my first release. I’m not sure if there is a strong enough need for it too. I know that some teams like to forward calls to each other if they’re not available. It would certainly be handy for troubleshooting purposes as we could detect infinite forwarding loops created by users much faster. On the other hand, diagrams could get huge and hard to read. What do you think, should I work on recursive diagrams for a future release? Let me know!&lt;/p&gt;
+&lt;h4 id=&#34;whats-next&#34;&gt;What’s next&lt;/h4&gt;
+&lt;p&gt;There are a couple of changes planned for this project. If you pay close attention, you can see that I already moved some functions like “Connect-M365CFV” out of the main script and import it by dot sourcing instead. Since the main script still has more than 3000 lines of code (including carriage returns) I’m planning to move most of the functions to separate files and dot source them as well.&lt;/p&gt;
+&lt;p&gt;When I get the time, I will also implement user calling settings into the main script. As an example, a call flow which forwards calls to a user will then render like this.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1cje7dY50wNOdeup0F1EQ.png&#34;
+	width=&#34;938&#34;
+	height=&#34;1639&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1cje7dY50wNOdeup0F1EQ_hu4e8b30f18c0d8fd492bdb8c947257025_116631_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1cje7dY50wNOdeup0F1EQ_hu4e8b30f18c0d8fd492bdb8c947257025_116631_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;57&#34;
+		data-flex-basis=&#34;137px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Whereas it currently “stops” at the users and looks like this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1VLbdHmPHHCI0WpnbAhXGYw.png&#34;
+	width=&#34;1529&#34;
+	height=&#34;1605&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1VLbdHmPHHCI0WpnbAhXGYw_huefcec336ae5a7294244e253d538a27a9_136735_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1VLbdHmPHHCI0WpnbAhXGYw_huefcec336ae5a7294244e253d538a27a9_136735_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;95&#34;
+		data-flex-basis=&#34;228px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;I will also try to do the same with SVG export as I did for the user calling settings. I’m not entirely sure it will work with super large diagrams though.&lt;/p&gt;
+&lt;p&gt;I hope that you enjoy automatically drawing diagrams of your users calling settings as much as I do.&lt;/p&gt;
+&lt;p&gt;Happy Easter everyone!&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Microsoft Teams Call Queue Agent Lists (And how to Force-Sync them)</title>
+        <link>https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/</link>
+        <pubDate>Sun, 10 Apr 2022 10:13:53 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/</guid>
+        <description>&lt;p&gt;The purpose of a call queue in Teams is to distribute incoming calls to multiple call agents. Every call queue stores its own “Agent List” which is basically just an array of Microsoft 365 users object Ids. Incoming Teams or PSTN calls are then distributed to the call queue’s agents. In this post, we’ll take a look at the types of agent lists which are available and how to configure them. We’ll also explore some useful tips how to cope with unexpected behavior during configuration.&lt;/p&gt;
+&lt;h4 id=&#34;agent-listtypes&#34;&gt;Agent List Types&lt;/h4&gt;
+&lt;p&gt;There are three (or four, depending how you look at it) different ways of adding Agents to a queue&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Direct user assignments&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Users are assigned by display name and will be visible directly in a queue’s settings. This method is suitable for small teams because you can see who’s in the queue in TAC without checking the group members in M365 Admin or AAD. Since you can’t control the order agents will be added in when using a group or channel based agent list, direct assignments are crucial when your queue is using serial routing. &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/microsoftteams/create-a-phone-system-call-queue#users-and-groups&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;You can add up to 20 agents individually.&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1JnhguYQCBAml6b1TDgAiA.png&#34;
+	width=&#34;1383&#34;
+	height=&#34;927&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1JnhguYQCBAml6b1TDgAiA_huf325dbf47a900a129970d3ed520bbd40_55457_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1JnhguYQCBAml6b1TDgAiA_huf325dbf47a900a129970d3ed520bbd40_55457_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;149&#34;
+		data-flex-basis=&#34;358px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;2. Group assignments&lt;/p&gt;
+&lt;p&gt;With group assignments, you can add up to 200 agents but you can’t control the order in which the agents are added. Thus, you can’t control the order in which the users are signaled by the queue when using serial routing either. Based on my testing, the order of the agent list will correspond to the order in which the users show up when viewing it in AAD. Although it might not be a common scenario, you can even add multiple groups to the list. &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/microsoftteams/create-a-phone-system-call-queue#users-and-groups&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;All common group types are supported.&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/17ssSjJFxHxXZTdtm8BpupQ.png&#34;
+	width=&#34;1380&#34;
+	height=&#34;923&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/17ssSjJFxHxXZTdtm8BpupQ_hu7eae838453589cf1c0c2f64dce6882d5_58726_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/17ssSjJFxHxXZTdtm8BpupQ_hu7eae838453589cf1c0c2f64dce6882d5_58726_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;149&#34;
+		data-flex-basis=&#34;358px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;3. Combination of direct and groups&lt;/p&gt;
+&lt;p&gt;If you want to use a group but still need to add other users which are not a member of this group, you can add them individually. Here I’ve got a group called “CQ Agents 1” which has two members.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1Dkc15OvPzERAne0L7pTXgA.png&#34;
+	width=&#34;1109&#34;
+	height=&#34;292&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1Dkc15OvPzERAne0L7pTXgA_hu36e48e243e13c7cbca14017e7bcfdeaa_43594_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1Dkc15OvPzERAne0L7pTXgA_hu36e48e243e13c7cbca14017e7bcfdeaa_43594_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;379&#34;
+		data-flex-basis=&#34;911px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;I’ve also added Mike and Bobby as individual agents. Of course. the queue will add Mike only once.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1r2hQr9rHxDqI24577P61lg.png&#34;
+	width=&#34;1380&#34;
+	height=&#34;1251&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1r2hQr9rHxDqI24577P61lg_hu1b4ec12460c75d422e3c76349a322169_74195_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1r2hQr9rHxDqI24577P61lg_hu1b4ec12460c75d422e3c76349a322169_74195_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;110&#34;
+		data-flex-basis=&#34;264px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Unfortunately, querying the queue’s agents only yields object Ids and no display names.&lt;/p&gt;
+&lt;p&gt;(Get-CsCallQueue -Identity a11d15d3-79d8-4bd2-8a35-xxxxxxxxxxxx).Agents&lt;/p&gt;
+&lt;p&gt;Output:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ObjectId                             OptIn  
+--------                             -----  
+76606d0b-4d28-4246-9c08-xxxxxxxxxxxx  True This is Bobby&#39;s Object Id  
+9a7c1bb4-49db-40ee-9d05-xxxxxxxxxxxx  True This is Mike&#39;s Object Id  
+fa19b242-8bae-419d-a4eb-xxxxxxxxxxxx  True This is Wendy&#39;s Object Id
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;As you can see, individually added agents will be first in the list, just like TAC is displaying it (individual agents above groups).&lt;/p&gt;
+&lt;p&gt;I have now replaced the direct assignment of Mike with Wendy and placed her on top.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1ua3yDYWFbd0Z2T5OKyeBIQ.png&#34;
+	width=&#34;1276&#34;
+	height=&#34;360&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1ua3yDYWFbd0Z2T5OKyeBIQ_hu0f0795e399129c16044556ce1e814e5d_21328_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1ua3yDYWFbd0Z2T5OKyeBIQ_hu0f0795e399129c16044556ce1e814e5d_21328_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;354&#34;
+		data-flex-basis=&#34;850px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When we query the agent list again, we can see that Wendy is on top now, even though she would be added last if we’re using just a group.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ObjectId                             OptIn  
+--------                             -----  
+fa19b242-8bae-419d-a4eb-xxxxxxxxxxxx  True This is Wendy&#39;s Object Id  
+76606d0b-4d28-4246-9c08-xxxxxxxxxxxx  True This is Bobby&#39;s Object Id  
+9a7c1bb4-49db-40ee-9d05-xxxxxxxxxxxx  True This is Mike&#39;s Object Id
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;4. Teams channel assignment&lt;/p&gt;
+&lt;p&gt;The third and last option is to use a Teams Channel. In this case, the group type obviously needs to be a Team. &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/microsoftteams/create-a-phone-system-call-queue#teams-channel&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Private or shared channels are not supported.&lt;/a&gt; From an agent list perspective this method is the same as a group-based assignment, except that you can’t add individual members or multiple groups as well.&lt;/p&gt;
+&lt;h4 id=&#34;summary-andcaveats&#34;&gt;Summary and Caveats&lt;/h4&gt;
+&lt;p&gt;In order for a user to be added as an agent, Enterprise Voice must be enabled. &lt;strong&gt;Having a Teams Phone Standard license is not enough&lt;/strong&gt;. Unfortunately, there’s no straightforward way of checking if EV is enabled in TAC.&lt;/p&gt;
+&lt;p&gt;You might think that the “Phone System” Column in Teams Users will tell you that but that’s actually just evaluating if the user is licensed for Teams Phone Standard. (I hope Microsoft updates the column name at some point…).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1o3uFzdE2500fMsfRDgRo3Q.png&#34;
+	width=&#34;1273&#34;
+	height=&#34;126&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1o3uFzdE2500fMsfRDgRo3Q_hu22c1b9f043e8478a11c245ca9343627f_14076_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1o3uFzdE2500fMsfRDgRo3Q_hu22c1b9f043e8478a11c245ca9343627f_14076_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;1010&#34;
+		data-flex-basis=&#34;2424px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When you try to add a user which is not EV enabled to a queue, TAC will throw an error message:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1onUinLhMf93WDYAt0S0g.png&#34;
+	width=&#34;568&#34;
+	height=&#34;101&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1onUinLhMf93WDYAt0S0g_huff7c9e611c141b86924e16387f3a1f5e_14069_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1onUinLhMf93WDYAt0S0g_huff7c9e611c141b86924e16387f3a1f5e_14069_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;562&#34;
+		data-flex-basis=&#34;1349px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This is the only way I know of to check if a user is EV enabled or not through a GUI based tool. It’s easy in PS though:&lt;/p&gt;
+&lt;p&gt;Get-CsOnlineUser -Identity &lt;a class=&#34;link&#34; href=&#34;mailto:bill@domain.com&#34; &gt;bill@domain.com&lt;/a&gt; | ft DisplayName,FeatureTypes,EnterpriseVoiceEnabled&lt;/p&gt;
+&lt;p&gt;Again, having a Teams Phone service plan, does not mean EV is enabled by default. A user’s feature types can be read from the .FeatureTypes attribute (Teams PS 4.x.x and later).&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;DisplayName FeatureTypes         EnterpriseVoiceEnabled  
+----------- ------------         ----------------------  
+Bill Stearn {PhoneSystem, Teams}                  False
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Does this mean we can only add groups to an agent list if all the members are already EV enabled? Certainly not. In this case, only EV enabled members will be added to a queue but you won’t see any warnings or errors if your group contains users without EV.&lt;/p&gt;
+&lt;p&gt;I’ve added Bill to the “CQ Agents 1” group:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1pTf4EjM79Dcv21SuFa1IPQ.png&#34;
+	width=&#34;1107&#34;
+	height=&#34;212&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1pTf4EjM79Dcv21SuFa1IPQ_hu648445925f7993484e5b1bdae7fd899f_39328_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1pTf4EjM79Dcv21SuFa1IPQ_hu648445925f7993484e5b1bdae7fd899f_39328_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;522&#34;
+		data-flex-basis=&#34;1253px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Let’s check our queue again by storing it’s properties in the variable &lt;code&gt;$cq&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$cq&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Get-CsCallQueue&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Identity&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;a11d15d3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;79d8&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;4bd2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;8a35-xxxxxxxxxxxx&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;By accessing $cq.DistributionListsLastExpanded we can verify that the queue has indeed updated its agent list when we saved it.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1MP0g1DqtuGySqfMbguKw.png&#34;
+	width=&#34;1059&#34;
+	height=&#34;28&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1MP0g1DqtuGySqfMbguKw_huc8eb3d54e1a48fd2b3501f0f3c7361d2_28909_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1MP0g1DqtuGySqfMbguKw_huc8eb3d54e1a48fd2b3501f0f3c7361d2_28909_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;3782&#34;
+		data-flex-basis=&#34;9077px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;As expected, the object Id of bill does not show up when we check $cq.Agents. I’ve also removed the direct assignments, that’s why we only see two object Ids now.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ObjectId                             OptIn  
+--------                             -----  
+fa19b242-8bae-419d-a4eb-xxxxxxxxxxxx  True That&#39;s Wendy&#39;s Object Id  
+9a7c1bb4-49db-40ee-9d05-xxxxxxxxxxxx  True That&#39;s Mike&#39;s Object Id
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What’s interesting is that even though the direct assignments were removed, the queue remembered the specific order we defined using direct assignments before. Wendy is still above mike.&lt;/p&gt;
+&lt;p&gt;No matter in which way the agents are added, in the end, all EV enabled agents will always be stored in one single array on the queue’s properties in the “Agents” attribute.&lt;/p&gt;
+&lt;h4 id=&#34;agent-listsync&#34;&gt;Agent List Sync&lt;/h4&gt;
+&lt;p&gt;Now you know what types of agent lists you can have and how to configure them. Let’s talk about syncing agent lists. With direct assignments, it’s easy. Every time you add or remove an agent and save the queue, the agent list is updated immediately.&lt;/p&gt;
+&lt;p&gt;If you’re adding a group which already has a bunch of users in it, that’s no problem either. But what about if you add a Team or a group which does not have any members yet, or if you add new users to an existing group which is already linked to a queue?&lt;/p&gt;
+&lt;p&gt;I created a new, empty Team called “PS Test CQ” and added it to the queue’s agent list. As expected, TAC now says that this queue has zero agents.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1TnPbQ99tL2GNctNLkDd9A.png&#34;
+	width=&#34;1850&#34;
+	height=&#34;253&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1TnPbQ99tL2GNctNLkDd9A_hu646a022f1882af0a05cc9564812e24f2_18519_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1TnPbQ99tL2GNctNLkDd9A_hu646a022f1882af0a05cc9564812e24f2_18519_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;731&#34;
+		data-flex-basis=&#34;1754px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;So, let’s head over to Teams and add some members. After a browser refresh, TAC still shows zero call agents. Let’s check again with PowerShell:&lt;/p&gt;
+&lt;p&gt;(Get-CsCallQueue -Identity a11d15d3-79d8-4bd2-8a35-xxxxxxxxxxxx) | ft Name, DistributionListsLastExpanded, Agents&lt;/p&gt;
+&lt;p&gt;Although the output at least tells us when the agent list was last synchronized, it also shows no agents:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Name       DistributionListsLastExpanded Agents  
+----       ----------------------------- ------  
+PS Test CQ 04/10/2022 09:12:22 +00:00    {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I don’t know the exact interval Teams uses to sync call queue agent lists. But I’m guessing it checks every few hours or so. Is there a way to force a sync?&lt;/p&gt;
+&lt;h4 id=&#34;force-agent-list-sync-usingtac&#34;&gt;Force Agent List Sync using TAC&lt;/h4&gt;
+&lt;p&gt;If we’re doing it via TAC, we must change any value of the queue to be able to save it. Otherwise, the submit button will be greyed out.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1Cuo5HASr68JnCdmDDLpxKQ.png&#34;
+	width=&#34;1224&#34;
+	height=&#34;725&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1Cuo5HASr68JnCdmDDLpxKQ_hu55b79e8fe22f4e58ff39313479940ce6_58789_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1Cuo5HASr68JnCdmDDLpxKQ_hu55b79e8fe22f4e58ff39313479940ce6_58789_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;168&#34;
+		data-flex-basis=&#34;405px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If you want to do it via TAC, I recommend changing a non-critical value like up the overflow threshold value by 1 and submit.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1rCOHPX3fUTdnLRivr8ckdQ.png&#34;
+	width=&#34;666&#34;
+	height=&#34;536&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1rCOHPX3fUTdnLRivr8ckdQ_hu597fdd23ac8a5c39e462678be0b8b5ce_33211_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1rCOHPX3fUTdnLRivr8ckdQ_hu597fdd23ac8a5c39e462678be0b8b5ce_33211_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;124&#34;
+		data-flex-basis=&#34;298px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This will submit the new configuration which will also update the agent list. Now our queue has 1 agent (the one we added to the Team earlier).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1Y80efOkZInQnO0FtDwHNMw.png&#34;
+	width=&#34;1731&#34;
+	height=&#34;137&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1Y80efOkZInQnO0FtDwHNMw_hu1469c17f83b6982290c065d940933f48_12731_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1Y80efOkZInQnO0FtDwHNMw_hu1469c17f83b6982290c065d940933f48_12731_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;1263&#34;
+		data-flex-basis=&#34;3032px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;To minimize service impact, remember to revert the change back to its original value and submit again.&lt;/p&gt;
+&lt;p&gt;Since TAC evaluates if you changed anything before you’re allowed to save the queue and you always have to save the queue twice to force a sync, this is a pretty cumbersome way to do it.&lt;/p&gt;
+&lt;h4 id=&#34;force-agent-list-sync-by-powershell&#34;&gt;Force Agent List Sync by PowerShell&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;Update 05.04.2023&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;I wrote a new function to make this even easier. Please check out this article.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552&#34; &gt;Manage Microsoft Teams Call Queues with PowerShell (Force-Sync) | by martin heusser | Apr, 2023 | Medium&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;/Update&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Luckily, PowerShell allows us to save queues, even if none of the values have changed. To test this, I’ve added another EV enabled user to the Team.&lt;/p&gt;
+&lt;p&gt;With this little code snippet, we will get all our call queues and set the OverflowThreshold value to the exact same value which was returned by PowerShell.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/10283870a4485a30ae9792da12f9a91b.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;To use Set-CsCallQueue we need to provide at least one property and a value which should be changed. But unlike TAC, PS doesn’t care if the new value is the same as the old value. Hence, we only need to touch each queue once.&lt;/p&gt;
+&lt;p&gt;Tip: If you only want to sync queues which have no agents at all, just change the first line to:&lt;/p&gt;
+&lt;p&gt;$callQueues = Get-CsCallQueue | Where-Object {$_.Agents.Count -lt 1}&lt;/p&gt;
+&lt;p&gt;After running this foreach loop, our queue now shows two agents, and all the other queues settings remain unchanged.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/13kP8m8OOxnADWJlDOpjQ.png&#34;
+	width=&#34;1735&#34;
+	height=&#34;145&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/13kP8m8OOxnADWJlDOpjQ_hua2c95b01bccdaa4696c51456e5ea792d_13395_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/13kP8m8OOxnADWJlDOpjQ_hua2c95b01bccdaa4696c51456e5ea792d_13395_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;1196&#34;
+		data-flex-basis=&#34;2871px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;addendum&#34;&gt;Addendum&lt;/h4&gt;
+&lt;p&gt;There’s also a Cmdlet called “&lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/es-es/powershell/module/skype/sync-csonlineapplicationinstance?view=skype-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Sync-CsOnlineApplicationInstance&lt;/a&gt;”. Microsoft says the following:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Use the Sync-CsOnlineApplicationInstance cmdlet to sync the application instance from Azure Active Directory into Agent Provisioning Service.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Based on my testing, this had no effect on a queue&amp;rsquo;s agent list. Since it’s also the only Cmdlet containing *Sync-Cs* in its name, I assume that there currently is no easier workaround as the one described by me in this blog post.&lt;/p&gt;
+&lt;p&gt;I hope that this information is useful to you when planning and deploying Microsoft Teams Phone solutions. But most importantly, I hope that you don’t get chills when all your queues show up with no agents even though you long added the Team or group members!&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Create a Dynamic Azure AD Group with all Teams Phone Standard Licensed Users</title>
+        <link>https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/</link>
+        <pubDate>Mon, 28 Mar 2022 15:01:16 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/</guid>
+        <description>&lt;p&gt;When it comes to Azure AD and licensing, we usually use Azure AD Groups to assign certain licenses to group members. It’s an effective way to assign different licenses to different teams within your organization. For example, you could have a group which assigns a Microsoft 365 E5 license to all the IT-Staff.&lt;/p&gt;
+&lt;p&gt;Is there a need to do the opposite? Add all users who have a specific service plan assigned to an Azure AD group? Although this scenario might not be as common as the first one, there’s certainly a use case for it.&lt;/p&gt;
+&lt;p&gt;Think about a Teams call queue in a small to mid-sized firm which distributes incoming calls to, let’s say 5–10 call agents. If none of these agents are able to answer the call within a certain time, the call is then escalated to a second call queue which contains all the company’s Teams Phone Standard enabled users. A call queue can have up to &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/microsoftteams/create-a-phone-system-call-queue#teams-channel&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;two hundred&lt;/a&gt; call agents, if they’re added via a Teams Channel or a group.&lt;/p&gt;
+&lt;p&gt;Instead of adding all phone enabled users manually we can create an Azure AD group which uses a dynamic query to include all users which have the service plan “MCOEV” assigned.&lt;/p&gt;
+&lt;h4 id=&#34;heres-how-to-doit&#34;&gt;Here’s how to do it&lt;/h4&gt;
+&lt;p&gt;First, head over to &lt;a class=&#34;link&#34; href=&#34;https://portal.azure.com/#blade/Microsoft_AAD_IAM/GroupsManagementMenuBlade/AllGroups&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;portal.azure.com&lt;/a&gt; and go to Azure AD, Groups. Then click New group.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1gDIaXRlNKUOM1U71nGgEvg.png&#34;
+	width=&#34;1422&#34;
+	height=&#34;324&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1gDIaXRlNKUOM1U71nGgEvg_huc9b2e618b9b96aa8b6e494a55e689da4_52396_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1gDIaXRlNKUOM1U71nGgEvg_huc9b2e618b9b96aa8b6e494a55e689da4_52396_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;438&#34;
+		data-flex-basis=&#34;1053px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;You can choose between a Microsoft 365 Group or a Security Group. For the Membership type, choose Dynamic User and then Add dynamic query.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1myN3vL9tTOdiDlRKgoQdyQ.png&#34;
+	width=&#34;1035&#34;
+	height=&#34;892&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1myN3vL9tTOdiDlRKgoQdyQ_hu824f2c985134642ae141667afab7730d_87507_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1myN3vL9tTOdiDlRKgoQdyQ_hu824f2c985134642ae141667afab7730d_87507_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;116&#34;
+		data-flex-basis=&#34;278px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Click the Edit button on Rule syntax.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1y3zKCrheFFtZhMuefUHg.png&#34;
+	width=&#34;1556&#34;
+	height=&#34;677&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1y3zKCrheFFtZhMuefUHg_hu6172bfd86123ef115f365a18f9e89ede_67221_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1y3zKCrheFFtZhMuefUHg_hu6172bfd86123ef115f365a18f9e89ede_67221_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;229&#34;
+		data-flex-basis=&#34;551px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now enter the following query and click OK.&lt;/p&gt;
+&lt;p&gt;USER.ASSIGNEDPLANS -ANY (ASSIGNEDPLAN.SERVICEPLANID -EQ &amp;ldquo;4828c8ec-dc2e-4779-b502-87ac9ce28ab7&amp;rdquo; -AND ASSIGNEDPLAN.CAPABILITYSTATUS -EQ &amp;ldquo;ENABLED&amp;rdquo;)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1RWeLgN5BP5RFAkr7lS50Q.png&#34;
+	width=&#34;1257&#34;
+	height=&#34;447&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1RWeLgN5BP5RFAkr7lS50Q_hu1bd13b4dc8c3bab958f42da1688b5b23_41386_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1RWeLgN5BP5RFAkr7lS50Q_hu1bd13b4dc8c3bab958f42da1688b5b23_41386_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;281&#34;
+		data-flex-basis=&#34;674px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The Id we are querying is the Id for the service plan “MCOEV” which can be seen &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/azure/active-directory/enterprise-users/licensing-service-plan-reference&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;. Since we’re looking for the service plan Id, it doesn’t matter if the license is assigned to a user via the Teams Phone Standard add-on, E5 or even Common Area Phone SKU. With the second part of the query (-AND) we’re also making sure, that we’re only including users where the service plan is actually enabled.&lt;/p&gt;
+&lt;p&gt;Click Save.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1HMIASp06A45oOvCFOU4i6g.png&#34;
+	width=&#34;1549&#34;
+	height=&#34;710&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1HMIASp06A45oOvCFOU4i6g_hub7f425d430ba3cdfa0bb2d5b8c5c162c_94707_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1HMIASp06A45oOvCFOU4i6g_hub7f425d430ba3cdfa0bb2d5b8c5c162c_94707_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;218&#34;
+		data-flex-basis=&#34;523px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;And finally, click Create.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1LsdWbsig2hQJzrErXoUTw.png&#34;
+	width=&#34;1026&#34;
+	height=&#34;1166&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1LsdWbsig2hQJzrErXoUTw_huf1b4bdec47b8a4a323475e2d2b31fa0f_95851_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1LsdWbsig2hQJzrErXoUTw_huf1b4bdec47b8a4a323475e2d2b31fa0f_95851_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;87&#34;
+		data-flex-basis=&#34;211px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;It will take a while until all the members have been added. We can check if our rule works by clicking on Dynamic membership rules and navigating to Validate Rules (preview). Let’s add some users and check if they meet the criteria.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1MFwrIBncdH8pWcWrwXFLw.png&#34;
+	width=&#34;1551&#34;
+	height=&#34;872&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1MFwrIBncdH8pWcWrwXFLw_hud61c41663de72d2f9cf20c8bf0c973bf_184490_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1MFwrIBncdH8pWcWrwXFLw_hud61c41663de72d2f9cf20c8bf0c973bf_184490_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;177&#34;
+		data-flex-basis=&#34;426px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;By clicking View details we can examine the query and see exactly why a user will be included or not.&lt;/p&gt;
+&lt;p&gt;Here’s an example of a user where the service plan is assigned and also enabled.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1mz1us2OGznfSo1FaVQG8qA.png&#34;
+	width=&#34;1243&#34;
+	height=&#34;467&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1mz1us2OGznfSo1FaVQG8qA_hu9347a5c5179c7beebff4b079810516a0_71081_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1mz1us2OGznfSo1FaVQG8qA_hu9347a5c5179c7beebff4b079810516a0_71081_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;266&#34;
+		data-flex-basis=&#34;638px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The user Bill has a Teams Phone Standard License but won’t be added to the group because the service plan is disabled.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1xeKYbn5MmNhGywENqNvKdw.png&#34;
+	width=&#34;1553&#34;
+	height=&#34;364&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1xeKYbn5MmNhGywENqNvKdw_huec94ab3e83c7f053d4dd8ff95d1b01dc_58799_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1xeKYbn5MmNhGywENqNvKdw_huec94ab3e83c7f053d4dd8ff95d1b01dc_58799_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;426&#34;
+		data-flex-basis=&#34;1023px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now you can use this group to assign it to a call queue. Whenever you license newly created users for the service plan MCOEV, the agent list of the call queue will automatically be updated. From my experience it can take some time until the agent lists of call queues are updated if you’re using group or channel assignments. I will write another article on how to force an agent list sync for call queues which use group assignments. So stay tuned!&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Creating Microsoft Teams Calling Deep Links</title>
+        <link>https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd/</link>
+        <pubDate>Tue, 15 Mar 2022 21:51:21 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd/</guid>
+        <description>&lt;p&gt;Creating links for phone numbers on a desktop operating system is easy. Just like mailto: links, Windows PCs have link handlers for callto: or tel: URLs. These kinds of links are often found on websites or google search results and provide great convenience because a user just has to click a link to start dialing.&lt;/p&gt;
+&lt;p&gt;Even though there are many different protocols, the most popular ones are:&lt;/p&gt;
+&lt;p&gt;callto:&lt;phone number&gt;&lt;br&gt;
+tel:&lt;phone number&gt;&lt;/p&gt;
+&lt;p&gt;If you haven’t already configured a default App for calling on Windows, you’ll be prompted to choose an app for calling links.&lt;/p&gt;
+&lt;p&gt;And that’s it. Next time you click on a phone number link, your PC will automatically use Teams to make the call.&lt;/p&gt;
+&lt;h4 id=&#34;using-deep-links-on-mobilephones&#34;&gt;Using Deep Links on Mobile Phones&lt;/h4&gt;
+&lt;p&gt;Mobile operating systems are a different story. Because they are very restricted in terms of customization, clicking on a callto: or tel: link will most likely start a call using your mobile number/network — which makes total sense.&lt;/p&gt;
+&lt;p&gt;But what if you have a business application or an internal website and would like your users to initiate calls using their business number configured in Microsoft Teams instead of their mobile number?&lt;/p&gt;
+&lt;p&gt;It’s definitely possible but it requires a bit of work. To be specific, to achieve this, we need a specific deep link. But what are deep links?&lt;/p&gt;
+&lt;p&gt;Basically, they are just links followed by some application specific stuff which will not only open the App but also start an action inside said App. For example, we can use a deep link to open a specific channel or even a tab inside a channel in Teams.&lt;/p&gt;
+&lt;p&gt;This &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/build-and-test/deep-links#generate-a-deep-link-to-a-call&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Microsoft Docs Article&lt;/a&gt; provides a detailed overview of all available deep links for Teams. As you can see, there are also deep links to initiate call actions within Teams.&lt;/p&gt;
+&lt;p&gt;If you want a link which will launch Teams and start a PSTN call, you need to create the link like this. The most important part is the “4;” placed just before the phone number. This will tell Teams to call a PSTN participant.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://teams.microsoft.com/l/call/0/0?users=&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://teams.microsoft.com/l/call/0/0?users=&lt;/a&gt;&lt;user1&gt;,4:&lt;phonenumber&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;user&gt; part of the URL is actually optional. So a real world example would look something like this.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://teams.microsoft.com/l/call/0/0?users=4:&amp;#43;448719762819&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://teams.microsoft.com/l/call/0/0?users=4:+448719762819&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Since this is a simple URL, we can also prettify the link by giving it a title.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://teams.microsoft.com/l/call/0/0?users=4:&amp;#43;448719762819&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Call Speaking Clock via Teams&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This will start a call to a &lt;a class=&#34;link&#34; href=&#34;https://telephonesuk.org.uk/speaking-clock/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;UK Speaking Clock&lt;/a&gt;. If you’re already using Teams Telephony you can try this by yourself. This link works on desktop and mobile devices. (Beware of the costs though! According to the site linked above, calls to this number cost 13p (Pence) per minute. If you’re calling from outside the UK, the cost may vary.) If you want to test this with a local number instead, just copy the URL and change the phone number.&lt;/p&gt;
+&lt;h4 id=&#34;example-gifs&#34;&gt;Example Gifs&lt;/h4&gt;
+&lt;p&gt;To finish off, here are some Gifs of how it looks on an iPhone and an Android device.&lt;/p&gt;
+&lt;p&gt;Clicking a Teams calling deep link from within the app on Android.&lt;/p&gt;
+&lt;p&gt;Clicking a Teams calling deep link from within the app on iOS.&lt;/p&gt;
+&lt;p&gt;Clicking a Teams calling deep link from another App/Website on Android (works on iOS too.)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd/1ZNgQP7PbMMRQnBjFgvrw.gif&#34;
+	width=&#34;720&#34;
+	height=&#34;1600&#34;
+	srcset=&#34;https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd/1ZNgQP7PbMMRQnBjFgvrw_hub70d9c4db9bb6296dbcc43cf5c7bcd69_4223795_480x0_resize_box_1.gif 480w, https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd/1ZNgQP7PbMMRQnBjFgvrw_hub70d9c4db9bb6296dbcc43cf5c7bcd69_4223795_1024x0_resize_box_1.gif 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;45&#34;
+		data-flex-basis=&#34;108px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;update&#34;&gt;Update&lt;/h4&gt;
+&lt;p&gt;When launching a deep link starting with https:// as demonstrated above, it will always open your default browser, before the Teams App is launched. Unless, you’re clicking the deep link from within Teams as shown in the first two Gifs.&lt;/p&gt;
+&lt;p&gt;Twitter User &lt;a class=&#34;link&#34; href=&#34;https://twitter.com/pilzi&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;pilzi&lt;/a&gt; was kind enough to share some additional info. By adding the prefix msteams:// in front of the URL, we can open calling deep links directly in the Teams App without opening the browser first. It seems like the msteams:// URI scheme doesn’t like + signs though. We need to write the plus sign as “%2b” for it to work.&lt;/p&gt;
+&lt;p&gt;msteams://teams.microsoft.com/l/call/0/0?users=4:%2b448719762819&lt;/p&gt;
+&lt;p&gt;Thanks again for the tip!&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>How To Read/Format Microsoft Teams PSTN Call Reports</title>
+        <link>https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/</link>
+        <pubDate>Fri, 11 Mar 2022 23:52:10 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/</guid>
+        <description>&lt;p&gt;Analyzing PSTN usage reports in Teams Admin Center is a good start to troubleshoot issues with Direct Routing calls in Teams. You can either view the report directly in the browser or export it into a CSV file.&lt;/p&gt;
+&lt;p&gt;To access this report, head over to &lt;a class=&#34;link&#34; href=&#34;https://admin.teams.microsoft.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://admin.teams.microsoft.com/&lt;/a&gt; and click Usage reports under Analytics &amp;amp; Reports. Next, choose PSTN and SMS (preview) usage and select a date range. Finally, click on Run report.&lt;/p&gt;
+&lt;p&gt;It will default to Calling plans/SMS so you need to switch the tab to Direct Routing.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1PckxJFyhvjI2Pdokxqqwg.png&#34;
+	width=&#34;1975&#34;
+	height=&#34;879&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1PckxJFyhvjI2Pdokxqqwg_huadfb7f70fc50f504503c0bed2e2ecd76_140435_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1PckxJFyhvjI2Pdokxqqwg_huadfb7f70fc50f504503c0bed2e2ecd76_140435_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;224&#34;
+		data-flex-basis=&#34;539px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Viewing the logs in the browser is good enough if you just need to take a quick look at some calls. For example, you can quickly identify issues if you sort by the column Failure time (UTC). But keep in mind that cancelled calls are also shown as errors, as these are terminated with the SIP error code 487 (busy here). A duration of zero is also an indicator for failed calls.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1qexWj1fWPIeTIS1gBZP2Q.png&#34;
+	width=&#34;1322&#34;
+	height=&#34;285&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1qexWj1fWPIeTIS1gBZP2Q_hu11c26d2d5c0976283b184c6dadc73fd8_30267_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1qexWj1fWPIeTIS1gBZP2Q_hu11c26d2d5c0976283b184c6dadc73fd8_30267_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;463&#34;
+		data-flex-basis=&#34;1113px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Besides obvious stuff like the display name, callee and caller numbers, the SIP address, or the call direction/type, you can also see which Direct Routing gateway and which Azure region for media or signaling was used.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1ppdvGy7oVq2GzGoJXVUkSg.png&#34;
+	width=&#34;1059&#34;
+	height=&#34;198&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1ppdvGy7oVq2GzGoJXVUkSg_hu261b96ba540f00e5221af0295804ec21_18203_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1ppdvGy7oVq2GzGoJXVUkSg_hu261b96ba540f00e5221af0295804ec21_18203_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;534&#34;
+		data-flex-basis=&#34;1283px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If you need to take a deeper look at your call logs, it’s probably best to download the report as a CSV file. To do that, just click the Excel Icon in the upper right corner as shown in the first screenshot.&lt;/p&gt;
+&lt;p&gt;Once the report has been generated, it will trigger a download of a Zip file. Depending on your setup, the Zip file might also contain a CSV file for Calling Plans. I’m only interested in Direct Routing calls at the moment, so let’s open that file in Excel. It gives us all call records in the specified date range as comma separated values. But they are all in the same column, which is pretty useless until they’re formatted correctly.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/15zq9Y2Xpl34hYAAyZMhpgw.png&#34;
+	width=&#34;780&#34;
+	height=&#34;350&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/15zq9Y2Xpl34hYAAyZMhpgw_hubec29dc0b13b3e67b4dec71d5403dbb2_64759_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/15zq9Y2Xpl34hYAAyZMhpgw_hubec29dc0b13b3e67b4dec71d5403dbb2_64759_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;222&#34;
+		data-flex-basis=&#34;534px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;For some reason, Excel always shows a warning, that there’s already data here, when I try to use the Text to Columns feature. Despite this warning, I’m still able to read the logs once the columns are separated.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1KWQEcy22MmnVj9zEKQpZow.png&#34;
+	width=&#34;459&#34;
+	height=&#34;179&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1KWQEcy22MmnVj9zEKQpZow_hud774473c766f674df16c646f587a5092_10424_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1KWQEcy22MmnVj9zEKQpZow_hud774473c766f674df16c646f587a5092_10424_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;256&#34;
+		data-flex-basis=&#34;615px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Since I don’t want to take the risk of missing important information in the logs, I wrote this handy PowerShell one-liner to convert the CSV file into a more human readable CSV file. This also saves me the time to turn text into columns first.&lt;/p&gt;
+&lt;p&gt;Just fire up PowerShell or Windows Terminal by entering powershell or wt directly into the File Explorer’s address bar.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/13g7Gfp5XdrhkytDOO5fNg.png&#34;
+	width=&#34;1218&#34;
+	height=&#34;352&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/13g7Gfp5XdrhkytDOO5fNg_hu2028eb813eaaded5093dea9f8784e29b_41174_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/13g7Gfp5XdrhkytDOO5fNg_hu2028eb813eaaded5093dea9f8784e29b_41174_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;346&#34;
+		data-flex-basis=&#34;830px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This will open PowerShell in the current directory. Now all you have to do is to paste this code.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/9c5fcaaa900b8d26f99f5a304d1f90e3.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;This will read the original CSV, into a PowerShell object and export it to a new CSV file called “drExport.csv” where the columns are already separated.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1Dhj5Bl5uey0u0E3MzVh6Q.png&#34;
+	width=&#34;1581&#34;
+	height=&#34;323&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1Dhj5Bl5uey0u0E3MzVh6Q_hu8496aca10723713627c31422b23b1b82_188926_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1Dhj5Bl5uey0u0E3MzVh6Q_hu8496aca10723713627c31422b23b1b82_188926_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;489&#34;
+		data-flex-basis=&#34;1174px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;I hope this little Gist also helps you formatting your logs a little quicker.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

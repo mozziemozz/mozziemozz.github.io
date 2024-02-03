@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='In this article, I did a pretty hefty run down of all things shared voicemail in Microsoft Teams. I also teased another article about…'>
+<title>Microsoft Teams: Handle Shared Voicemail More Efficiently</title>
+
+<link rel='canonical' href='https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Microsoft Teams: Handle Shared Voicemail More Efficiently'>
+<meta property='og:description' content='In this article, I did a pretty hefty run down of all things shared voicemail in Microsoft Teams. I also teased another article about…'>
+<meta property='og:url' content='https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/'>
+<meta property='og:site_name' content='HEUSSER.PRO'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2022-06-05T21:06:42&#43;00:00'/><meta property='article:modified_time' content='2022-06-05T21:06:42&#43;00:00'/>
+<meta name="twitter:title" content="Microsoft Teams: Handle Shared Voicemail More Efficiently">
+<meta name="twitter:description" content="In this article, I did a pretty hefty run down of all things shared voicemail in Microsoft Teams. I also teased another article about…">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "kozb6q2xjn");
+    </script>    
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hud7e6b3cccc21b12ddf35b72eb655064d_860969_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🫡</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
+            <h2 class="site-description">Martin Heusser | M365 Apps &amp; Services MVP</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/mozziemozz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://x.com/@mozzeph'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/imprint/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                
+                <span>Imprint</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li>
+      <ol>
+        <li>
+          <ol>
+            <li><a href="#preparations">Preparations</a></li>
+            <li><a href="#building-theflow">Building the Flow</a></li>
+          </ol>
+        </li>
+        <li><a href="#the-result">The Result</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/microsoft-teams/" >
+                Microsoft Teams
+            </a>
+        
+            <a href="/categories/power-automate/" >
+                Power Automate
+            </a>
+        
+            <a href="/categories/sharepoint/" >
+                SharePoint
+            </a>
+        
+            <a href="/categories/adaptive-cards/" >
+                Adaptive Cards
+            </a>
+        
+            <a href="/categories/microsoft-365/" >
+                Microsoft 365
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/">Microsoft Teams: Handle Shared Voicemail More Efficiently</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            In this article, I did a pretty hefty run down of all things shared voicemail in Microsoft Teams. I also teased another article about…
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jun 05, 2022</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    4 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>In this <a class="link" href="/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24" >article</a>, I did a pretty hefty run down of all things shared voicemail in Microsoft Teams. I also teased another article about creating a Power Automate Flow to deliver shared voicemails into a Teams channel instead of receiving them just by email. …which brings us to this article.</p>
+<p>The idea behind all that is, that shared voicemails get posted as an adaptive card in a Teams channel, rather than that a few individuals receive shared voicemails by email.</p>
+<h4 id="preparations">Preparations</h4>
+<p>First, we need to identify or create a Microsoft 365 Group which will be configured as shared voicemail target on an auto attendant or a call queue. Next, we’ll need to enable the follow in inbox feature for this group and add a shared mailbox of choice to this M365 Group. (If you need help with this, please check the linked article at the beginning of this story.)</p>
+<h4 id="building-theflow">Building the Flow</h4>
+<p>Then we can start building our flow. Choose “When a new email arrives in a shared mailbox (V2)” (Office 365 Outlook) as your trigger and select the mailbox and its folder. (If this shared mailbox also receives other messages, you might want to include a subject filter under advanced options.)</p>
+<p><img src="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg.png"
+	width="919"
+	height="295"
+	srcset="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg_hu409f3540d947a703b368190dacb7fe9a_23574_480x0_resize_box_3.png 480w, /p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg_hu409f3540d947a703b368190dacb7fe9a_23574_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="311"
+		data-flex-basis="747px"
+	
+></p>
+<p>Next, we’ll need to initialize some variables.</p>
+<p><img src="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg.png"
+	width="912"
+	height="285"
+	srcset="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg_hu3475b47a4586823618d925ceb2374395_15530_480x0_resize_box_3.png 480w, /p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg_hu3475b47a4586823618d925ceb2374395_15530_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="320"
+		data-flex-basis="768px"
+	
+></p>
+<p>The value of this variable is the phone number which left the voicemail. We can get the number by splitting the from address at the “@” character and selecting the first value of the splitted string. This is done with the following expression.</p>
+<p>split(triggerOutputs()?[&lsquo;body/from&rsquo;], &lsquo;@&rsquo;)[0]</p>
+<p><img src="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA.png"
+	width="916"
+	height="283"
+	srcset="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA_hud9562ee3ad69dc0130b37982103b3376_17334_480x0_resize_box_3.png 480w, /p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA_hud9562ee3ad69dc0130b37982103b3376_17334_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="323"
+		data-flex-basis="776px"
+	
+></p>
+<p>To avoid duplicate files, we will create a time stamp with this expression. (Adjust the name of the time zone to your own time zone. If you’re not sure how your time zone is called, just run “Get-TimeZone” in PowerShell and copy it’s Id.)</p>
+<p>convertTimeZone(utcNow(),&lsquo;UTC&rsquo;,&lsquo;W. Europe Standard Time&rsquo;, &lsquo;yyyy-MM-dd HH:mm:ss&rsquo;)</p>
+<p><img src="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ.png"
+	width="915"
+	height="285"
+	srcset="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ_hu92f45c07821d601ff59877e261f57bc5_17156_480x0_resize_box_3.png 480w, /p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ_hu92f45c07821d601ff59877e261f57bc5_17156_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="321"
+		data-flex-basis="770px"
+	
+></p>
+<p>And in the end, we will convert the “+” sign into an URL friendly format with this expression.</p>
+<p>replace(variables(&lsquo;FromNumber&rsquo;), &lsquo;+&rsquo;, &lsquo;%2b&rsquo;)</p>
+<p>Now we have all the variables which we need. Choose “Get Attachment (V2)” (Outlook Office 365) as your next action. This will automatically add an “Apply to each” loop for this action. Let’s fill in the dynamic content of the trigger output such as “Message Id” and “Attachment Id”. To be sure that only voicemails are uploaded to SharePoint, I’ve added a condition which checks if the attachments filename ends with *.mp3.</p>
+<p><img src="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw.png"
+	width="1973"
+	height="807"
+	srcset="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw_hu0dcbc38290de2555c36a5a81fce2b9c1_51294_480x0_resize_box_3.png 480w, /p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw_hu0dcbc38290de2555c36a5a81fce2b9c1_51294_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="244"
+		data-flex-basis="586px"
+	
+></p>
+<p>If it does, we’ll save the file to SharePoint. If it doesn’t, we won’t do any further processing and the flow ends there. Notice how we’ll use the previously initialized variables to construct a unique filename consisting of the received date and the caller’s number. Once the file has been saved, we’ll create a share link to later access the file.</p>
+<p><img src="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q.png"
+	width="972"
+	height="962"
+	srcset="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q_hu1155102bdde9f8fe27e6415dd023cf2e_76458_480x0_resize_box_3.png 480w, /p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q_hu1155102bdde9f8fe27e6415dd023cf2e_76458_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="101"
+		data-flex-basis="242px"
+	
+></p>
+<p>All that’s left to do now is to post an adaptive card to a channel and wait for a reply.</p>
+<p><img src="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg.png"
+	width="832"
+	height="1790"
+	srcset="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg_hu45cdd06c4cc5270853ae9aa36a697389_79437_480x0_resize_box_3.png 480w, /p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg_hu45cdd06c4cc5270853ae9aa36a697389_79437_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="46"
+		data-flex-basis="111px"
+	
+></p>
+<p>Paste the following JSON object into your flow and replace the variables with your own names if needed.</p>
+<p>{<br>
+&ldquo;$schema&rdquo;: &ldquo;<a class="link" href="http://adaptivecards.io/schemas/adaptive-card.json"  target="_blank" rel="noopener"
+    >http://adaptivecards.io/schemas/adaptive-card.json</a>&rdquo;,<br>
+&ldquo;type&rdquo;: &ldquo;AdaptiveCard&rdquo;,<br>
+&ldquo;version&rdquo;: &ldquo;1.3&rdquo;,<br>
+&ldquo;body&rdquo;: [<br>
+{<br>
+&ldquo;type&rdquo;: &ldquo;TextBlock&rdquo;,<br>
+&ldquo;text&rdquo;: &ldquo;@{triggerOutputs()?[&lsquo;body/subject&rsquo;]}&rdquo;,<br>
+&ldquo;size&rdquo;: &ldquo;Large&rdquo;<br>
+},<br>
+{<br>
+&ldquo;type&rdquo;: &ldquo;TextBlock&rdquo;,<br>
+&ldquo;text&rdquo;: &ldquo;New Voicemail from @{variables(&lsquo;FromNumber&rsquo;)}&rdquo;<br>
+},<br>
+{<br>
+&ldquo;type&rdquo;: &ldquo;ActionSet&rdquo;,<br>
+&ldquo;actions&rdquo;: [<br>
+{<br>
+&ldquo;type&rdquo;: &ldquo;Action.OpenUrl&rdquo;,<br>
+&ldquo;title&rdquo;: &ldquo;Listen to Voicemail Message&rdquo;,<br>
+&ldquo;url&rdquo;: &ldquo;@{outputs(&lsquo;Create_sharing_link_for_a_file_or_folder&rsquo;)?[&lsquo;body/link/webUrl&rsquo;]}&rdquo;<br>
+}<br>
+]<br>
+},<br>
+{<br>
+&ldquo;type&rdquo;: &ldquo;ActionSet&rdquo;,<br>
+&ldquo;actions&rdquo;: [<br>
+{<br>
+&ldquo;type&rdquo;: &ldquo;Action.OpenUrl&rdquo;,<br>
+&ldquo;title&rdquo;: &ldquo;@{variables(&lsquo;FromNumber&rsquo;)} Call Back&rdquo;,<br>
+&ldquo;url&rdquo;: &ldquo;<a class="link" href="https://teams.microsoft.com/l/call/0/0?users=4:@%7Bvariables%28%27CallBackNumber%27%29%7D"  target="_blank" rel="noopener"
+    >https://teams.microsoft.com/l/call/0/0?users=4:@{variables(&lsquo;CallBackNumber&rsquo;)}</a>&rdquo;<br>
+},<br>
+{<br>
+&ldquo;type&rdquo;: &ldquo;Action.Submit&rdquo;,<br>
+&ldquo;title&rdquo;: &ldquo;Call Completed&rdquo;,<br>
+&ldquo;style&rdquo;: &ldquo;positive&rdquo;<br>
+}<br>
+]<br>
+}<br>
+]<br>
+}</p>
+<h3 id="the-result">The Result</h3>
+<p>Let’s see how this looks from a user&rsquo;s perspective. Whenever a new shared voicemail is received in the shared mailbox, the Flow will be triggered and sends an adaptive card into the channel.</p>
+<p>All Team members will know that a new voicemail has been received and they can listen to it by clicking the button.</p>
+<p><img src="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag.png"
+	width="1233"
+	height="396"
+	srcset="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag_hu92d694298aa98f66dc5fbdb422498c24_45451_480x0_resize_box_3.png 480w, /p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag_hu92d694298aa98f66dc5fbdb422498c24_45451_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="311"
+		data-flex-basis="747px"
+	
+></p>
+<p>This will open the SharePoint link and the media can be played back in the browser.</p>
+<p><img src="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg.png"
+	width="1896"
+	height="1020"
+	srcset="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg_hu2b10560ffd24d4b9ccf76ba494e87b7d_98636_480x0_resize_box_3.png 480w, /p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg_hu2b10560ffd24d4b9ccf76ba494e87b7d_98636_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="185"
+		data-flex-basis="446px"
+	
+></p>
+<p>Unfortunately, playing back media on adaptive cards is not yet supported in Teams.</p>
+<p><img src="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg.png"
+	width="1240"
+	height="241"
+	srcset="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg_hu2f8694cf3c1d121cac14232dca481842_25875_480x0_resize_box_3.png 480w, /p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg_hu2f8694cf3c1d121cac14232dca481842_25875_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="514"
+		data-flex-basis="1234px"
+	
+></p>
+<p>Because we’ve inserted a <a class="link" href="/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd" >calling deep link</a> on the adaptive card, users will also be able to initiate a call directly from the card.</p>
+<p><img src="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA.png"
+	width="889"
+	height="228"
+	srcset="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA_hue63fc8f17736c54f8460ec2bec3fd16a_14672_480x0_resize_box_3.png 480w, /p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA_hue63fc8f17736c54f8460ec2bec3fd16a_14672_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="389"
+		data-flex-basis="935px"
+	
+></p>
+<p>And finally, once the customer has been called back the adaptive card can be completed by clicking the “Call Completed” button. This will refresh the card and let all other channel members know, that there is no action needed from their side anymore. They will also be able to see, who completed the card.</p>
+<p><img src="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA.png"
+	width="1228"
+	height="289"
+	srcset="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA_huee3b0db9f1ea264c6759d8791300809e_35831_480x0_resize_box_3.png 480w, /p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA_huee3b0db9f1ea264c6759d8791300809e_35831_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="424"
+		data-flex-basis="1019px"
+	
+></p>
+<p>I really hope that media cards will soon be supported to provide an even better user experience in Teams.</p>
+<p>As always, I hope that you liked my article and that it helps you too, deliver a better user experience.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/">
+        
+        
+            <div class="article-image">
+                <img src="/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/cover.f4838225804739dad554c1b9648b2b8d_hu28492fa5d2bc203e9449ee66080cd141_51573_250x150_fill_box_smart1_3.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post Teams Shared Voicemail for Basic Call Flows"
+                        data-key="/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju" 
+                        data-hash="md5-9IOCJYBHOdrVVMG5ZIsrjQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Teams Shared Voicemail for Basic Call Flows</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">The Ultimate Teams Shared Voicemail Solution</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Everything You Ever Wanted to Know About Creating Teams and Microsoft 365 Groups</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/teams-phone-number-management-list-part-3-e083a320004d/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Teams Phone Number Management List Part 3</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How to Pin a Phone Number to the Teams Side Rail</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "heusser-pro" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2024 HEUSSER.PRO
+    </section>
+    
+    <section class="powerby">
+        
+            Hosted on Microsoft Azure <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
+

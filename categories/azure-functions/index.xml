@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Azure Functions on HEUSSER.PRO</title>
+        <link>https://heusser.pro/categories/azure-functions/</link>
+        <description>Recent content in Azure Functions on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Thu, 14 Jul 2022 21:59:48 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/azure-functions/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Set your Teams Status to In a Call when using other Calling &amp; Meeting Apps on iOS</title>
+        <link>https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/</link>
+        <pubDate>Thu, 14 Jul 2022 21:59:48 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/</guid>
+        <description>&lt;p&gt;Hello everybody. I try my best to blog about new and unique Microsoft Teams related stuff at least once a month. If you’re new to my stories, feel free to check out my previous articles &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p&#34; &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Today we’re going to take a look at something very cool. A few months ago, I wrote this little code snippet which lets you change a Teams user’s presence by using PowerShell and the Microsoft Graph API. The API endpoint is documented &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/graph/api/presence-setpresence?view=graph-rest-1.0&amp;amp;tabs=http&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;. You might be asking yourself: why would we want to do this in the first place? Teams already updates our presence if we’re in a call, a meeting or just busy because of an Outlook appointment, right?&lt;/p&gt;
+&lt;h4 id=&#34;use-cases&#34;&gt;Use Cases&lt;/h4&gt;
+&lt;p&gt;Setting the presence of a user can be very useful if for example not all your users are on Teams yet. Let’s say that we’ve still got a legacy PBX system with SIP devices registered to it, but we use Teams for internal calls. There’s no way to know that a user is already on the phone unless the user specifically updates his status to Busy or Do not disturb. A user can’t set his own status to “In a call” or “In a meeting” though.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ.png&#34;
+	width=&#34;548&#34;
+	height=&#34;680&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ_huce2d2f03c713521e4f452d4d43e9a1ce_48580_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ_huce2d2f03c713521e4f452d4d43e9a1ce_48580_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;80&#34;
+		data-flex-basis=&#34;193px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If we’re using an &lt;a class=&#34;link&#34; href=&#34;https://www.anynode.de/supervision/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;anynode SBC&lt;/a&gt; for example, we could implement a Route Supervision which calls an Azure Function, whenever a user receives or starts a call on a legacy PBX system. The Azure Function would then send an http POST request to the Graph API to change the presence status of the user.&lt;/p&gt;
+&lt;p&gt;Since Microsoft has now released the &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/microsoftteams/sip-gateway-plan&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;SIP Gateway&lt;/a&gt; the need for such a solution has significantly decreased because the SIP Gateway already handles Teams presence out of the box. If you’re interested in learning more about the SIP Gateway for Teams, please check out this session from Commsverse from my colleague &lt;a class=&#34;link&#34; href=&#34;https://twitter.com/tpickhan&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Thorsten Pickhan&lt;/a&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;what-about-other-usecases&#34;&gt;What about other use cases?&lt;/h4&gt;
+&lt;p&gt;I know, we all love Teams but sometimes we do need to use other calling and meeting apps such as Skype, Zoom, WhatsApp, or Discord. Don’t you just hate it that Teams doesn’t know when you’re already on a call in another app? Today, we’re going to change that!&lt;/p&gt;
+&lt;h4 id=&#34;the-power-ofsiri&#34;&gt;The Power of Siri&lt;/h4&gt;
+&lt;p&gt;If you have an iPhone or iPad you probably know about Siri Shortcuts and Automations. If you don’t know them already, I highly recommend checking them out. Shortcuts and automations are like local Power Automate Flows which are created and executed on your iOS device. Today I discovered that you can actually do http POST requests with Shortcuts. How cool is that?&lt;/p&gt;
+&lt;p&gt;Granted, coding or building shortcuts is quite a hassle on such a small screen but there’s an easy workaround for that. We’re just using the Shortcut to call an Azure Function and let the Function do all the work for us.&lt;/p&gt;
+&lt;h4 id=&#34;creating-an-azure-ad-app-registration&#34;&gt;Creating an Azure AD App Registration&lt;/h4&gt;
+&lt;p&gt;First, we need an Azure AD App where we can grant the required permissions to set and clear the Teams presence. There’s an exceptional tutorial &lt;a class=&#34;link&#34; href=&#34;https://adamtheautomator.com/powershell-graph-api/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;. (I also used the example code to acquire the token from this website.)&lt;/p&gt;
+&lt;p&gt;“Presence.ReadWrite.All” is the permission we need.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA.png&#34;
+	width=&#34;851&#34;
+	height=&#34;537&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA_hu90c29336af7900a9bcc837fa4413389d_47241_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA_hu90c29336af7900a9bcc837fa4413389d_47241_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;158&#34;
+		data-flex-basis=&#34;380px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;create-an-azurefunction&#34;&gt;Create an Azure Function&lt;/h4&gt;
+&lt;p&gt;Next, we create an Azure Function. If you’re not familiar with Azure Functions, please read this &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851&#34; &gt;article&lt;/a&gt;. The creating of a Function App and a Function is described under “Create the Refresh Card Function”.&lt;/p&gt;
+&lt;p&gt;Copy and paste the following code into your function. Populate the variables on lines 10–14 with your tenant specific information.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/5b08518eff2dd7c579c61cab23e25e95.js&#34;&gt;&lt;/script&gt;
+
+&lt;h4 id=&#34;create-the-sirishortcut&#34;&gt;Create the Siri Shortcut&lt;/h4&gt;
+&lt;p&gt;Now, we’ll create a new Siri Shortcut. Choose “Get contents of URL” as your first action. Now go back to your Azure Function and copy its URL.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g.png&#34;
+	width=&#34;1840&#34;
+	height=&#34;247&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g_hu0a9d03c473db92f91ef58447bb04026d_43868_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g_hu0a9d03c473db92f91ef58447bb04026d_43868_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;744&#34;
+		data-flex-basis=&#34;1787px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Paste the URL into the Shortcut. I always use Sticky Notes to quickly synchronize text between my Windows PC and my iPhone.&lt;/p&gt;
+&lt;p&gt;Next, expand the action by clicking on the circled arrow which points right. This will reveal additional options. Change the Method to POST and add a key and a value (Text) to the Request Body. I used “Name”: “Azure”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;V:%5cGitHub%5cheusser-pro-v2%5ccontent%5cpost%5cmedium-export%5cposts%5cmd_1702475460664%5cimg%5c1__JPlHNIr6mVHsBIA1HLoOqA.jpeg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;That’s it for the shortcut. You should now be able to run the shortcut. Every time you do so, your iOS device will call the Azure Function which will request a token and then set the defined user&amp;rsquo;s presence to In a Call.&lt;/p&gt;
+&lt;p&gt;By now, I hope you can understand why I didn’t bother to try and also build the authentication flow using only Shortcuts.&lt;/p&gt;
+&lt;h4 id=&#34;building-the-siri-automation&#34;&gt;Building the Siri Automation&lt;/h4&gt;
+&lt;p&gt;The last piece we need to do is to create an Automation which will trigger the Shortcut. Unfortunately, there aren’t as many triggers as I had wished but using “When an App is opened” does the trick, sort of.&lt;/p&gt;
+&lt;p&gt;In Shortcuts, switch from My Shortcuts to Automation on the bottom. Click + to create a new Automation. You want to create a Personal Automation.&lt;/p&gt;
+&lt;p&gt;Select “App” as your trigger and then select one or multiple calling Apps.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA.png&#34;
+	width=&#34;750&#34;
+	height=&#34;1334&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA_hub968f2c7cf86104968b4dbe83e65d0ea_52403_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA_hub968f2c7cf86104968b4dbe83e65d0ea_52403_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;56&#34;
+		data-flex-basis=&#34;134px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Then, add an action and search for “Run Shortcut”. Click on Shortcut and select the previously created Shortcut from the list.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA.png&#34;
+	width=&#34;750&#34;
+	height=&#34;1334&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA_huf2ced6342da4c84ab44a20c0be9377c1_125532_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA_huf2ced6342da4c84ab44a20c0be9377c1_125532_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;56&#34;
+		data-flex-basis=&#34;134px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Click Next and then Done. Leave “Ask Before Running” enabled. This way you’ll be asked if you want to update your Teams presence each time you open one of the selected Apps. If you’re not making a call, you can just ignore or close the notification banner.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg.png&#34;
+	width=&#34;750&#34;
+	height=&#34;1334&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg_hu7eae1344531cb80e88c90e1ab05064f7_64626_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg_hu7eae1344531cb80e88c90e1ab05064f7_64626_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;56&#34;
+		data-flex-basis=&#34;134px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now you’re all set. Every time you open one of your selected Apps (just Skype in my case) the automation will be triggered and ask you, if you want to set your Teams presence to In a call.&lt;/p&gt;
+&lt;p&gt;If you like, you can repeat all the steps and create another Function, Shortcut and Automation to clear the presence again, if you’re done with your call on the other App.&lt;/p&gt;
+&lt;p&gt;In this case, just replace line 42–51 with this code in the “Clear Presence Function” and choose “When an App is closed” as the Siri Automation trigger.&lt;/p&gt;
+&lt;p&gt;$Body = @&amp;quot;&lt;/p&gt;
+&lt;p&gt;{&lt;/p&gt;
+&lt;p&gt;&amp;ldquo;sessionId&amp;rdquo;: &amp;ldquo;bf3cbc08-e5b0-47bb-a4f0-89e3e3f7adac&amp;rdquo;,&lt;/p&gt;
+&lt;p&gt;}&lt;/p&gt;
+&lt;p&gt;&amp;ldquo;@&lt;/p&gt;
+&lt;p&gt;Invoke-RestMethod -Method Post -Uri &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://graph.microsoft.com/v1.0/users/$UserId/presence/clearPresence%22&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://graph.microsoft.com/v1.0/users/$UserId/presence/clearPresence&#34;&lt;/a&gt; -Headers $Header -Body $Body -ContentType &amp;ldquo;application/json&amp;rdquo;&lt;/p&gt;
+&lt;h4 id=&#34;demo&#34;&gt;Demo&lt;/h4&gt;
+&lt;p&gt;Here you can see the Automation in Action. At first, the user’s Teams presence is “Available”. When Skype is opened, the Automation is triggered and confirmed by the user. When Teams is opened again, we can see that the status has changed from “Available” to “In a call”. Because Skype was closed/minimized when Teams was opened, the second Automation, which clears the Teams presence again is triggered and allowed to run. This resets the Teams presence to its original state. Teams is closed and opened again to force a refresh of the presence.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1WA9VV3zTsQF3ov8DnQGfog.gif&#34;
+	width=&#34;600&#34;
+	height=&#34;1067&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1WA9VV3zTsQF3ov8DnQGfog_hu01675812143c9f23e6321f2114a19f84_9202471_480x0_resize_box_1.gif 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1WA9VV3zTsQF3ov8DnQGfog_hu01675812143c9f23e6321f2114a19f84_9202471_1024x0_resize_box_1.gif 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;56&#34;
+		data-flex-basis=&#34;134px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;What’s cool is that this even works when you’re getting an incoming call in an App like Skype, WhatsApp etc. When you accept the call, the App is opened and thus triggers the automation. I can’t record that on video because iOS screen recording is stopped if an incoming call gets accepted and the notification does not show up, when screen sharing through AirPlay is active.&lt;/p&gt;
+&lt;h4 id=&#34;bonus&#34;&gt;Bonus&lt;/h4&gt;
+&lt;p&gt;Because we now have Shortcuts to set our Teams presence to “In a call” or clear the presence again, we can also use Siri to execute these Shortcuts. All we have to say is Hey Siri, followed by the name of the Shortcut. E.g. “Hey Siri, Set Teams Presence” or “Hey Siri, Clear Teams Presence”.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Microsoft Teams Self-Service Auto Attendants (Without Premium Connectors)</title>
+        <link>https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/</link>
+        <pubDate>Tue, 17 May 2022 20:39:01 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/</guid>
+        <description>&lt;p&gt;Hi everybody.&lt;/p&gt;
+&lt;p&gt;Every week more customers are moving to a Microsoft Teams based telephone solution. With that, customers also want more flexibility in managing their auto attendants and call queues. Many of my customers also want their team managers or members to be able to change certain settings of their auto attendants and call queues by themselves. The problem is that all these changes currently require an administrator role for Microsoft Teams. Even though most of the things can be configured in an easy-to-understand GUI in TAC (Teams Admin Center), a user could still potentially break stuff if they’re not 100% aware of what they’re doing. Furthermore, some changes are not as straight forward as they could be. As an example: There’s no switch to manually “open” or “close” an auto attendant since the default and after hours call flows are linked to a weekly recurrent schedule.&lt;/p&gt;
+&lt;p&gt;While Teams is certainly lacking in this area, there’s no denying that the advantages of a Teams Phone solution far outweigh the disadvantages. Microsoft also offers numerous awesome tools to cope with this very issue by allowing us to automate nearly everything. And that ladies and gentlemen, is one of the most awesome and fascinating things to me!&lt;/p&gt;
+&lt;p&gt;Let’s dive in.&lt;/p&gt;
+&lt;h4 id=&#34;credits-and-inspiration&#34;&gt;Credits and Inspiration&lt;/h4&gt;
+&lt;p&gt;This article is inspired by the work of two other fantastic community members and bloggers: MVPs &lt;a class=&#34;link&#34; href=&#34;https://twitter.com/Luca_Vitali&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Luca Vitali&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://twitter.com/AlexHolmeset&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Alexander Holmeset&lt;/a&gt;. Both have written articles on self-service &lt;a class=&#34;link&#34; href=&#34;https://alexholmeset.blog/2021/11/05/self-service-microsoft-teams-auto-attendant-administration/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;auto attendant&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://lucavitali.wordpress.com/2020/11/23/how-to-use-lightweight-bot-and-azure-automation-to-interact-with-teams-call-queue/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;call queue&lt;/a&gt; management using Microsoft automation tools.&lt;/p&gt;
+&lt;p&gt;I don’t think that I would have been able to come up with a solution of my own without their exceptional blog posts. At least not this fast.&lt;/p&gt;
+&lt;p&gt;To fully understand this blog post, please make sure you read their publications first.&lt;/p&gt;
+&lt;h4 id=&#34;the-ever-present-licensing-dilemma&#34;&gt;The Ever-Present Licensing Dilemma&lt;/h4&gt;
+&lt;p&gt;Alex’s solution uses a combination of Microsoft Forms, Power Automate and an Azure Runbook. However, to use an HTTP request either as a trigger or an action in a Flow, you need a premium license for Power Automate. I can understand that requirement from Microsofts business perspective, but such a basic feature shouldn’t require a premium license. Since I don’t have any premium licenses at the moment anyway, I looked for other ways.&lt;/p&gt;
+&lt;p&gt;Luca’s method uses an outgoing webhook in Teams. It’s a great way to invoke a Bot or script directly from Teams. There’s no need to install any apps and you don’t even need to open a website or an App to change some settings on an auto attendant or a call queue.&lt;/p&gt;
+&lt;p&gt;The problem is that Teams can’t really handle the response sent back by the Runbook. This means that a user will always get an error message, even if the Runbook was triggered successfully. This might be very confusing for end users and just doesn’t look nice.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1l4zCsrW8BZdzKBuSOSUEww.png&#34;
+	width=&#34;1769&#34;
+	height=&#34;320&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1l4zCsrW8BZdzKBuSOSUEww_hu372828d406032e44c5b1bd3b6a8b9ef0_44644_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1l4zCsrW8BZdzKBuSOSUEww_hu372828d406032e44c5b1bd3b6a8b9ef0_44644_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;552&#34;
+		data-flex-basis=&#34;1326px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;azure-functions&#34;&gt;Azure Functions&lt;/h4&gt;
+&lt;p&gt;Instead of calling the Azure Runbook directly from the outgoing Teams webhook, I tried to call an Azure Function first. &lt;a class=&#34;link&#34; href=&#34;https://azure.microsoft.com/en-us/services/functions/?ef_id=EAIaIQobChMIrP2Yzfqu9wIVDtxRCh1qvABSEAAYASAAEgK5RfD_BwE%3AG%3As&amp;amp;OCID=AID2200264_SEM_EAIaIQobChMIrP2Yzfqu9wIVDtxRCh1qvABSEAAYASAAEgK5RfD_BwE%3AG%3As&amp;amp;gclid=EAIaIQobChMIrP2Yzfqu9wIVDtxRCh1qvABSEAAYASAAEgK5RfD_BwE&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Azure Functions&lt;/a&gt; are serverless web services which can execute code once they’re called by a trigger. Much like the Runbook in Luca’s blog, my Function is also triggered by a web request by the outgoing webhook.&lt;/p&gt;
+&lt;p&gt;From what I could find &lt;a class=&#34;link&#34; href=&#34;https://stackoverflow.com/questions/45743782/custom-bot-always-replies-with-an-error&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;on the internet&lt;/a&gt;, the webhook expects a reply in JSON format containing &lt;code&gt;&amp;quot;type&amp;quot;: &amp;quot;message&amp;quot;&lt;/code&gt; and &lt;code&gt;&amp;quot;text&amp;quot;: &amp;quot;some message&amp;quot;&lt;/code&gt;. I didn’t find a way to customize the response of the Runbook but it’s easy with an Azure Function. I will show you how later in this post.&lt;/p&gt;
+&lt;h3 id=&#34;override-auto-attendant-businesshours&#34;&gt;Override Auto Attendant Business Hours&lt;/h3&gt;
+&lt;p&gt;Let’s start with the example from the introduction of this article. Let’s assume that we have a small company where the users who answer the phone need to be able to manually open or close an auto attendant.&lt;/p&gt;
+&lt;p&gt;Note: This part assumes that you already have the following components set up. If you don’t have them already, please refer to the external websites linked in this post in order to set them up.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A Microsoft Teams Auto Attendant&lt;/li&gt;
+&lt;li&gt;A Microsoft Teams Team&lt;/li&gt;
+&lt;li&gt;An Azure Automation Account&lt;/li&gt;
+&lt;li&gt;An Azure Function App&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Also, it might be a little confusing at first, because we’re creating each component from the opposite direction in which they are chained together. This way, we only have to touch each component once though.&lt;/p&gt;
+&lt;h4 id=&#34;prepare-the-auto-attendant&#34;&gt;Prepare the Auto Attendant&lt;/h4&gt;
+&lt;p&gt;The easiest way I could think of is to create a special holiday for this scenario. I called it “Manual Override”. The reason I did it in this way is that the actual business hours don’t get changed. If there were multiple hours per day or different hours each day, it would be quite an effort to revert all the changes once the manual override should no longer be active.&lt;/p&gt;
+&lt;p&gt;To start configuring it, head over to TAC and switch to Voice\Holidays. Now create a new holiday and set the dates to anywhere in the past.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/13cZh7wnoXylrJra7g552Xw.png&#34;
+	width=&#34;1307&#34;
+	height=&#34;468&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/13cZh7wnoXylrJra7g552Xw_hua90cd498409d8abcea1be37f4422dbb9_30314_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/13cZh7wnoXylrJra7g552Xw_hua90cd498409d8abcea1be37f4422dbb9_30314_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;279&#34;
+		data-flex-basis=&#34;670px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now go to your auto attendant and link the holiday schedule.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1HmJH2bcY32mdNcD7AbdG8Q.png&#34;
+	width=&#34;1171&#34;
+	height=&#34;527&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1HmJH2bcY32mdNcD7AbdG8Q_hu4367f84d857e8a2fa404e9ed010aac7f_76867_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1HmJH2bcY32mdNcD7AbdG8Q_hu4367f84d857e8a2fa404e9ed010aac7f_76867_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;222&#34;
+		data-flex-basis=&#34;533px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Make sure you click “Submit” after you have saved the holiday. Otherwise, the auto attendant won’t be updated.&lt;/p&gt;
+&lt;p&gt;That’s all you need to do in order to prepare your auto attendant for this self-service solution.&lt;/p&gt;
+&lt;p&gt;Later in this post, I will provide an example script which will log into Teams PowerShell and change the dates of the “Manual Override” Holiday. When an auto attendant should be open, the holiday schedule will be set to past dates. Past dates won’t have any effect on the auto attendants routing decisions and therefore the auto attendant&amp;rsquo;s business hours schedule will be active.&lt;/p&gt;
+&lt;p&gt;When the auto attendant should be manually closed before the configured business hours end, the holiday schedule will be updated to start at today’s date and end at the start of tomorrow’s date.&lt;/p&gt;
+&lt;p&gt;This means that it’s possible to close the attendant if the office closes before the regular business hours on that day. If it’s not manually opened again, it will resume to normal business hours as soon as the next day starts.&lt;/p&gt;
+&lt;p&gt;While it’s possible to close or open the attendant during business hours (e.g., extended lunch break), it’s not possible to extend the configured business hours using the method used by the provided example script.&lt;/p&gt;
+&lt;h4 id=&#34;prepare-your-teamschannel&#34;&gt;Prepare your Teams Channel&lt;/h4&gt;
+&lt;p&gt;First, we will need an incoming webhook in a channel to receive messages in Teams. We will use this webhook to receive message cards sent by an Azure Function or by a Runbook.&lt;/p&gt;
+&lt;p&gt;Go to your desired channel and click on “Connectors”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/13qApQbilVuvLrzFbROq0Kw.png&#34;
+	width=&#34;777&#34;
+	height=&#34;484&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/13qApQbilVuvLrzFbROq0Kw_huec63b6a12b005b0a5bb5c5705ce389c9_35449_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/13qApQbilVuvLrzFbROq0Kw_huec63b6a12b005b0a5bb5c5705ce389c9_35449_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;160&#34;
+		data-flex-basis=&#34;385px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now add an Incoming Webhook.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1luJXKnNDSQWz8WTUCT09A.png&#34;
+	width=&#34;1171&#34;
+	height=&#34;361&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1luJXKnNDSQWz8WTUCT09A_hu419c7001865abce90cad03799c8b3362_58546_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1luJXKnNDSQWz8WTUCT09A_hu419c7001865abce90cad03799c8b3362_58546_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;324&#34;
+		data-flex-basis=&#34;778px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1C6IrFUEq9VLWDZazRGAeRw.png&#34;
+	width=&#34;1315&#34;
+	height=&#34;411&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1C6IrFUEq9VLWDZazRGAeRw_hu374ac68d63ee912cfe47582fd996d400_55993_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1C6IrFUEq9VLWDZazRGAeRw_hu374ac68d63ee912cfe47582fd996d400_55993_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;319&#34;
+		data-flex-basis=&#34;767px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;After clicking “Add” the second time, the window will close. Open “Connectors” again and click “Configure”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1HSglWMuPkJYl3sNQUEYA.png&#34;
+	width=&#34;1149&#34;
+	height=&#34;319&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1HSglWMuPkJYl3sNQUEYA_hu4549a2fe11ae53d5ec6335cd6ac04f3b_58142_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1HSglWMuPkJYl3sNQUEYA_hu4549a2fe11ae53d5ec6335cd6ac04f3b_58142_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;360&#34;
+		data-flex-basis=&#34;864px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Give your Connector a name and upload an Icon (if you want to) and then click “Create”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1qSI9VpKxilxNLqu0ofyMQQ.png&#34;
+	width=&#34;1156&#34;
+	height=&#34;994&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1qSI9VpKxilxNLqu0ofyMQQ_hubb5fe09fd82caaca11594e1008ba6352_105810_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1qSI9VpKxilxNLqu0ofyMQQ_hubb5fe09fd82caaca11594e1008ba6352_105810_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;116&#34;
+		data-flex-basis=&#34;279px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;After you have created the webhook, its URL for your connector will be shown. Copy the URL and save it for later.&lt;/p&gt;
+&lt;h4 id=&#34;create-an-azurerunbook&#34;&gt;Create an Azure Runbook&lt;/h4&gt;
+&lt;p&gt;Let’s create the Runbook which will change the settings on our auto attendant. This script will log into Teams PowerShell and manipulate the holiday schedule called “Manual Override”. Because only the schedule is changed, there’s not even a need to specify an auto attendant explicitly. You could even add the “Manual Override” holiday schedule to all your auto attendants (which are in the same time zone) and open or close them all at once.&lt;/p&gt;
+&lt;p&gt;If you don’t have an Azure Automation Account already, you can read how to create one &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/azure/automation/automation-create-standalone-account?tabs=azureportal&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt; or in Luca Vitali’s article under chapter 1.&lt;/p&gt;
+&lt;p&gt;From within your Automation Account, click “Create a runbook”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1F9IIVDVkgw4TxgdynhcfA.png&#34;
+	width=&#34;1297&#34;
+	height=&#34;142&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1F9IIVDVkgw4TxgdynhcfA_hu55b3bbcd5b90660b7d023ae924055896_30077_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1F9IIVDVkgw4TxgdynhcfA_hu55b3bbcd5b90660b7d023ae924055896_30077_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;913&#34;
+		data-flex-basis=&#34;2192px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Name your Runbook and choose the following settings.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1aiFCtj7JQdEF0FQTqSrxqg.png&#34;
+	width=&#34;1080&#34;
+	height=&#34;525&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1aiFCtj7JQdEF0FQTqSrxqg_hu7cc5eb5dc945874842c33560e3d4841e_37140_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1aiFCtj7JQdEF0FQTqSrxqg_hu7cc5eb5dc945874842c33560e3d4841e_37140_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;205&#34;
+		data-flex-basis=&#34;493px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Paste the following code in the editing pane. Make sure to also insert your webhook URL on line 7 between the double quotes.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/22e54e29fda1304914fecc1b4f73541e.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;For this to work, we obviously need credentials which have the Teams Administrator Role. These are imported on line 17. If you need guidance on how to add them to your automation account, please refer to Luca Vitali’s article under chapter 3.&lt;/p&gt;
+&lt;p&gt;Once you have pasted the script and inserted your webhook URL, save and publish the Runbook.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1DhNPlwQ3grUUNEmrdUfEg.png&#34;
+	width=&#34;752&#34;
+	height=&#34;141&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1DhNPlwQ3grUUNEmrdUfEg_hue1d516e9ceb39efcc1ef789e882fe7a2_21844_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1DhNPlwQ3grUUNEmrdUfEg_hue1d516e9ceb39efcc1ef789e882fe7a2_21844_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;533&#34;
+		data-flex-basis=&#34;1280px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Next, we will add a webhook to the Runbook as well.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1vyUi1t0LaYYugFHyU2NXA.png&#34;
+	width=&#34;1624&#34;
+	height=&#34;203&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1vyUi1t0LaYYugFHyU2NXA_huc8de5951da01576467d82b7d0479181d_45795_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1vyUi1t0LaYYugFHyU2NXA_huc8de5951da01576467d82b7d0479181d_45795_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;800&#34;
+		data-flex-basis=&#34;1920px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;You can also read in detail how to configure the webhook on Luca’s blog.&lt;/p&gt;
+&lt;p&gt;Copy the webhook URL of the Runbook and save it for later.&lt;/p&gt;
+&lt;h4 id=&#34;create-the-refresh-cardfunction&#34;&gt;Create the Refresh Card Function&lt;/h4&gt;
+&lt;p&gt;Next, we will create a new Azure Function. This Function will be called when a user clicks on the “Submit Config” button on a card which was sent by the first Function (which will be created later). Besides triggering the Runbook, it will also update the card which was sent by the first Function.&lt;/p&gt;
+&lt;p&gt;For this, go to portal.azure.com and select Function App. If you don’t have an Azure Function App already, you need to &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-function-app-portal#create-a-function-app&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;create one&lt;/a&gt; first.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1CumuF2zcRMU0JMZWi9LjdA.png&#34;
+	width=&#34;1084&#34;
+	height=&#34;1324&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1CumuF2zcRMU0JMZWi9LjdA_hu2382b6deb8dad946428ea4d39a16ddb7_155624_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1CumuF2zcRMU0JMZWi9LjdA_hu2382b6deb8dad946428ea4d39a16ddb7_155624_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;81&#34;
+		data-flex-basis=&#34;196px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Once the Function App has been deployed you can create the function.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1dBu57rsM9ztmOXanEQsBA.png&#34;
+	width=&#34;821&#34;
+	height=&#34;193&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1dBu57rsM9ztmOXanEQsBA_hu5746fc9f02d4ac9791f5d53188550f27_31151_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1dBu57rsM9ztmOXanEQsBA_hu5746fc9f02d4ac9791f5d53188550f27_31151_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;425&#34;
+		data-flex-basis=&#34;1020px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Choose “HTTP trigger” as the template, name your function and leave the Authorization level at “Function”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1AOtHCDdzmktCrFloLFxCA.png&#34;
+	width=&#34;1244&#34;
+	height=&#34;1228&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1AOtHCDdzmktCrFloLFxCA_hu5ffbe0731727d4e8eb73283dc3d2ca5a_125844_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1AOtHCDdzmktCrFloLFxCA_hu5ffbe0731727d4e8eb73283dc3d2ca5a_125844_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;101&#34;
+		data-flex-basis=&#34;243px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;In the editing pane, paste the following code. Insert the URL from the Runbook webhook on line 8 in between the double quotes.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/a908360198d56dd82798164f9e2c4ce0.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;Save the Function and copy the Function URL by clicking “Get function URL”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1GCEmPpCLTPQk4T100aesg.png&#34;
+	width=&#34;867&#34;
+	height=&#34;85&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1GCEmPpCLTPQk4T100aesg_hu6ac419ccc94a4ac1823aea3d5dd05d7d_12094_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1GCEmPpCLTPQk4T100aesg_hu6ac419ccc94a4ac1823aea3d5dd05d7d_12094_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;1020&#34;
+		data-flex-basis=&#34;2448px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Note: the URL will include a key at the end. Because we’ve chosen “Function” as the Authorization level when we created the function, it will only be possible to call the function by including the key in the URL.&lt;/p&gt;
+&lt;h4 id=&#34;create-the-request-cardfunction&#34;&gt;Create the Request Card Function&lt;/h4&gt;
+&lt;p&gt;Now we create the second Function. This is the Function which will be called from the outgoing webhook in Teams and sends the “Config Change” Card to the channel. It’s actually the Function which will be called first.&lt;/p&gt;
+&lt;p&gt;Paste the following code in the Azure Portal. Again, make sure to populate the variables on line 6 and 7. $uri represents the URL of your Teams incoming webhook and $refreshURI represents the URL of your “RefreshCard” Azure Function.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/0c3b259ab033bd39880a3665f48cd760.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;Don’t forget to save the Function.&lt;/p&gt;
+&lt;h4 id=&#34;create-an-outgoing-webhook-inteams&#34;&gt;Create an Outgoing Webhook in Teams&lt;/h4&gt;
+&lt;p&gt;Finally, we need to create an outgoing webhook in Teams. Users will be able to mention the webhook in the channel. Once the “Bot” is mentioned, a web request will be made to the “RequestCard” Function.&lt;/p&gt;
+&lt;p&gt;To set it up, go to your Team’s settings and switch to the Apps tab. From there, click on “Create an outgoing webhook” on the bottom right.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/11rS272NPQrXX9EE9LbUnQ.png&#34;
+	width=&#34;1896&#34;
+	height=&#34;1041&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/11rS272NPQrXX9EE9LbUnQ_huae7854211a61ee6c10d7ebe891e47eea_175069_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/11rS272NPQrXX9EE9LbUnQ_huae7854211a61ee6c10d7ebe891e47eea_175069_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;182&#34;
+		data-flex-basis=&#34;437px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Name your outgoing webhook and paste the Function URL of the “RequestCard” Function in the “Callback URL” field before you click “Create”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1N4NssEokqJxnX8LCCGuU2A.png&#34;
+	width=&#34;871&#34;
+	height=&#34;792&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1N4NssEokqJxnX8LCCGuU2A_hud76c59a699eb9e8fd744cb092a6cc7ad_100853_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1N4NssEokqJxnX8LCCGuU2A_hud76c59a699eb9e8fd744cb092a6cc7ad_100853_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;109&#34;
+		data-flex-basis=&#34;263px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;You can ignore the security token which will be shown after the webhook has been created. If you like you can still save it somewhere safe.&lt;/p&gt;
+&lt;h3 id=&#34;see-it-inaction&#34;&gt;See it in Action&lt;/h3&gt;
+&lt;p&gt;Now that we have everything set up, any member of the channel can request a card to manually open or close an auto attendant.&lt;/p&gt;
+&lt;p&gt;Here’s the “Manual Override” Holiday Schedule before the config change has been submitted. Today, as of writing this article it’s the 17th of May 2022. The holiday schedule is set to 15.05.2022–16.052022 so it’s non-effective.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/11ZO1uAxt2OUWo0RWzvaXA.png&#34;
+	width=&#34;1156&#34;
+	height=&#34;266&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/11ZO1uAxt2OUWo0RWzvaXA_hu24e738772aa5f336100b6463b020cd10_20698_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/11ZO1uAxt2OUWo0RWzvaXA_hu24e738772aa5f336100b6463b020cd10_20698_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;434&#34;
+		data-flex-basis=&#34;1043px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;And here’s the chronological process:&lt;/p&gt;
+&lt;p&gt;A user requests a card by mentioning the outgoing webhook.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/12pjsanYyHOkHRzO08yZGg.png&#34;
+	width=&#34;1141&#34;
+	height=&#34;134&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/12pjsanYyHOkHRzO08yZGg_hue9af2bc13a1b21b9582b95cefd648d5a_10254_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/12pjsanYyHOkHRzO08yZGg_hue9af2bc13a1b21b9582b95cefd648d5a_10254_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;851&#34;
+		data-flex-basis=&#34;2043px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This will call our first “RequestCard” Azure Function. The Function will then reply with a message that the config change request has been received.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1myTE8zK18Jduhiy9S4k5ng.png&#34;
+	width=&#34;1224&#34;
+	height=&#34;241&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1myTE8zK18Jduhiy9S4k5ng_hu1b4b9a7bbe7b8e8b17a4ef2283138069_33893_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1myTE8zK18Jduhiy9S4k5ng_hu1b4b9a7bbe7b8e8b17a4ef2283138069_33893_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;507&#34;
+		data-flex-basis=&#34;1218px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;At the same time, the Function will also send a new card to the channel which contains the options to open or close the auto attendant and a “Submit Config” button.&lt;/p&gt;
+&lt;p&gt;Note: Unfortunately, it’s not possible to send the card as an answer to the invocation of the webhook. This answer can only support text.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1PkeQQeNPtIuNbd3j65f0w.png&#34;
+	width=&#34;1223&#34;
+	height=&#34;435&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1PkeQQeNPtIuNbd3j65f0w_huca52d10e7fdafe57b57d019d438f38bd_44000_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1PkeQQeNPtIuNbd3j65f0w_huca52d10e7fdafe57b57d019d438f38bd_44000_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;281&#34;
+		data-flex-basis=&#34;674px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Once a user has chosen an option and submitted the config change, the “RefreshCard” Function will be called.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1HgOp80zmMgDaDdcL0N510Q.png&#34;
+	width=&#34;1226&#34;
+	height=&#34;434&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1HgOp80zmMgDaDdcL0N510Q_huc64eb73fec64e4a684dc003490a4b2f8_40195_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1HgOp80zmMgDaDdcL0N510Q_huc64eb73fec64e4a684dc003490a4b2f8_40195_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;282&#34;
+		data-flex-basis=&#34;677px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This Function will update the “Config Change Request” card, trigger the Runbook, and lets the user know that their config change request has been received.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1YJROpRLPOQxKxe6VI86wAw.png&#34;
+	width=&#34;1225&#34;
+	height=&#34;247&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1YJROpRLPOQxKxe6VI86wAw_hue8a1e662d446de1d8351412d2e6ef7b4_35216_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1YJROpRLPOQxKxe6VI86wAw_hue8a1e662d446de1d8351412d2e6ef7b4_35216_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;495&#34;
+		data-flex-basis=&#34;1190px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Once the Runbook has finished, it will also post a new card to the channel, informing the user that the auto attendant has been opened or closed.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1ui2yuTIb1O1yC1qTJgxkdA.png&#34;
+	width=&#34;1222&#34;
+	height=&#34;239&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1ui2yuTIb1O1yC1qTJgxkdA_hu94349a4aa09e2b7a7acac3ce67d7df01_26800_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1ui2yuTIb1O1yC1qTJgxkdA_hu94349a4aa09e2b7a7acac3ce67d7df01_26800_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;511&#34;
+		data-flex-basis=&#34;1227px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If we check the holiday schedule again, we can see that it has been updated and set from 17.05.2022 to 18.05.2022. This means that any calls which are received by the auto attendant today, go into the holiday call handling and not into the default call flow. Thus, this auto attendant is now closed.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1Uh6LLtUaj5nDUQwOiIDNJQ.png&#34;
+	width=&#34;1144&#34;
+	height=&#34;262&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1Uh6LLtUaj5nDUQwOiIDNJQ_hub6852f717f63b21c0b0322c53ec0956c_20692_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1Uh6LLtUaj5nDUQwOiIDNJQ_hub6852f717f63b21c0b0322c53ec0956c_20692_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;436&#34;
+		data-flex-basis=&#34;1047px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;summary&#34;&gt;Summary&lt;/h3&gt;
+&lt;p&gt;This is a great proof of concept on how to build a self-service auto attendant or call queue solution which doesn’t require any Premium Licenses for Power Automate or Power Apps. Of course, Azure Functions and Runbooks are not free either but I’m almost certain that it will still be much cheaper at scale.&lt;/p&gt;
+&lt;p&gt;From my point of view this is a great showcase of what one can achieve with Azure Automation. I also like that everything stays in Teams from an end user perspective. There’s no need to open any other website or App and even Teams mobile App experiences are supported.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1f9rH3SVsdeBaCT4jm29dA.png&#34;
+	width=&#34;1050&#34;
+	height=&#34;892&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1f9rH3SVsdeBaCT4jm29dA_hu0d2eeddf9dcacbb318cbf03027fe51b5_331703_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/1f9rH3SVsdeBaCT4jm29dA_hu0d2eeddf9dcacbb318cbf03027fe51b5_331703_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;117&#34;
+		data-flex-basis=&#34;282px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This article only scatched the surface by covering only one example of endless possible scenarios. For example, it’s also possible to write an Azure Function in a way in which it can receive parameters from the outgoing webhook. Instead of just mentioning the webhook by “@RequestCard” we could also mention it like this: “@RequestCard CQ ” or “@RequestCard AA” and then respond with a different config change card, one for each type of voice app or even different change scenarios. Or we could even do stuff like check the username from which the outgoing webhook was invoked and do a security filtering on it by only allowing certain users to submit changes to auto attendants or call queues. The sky really is the limit.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Teams Apps on HEUSSER.PRO</title>
+        <link>https://heusser.pro/categories/teams-apps/</link>
+        <description>Recent content in Teams Apps on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Thu, 26 Oct 2023 19:22:01 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/teams-apps/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Teams Clipboard Dialer</title>
+        <link>https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/</link>
+        <pubDate>Thu, 26 Oct 2023 19:22:01 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/</guid>
+        <description>&lt;p&gt;As you may know, I try to blog at least once a month. Although I’m a little behind this month, I’m still well on track to reach my goal in 2023 again.&lt;/p&gt;
+&lt;p&gt;I still got plenty of topics to blog about in my backlog but what I like most is when I discover something new and get so hyped out about it that I can’t just not blog about it right away.&lt;/p&gt;
+&lt;p&gt;Thanks to my awesome Discord community (join &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/discord.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;) which is full of enthusiastic Teams Phone admins like myself, it was brought to my attention that Microsoft is making some changes to how normalization rules in Teams dial plans are applied.&lt;/p&gt;
+&lt;h4 id=&#34;tldr&#34;&gt;TLDR;&lt;/h4&gt;
+&lt;p&gt;I’ve created an app which allows you to call any phone number which has been copied to the clipboard simply by clicking an app on the taskbar or by pressing a hotkey. Skip to the bottom of this post if you’re only interested in the app.&lt;/p&gt;
+&lt;h3 id=&#34;what-are-dial-plans-and-normalization-rules&#34;&gt;What are Dial Plans and Normalization Rules?&lt;/h3&gt;
+&lt;p&gt;Normalization rules are regular expressions which change certain phone numbers before they’re dialed in Teams. An easy example is e.g. that any Swiss phone number which is entered in the national format (with a leading &lt;code&gt;0&lt;/code&gt;) is converted to &lt;a class=&#34;link&#34; href=&#34;https://en.wikipedia.org/wiki/E.164&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;&lt;em&gt;E.164&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;E.g. &lt;code&gt;044 123 45 67&lt;/code&gt; is changed to &lt;code&gt;+41441234567&lt;/code&gt; before it’s dialed.&lt;/p&gt;
+&lt;p&gt;This rule is actually part of the system dial plans which are already included in Teams. Admins can create their own dial plans by creating so called &lt;strong&gt;Tenant Dial Plans&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;You can view the built-in dial plans by entering the following in a Teams PowerShell session. Replace &lt;code&gt;CH&lt;/code&gt; with the country you want to check.&lt;/p&gt;
+&lt;p&gt;Get-CsDialPlan -Identity CH&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18JxlggrooV95RMwJMIRvA.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;870&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18JxlggrooV95RMwJMIRvA_hue4de0b8f2b34af5767e39cae768b389f_823623_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18JxlggrooV95RMwJMIRvA_hue4de0b8f2b34af5767e39cae768b389f_823623_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;199&#34;
+		data-flex-basis=&#34;478px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;tenant-dialplans&#34;&gt;Tenant Dial Plans&lt;/h4&gt;
+&lt;p&gt;With tenant dial plans, it’s possible to create much more complex rules such as &lt;a class=&#34;link&#34; href=&#34;https://ucken.blogspot.com/2016/03/trunk-prefixes-in-skype4b.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this&lt;/a&gt; one which contains a monster regular expression created by no other than Ken Lasko (&lt;a class=&#34;link&#34; href=&#34;https://www.ucdialplans.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;UCDialPlans.com — Dial Plan Tools&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;I don’t know why there are still people on this planet who think it’s a good idea to list a phone number in a format in which it &lt;strong&gt;&lt;em&gt;simply does not exist&lt;/em&gt;&lt;/strong&gt;. &lt;code&gt;+41 (0) 44 123 45 67&lt;/code&gt; or &lt;code&gt;+41 0 44 123 45 67&lt;/code&gt; are not valid phone numbers. That’s effectively the same as if I told people that my email address is &lt;code&gt;mozzie(0)@heusser.pro&lt;/code&gt; when in fact it’s &lt;code&gt;mozzie@heusser.pro&lt;/code&gt; . It’s either &lt;code&gt;+41 44 123 45 67&lt;/code&gt; (when calling internationally) or &lt;code&gt;044 123 45 67&lt;/code&gt; (when calling from the same country).&lt;/p&gt;
+&lt;p&gt;From my experience many people also don’t know that you can dial an E.164 number even when calling from the same country. I wouldn’t be surprised if there is an exception to this rule in some countries, but it works in almost every case.&lt;/p&gt;
+&lt;p&gt;Unfortunately, the normalization rules which are built into Teams, don’t fix these numbers for us. If people dial a number with an &lt;strong&gt;&lt;em&gt;illegal zero&lt;/em&gt;&lt;/strong&gt; after the international prefix, the call will fail, since it’s an invalid number.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/14YWX8uJZeF4KVKsxtPQE3A.png&#34;
+	width=&#34;2136&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/14YWX8uJZeF4KVKsxtPQE3A_hu5806c1102942d747a553c73e23f94089_745613_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/14YWX8uJZeF4KVKsxtPQE3A_hu5806c1102942d747a553c73e23f94089_745613_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;223&#34;
+		data-flex-basis=&#34;535px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Since we can’t possibly knock some sense into every website owner that lists their phone number incorrectly or access and fix everybody’s precious personal Outlook contacts, adding Ken’s rule to a tenant dial plan &lt;strong&gt;&lt;em&gt;was&lt;/em&gt;&lt;/strong&gt; a great way of solving this particular issue.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;But now Microsoft is taking this away from us.&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;This was the link that was shared on Discord: &lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://petri.com/microsoft-changelog/m365-changelog-changes-in-normalization/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;M365 Changelog: (Updated) Changes in Normalization — Petri IT Knowledgebase&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;There is a Message Center post about this as well: &lt;strong&gt;MC536885&lt;/strong&gt;. It mentions the following:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Stopping normalization on number that starts with plus sign (+)&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Normalization in Microsoft Teams was not designed to do normalization when the phone number starts with plus sign (+) as documented, but we’ve never enforced this in the Teams desktop or Web client. We are planning to enforce this in the future but for now we recommend avoiding this pattern.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;We are making this change to align with our Calling Service, other Teams services, Azure Communication Services SDKs, and other Microsoft services. Numbers that start with a plus sign (+) will not pass through any normalization rules.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1wyBIMDRn3qkDKckT1EsU0Q.png&#34;
+	width=&#34;759&#34;
+	height=&#34;499&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1wyBIMDRn3qkDKckT1EsU0Q_hu9b3499ea3905bb5166fbe05e742ff9bf_314425_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1wyBIMDRn3qkDKckT1EsU0Q_hu9b3499ea3905bb5166fbe05e742ff9bf_314425_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;152&#34;
+		data-flex-basis=&#34;365px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Update 10.11.2023&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The Message Center post was updated by Microsoft. They’re not following through with this anymore.&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Updated November 2, 2023: Based on customer feedback we will not be moving forward with this change at this time. You can safely disregard this message. Thank you for your feedback.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;/Update&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id=&#34;testing-with-powershell&#34;&gt;Testing with PowerShell&lt;/h3&gt;
+&lt;p&gt;I’ve noticed that something was not right, when the PowerShell commands to test dialed numbers against a tenant dial plan stopped matching numbers which start with a plus.&lt;/p&gt;
+&lt;p&gt;I have a tenant dial plan in Teams which contains Ken Lasko’s awesome normalization rule.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WteEwba1CLM2fqkpj4joYg.png&#34;
+	width=&#34;1885&#34;
+	height=&#34;481&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WteEwba1CLM2fqkpj4joYg_hu8449a14af48aa3ceb841b76f018616b9_75151_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WteEwba1CLM2fqkpj4joYg_hu8449a14af48aa3ceb841b76f018616b9_75151_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;391&#34;
+		data-flex-basis=&#34;940px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;We can use the following PowerShell command to test a user’s normalization rules.&lt;/p&gt;
+&lt;p&gt;Get-CsEffectiveTenantDialPlan -Identity &lt;a class=&#34;link&#34; href=&#34;mailto:user@domain.com&#34; &gt;user@domain.com&lt;/a&gt; | Test-CsEffectiveTenantDialPlan -DialedNumber +410441234567 -TenantScopeOnly&lt;/p&gt;
+&lt;p&gt;As you can see in the screenshot below, the number starting with &lt;code&gt;+&lt;/code&gt; does not match any rules despite the fact the rule exists. The number starting with &lt;code&gt;00&lt;/code&gt; is matched by another rule in the same dial plan.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1uvHzgIINJYK9QYvItJig.png&#34;
+	width=&#34;2122&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1uvHzgIINJYK9QYvItJig_hue2cb3169f3873c87e1b687d3d8180dcb_874220_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1uvHzgIINJYK9QYvItJig_hue2cb3169f3873c87e1b687d3d8180dcb_874220_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;221&#34;
+		data-flex-basis=&#34;532px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Verifying Ken Lasko’s regular expression with &lt;a class=&#34;link&#34; href=&#34;https://regex101.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;regex101.com&lt;/a&gt; proves that it’s 100% correct.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1OSqAxfdvyF5gUfUXDihhdQ.png&#34;
+	width=&#34;1224&#34;
+	height=&#34;1191&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1OSqAxfdvyF5gUfUXDihhdQ_hue2048e428df3dfc0b8bdf0656da7159e_80332_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1OSqAxfdvyF5gUfUXDihhdQ_hue2048e428df3dfc0b8bdf0656da7159e_80332_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;102&#34;
+		data-flex-basis=&#34;246px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;what-about-the-teamsclient&#34;&gt;What about the Teams Client?&lt;/h4&gt;
+&lt;p&gt;Interesting enough, the Teams client still seems to match the rule from the tenant dial plan.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1M60DOscRIwosemXqbylQbQ.png&#34;
+	width=&#34;2135&#34;
+	height=&#34;1422&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1M60DOscRIwosemXqbylQbQ_hu19b43908cab1a0d03d946077c6863f35_160961_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1M60DOscRIwosemXqbylQbQ_hu19b43908cab1a0d03d946077c6863f35_160961_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;150&#34;
+		data-flex-basis=&#34;360px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;However, I suspect it’s only a matter of time before this stops working too.&lt;/p&gt;
+&lt;h4 id=&#34;starting-calls-fromoutlook&#34;&gt;Starting Calls from Outlook&lt;/h4&gt;
+&lt;p&gt;If Teams is registered as the chat app for Microsoft 365 Apps (such as Outlook) we can call numbers which are stored on Outlook contacts.&lt;/p&gt;
+&lt;p&gt;The problem with this is that classic Outlook does not apply any normalization rules either. The number is called as it’s stored on the contact.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WFO6dkLuWfJOYCPJliJlcw.png&#34;
+	width=&#34;943&#34;
+	height=&#34;497&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WFO6dkLuWfJOYCPJliJlcw_hu74881908b72e001b1ffc37dd00b44329_44422_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WFO6dkLuWfJOYCPJliJlcw_hu74881908b72e001b1ffc37dd00b44329_44422_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;189&#34;
+		data-flex-basis=&#34;455px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When I try to call this number, the call fails. You can see that the illegal zero was not dropped in the title bar of the call window.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18VYzjecFvrfoqqiYl4Fuog.png&#34;
+	width=&#34;1451&#34;
+	height=&#34;996&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18VYzjecFvrfoqqiYl4Fuog_huaf5e274138f0ef671264de17ceac51eb_45797_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18VYzjecFvrfoqqiYl4Fuog_huaf5e274138f0ef671264de17ceac51eb_45797_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;145&#34;
+		data-flex-basis=&#34;349px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;It’s noteworthy that clicking a number in the old Outlook will start a call directly without prompting you to start the call in Teams.&lt;/p&gt;
+&lt;p&gt;In my tests with the new Outlook, the number was normalized correctly, even for a user who didn’t have a tenant dial plan assigned. This makes me believe that it’s actually the new Outlook which is applying the normalization rules. When you click a number in the new Outlook, you’ll get a prompt to start the call in Teams.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1Z5Jm7DSGlTyJLl3YYr8ww.png&#34;
+	width=&#34;883&#34;
+	height=&#34;232&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1Z5Jm7DSGlTyJLl3YYr8ww_huf4e1f8f56efd714d79e6ace1155c7f8b_16261_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1Z5Jm7DSGlTyJLl3YYr8ww_huf4e1f8f56efd714d79e6ace1155c7f8b_16261_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;380&#34;
+		data-flex-basis=&#34;913px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;However, every time a number is clicked in the new Outlook, an annoying blank pop up is opened and it doesn’t even close once you have made the call.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1q1b8uLbj997HaUMbFxMVg.png&#34;
+	width=&#34;1211&#34;
+	height=&#34;322&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1q1b8uLbj997HaUMbFxMVg_hub05fc11c31048437bc666e38546fc052_59042_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1q1b8uLbj997HaUMbFxMVg_hub05fc11c31048437bc666e38546fc052_59042_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;376&#34;
+		data-flex-basis=&#34;902px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Time to look for alternatives.&lt;/p&gt;
+&lt;h3 id=&#34;alternative-solutions&#34;&gt;Alternative Solutions&lt;/h3&gt;
+&lt;p&gt;Dialing phone numbers from other apps and links or even through a hotkey is not an uncommon ask from users.&lt;/p&gt;
+&lt;p&gt;If you’ve received this request before, you’ve probably stumbled upon this free app called &lt;a class=&#34;link&#34; href=&#34;http://www.lyncwizard.com/products.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Teams Wizard&lt;/strong&gt;&lt;/a&gt;. This will allow you to start Teams PSTN calls by selecting a phone number and pressing the configured hotkey.&lt;/p&gt;
+&lt;p&gt;In Teams Wizard’s settings, there’s a setting called &lt;strong&gt;Enable normalization of phone numbers&lt;/strong&gt; (Normalisierung der Telefonnummern aktivieren).&lt;/p&gt;
+&lt;p&gt;On first sight, it looks like this only goes as far as the Teams built in dial plans and won’t drop the illegal zero after the E.164 prefix.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/16e4K0bnpbbbU5jRv1aWYA.png&#34;
+	width=&#34;1321&#34;
+	height=&#34;495&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/16e4K0bnpbbbU5jRv1aWYA_hu71d9d16211561959248643d0029ce493_105238_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/16e4K0bnpbbbU5jRv1aWYA_hu71d9d16211561959248643d0029ce493_105238_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;266&#34;
+		data-flex-basis=&#34;640px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;However, when you click on &lt;strong&gt;Yes&lt;/strong&gt; (Ja) the number appears correct in Teams, even if the user does not have a special tenant dial plan assigned.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1oqAqO3GVoYrPRFPJJVYw.png&#34;
+	width=&#34;877&#34;
+	height=&#34;231&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1oqAqO3GVoYrPRFPJJVYw_hu881aba82e18622567db091c9f6358048_17177_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1oqAqO3GVoYrPRFPJJVYw_hu881aba82e18622567db091c9f6358048_17177_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;379&#34;
+		data-flex-basis=&#34;911px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;So far so good. But the hotkey only works when you’ve selected a phone number with your mouse. Although it’s possible to just select a contact in old Outlook and then press the hotkey, the success rate is quite low. First of all, many contacts hold multiple numbers and it’s not possible to tell Teams Wizard which number should be called. Secondly, it’s not possible to select a number with your mouse in old Outlook. They can only be copied. But Teams Wizard does not monitor your clipboard. And copy/paste the number into another app (like Notepad) just to select it and then press the hotkey seems like one step too many.&lt;/p&gt;
+&lt;p&gt;While it’s possible to select phone numbers of contacts in the new Outlook, the experience isn’t great either. Because the new Outlook is also based on web technology, selecting a number with your mouse without triggering the calling link is a very tricky undertaking. And don’t forget all the ugly blank pop ups this will open.&lt;/p&gt;
+&lt;p&gt;If the new Outlook really does (and keeps on doing) number normalization, then I guess this problem will be mitigated at &lt;strong&gt;&lt;em&gt;some point&lt;/em&gt;&lt;/strong&gt; in the future. But a future where everybody only uses the new Outlook is likely still very far off. But I don’t even want to go into a discussion of new vs. classic Outlook and how some folks will cope (&lt;strong&gt;&lt;em&gt;or not&lt;/em&gt;&lt;/strong&gt;) with the new Outlook.&lt;/p&gt;
+&lt;p&gt;Therefore, I don’t think that it hurts to prepare ourselves for a world in which we can apply normalization rules outside of Teams and Outlook.&lt;/p&gt;
+&lt;p&gt;All of this got me thinking… &lt;strong&gt;&lt;em&gt;wouldn’t it be awesome if we could have a way to instantly normalize and dial any number that has been copied to the clipboard…?&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;…Because copying a number with only &lt;strong&gt;one click&lt;/strong&gt; is possible in both the &lt;strong&gt;new&lt;/strong&gt; and the &lt;strong&gt;old&lt;/strong&gt; Outlook.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1PPyoBA3xszRe0nDk5cNOHQ.png&#34;
+	width=&#34;1335&#34;
+	height=&#34;405&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1PPyoBA3xszRe0nDk5cNOHQ_hu6142a933fd8b4c92769cbc11b18136a3_44500_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1PPyoBA3xszRe0nDk5cNOHQ_hu6142a933fd8b4c92769cbc11b18136a3_44500_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;329&#34;
+		data-flex-basis=&#34;791px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/10qv6ML4d6FBZkV9LCg4Yxg.png&#34;
+	width=&#34;986&#34;
+	height=&#34;462&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/10qv6ML4d6FBZkV9LCg4Yxg_hu0b087bff1a6494367710845816fc2942_43929_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/10qv6ML4d6FBZkV9LCg4Yxg_hu0b087bff1a6494367710845816fc2942_43929_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;213&#34;
+		data-flex-basis=&#34;512px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Copying the number before calling it also provides great flexibility. Be it multiple numbers on a single contact or any phone number in any app or website. Heck, we could even use PowerToys’ text extractor feature (&lt;code&gt;Win + Shift + T&lt;/code&gt; ) or the new Snipping Tool to extract and copy phone numbers from screenshots which got sent our way by people who were too lazy to put the number in a reusable format.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1vSbtxT9dKxd0bCYVaEzlw.png&#34;
+	width=&#34;1182&#34;
+	height=&#34;742&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1vSbtxT9dKxd0bCYVaEzlw_hu9e1c6006965e066c14b898ba559876bd_57723_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1vSbtxT9dKxd0bCYVaEzlw_hu9e1c6006965e066c14b898ba559876bd_57723_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;159&#34;
+		data-flex-basis=&#34;382px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;i-proudly-present-teams-clipboard-dialer&#34;&gt;I Proudly Present: Teams Clipboard Dialer&lt;/h3&gt;
+&lt;p&gt;I don’t know how to write and compile a proper app, but I like to think that I do know my way around PowerShell. And I think I’ve come up with a very neat solution here.&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;Teams Clipboard Dialer&lt;/strong&gt; consists of a PowerShell script and a Desktop shortcut which calls that script. The script reads phone numbers from the clipboard, normalizes the number, and then passes it to Teams to start the call.&lt;/p&gt;
+&lt;p&gt;All you have to do to start a call is to copy a phone number and either click the icon on the taskbar or press the configured hotkey.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1KtHkD1MmZaahl5R81h7W5Q.png&#34;
+	width=&#34;1181&#34;
+	height=&#34;71&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1KtHkD1MmZaahl5R81h7W5Q_hucf8f6818dab62dffd373b4a98872df76_55789_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1KtHkD1MmZaahl5R81h7W5Q_hucf8f6818dab62dffd373b4a98872df76_55789_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;1663&#34;
+		data-flex-basis=&#34;3992px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If your clipboard is empty or doesn’t contain a phone number, a notification will be shown.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1rxi8ME2LgGTx4g9ioQdSKg.png&#34;
+	width=&#34;1110&#34;
+	height=&#34;251&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1rxi8ME2LgGTx4g9ioQdSKg_huc83179eb723359ed1c3de1e367188a61_228686_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1rxi8ME2LgGTx4g9ioQdSKg_huc83179eb723359ed1c3de1e367188a61_228686_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;442&#34;
+		data-flex-basis=&#34;1061px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If your clipboard does contain a phone number, Teams will launch and ask you to start the call.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1NlTAypYtlbm83Q6xFjlKg.png&#34;
+	width=&#34;2141&#34;
+	height=&#34;1383&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1NlTAypYtlbm83Q6xFjlKg_huabd2f6d21721ccef66dfb3e825cb1570_218040_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1NlTAypYtlbm83Q6xFjlKg_huabd2f6d21721ccef66dfb3e825cb1570_218040_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;154&#34;
+		data-flex-basis=&#34;371px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;It’s even possible to call 1–4 digit long extension numbers or emergency numbers. Because these numbers don’t start with a &lt;code&gt;+&lt;/code&gt; the Teams tenant dial plan (if you have one configured) will still apply the normalization rules and convert the extensions to full E.164 numbers.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1z4gcS6aqm4MUiWPbGm6Dg.png&#34;
+	width=&#34;882&#34;
+	height=&#34;231&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1z4gcS6aqm4MUiWPbGm6Dg_hu17e256268d26b48e864bd0e74479a43b_12004_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1z4gcS6aqm4MUiWPbGm6Dg_hu17e256268d26b48e864bd0e74479a43b_12004_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;381&#34;
+		data-flex-basis=&#34;916px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;And no, there’s no browser pop up.&lt;/em&gt;&lt;/strong&gt; Teams is opened directly. Luckily, I remembered that I blogged about &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd#:~:text=By%20adding%20the%20prefix%20msteams%3A%2F%2F%20in%20front%20of,plus%20sign%20as%20%E2%80%9C%252b%E2%80%9D%20for%20it%20to%20work.&#34; &gt;creating Teams calling deep links&lt;/a&gt; a while ago, so I already knew how to create calling deep links. The part about how I can open Teams directly (without the detour in Edge) &lt;strong&gt;and&lt;/strong&gt; have it start a call, I figured out by &lt;strong&gt;&lt;em&gt;mere luck&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;# Launch Teams to dial the number&lt;br&gt;
+Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://teams.microsoft.com/l/call/0/0?users=4:$phoneNumber%22&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://teams.microsoft.com/l/call/0/0?users=4:$phoneNumber&#34;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;I’ve only tested the Teams Clipboard Dialer on Windows 11 and Teams 2.1.&lt;/strong&gt;&lt;/p&gt;
+&lt;h4 id=&#34;setup&#34;&gt;Setup&lt;/h4&gt;
+&lt;p&gt;I also created an install script which copies the script to &lt;code&gt;$env:APPDATA\OneDrive\TeamsClipboardDialer&lt;/code&gt; and creates a shortcut in &lt;code&gt;$env:OneDrive\Desktop&lt;/code&gt; . Unfortunately, I didn’t find a way to automatically pin the app to the taskbar. When you run the script, you’ll see a pop up message which will pause the script and give you time to pin the app manually to the taskbar.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/078v39dCn4iWwIiR6.png&#34;
+	width=&#34;1749&#34;
+	height=&#34;739&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/078v39dCn4iWwIiR6_hudaa9661d447b5461eb843726e80585a0_548084_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/078v39dCn4iWwIiR6_hudaa9661d447b5461eb843726e80585a0_548084_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;236&#34;
+		data-flex-basis=&#34;568px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;By default, the hotkey &lt;code&gt;Ctrl + Shift + F8&lt;/code&gt; is assigned to launch the app and dial numbers. You can change this by running the &lt;code&gt;Createshortcut.ps1&lt;/code&gt; script with the parameter &lt;code&gt;-HotKey &amp;quot;Your hotkey combo&amp;quot;&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;You can find all the files in my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/tree/main/TeamsClipboardDialer&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub repo&lt;/a&gt;. Also make sure to read the script headers carefully for more information on the available parameters.&lt;/p&gt;
+&lt;p&gt;If you’re interested in what normalization rules are applied, you can examine the script &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/TeamsClipboardDialer/TeamsClipboardDialer.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;. Basically, it removes any special characters like whitespaces, brackets, hyphens, dots etc. from copied phone numbers and then also applies Ken Lasko’s rule to get rid of those damn illegal zeros. You can read more about it in detail &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/TeamsClipboardDialer/ReadMe.md#normalization-rule-behavior&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;By applying the normalization rules outside of Outlook and Teams, we get more control over it since we can do whatever we want. I guess if Microsoft won’t let us match numbers starting with &lt;code&gt;+&lt;/code&gt; any longer, we have to do it ourselves. Compared to the Teams Wizard, my solution gives us way more flexibility and visibility in terms of how numbers are normalized before they’re dialed.&lt;/p&gt;
+&lt;h3 id=&#34;hold-on-i-am-not-doneyet&#34;&gt;Hold on… I Am Not Done Yet!&lt;/h3&gt;
+&lt;p&gt;When I realized that I was on to something, I just couldn’t let it go. &lt;strong&gt;&lt;em&gt;I replicated the whole functionality in an iOS shortcut&lt;/em&gt;&lt;/strong&gt;. I don’t know why but every time an Android Fanboy asks me why I prefer the iPhone over Android I forget to mention Shortcuts. &lt;strong&gt;&lt;em&gt;It’s literally the most underrated feature of iOS.&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The shortcut uses the exact same regular expressions as the PowerShell script to normalize the numbers. (Yes, that’s possible in Shortcuts.) It also gets the phone number from the clipboard and will display the same hints if there’s no phone number stored in the clipboard.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1ZvBMJVHFO1jdr8Bl5rESrg.png&#34;
+	width=&#34;2279&#34;
+	height=&#34;890&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1ZvBMJVHFO1jdr8Bl5rESrg_hu257a4cc28321710dba9b35d80b3bcbd3_827070_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1ZvBMJVHFO1jdr8Bl5rESrg_hu257a4cc28321710dba9b35d80b3bcbd3_827070_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;256&#34;
+		data-flex-basis=&#34;614px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Once the number has been normalized, the Shortcut will ask you to start or cancel the call. On iOS this step is handled by the Shortcut and not in the Teams app itself like it is the case on the Teams desktop client.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/13qugvQ8xQsLHYZKjNKAbZQ.png&#34;
+	width=&#34;1125&#34;
+	height=&#34;725&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/13qugvQ8xQsLHYZKjNKAbZQ_hu0f65417d07c71a5b5a861fdccb00ea77_316029_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/13qugvQ8xQsLHYZKjNKAbZQ_hu0f65417d07c71a5b5a861fdccb00ea77_316029_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;155&#34;
+		data-flex-basis=&#34;372px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;get-theshortcut&#34;&gt;Get the Shortcut&lt;/h4&gt;
+&lt;p&gt;You can download and import the Shortcut via &lt;a class=&#34;link&#34; href=&#34;https://www.icloud.com/shortcuts/45b99b70ef0f40adab6726e220cf4e7b&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;iCould&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I’ve tested the shortcut on an iPad and an iPhone both running iOS/iPad OS 17.0.3. When you run it for the first time, you will need to confirm a couple of privacy prompts and allow it to run all the actions without asking again. After that, you’re good to go.&lt;/p&gt;
+&lt;h4 id=&#34;showtime&#34;&gt;Showtime&lt;/h4&gt;
+&lt;p&gt;This animated gif demonstrates how it works on iOS. The number has already been copied to the clipboard before the shortcut was executed.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1sCzx0j6auIV4gBlO343cQ.gif&#34;
+	width=&#34;886&#34;
+	height=&#34;1920&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1sCzx0j6auIV4gBlO343cQ_hu09e55dee48d2dce00624399b6a86ff8f_7320335_480x0_resize_box_1.gif 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1sCzx0j6auIV4gBlO343cQ_hu09e55dee48d2dce00624399b6a86ff8f_7320335_1024x0_resize_box_1.gif 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;46&#34;
+		data-flex-basis=&#34;110px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;summary&#34;&gt;Summary&lt;/h3&gt;
+&lt;p&gt;When I first read the MC post about normalization rules no longer matching numbers starting with a &lt;code&gt;+&lt;/code&gt; I panicked a little. But now that I’ve done the research and came to the conclusion that having an app which normalizes and calls numbers from the clipboard, is actually a very nice and versatile solution and I’m very much relieved. And having the same functionality on iOS is an awesome bonus.&lt;/p&gt;
+&lt;p&gt;I hope you like what I’ve done and that you can make use of it as well. As always, all the code for the Teams Clipboard Dialer is provided free of charge. If you would still like to support my work, feel free to buy me a coffee over at &lt;a class=&#34;link&#34; href=&#34;https://github.com/sponsors/mozziemozz?frequency=one-time&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub Sponsors&lt;/a&gt;.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Creating Microsoft Teams Calling Deep Links</title>
+        <link>https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd/</link>
+        <pubDate>Tue, 15 Mar 2022 21:51:21 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd/</guid>
+        <description>&lt;p&gt;Creating links for phone numbers on a desktop operating system is easy. Just like mailto: links, Windows PCs have link handlers for callto: or tel: URLs. These kinds of links are often found on websites or google search results and provide great convenience because a user just has to click a link to start dialing.&lt;/p&gt;
+&lt;p&gt;Even though there are many different protocols, the most popular ones are:&lt;/p&gt;
+&lt;p&gt;callto:&lt;phone number&gt;&lt;br&gt;
+tel:&lt;phone number&gt;&lt;/p&gt;
+&lt;p&gt;If you haven’t already configured a default App for calling on Windows, you’ll be prompted to choose an app for calling links.&lt;/p&gt;
+&lt;p&gt;And that’s it. Next time you click on a phone number link, your PC will automatically use Teams to make the call.&lt;/p&gt;
+&lt;h4 id=&#34;using-deep-links-on-mobilephones&#34;&gt;Using Deep Links on Mobile Phones&lt;/h4&gt;
+&lt;p&gt;Mobile operating systems are a different story. Because they are very restricted in terms of customization, clicking on a callto: or tel: link will most likely start a call using your mobile number/network — which makes total sense.&lt;/p&gt;
+&lt;p&gt;But what if you have a business application or an internal website and would like your users to initiate calls using their business number configured in Microsoft Teams instead of their mobile number?&lt;/p&gt;
+&lt;p&gt;It’s definitely possible but it requires a bit of work. To be specific, to achieve this, we need a specific deep link. But what are deep links?&lt;/p&gt;
+&lt;p&gt;Basically, they are just links followed by some application specific stuff which will not only open the App but also start an action inside said App. For example, we can use a deep link to open a specific channel or even a tab inside a channel in Teams.&lt;/p&gt;
+&lt;p&gt;This &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/build-and-test/deep-links#generate-a-deep-link-to-a-call&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Microsoft Docs Article&lt;/a&gt; provides a detailed overview of all available deep links for Teams. As you can see, there are also deep links to initiate call actions within Teams.&lt;/p&gt;
+&lt;p&gt;If you want a link which will launch Teams and start a PSTN call, you need to create the link like this. The most important part is the “4;” placed just before the phone number. This will tell Teams to call a PSTN participant.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://teams.microsoft.com/l/call/0/0?users=&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://teams.microsoft.com/l/call/0/0?users=&lt;/a&gt;&lt;user1&gt;,4:&lt;phonenumber&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;user&gt; part of the URL is actually optional. So a real world example would look something like this.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://teams.microsoft.com/l/call/0/0?users=4:&amp;#43;448719762819&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://teams.microsoft.com/l/call/0/0?users=4:+448719762819&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Since this is a simple URL, we can also prettify the link by giving it a title.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://teams.microsoft.com/l/call/0/0?users=4:&amp;#43;448719762819&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Call Speaking Clock via Teams&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This will start a call to a &lt;a class=&#34;link&#34; href=&#34;https://telephonesuk.org.uk/speaking-clock/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;UK Speaking Clock&lt;/a&gt;. If you’re already using Teams Telephony you can try this by yourself. This link works on desktop and mobile devices. (Beware of the costs though! According to the site linked above, calls to this number cost 13p (Pence) per minute. If you’re calling from outside the UK, the cost may vary.) If you want to test this with a local number instead, just copy the URL and change the phone number.&lt;/p&gt;
+&lt;h4 id=&#34;example-gifs&#34;&gt;Example Gifs&lt;/h4&gt;
+&lt;p&gt;To finish off, here are some Gifs of how it looks on an iPhone and an Android device.&lt;/p&gt;
+&lt;p&gt;Clicking a Teams calling deep link from within the app on Android.&lt;/p&gt;
+&lt;p&gt;Clicking a Teams calling deep link from within the app on iOS.&lt;/p&gt;
+&lt;p&gt;Clicking a Teams calling deep link from another App/Website on Android (works on iOS too.)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd/1ZNgQP7PbMMRQnBjFgvrw.gif&#34;
+	width=&#34;720&#34;
+	height=&#34;1600&#34;
+	srcset=&#34;https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd/1ZNgQP7PbMMRQnBjFgvrw_hub70d9c4db9bb6296dbcc43cf5c7bcd69_4223795_480x0_resize_box_1.gif 480w, https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd/1ZNgQP7PbMMRQnBjFgvrw_hub70d9c4db9bb6296dbcc43cf5c7bcd69_4223795_1024x0_resize_box_1.gif 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;45&#34;
+		data-flex-basis=&#34;108px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;update&#34;&gt;Update&lt;/h4&gt;
+&lt;p&gt;When launching a deep link starting with https:// as demonstrated above, it will always open your default browser, before the Teams App is launched. Unless, you’re clicking the deep link from within Teams as shown in the first two Gifs.&lt;/p&gt;
+&lt;p&gt;Twitter User &lt;a class=&#34;link&#34; href=&#34;https://twitter.com/pilzi&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;pilzi&lt;/a&gt; was kind enough to share some additional info. By adding the prefix msteams:// in front of the URL, we can open calling deep links directly in the Teams App without opening the browser first. It seems like the msteams:// URI scheme doesn’t like + signs though. We need to write the plus sign as “%2b” for it to work.&lt;/p&gt;
+&lt;p&gt;msteams://teams.microsoft.com/l/call/0/0?users=4:%2b448719762819&lt;/p&gt;
+&lt;p&gt;Thanks again for the tip!&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

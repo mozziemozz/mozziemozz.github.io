@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Azure Function on HEUSSER.PRO</title>
+        <link>https://heusser.pro/categories/azure-function/</link>
+        <description>Recent content in Azure Function on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 03 Sep 2022 13:21:48 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/azure-function/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Microsoft Teams Self-Service Call Queue Solution (Part 2)</title>
+        <link>https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/</link>
+        <pubDate>Sat, 03 Sep 2022 13:21:48 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/</guid>
+        <description>&lt;p&gt;There was an issue with my code in this article. The solution described in this article assumes that your call queue overflow and timeout actions already forward to an external PSTN number. If it was set to any other option like voicemail or disconnect, the runbook failed. I’ve updated the &lt;strong&gt;Runbook&lt;/strong&gt; code sample on GitHub accordingly.&lt;/p&gt;
+&lt;h4 id=&#34;original-article&#34;&gt;Original Article&lt;/h4&gt;
+&lt;p&gt;A while ago I published &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851&#34; &gt;this&lt;/a&gt; article which explains how we can build a self-service solution for changing the configurations of Auto Attendants and Call Queues using Azure Automation Tools. The main reason behind this is so that we don’t have to grant admin privileges to users which would like to manage Queues and Attendants.&lt;/p&gt;
+&lt;p&gt;In my last post, I provided an example how an Auto Attendant can be manually closed or opened. Today I’m going to show you an example of how we can let users change some settings on Call Queues.&lt;/p&gt;
+&lt;p&gt;I’ve written the code for the following changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Immediately forward a Call Queue to an external number&lt;/li&gt;
+&lt;li&gt;Disable the immediate forwarding again&lt;/li&gt;
+&lt;li&gt;Change the external number for forwarding on Timeout&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Immediate forwarding is configured through an overflow Threshold of 0 and not a Timeout of 0. This is because, typically, Overflow Threshold is less used than timeout. I always recommend using Overflow Threshold 0 when you want to do an immediate forwarding. Unlike Timeout 0, the call is forwarded directly, without the Queue answering the call first when using Overflow. You can read more about that &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6&#34; &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If the immediate forwarding is disabled again, the value of the Overflow Threshold will be set to 50 again. This is the default value which is configured for new Call Queues. Of course, you change that in the Runbook code.&lt;/p&gt;
+&lt;p&gt;This is what the Message Card looks like when it’s sent by the Azure Function.&lt;/p&gt;
+&lt;h3 id=&#34;lets-buildit&#34;&gt;Let’s Build It&lt;/h3&gt;
+&lt;p&gt;To build this on your own, please refer to my first article since the configuration steps are the same. You just need to replace the code of the Azure Functions and Runbooks from the Gists below.&lt;/p&gt;
+&lt;h4 id=&#34;runbook-code&#34;&gt;Runbook Code&lt;/h4&gt;
+&lt;p&gt;Insert the Webhook URL of your Teams Channel on line 7 and make sure that you’ve created the Automation Credentials as described in the article linked at the beginning of this post.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/30c4ff283d8736f3b1b47acd81d40b95.js&#34;&gt;&lt;/script&gt;
+
+&lt;h4 id=&#34;refresh-card-functioncode&#34;&gt;Refresh Card Function Code&lt;/h4&gt;
+&lt;p&gt;Insert the URL of your Azure Runbook Webhook trigger on line 11.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/7928bf7f6dabcbf0c5283566511488e5.js&#34;&gt;&lt;/script&gt;
+
+&lt;h4 id=&#34;request-card-functioncode&#34;&gt;Request Card Function Code&lt;/h4&gt;
+&lt;p&gt;To get a drop-down list with all your queues, we need to create one first.&lt;/p&gt;
+&lt;p&gt;You can use the following code to create a list, which we’ll insert in our Function code later.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/767ebef524b966842b67436cc2ba9a0a.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;This will create part of the JSON code and put it in your clipboard. You’ll need it later. If you’re already using Windows Clipboard, you will be able to pull it up by pressing Windows + V.&lt;/p&gt;
+&lt;p&gt;Here’s the code for the Azure Function which will send the Update Call Queue Config stuff. Insert your URLs on line 6 and 7 and make sure to paste your list of Call Queue choices on line 27.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/315f3d455144ea86bc2c94c0a8a92a45.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;After you’ve inserted your list, it should look like this. Yours will show real Ids of course.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1DHb1Es27FcAN3yemT5wQ.png&#34;
+	width=&#34;1124&#34;
+	height=&#34;292&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1DHb1Es27FcAN3yemT5wQ_hud1a8715ca2528dda6973d061dd8cd353_75748_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1DHb1Es27FcAN3yemT5wQ_hud1a8715ca2528dda6973d061dd8cd353_75748_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;384&#34;
+		data-flex-basis=&#34;923px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;That’s all. Now your users will be able to request a config change card. Let’s go through the process again.&lt;/p&gt;
+&lt;p&gt;First, the outgoing webhook is mentioned in a channel. The Function will then confirm that the request has been received.&lt;/p&gt;
+&lt;p&gt;The Function will also send the config change card.&lt;/p&gt;
+&lt;p&gt;Once the user has entered all the information, they will be able to submit the config. This will also update the card and confirm the settings.&lt;/p&gt;
+&lt;p&gt;It takes a while until the Runbook has finished. But one it has done its job, it will send us another card, confirming the settings.&lt;/p&gt;
+&lt;p&gt;Note: Setting a new number as the Queue’s Timeout Action will also reset the configured Overflow Threshold to 50. (If the Overflow Threshold would still be 0, the Timeout settings would have no effect at all.)&lt;/p&gt;
+&lt;p&gt;I hope that these code examples help you to build your own self-service solution for your users.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

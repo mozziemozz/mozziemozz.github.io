@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Resource Accounts on HEUSSER.PRO</title>
+        <link>https://heusser.pro/categories/resource-accounts/</link>
+        <description>Recent content in Resource Accounts on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 18 Feb 2023 17:24:32 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/resource-accounts/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Bulk Deploy Microsoft Teams Call Flows with PowerShell in Minutes</title>
+        <link>https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/</link>
+        <pubDate>Sat, 18 Feb 2023 17:24:32 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/</guid>
+        <description>&lt;p&gt;The M365 Call Flow Visualizer focuses on retrieving configurations of Teams Auto Attendants and Call Queues which have already been built. And it does so by using PowerShell.&lt;/p&gt;
+&lt;p&gt;But what about the opposite? Can we use PowerShell to create a new call flow from scratch in just a few minutes as well?&lt;/p&gt;
+&lt;p&gt;In this article, I’m going to show you how you can create a basic, yet fully functional call flow with PowerShell. The only thing you’ll need to do yourself in the end is to add users to the Team.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;What is Needed to Build a Call Flow?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Before we get into the script, let’s look at what steps we need to take to build a call flow.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Create resource accounts&lt;/li&gt;
+&lt;li&gt;License resource accounts (and set Usage Location)&lt;/li&gt;
+&lt;li&gt;Assign a phone number (and voice routing policy if it’s a Direct Routing number) to the resource accounts&lt;/li&gt;
+&lt;li&gt;Create a Microsoft 365 Group with a Team (For voice enabled channel and shared voicemail)&lt;/li&gt;
+&lt;li&gt;Configure M365 Group for Follow in Inbox and Show in Outlook&lt;/li&gt;
+&lt;li&gt;Create and configure the Call Queue&lt;/li&gt;
+&lt;li&gt;Assign the Resource Account to the Call Queue&lt;/li&gt;
+&lt;li&gt;Create the Auto Attendant and configure forwarding to the queue during business hours&lt;/li&gt;
+&lt;li&gt;Assign the Resource Account to the Auto Attendant&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;These are quite a few steps to conclude but the hardest part about this is remembering the correct order of all the steps so you can do it as fast as possible. For example, if you forget to set the Usage Location to the same country as the phone number you want to assign, you will have to go back and wait for the change to be propagated.&lt;/p&gt;
+&lt;p&gt;Another example is that you should always start at the back of your call flow. You can’t fully configure a Call Queue if you don’t have the Team or the M365 Group for shared voicemail yet. And you can’t finish configuring your Auto Attendant if you haven’t built the queue before.&lt;/p&gt;
+&lt;p&gt;If you want to learn more about resource accounts or shared voicemail, I suggest the following articles of mine.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489&#34; &gt;Everything You Ever Wanted to Know About Teams Resource Accounts | by martin heusser | Medium&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24&#34; &gt;Everything you ever wanted to know about Microsoft Teams Phone and Shared Voicemail | by martin heusser | Medium&lt;/a&gt;&lt;/p&gt;
+&lt;h4 id=&#34;some-notes-about-thisscript&#34;&gt;Some Notes About This Script&lt;/h4&gt;
+&lt;p&gt;The script follows my personal best practices when building call flows and considers all the aforementioned examples of steppingstones for maximum efficiency.&lt;/p&gt;
+&lt;p&gt;This is not intended to build super complex call flows. Instead, it is just an example of how one can write a deployment script, which does everything from A-Z in an efficient order. It can, however, build multiple call flows in a row.&lt;/p&gt;
+&lt;p&gt;While it would be possible to make it even more efficient by, for example, creating and licensing all the resource accounts from the CSV entries first, then create all the Call Queues and at last all the Auto Attendants, I decided not to pursue this road for the sake of simplicity. Instead, the script will create each call flow after the other, which probably takes slightly longer to complete.&lt;/p&gt;
+&lt;p&gt;There are some steps where we need to wait for the previous steps to complete. For example, when a Resource Account is created, it usually takes a few seconds for the corresponding User Object in Teams to be created as well. Rest assured though; the script will handle all of that on its own. So don’t get spooked if you see some red error messages in PowerShell. These are just standard error messages, where the script tries to query a user which couldn’t be found yet.&lt;/p&gt;
+&lt;p&gt;Because we’re also querying a tenant’s domain names and modify licenses this script requires some additional scopes for Microsoft Graph. So be sure to have a Global Admin account ready to consent to these scopes.&lt;/p&gt;
+&lt;p&gt;Connect-MgGraph -Scopes &amp;ldquo;User.ReadWrite.All&amp;rdquo;, `&lt;br&gt;
+&amp;ldquo;Group.ReadWrite.All&amp;rdquo;, `&lt;br&gt;
+&amp;ldquo;Domain.ReadWrite.All&amp;rdquo;, `&lt;br&gt;
+&amp;ldquo;Organization.ReadWrite.All&amp;rdquo;, `&lt;br&gt;
+&amp;ldquo;Directory.ReadWrite.All&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;To configure the Microsoft 365 Group the script requires the &lt;strong&gt;ExchangeOnlineManagement&lt;/strong&gt; PowerShell Module in addition to MicrosoftTeams and Microsoft.Graph**.** If you don’t have it already, you can use the following command to install it.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Install-Module ExchangeOnlineManagement&lt;/code&gt;&lt;/p&gt;
+&lt;h4 id=&#34;how-does-itwork&#34;&gt;How Does it Work?&lt;/h4&gt;
+&lt;p&gt;In my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer/tree/main/Deployment&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub Repository&lt;/a&gt;, you will find a sample file called “VoiceAppList.csv”. All you need to do is to fill in your information there. And run the script.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1l6dmaJHs10JUjUNsetrVnA.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1l6dmaJHs10JUjUNsetrVnA_hu9800bbf346ca27f81ecfffc2aca8e856_877130_480x0_resize_box_3.png 480w, https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1l6dmaJHs10JUjUNsetrVnA_hu9800bbf346ca27f81ecfffc2aca8e856_877130_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;These are the details which can be passed from the CSV file to the script.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;DepartmentName&lt;br&gt;
+This name of the queue or Team. It will be added to all elements in the call flow: Team, Channel, Resource Accounts, Auto Attendant, Call Queue. For example, if you set “Marketing” as your DepartmentName, your queue will be called “Marketing CQ”.&lt;/li&gt;
+&lt;li&gt;TopLevelNumber&lt;br&gt;
+The number which is called by customers and assigned to the Auto Attendant. It must be an E.164 number. See &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/teams/set-csphonenumberassignment?view=teams-ps#-phonenumber&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this&lt;/a&gt; for more information.&lt;/li&gt;
+&lt;li&gt;NumberType&lt;br&gt;
+This is required for the phone number assignment. Valid values: CallingPlan, OperatorConnect, DirectRouting, &lt;code&gt;$null&lt;/code&gt; . Leave the field empty in the CSV if you don’t want to assign a number just yet.&lt;/li&gt;
+&lt;li&gt;VoiceRoutingPolicyName&lt;br&gt;
+This is only required if you want to assign a Direct Routing number. It’s only needed if the AA should be capable of external transfers later on. It’s only added as a precaution. You can read how to get the name of your voice routing policies &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/skype/get-csonlinevoiceroutingpolicy?view=skype-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;UsageLocation&lt;br&gt;
+This must be the same as the Phone Number if your’re using Calling Plans. E.g. “CH” or “GB”.&lt;/li&gt;
+&lt;li&gt;AgentAlertTime&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/skype/set-cscallqueue?view=skype-ps#-agentalerttime&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Set-CsCallQueue (SkypeForBusiness) | Microsoft Learn&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;TimeoutThreshold&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/skype/set-cscallqueue?view=skype-ps#-timeoutthreshold&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Set-CsCallQueue (SkypeForBusiness) | Microsoft Learn&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;PromptLanguage&lt;br&gt;
+This is the language of the text to speech prompt. See &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/fr-fr/powershell/module/skype/get-csautoattendantsupportedlanguage?view=skype-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this&lt;/a&gt; MS Learn article for more information. You will be prompted by &lt;code&gt;Out-GridView&lt;/code&gt; if you specify an invalid language Id.&lt;/li&gt;
+&lt;li&gt;TimeoutSharedVoicemailPrompt&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/skype/set-cscallqueue?view=skype-ps#-timeoutsharedvoicemailtexttospeechprompt&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Set-CsCallQueue (SkypeForBusiness) | Microsoft Learn&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;AfterHoursDisconnectPrompt&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/skype/new-csautoattendantprompt?view=skype-ps#-texttospeechprompt&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;New-CsAutoAttendantPrompt (SkypeForBusiness) | Microsoft Learn&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;TimeZone&lt;br&gt;
+The time zone of the Auto Attendant. See &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/skype/get-csautoattendantsupportedtimezone?view=skype-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this&lt;/a&gt; MS Learn article for more information. You will be prompted by &lt;code&gt;Out-GridView&lt;/code&gt;if you specify an invalid time zone Id.&lt;/li&gt;
+&lt;li&gt;BusinessHoursStart1&lt;br&gt;
+If none of the business hours fields are populated, the script won’t create an after hours call flow for the Auto Attendant. If only &lt;strong&gt;BusinessHoursStart1&lt;/strong&gt; and &lt;strong&gt;BusinessHoursEnd1&lt;/strong&gt; are populated, the AA will only have one time slot. If &lt;strong&gt;BusinessHoursStart2&lt;/strong&gt; and &lt;strong&gt;BusinessHoursEnd2&lt;/strong&gt; are populated as well, the AA will have two time slots, e.g. lunch break.&lt;br&gt;
+E.g. &lt;code&gt;08:00&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;BusinessHoursEnd1&lt;br&gt;
+E.g. &lt;code&gt;12:15&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;BusinessHoursStart2&lt;br&gt;
+E.g. &lt;code&gt;13:30&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;BusinessHoursEnd2&lt;br&gt;
+E.g. &lt;code&gt;17:45&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;DomainSuffix&lt;br&gt;
+By default, the script will use your tenant’s default domain for resource account UPNs or MailNicknames. If you want to change that, you can specify and domain that’s available in your tenant as &lt;code&gt;-DomainSuffix&lt;/code&gt; . E.g. “example.onmicrosoft.com”.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Running the script will deploy a simple call flow with an Auto Attendant, business hours and one Call Queue which uses a Voice Enabled Channel for each line in the CSV file. Outside of business hours, the Auto Attendants will play a message and disconnect the call.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1XEyqntZvtv72Qxuzf1aNw.png&#34;
+	width=&#34;1073&#34;
+	height=&#34;2737&#34;
+	srcset=&#34;https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1XEyqntZvtv72Qxuzf1aNw_hua85223f6dc30bc4a06aa7c9bdb9501df_173158_480x0_resize_box_3.png 480w, https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1XEyqntZvtv72Qxuzf1aNw_hua85223f6dc30bc4a06aa7c9bdb9501df_173158_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;39&#34;
+		data-flex-basis=&#34;94px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The Call Queues will time out after the amount of seconds which is defined in &lt;code&gt;-TimeoutThreshold&lt;/code&gt; and then forward the call to shared voicemail once the greeting has been played back.&lt;/p&gt;
+&lt;p&gt;The script automatically creates a new Team and a Channel for the Queue as well. I prefer to use dedicated over existing Teams and Channels because not all team members of an existing team are potentially going to answer calls.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1XIhvE9DOsrXKapeR0L3zbA.png&#34;
+	width=&#34;982&#34;
+	height=&#34;398&#34;
+	srcset=&#34;https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1XIhvE9DOsrXKapeR0L3zbA_hu1d56b6c7cc2dc5e3872dd8f85ee44af7_35636_480x0_resize_box_3.png 480w, https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1XIhvE9DOsrXKapeR0L3zbA_hu1d56b6c7cc2dc5e3872dd8f85ee44af7_35636_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;246&#34;
+		data-flex-basis=&#34;592px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When a new Team is created and the Microsoft 365 Group has not existed before, the group is by default hidden from Outlook Clients. Because we want the agents of the queue to have access to the group mailbox in Outlook, the script will automatically enable the Follow in Inbox feature and unhide the group from Outlook Clients.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1RQyp3fLFRTkxE2XWTu8Ng.png&#34;
+	width=&#34;900&#34;
+	height=&#34;671&#34;
+	srcset=&#34;https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1RQyp3fLFRTkxE2XWTu8Ng_hua087515fbd4e346c19a58d90354ed2f4_68608_480x0_resize_box_3.png 480w, https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1RQyp3fLFRTkxE2XWTu8Ng_hua087515fbd4e346c19a58d90354ed2f4_68608_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;134&#34;
+		data-flex-basis=&#34;321px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Shared voicemail is another reason I like to use dedicated groups. With a new group, we can make sure that the only kind of emails received in this group&amp;rsquo;s inbox are voicemails, and we can enable Follow in Inbox without any concern of potentially spamming dozens of other team members by sending all group emails to their personal inboxes.&lt;/p&gt;
+&lt;h4 id=&#34;the-script&#34;&gt;The Script&lt;/h4&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/8b4640590b85da1e1f296b9ef599ae9a.js&#34;&gt;&lt;/script&gt;
+
+&lt;h4 id=&#34;finishing-up&#34;&gt;Finishing Up&lt;/h4&gt;
+&lt;p&gt;While the call flow is technically already able to receive calls after it has been deployed by the script, you’ll still need to add members to the queue. Otherwise, the calls will never be signaled to any agent.&lt;/p&gt;
+&lt;p&gt;Remember that only members of the Team who are also Enterprise Voice Enabled will be added to the queue’s agent list. If you don’t want to wait a few hours for the agent list to update after you have added the members, you might want to check out &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0&#34; &gt;this&lt;/a&gt; article. It explains how to force sync an agent list of Call Queues.&lt;/p&gt;
+&lt;p&gt;As mentioned before, this is a mere example of a very simple call flow. However, if most of your call flows only consist of an Auto Attendant forwarding calls to a Call Queue (Like it’s common in many small businesses), PowerShell can still be immensely helpful to lay the ground works.&lt;/p&gt;
+&lt;p&gt;Naturally, you can still go into TAC and adjust everything to your needs after the script has built your scaffolding. You just won’t have to bother adding resources accounts and associating them with your voice apps etc.&lt;/p&gt;
+&lt;p&gt;Creating Auto Attendants with PowerShell is quite a complex process compared to Call Queues or other Microsoft resources. If you want to adjust my script to your specific needs, a good place to start is the official documentation from Microsoft. As far as I can tell, they recently added updated example scripts which might be helpful.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/skype/new-csautoattendant?view=skype-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;New-CsAutoAttendant (SkypeForBusiness) | Microsoft Learn&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/skype/set-csautoattendant?view=skype-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Set-CsAutoAttendant (SkypeForBusiness) | Microsoft Learn&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Now go ask ChatGPT to write you a script that does the same.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Teams Auto Attendant and Call Queue Spring-Cleaning</title>
+        <link>https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/</link>
+        <pubDate>Wed, 01 Feb 2023 20:43:08 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/</guid>
+        <description>&lt;p&gt;Are your Teams Auto Attendants, Call Queues and Resource Accounts a mess? Or have you lost track of who created which accounts or Voice Apps? You know what they say…&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Too Many Cooks Spoil the Broth.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/1eRzA7AqlES8kea2hT4qYQ.png&#34;
+	width=&#34;1800&#34;
+	height=&#34;813&#34;
+	srcset=&#34;https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/1eRzA7AqlES8kea2hT4qYQ_hubfdd2467c009cadcd5a197ebc4ffde88_981011_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/1eRzA7AqlES8kea2hT4qYQ_hubfdd2467c009cadcd5a197ebc4ffde88_981011_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;221&#34;
+		data-flex-basis=&#34;531px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;It’s not really spring yet but who cares? Cleaning up your environment is always a good thing. Today we’re talking Teams Phone reporting again. In case you’ve missed some of my previous articles, here’s an overview of what handy scripts I already released last year.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485&#34; &gt;Report on Teams Call Queue Opt In Status and Assignment Paths&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/find-all-auto-attendants-and-call-queues-a-user-is-associated-with-16710c3adf01&#34; &gt;Find All Auto Attendants and Call Queues a User is Associated with&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/automatically-render-microsoft-teams-call-flow-diagrams-607b89df4154&#34; &gt;Automatically render Microsoft Teams Call Flow Diagrams&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/how-to-export-a-teams-call-flow-to-png-4d38a8c4f183&#34; &gt;How To Export a Teams Call Flow to PNG&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;I remember that somebody on social media asked me if it was possible to get a list of all Resource Accounts which are not assigned to any Auto Attendant or Call Queue. That’s why I wrote this script in December 2022.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer/blob/main/FindUnassignedResourceAccounts.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;M365CallFlowVisualizer/FindUnassignedResourceAccounts.ps1 at main · mozziemozz/M365CallFlowVisualizer (github.com)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This time, I’ve taken it even further and used the M365 Call Flow Visualizer to not only find unused Resource Accounts but also Call Queues and Auto Attendants which are not in use.&lt;/p&gt;
+&lt;h4 id=&#34;what-qualifies-as-not-inuse&#34;&gt;What Qualifies as Not in Use?&lt;/h4&gt;
+&lt;p&gt;First of all, any Attendant or any Queue which does not have a Resource Account assigned, can’t be called, or transferred to. They exist, but they’re useless until a Resource Account is linked. This means that all Queues and Attendants which do not have a Resource Account assigned, will be included in the report.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/1CV5FzZbrRUB99oY2E3hSdg.png&#34;
+	width=&#34;1775&#34;
+	height=&#34;203&#34;
+	srcset=&#34;https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/1CV5FzZbrRUB99oY2E3hSdg_huf126b39da9dc1a67c4dd4fd47bc62319_22921_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/1CV5FzZbrRUB99oY2E3hSdg_huf126b39da9dc1a67c4dd4fd47bc62319_22921_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;874&#34;
+		data-flex-basis=&#34;2098px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The concept of how Resource Accounts work in combination with Queues and Attendants is explained in detail in the article linked below.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489&#34; &gt;Everything You Ever Wanted to Know About Teams Resource Accounts&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Next, the script checks for all Auto Attendants and Call Queues which have a Resource Account without Phone Number assigned. Of course, these are often nested behind top-level Voice Apps and thus can be called without issues. My new script runs the Visualizer (without creating any diagrams) for all top-level Voice Apps (Attendants and Queues with phone numbers) to create a list of all their nested Voice Apps.&lt;/p&gt;
+&lt;p&gt;Because the Visualizer is also able to read and process user calling settings, it will even detect if a Voice App is set as a user’s forwarding or unanswered target and thus also add it to the list of all nested Voice Apps.&lt;/p&gt;
+&lt;p&gt;If this list does not contain the current Voice App, it will be included in the report as well. In complex environments, this will save you a lot of time since you don’t need to click through all your Voice Apps manually to check them.&lt;/p&gt;
+&lt;p&gt;Last but not least, it uses the same code bits from the original “FindUnassignedResourceAccounts.ps1” script to add any Resource Account which is not associated with any Voice App to the report.&lt;/p&gt;
+&lt;h4 id=&#34;caveats&#34;&gt;Caveats&lt;/h4&gt;
+&lt;p&gt;There’s one caveat though. In theory, you could have a Voice App (or multiple) which are only called internally by their SIP Address. In this case, the Voice App doesn’t need to be nested anywhere and it doesn’t need a phone number either. All it needs is to have a Resource Account assigned. These Apps will be included in the report as well, so make sure to be extra careful before you actually delete anything.&lt;/p&gt;
+&lt;h4 id=&#34;under-thehood&#34;&gt;Under the Hood&lt;/h4&gt;
+&lt;p&gt;During testing, I noticed that Voice Apps which are nested inside a Holiday Call Handling were not detected by the script either. I’ve updated my M365 Call Flow Visualizer so that it will now also expand Auto Attendants and Call Queues which are part of a Holiday transfer action.&lt;/p&gt;
+&lt;p&gt;Initially, I thought I’d only be able to do this for transfers to Call Queues and Auto Attendants. But with some persistence I was able to also display IVRs which are configured as part of a Holiday Call Handling! Yes, really! This means that the Visualizer can now render every possible call flow which can be configured. At least to my knowledge.&lt;/p&gt;
+&lt;p&gt;Here’s an example of the new functionality. We can see that the Call Handling for &lt;strong&gt;National Swiss Holiday&lt;/strong&gt; forwards to the Call Queue &lt;strong&gt;Ext Pstn Fwd Test&lt;/strong&gt; inside the Holiday table. Unfortunately, linking both CQ Nodes together, would have messed up the left-right direction of the subgraph and instead made it a top-down one. Therefore, I had to get creative and just link the call flow of the Voice App to the Holiday Subgraph. As an exception, there are now two nodes for the &lt;strong&gt;Call Queue&lt;/strong&gt; &lt;strong&gt;Ext Pstn Fwd Test&lt;/strong&gt;. One is inside the Holiday table, and one is placed in the main diagram.&lt;/p&gt;
+&lt;p&gt;It’s basically the same for Holiday IVRs (Voice Menus). They include the name of the Holiday Call Handling in which they are configured. This makes it a little easier to spot the corresponding node in the main diagram.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/158SyiEyoyXEYRfJ7qCgaw.png&#34;
+	width=&#34;2034&#34;
+	height=&#34;1696&#34;
+	srcset=&#34;https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/158SyiEyoyXEYRfJ7qCgaw_hu6cd0e337839241ed14f1d32970129584_154756_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/158SyiEyoyXEYRfJ7qCgaw_hu6cd0e337839241ed14f1d32970129584_154756_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;119&#34;
+		data-flex-basis=&#34;287px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If you want to try this for yourself, you need to add the following parameters when you call the script.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-ShowNestedHolidayCallFlows $true&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-ShowNestedHolidayIVRs $true&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;If you’re interested in learning more about how Holidays work in Teams, consider giving this article a read.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743&#34; &gt;Everything You Ever Wanted to Know About Teams Holidays&lt;/a&gt;&lt;/p&gt;
+&lt;h4 id=&#34;example-output&#34;&gt;Example Output&lt;/h4&gt;
+&lt;p&gt;The script will generate a CSV file containing all unused components including the reason as to why they’re not in use.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/1bhf0biV7bVukIdpxKpnfA.png&#34;
+	width=&#34;1619&#34;
+	height=&#34;618&#34;
+	srcset=&#34;https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/1bhf0biV7bVukIdpxKpnfA_huebf7c61395586c2000e69f992e4488e4_135347_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/1bhf0biV7bVukIdpxKpnfA_huebf7c61395586c2000e69f992e4488e4_135347_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;261&#34;
+		data-flex-basis=&#34;628px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;I struggled a bit to find a perfect naming for all the columns. The column “Association” tells you whether the Voice App has a Resource Account assigned or if the Resource Account is assigned to a Voice App. The other ones should be self-explanatory.&lt;/p&gt;
+&lt;h4 id=&#34;free-download&#34;&gt;Free Download&lt;/h4&gt;
+&lt;p&gt;The script is available for free in my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub Repo&lt;/a&gt; of the M365 Call Flow Visualizer. Make sure that you clone it or download the whole repository as Zip file since there are dependencies.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer/blob/main/FindUnusedVoiceAppsAndResourceAccounts.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;M365CallFlowVisualizer/FindUnusedVoiceAppsAndResourceAccounts.ps1 at main · mozziemozz/M365CallFlowVisualizer (github.com)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Please use this script at your own risk, even though the script does not change or delete anything in your environment. (It only uses &lt;code&gt;Get-*&lt;/code&gt; Cmdlets). Just promise to make sure that you verify that any Auto Attendant or Call Queues are indeed not needed anymore before you hit that delete button. Even if you still have to manually confirm and delete unused Voice Apps, I still hope that the output of the script makes it easier for you to identify them at scale.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Everything You Ever Wanted to Know About Teams Resource Accounts</title>
+        <link>https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/</link>
+        <pubDate>Mon, 29 Aug 2022 19:45:51 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/</guid>
+        <description>&lt;p&gt;Today we’re going to take a detailed look at Teams Resource Accounts.&lt;/p&gt;
+&lt;p&gt;Resource Accounts are special Azure AD Objects (or Microsoft 365 User Accounts, if you will) which can only be created from Teams Admin Center or via Teams PowerShell. It’s not possible to create such an account in M365 Admin or Azure AD. What’s funny though is that they can only be deleted from M365 Admin or AAD but not from Teams Admin Center or Teams PowerShell.&lt;/p&gt;
+&lt;h4 id=&#34;the-basics&#34;&gt;The Basics&lt;/h4&gt;
+&lt;p&gt;Currently, there are two different types of so called first-party (Microsoft) Resource Accounts. Call Queues and Auto Attendants. These accounts are then associated with corresponding types of Voice App, which are again, Call Queues or Auto Attendants.&lt;/p&gt;
+&lt;p&gt;Each Resource Account can only be associated with &lt;strong&gt;one&lt;/strong&gt; Voice App, but a Voice App can have multiple Resource Accounts associated. Just like with Teams users, each Resource Account can also only have &lt;strong&gt;one&lt;/strong&gt; phone number assigned. For example, you can have an Auto Attendant which has multiple Resource Accounts assigned, where each Resource Account has a phone number from a different country. This way you can have an Auto Attendant which serves customers across multiple countries, but each customer will be able to call a local number.&lt;/p&gt;
+&lt;h4 id=&#34;how-to-create-a-resourceaccount&#34;&gt;How to Create a Resource Account&lt;/h4&gt;
+&lt;p&gt;You can create new Resource Accounts from TAC. They are located under &lt;a class=&#34;link&#34; href=&#34;https://admin.teams.microsoft.com/company-wide-settings/resource-accounts&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Voice\Resource accounts&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;There are a few things to consider here. The first one is naming. If you have a complex call flow, chances are that you will have many Auto Attendants, Call Queues and Resource Accounts. I always use a prefix and suffix system.&lt;/p&gt;
+&lt;p&gt;The Display Name is followed by the suffix “AA” or “CQ”. This way it will be easier to identify the correct Resource Account, when you associate it with a Voice App. The User Principal Name is led by the prefix “ra_aa_” or “ra_cq_” so that they can easily be filtered in AAD. Of course, this is only a suggestion, you’re free to name them however you want.&lt;/p&gt;
+&lt;p&gt;Usually, I just use the *.onmicrosoft.com name of the Tenant as the domain suffix. External users won’t be able to interact with these kinds of accounts, so it doesn’t matter if you don’t use your default custom domain name.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1AWJTS0fgG35lia04bwh5w.png&#34;
+	width=&#34;507&#34;
+	height=&#34;614&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1AWJTS0fgG35lia04bwh5w_hucf59d4edd313e17d25d7e479f7824db8_39268_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1AWJTS0fgG35lia04bwh5w_hucf59d4edd313e17d25d7e479f7824db8_39268_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;82&#34;
+		data-flex-basis=&#34;198px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Here are the &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/powershell/module/skype/new-csonlineapplicationinstance?view=skype-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;PowerShell equivalent commands&lt;/a&gt; to create Resoure Accounts.&lt;/p&gt;
+&lt;p&gt;Auto Attendant:&lt;/p&gt;
+&lt;p&gt;# App Id Auto Attendants: ce933385-9390-45d1-9512-c8d228074e07&lt;/p&gt;
+&lt;p&gt;New-CsOnlineApplicationInstance -UserPrincipalName &amp;ldquo;ra_aa_example_ps@domain.com&amp;rdquo; -ApplicationId &amp;ldquo;ce933385-9390-45d1-9512-c8d228074e07&amp;rdquo; -DisplayName &amp;ldquo;Example PS AA&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;Call Queues:&lt;/p&gt;
+&lt;p&gt;# App Id Call Queues: 11cd3e2e-fccb-42ad-ad00-878b93575e07&lt;/p&gt;
+&lt;p&gt;New-CsOnlineApplicationInstance -UserPrincipalName &amp;ldquo;ra_cq_example_ps@domain.com&amp;rdquo; -ApplicationId &amp;ldquo;11cd3e2e-fccb-42ad-ad00-878b93575e07&amp;rdquo; -DisplayName &amp;ldquo;Example PS CQ&amp;rdquo;&lt;/p&gt;
+&lt;h4 id=&#34;searching-for-resourceaccounts&#34;&gt;Searching for Resource Accounts&lt;/h4&gt;
+&lt;p&gt;If you want to return all Resource Accounts by PowerShell, the MicrosoftTeams Module 4.6.0 now supports a parameter to only return Resource Accounts: &lt;code&gt;Get-CsOnlineUser -AccountType ResourceAccount&lt;/code&gt; . If we didn’t include a prefix or a suffix, there’s currently no way to tell if the returned objects are Queues or Attendants.&lt;/p&gt;
+&lt;p&gt;For that, we need to use&lt;code&gt;Get-CsOnlineApplicationInstance&lt;/code&gt; . This will return a list with some basic information like Display Name, UPN, Phone Number and Application Id.&lt;/p&gt;
+&lt;h4 id=&#34;licensing-resourceaccounts&#34;&gt;Licensing Resource Accounts&lt;/h4&gt;
+&lt;p&gt;A Resource Account must be licensed in the following cases:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If you want to assign a phone number to it&lt;/li&gt;
+&lt;li&gt;If the Resource Accounts needs to be able to transfer calls to external numbers&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Update 29.01.2023&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Microsoft updated their documentation. From now on, &lt;strong&gt;every&lt;/strong&gt; Resource Account must be licensed, regardless of if a phone number is assigned or not. You can find more info &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/microsoftteams/manage-resource-accounts#assign-a-license&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;An easy way to ensure that every Teams Resource Account is licensed properly is to use a dynamic user Azure AD Group which automatically assigns the license. The easiest way to do so is to filter on the Department attribute.&lt;/p&gt;
+&lt;p&gt;(user.department -eq &amp;ldquo;Microsoft Communication Application Instance&amp;rdquo;)&lt;/p&gt;
+&lt;p&gt;If you need step-by-step instructions on how to create an Azure AD Group with a dynamic query, please consult &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739&#34; &gt;this&lt;/a&gt; article and just replace the query with the one above.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;/Update&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Update 06.02.2023&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Thanks to a reader &lt;a class=&#34;link&#34; href=&#34;https://medium.com/p/3c1dad7d67c&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;comment&lt;/a&gt;, it was brought to my attention, that group based licensing actually requires an Azure AD Premium P1 license, for any user which takes advantage of the feature. This is documented &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-licensing-whatis-azure-portal#licensing-requirements&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I don’t know if a resource account qualifies as “user” because they are resource account and sign-in blocked. If you want to be absolutely sure, I recommend that you have a P1 license for each resource account or that you contact your account manager at Microsoft and ask them about this.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;/Update&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Licensing can’t be done from TAC. We need to use AAD or M365 Admin. As we can see, the account “Example AA” has now been created in AAD.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1evT4xkagZq7LVOGeSDAn5w.png&#34;
+	width=&#34;1759&#34;
+	height=&#34;382&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1evT4xkagZq7LVOGeSDAn5w_huf34e2e9e047dda8dc57232887efed293_41168_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1evT4xkagZq7LVOGeSDAn5w_huf34e2e9e047dda8dc57232887efed293_41168_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;460&#34;
+		data-flex-basis=&#34;1105px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Because this is a special kind of account, it’s Sign-in blocked. This means that the account doesn’t support interactive sign-ins.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1juIc9FR7liYQzHJAbkhg.png&#34;
+	width=&#34;854&#34;
+	height=&#34;220&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1juIc9FR7liYQzHJAbkhg_hub96f9c647c50e4be5a34527a347e08ac_22963_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1juIc9FR7liYQzHJAbkhg_hub96f9c647c50e4be5a34527a347e08ac_22963_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;388&#34;
+		data-flex-basis=&#34;931px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Another important info is that these accounts have “Microsoft Communication Application Instance” set as their department. Just leave this as it is and don’t change anything.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1LXbE3uikECfwcAvF4MvTkw.png&#34;
+	width=&#34;819&#34;
+	height=&#34;117&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1LXbE3uikECfwcAvF4MvTkw_hua7a594ac5fb1d88dc77b8f53a8345bef_10312_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1LXbE3uikECfwcAvF4MvTkw_hua7a594ac5fb1d88dc77b8f53a8345bef_10312_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;700&#34;
+		data-flex-basis=&#34;1680px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Based on my experience, it’s no problem to change its Display or User Principal Name though.&lt;/p&gt;
+&lt;p&gt;If you want to assign a phone number to a Resource Account, you will need to assign a license to it. Microsoft has recently renamed the old license “Microsoft Teams Phone — Virtual User” to “Microsoft Teams Phone Resource Account”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/17nSgscEOXkNkdAbl5pliw.png&#34;
+	width=&#34;511&#34;
+	height=&#34;87&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/17nSgscEOXkNkdAbl5pliw_hu649f645650307a80b1356743a4b6c87d_11684_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/17nSgscEOXkNkdAbl5pliw_hu649f645650307a80b1356743a4b6c87d_11684_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;587&#34;
+		data-flex-basis=&#34;1409px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;What’s really nice about these licenses, is that their free. &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/microsoftteams/teams-add-on-licensing/virtual-user#resource-account-license-allocation&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;At least to some extent&lt;/a&gt;. If you have at least one Teams Phone license, you will get 25 Teams Phone Resource Account licenses for free. After that, you will get 1 Resource Account license for every 10 Teams Phone licenses. The “PowerShell Name” or rather the AccountSkuId of this license is still called “TenantName:PHONESYSTEM_VIRTUALUSER”. Unlike Teams Phone which needs a “base license” like a Business Premium or Enterprise E3, Resource Account licenses can be assigned as standalone licenses.&lt;/p&gt;
+&lt;h4 id=&#34;how-to-assign-phone-numbers-to-resourceaccounts&#34;&gt;How to Assign Phone Numbers to Resource Accounts&lt;/h4&gt;
+&lt;p&gt;Once you’ve assigned a license to a Resource Account you can either use TAC or PowerShell to assign a phone number to the account.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1vhe0ahawllXMWMWFpxQ.png&#34;
+	width=&#34;498&#34;
+	height=&#34;750&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1vhe0ahawllXMWMWFpxQ_hu627d729aeed47bd416b748512d13ddb9_65569_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1vhe0ahawllXMWMWFpxQ_hu627d729aeed47bd416b748512d13ddb9_65569_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;66&#34;
+		data-flex-basis=&#34;159px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;For PowerShell, you can use the same command as you would with a normal user. You might stumble upon outdated articles which mention the following command.&lt;/p&gt;
+&lt;p&gt;Set-CsOnlineApplicationInstance -Identity &amp;ldquo;ra_aa_example_ps@domain.com&amp;rdquo; -OnPremPhoneNumber +4144512xxxx&lt;/p&gt;
+&lt;p&gt;The new one is the following:&lt;/p&gt;
+&lt;p&gt;Set-CsPhoneNumberAssignment -Identity &amp;ldquo;ra_aa_example_ps@domain.com&amp;rdquo; -PhoneNumber +4144512xxxx -PhoneNumberType DirectRouting&lt;/p&gt;
+&lt;p&gt;Even though the Resource Account now has a phone number assigned to it, the number won’t be active until the Resource Account is associated with a Voice App. We’ll get to that later.&lt;/p&gt;
+&lt;h4 id=&#34;how-to-assign-a-voice-routing-policy-to-a-resourceaccount&#34;&gt;How to Assign a Voice Routing Policy to a Resource Account&lt;/h4&gt;
+&lt;p&gt;If the Resource Account should be able to transfer calls to external PSTN numbers using Direct Routing, we will also need to assign a Voice Routing Policy to it. This can also be done from TAC. Select your Resource Account and click on Edit. Now choose your desired Voice Routing Policy and click Save.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1au4ToHQ2IwpJc3nIrDgPqQ.png&#34;
+	width=&#34;511&#34;
+	height=&#34;532&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1au4ToHQ2IwpJc3nIrDgPqQ_hubd27a7a9fb92c57e04889fe786fb083b_31657_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1au4ToHQ2IwpJc3nIrDgPqQ_hubd27a7a9fb92c57e04889fe786fb083b_31657_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;96&#34;
+		data-flex-basis=&#34;230px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Doing it with PowerShell is again, the same as if it was a normal user.&lt;/p&gt;
+&lt;p&gt;Grant-CsOnlineVoiceRoutingPolicy -Identity &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;mailto:ra_aa_example_ps@domain.com&#34; &gt;ra_aa_example_ps@domain.com&lt;/a&gt;&amp;rdquo; -PolicyName &amp;ldquo;Test&amp;rdquo;&lt;/p&gt;
+&lt;h4 id=&#34;how-to-change-the-type-of-a-resourceaccount&#34;&gt;How to Change the Type of a Resource Account&lt;/h4&gt;
+&lt;p&gt;On that same “Edit resource account” window, it’s also possible to change the type of a Resource Account. This can also be done by PowerShell. Just use the &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/powershell/module/skype/set-csonlineapplicationinstance?view=skype-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Set-CsApplicationInstance&lt;/a&gt; cmdlet and include the &lt;code&gt;-Identity&lt;/code&gt; and &lt;code&gt;-ApplicationId&lt;/code&gt; parameters. Even though this should work in theory, I haven’t tested it myself since I recommend re-creating them, if ever needed. Also be careful when 3rd party resource accounts e.g. from Attendant Console or Contact Center vendors are in play. TAC only supports first party Application Ids and won’t allow you to save changes you made without choosing a Resource Account type. Use PowerShell if you need to assign an online voice routing policy to a 3rd party resource account.&lt;/p&gt;
+&lt;h4 id=&#34;how-to-associate-a-resource-account-with-a-voiceapp&#34;&gt;How to Associate a Resource Account with a Voice App&lt;/h4&gt;
+&lt;p&gt;In most cases, having one Resource Account per Queue or Attendant is enough. Let’s make a small detour and talk about naming again for a second. To avoid confusion, I always make sure that the Display Name for the Queue/Attendant and the Resource Account are the same. If a Voice App needs multiple resource accounts, I use numbering on the resource account names. It’s important to note that the Display Name of the Resource Account is the name which a recipient of a call which was transferred by an Attendant or a Queue will see on the Teams toast notification.&lt;/p&gt;
+&lt;p&gt;Here we can see that this Call Queue is called “MS Test CQ” but the associated resource account is called “Team Green CQ”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1RGhZfRUJ9Hj7L0u8ko1uYQ.png&#34;
+	width=&#34;1766&#34;
+	height=&#34;593&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1RGhZfRUJ9Hj7L0u8ko1uYQ_huc28893d83e8a09b59e57156c338edcb0_64330_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1RGhZfRUJ9Hj7L0u8ko1uYQ_huc28893d83e8a09b59e57156c338edcb0_64330_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;297&#34;
+		data-flex-basis=&#34;714px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Since the toast will show the Display Name of the resource account, it will say that there’s a call for “Team Green CQ” and not “MS Test CQ”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/16eE5gPpiQQQ7E0HWidOcrw.png&#34;
+	width=&#34;452&#34;
+	height=&#34;438&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/16eE5gPpiQQQ7E0HWidOcrw_hu868f7a547900ec85740336284fa75377_69783_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/16eE5gPpiQQQ7E0HWidOcrw_hu868f7a547900ec85740336284fa75377_69783_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;103&#34;
+		data-flex-basis=&#34;247px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;I talked about the importance of the AA/CQ suffix at the beginning of this post. Microsoft has improved TAC and now shows assigned phone numbers in the drop-down list, if we search for a Voice App redirection target.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1ROuuUDhMjYnjORsGLjOiLQ.png&#34;
+	width=&#34;1380&#34;
+	height=&#34;382&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1ROuuUDhMjYnjORsGLjOiLQ_hu60e4b66024a65bc12b599e752cfffc42_28678_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1ROuuUDhMjYnjORsGLjOiLQ_hu60e4b66024a65bc12b599e752cfffc42_28678_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;361&#34;
+		data-flex-basis=&#34;867px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;But let’s assume that neither of these accounts had a phone number assigned and we didn’t use a suffix either. Good luck figuring out which one of these is the Auto Attendant and which one is the Call Queue.&lt;/p&gt;
+&lt;h4 id=&#34;enterprise-voice&#34;&gt;Enterprise Voice&lt;/h4&gt;
+&lt;p&gt;This is an interesting one. As far as I can tell, resource accounts which were created at least a few months ago, are still Enterprise Voice enabled, even if they don’t have a Teams Phone Resource Account License assigned.&lt;/p&gt;
+&lt;p&gt;Here’s an example of such a relict. This resource account is Enterprise Voice enabled, despite not having a LineURI or a Feature Type. FeatureTypes is a relatively new property which is returned by &lt;code&gt;Get-CsOnlineUser&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;DisplayName            : Support Number Business Hours AA&lt;br&gt;
+EnterpriseVoiceEnabled : True&lt;br&gt;
+LineUri                :&lt;br&gt;
+FeatureTypes           : {}&lt;/p&gt;
+&lt;p&gt;For reference, here’s a screenshot of the M365 Admin Portal.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1PqykXYuUDlX2lTaW1z4Q.png&#34;
+	width=&#34;1338&#34;
+	height=&#34;200&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1PqykXYuUDlX2lTaW1z4Q_hu41d1eb67ff84fd9314761e7bf306cae9_24872_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1PqykXYuUDlX2lTaW1z4Q_hu41d1eb67ff84fd9314761e7bf306cae9_24872_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;669&#34;
+		data-flex-basis=&#34;1605px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If we check “Support Number AA” (which does have a license) by PowerShell using the search query below, we can see that it includes “VoiceApp” under FeatureTypes.&lt;/p&gt;
+&lt;p&gt;Get-CsOnlineUser -Identity &lt;a class=&#34;link&#34; href=&#34;mailto:ra_aa_support_number@mozzism.ch&#34; &gt;ra_aa_support_number@mozzism.ch&lt;/a&gt; | FL DisplayName, EnterpriseVoiceEnabled, LineURI, FeatureTypes&lt;/p&gt;
+&lt;p&gt;Output:&lt;/p&gt;
+&lt;p&gt;DisplayName            : Support Number AA&lt;br&gt;
+EnterpriseVoiceEnabled : True&lt;br&gt;
+LineUri                : tel:+4144xxxxxxx&lt;br&gt;
+FeatureTypes           : {VoiceApp}&lt;/p&gt;
+&lt;p&gt;If we check a normal Teams user account, we can see that they’ll have “PhoneSystem” and “Teams” included in their FeatureTypes.&lt;/p&gt;
+&lt;p&gt;DisplayName            : Ben Kim&lt;br&gt;
+EnterpriseVoiceEnabled : True&lt;br&gt;
+FeatureTypes           : {PhoneSystem, Teams}&lt;/p&gt;
+&lt;p&gt;But beware that a user can also include the Feature Type “PhoneSystem” without actually being Enterprise Voice enabled. (In this case the user has a Teams Phone License but is not configured for EV yet.)&lt;/p&gt;
+&lt;p&gt;DisplayName            : Bill Stearn&lt;br&gt;
+EnterpriseVoiceEnabled : False&lt;br&gt;
+FeatureTypes           : {PhoneSystem, Teams}&lt;/p&gt;
+&lt;p&gt;I wasn’t able to reproduce this scenario. When I created a new resource account and didn’t assign a license, it was always set to Enterprise Voice enabled False.&lt;/p&gt;
+&lt;p&gt;DisplayName            : Example PS AA&lt;br&gt;
+EnterpriseVoiceEnabled : False&lt;br&gt;
+FeatureTypes           : {}&lt;/p&gt;
+&lt;p&gt;Let’s see how this looks, after we’ve added a Microsoft Teams Phone Resource Account License to “Example PS AA”. After a few minutes, the Feature Type will be added, and EV will be set to True. I was spamming the Get-CsOnlineUser query so often, that I even managed to get an output right before and after the change.&lt;/p&gt;
+&lt;p&gt;Here we can see that the Feature Type “VoiceApp” was added but Enterprise Voice was still disabled.&lt;/p&gt;
+&lt;p&gt;DisplayName            : Example PS AA&lt;br&gt;
+EnterpriseVoiceEnabled : False&lt;br&gt;
+FeatureTypes           : {VoiceApp}&lt;/p&gt;
+&lt;p&gt;Literally seconds later, I ran it again and now Enterprise Voice has been enabled.&lt;/p&gt;
+&lt;p&gt;DisplayName            : Example PS AA&lt;br&gt;
+EnterpriseVoiceEnabled : True&lt;br&gt;
+FeatureTypes           : {VoiceApp}&lt;/p&gt;
+&lt;p&gt;Assigning the license will automatically set Enterprise Voice enabled to True. This is different than with normal user accounts. They will stay False until we either assign them a number through TAC or use &lt;code&gt;Set-CsPhoneNumberAssignment -EnterpriseVoiceEnabled $true&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;If the license is removed from the resource account, EV will be disabled again.&lt;/p&gt;
+&lt;h4 id=&#34;external-pstn-transfer-from-resourceaccounts&#34;&gt;External PSTN Transfer from Resource Accounts&lt;/h4&gt;
+&lt;p&gt;The official documentation of the technical requirements which are needed for external PSTN transfers can be viewed &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/microsoftteams/create-a-phone-system-auto-attendant?tabs=general-info#external-phone-number-transfers---technical-details&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;. I’m only covering Direct Routing Scenarios in this article.&lt;/p&gt;
+&lt;p&gt;These requirements need to be met by all resource accounts which are associated with a Voice App. For example, if you have an Auto Attendant which has two resource accounts / numbers assigned and it forwards to an external number outside of business hours, both resource accounts will need to have a valid voice routing policy assigned. TAC won’t display a warning or an error message, even if none of the associated resource account have an online voice routing policy assigned. So, in other words: If a call is made to a Resource Account which doesn’t have a voice routing policy assigned, the call transfer will fail.&lt;/p&gt;
+&lt;p&gt;What about nesting? Although I don’t think that this is officially documented, I have found that only the top-level resource account, which is the one with the number which is dialed, needs to be configured properly.&lt;/p&gt;
+&lt;p&gt;Let’s take a look at the configuration of the resource accounts used in this scenario.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1GRf3ngbTvUo9hndInnZg.png&#34;
+	width=&#34;545&#34;
+	height=&#34;1376&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1GRf3ngbTvUo9hndInnZg_hu2d10416055c9dbcae33bd2a835f02847_79140_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1GRf3ngbTvUo9hndInnZg_hu2d10416055c9dbcae33bd2a835f02847_79140_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;39&#34;
+		data-flex-basis=&#34;95px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Obviously, the Call Queue “Test EV Enabled CQ” and not the “Test EV Enabled AA” does the PSTN transfer. But only the Auto Attendant is configured for outbound PSTN calling. The call transfer in this scenario works.&lt;/p&gt;
+&lt;p&gt;DisplayName              : Test EV Enabled AA&lt;br&gt;
+EnterpriseVoiceEnabled   : True&lt;br&gt;
+FeatureTypes             : {VoiceApp}&lt;br&gt;
+OnlineVoiceRoutingPolicy : FirstTrunk&lt;/p&gt;
+&lt;p&gt;DisplayName              : Test EV Enabled CQ&lt;br&gt;
+EnterpriseVoiceEnabled   : False&lt;br&gt;
+FeatureTypes             : {}&lt;br&gt;
+OnlineVoiceRoutingPolicy :&lt;/p&gt;
+&lt;p&gt;In the PSTN and SMS (preview) usage report in TAC, we can see that it’s the initially called resource account, rather than the one associated with the call queue which does the outbound call. Outbound Direct Routing calls from Voice Apps are labelled as “dr_out_bot”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1OeqBbcYeZ8ZTXWRwP1xyyA.png&#34;
+	width=&#34;1594&#34;
+	height=&#34;198&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1OeqBbcYeZ8ZTXWRwP1xyyA_hu4fdeabe4fcdafa84c09261636577626a_38596_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1OeqBbcYeZ8ZTXWRwP1xyyA_hu4fdeabe4fcdafa84c09261636577626a_38596_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;805&#34;
+		data-flex-basis=&#34;1932px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;To be absolutely sure, I created another configuration. This time the other way around. The top-level Auto Attendant does not have an online voice routing policy assigned, but the nested Call Queue does.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/14WDSbZwQEdURpq3c7BpcgQ.png&#34;
+	width=&#34;364&#34;
+	height=&#34;898&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/14WDSbZwQEdURpq3c7BpcgQ_hua2f24443ff9ccd84552ae2926e8fba72_43092_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/14WDSbZwQEdURpq3c7BpcgQ_hua2f24443ff9ccd84552ae2926e8fba72_43092_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;40&#34;
+		data-flex-basis=&#34;97px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When I called the number of the Auto Attendant, the PSTN transfer of the Call Queue did not work, even though the Queue is configured for outbound calling. When I called the number of the Queue directly, forwarding to PSTN worked perfectly.&lt;/p&gt;
+&lt;p&gt;P.S. If you’re wondering, how I created that flow chart and didn’t get the memo before, besides blogging, I’m also the creator of this &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;PowerShell Tool&lt;/a&gt; which allows anybody to automatically render these cool diagrams for free.&lt;/p&gt;
+&lt;h4 id=&#34;finding-auto-attendants-and-call-queues-inteams&#34;&gt;Finding Auto Attendants and Call Queues in Teams&lt;/h4&gt;
+&lt;p&gt;If you can’t find all your Auto Attendants and Call Queues when you search for them in Teams, you should definitely take a look at &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681&#34; &gt;this article&lt;/a&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;one-lastthing&#34;&gt;One Last Thing&lt;/h4&gt;
+&lt;p&gt;Although it’s now possible to do most of the things, like assigning online voice routing policies or phone numbers in TAC, some things are still missing from TAC. For example, you won’t find your resource accounts under “Manage users”. You can, however, replace the Object Id of a user in the URL, with an Object Id of a Resource Account. This will allow you to view some data, like recent calls.&lt;/p&gt;
+&lt;p&gt;If you’re too lazy to grab the Object Id, you can also click the Display Name of a Resource Account from the PSTN and SMS (preview) usage report.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1aUlQ20axCxy0nA86UlRjw.png&#34;
+	width=&#34;1489&#34;
+	height=&#34;128&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1aUlQ20axCxy0nA86UlRjw_hu3bd74bf9d64007c31e0c3cfde9bb9719_21363_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1aUlQ20axCxy0nA86UlRjw_hu3bd74bf9d64007c31e0c3cfde9bb9719_21363_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;1163&#34;
+		data-flex-basis=&#34;2791px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This will yield an error message that TAC can’t get the policies of this account. But you’ll still be able to see it’s call history under the “Meetings &amp;amp; calls” tab.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1gzkRCHSpGq5csQDU7FQuA.png&#34;
+	width=&#34;2040&#34;
+	height=&#34;634&#34;
+	srcset=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1gzkRCHSpGq5csQDU7FQuA_huf8261de6bb254ae6436e364defa1acd5_76242_480x0_resize_box_3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489/1gzkRCHSpGq5csQDU7FQuA_huf8261de6bb254ae6436e364defa1acd5_76242_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;321&#34;
+		data-flex-basis=&#34;772px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;I hope this article helps you better understand how Resource Accounts work in Teams Phone. Feel free to reach out if you have any questions left.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

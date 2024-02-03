@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Umlaute on HEUSSER.PRO</title>
+        <link>https://heusser.pro/categories/umlaute/</link>
+        <description>Recent content in Umlaute on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Fri, 03 Mar 2023 10:03:56 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/umlaute/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Fix UTF-8 Encoding When Calling Azure Child Runbooks Inline</title>
+        <link>https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/</link>
+        <pubDate>Fri, 03 Mar 2023 10:03:56 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/</guid>
+        <description>&lt;p&gt;I recently came across a very strange issue with Azure Runbooks and UTF-8 encoding. For most IT folks, it’s no issue if everything is in English but if you work with German speaking users, chances are that you’re going to run into encoding issues with &lt;strong&gt;Umlaute&lt;/strong&gt; or other special characters eventually. For those who have no idea what I’m talking about, Umlaute are special characters like “ä”, “ö” and “ü” which are used very frequently in German.&lt;/p&gt;
+&lt;p&gt;The scenario is the following: I have a very simple Azure Runbook which sends a message card to a Teams channel.&lt;/p&gt;
+&lt;p&gt;$uri = &amp;ldquo;YourWebhookUrl&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;$body = @&amp;rsquo;&lt;br&gt;
+{&lt;br&gt;
+&amp;ldquo;@context&amp;rdquo;: &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://schema.org/extensions%22&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://schema.org/extensions&#34;&lt;/a&gt;,&lt;br&gt;
+&amp;ldquo;@type&amp;rdquo;: &amp;ldquo;MessageCard&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;themeColor&amp;rdquo;: &amp;ldquo;00A4EF&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;title&amp;rdquo;: &amp;ldquo;UTF8 Test&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;text&amp;rdquo;: &amp;ldquo;Hello Wörld!&amp;rdquo;&lt;br&gt;
+}&lt;br&gt;
+&amp;lsquo;@&lt;/p&gt;
+&lt;p&gt;Invoke-RestMethod -uri $uri -Method Post -body $body -ContentType &amp;lsquo;application/json; charset=UTF-8&amp;rsquo;&lt;/p&gt;
+&lt;p&gt;As you can see, I purposely wrote &lt;strong&gt;“Hello Wörld”&lt;/strong&gt; instead of &lt;strong&gt;“Hello World”&lt;/strong&gt; to demonstrate this. If the runbook is run directly (meaning, there’s no child runbook involved), there’s no issue at all and the card is sent to Teams using the correct encoding.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1Fjfq1GaXyavb7ynoRqqpg.png&#34;
+	width=&#34;1209&#34;
+	height=&#34;242&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1Fjfq1GaXyavb7ynoRqqpg_hu2389b36a857bb99be532f7e70b9eb792_19981_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1Fjfq1GaXyavb7ynoRqqpg_hu2389b36a857bb99be532f7e70b9eb792_19981_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;499&#34;
+		data-flex-basis=&#34;1199px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;working-with-childrunbooks&#34;&gt;Working With Child Runbooks&lt;/h4&gt;
+&lt;p&gt;So far so good. In more complex scenarios, you might want to build modular runbooks. An example of that would be where you have some code and some parameters in one runbook (let’s call that &lt;strong&gt;main runbook&lt;/strong&gt; or &lt;strong&gt;child runbook&lt;/strong&gt;) and have a couple of other runbooks which call your main runbook inline. Let’s call these &lt;strong&gt;runner scripts&lt;/strong&gt; because they’re only used to run the main runbook.&lt;/p&gt;
+&lt;p&gt;The advantage of such a setup is that you only need to change the code in one place if you need to update it. For example, if the URL of the webhook changes, we only need to edit the main runbook instead of all the other runbooks as well. You can also read more about that concept in this official Microsoft &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/azure/automation/automation-child-runbooks#call-a-child-runbook-by-using-inline-execution&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Learn article&lt;/a&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;wrong-encoding-in-childrunbooks&#34;&gt;Wrong Encoding in Child Runbooks&lt;/h4&gt;
+&lt;p&gt;However, I have found that somehow the encoding gets messed up and special characters are sent to Teams in the wrong format if a child runbook is called inline from another runbook which runs in front of it.&lt;/p&gt;
+&lt;p&gt;If you want to call another runbook from any runbook in the same automation account, you can just reference it by its name. All that’s needed is the following code which really just points to another script. Note that you do need to add &lt;code&gt;.ps1&lt;/code&gt; at the end of your runbook name.&lt;/p&gt;
+&lt;p&gt;. .\SendMessageCardMain.ps1&lt;/p&gt;
+&lt;p&gt;It doesn’t make any difference if &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/scripting/learn/ps101/10-script-modules?view=powershell-7.3&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;dot sourcing&lt;/a&gt; is used or not. The encoding will be wrong in either case.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RIQJDWuX87n08U80GxZBlw.png&#34;
+	width=&#34;1213&#34;
+	height=&#34;241&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RIQJDWuX87n08U80GxZBlw_hud6f048997161982e95b0c549bee3f3fc_19854_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RIQJDWuX87n08U80GxZBlw_hud6f048997161982e95b0c549bee3f3fc_19854_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;503&#34;
+		data-flex-basis=&#34;1207px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This isn’t just about the message which is sent to Teams through a web request. The encoding is wrong in general and thus when using &lt;code&gt;Write-Output&lt;/code&gt; as well.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RxMMGmOGbr82SmAmzuh3cg.png&#34;
+	width=&#34;1414&#34;
+	height=&#34;493&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RxMMGmOGbr82SmAmzuh3cg_hu15d783e8232fb13d93ba5f80564cf0f1_52876_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RxMMGmOGbr82SmAmzuh3cg_hu15d783e8232fb13d93ba5f80564cf0f1_52876_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;286&#34;
+		data-flex-basis=&#34;688px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;workaround&#34;&gt;Workaround&lt;/h4&gt;
+&lt;p&gt;The trick is to store the special characters inside a variable which is already known to the runner script (the one which will be submitted to the worker), and then calls the child runbook.&lt;/p&gt;
+&lt;p&gt;$externalText = &amp;ldquo;Wörld&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;. .\SendMessageCardMain.ps1&lt;/p&gt;
+&lt;p&gt;The word which contains the special character is replaced by the variable in the main script (child runbook).&lt;/p&gt;
+&lt;p&gt;$uri = &amp;ldquo;YourWebhookUrl&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;$body = @&amp;rdquo;&lt;br&gt;
+{&lt;br&gt;
+&amp;ldquo;@context&amp;rdquo;: &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://schema.org/extensions%22&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://schema.org/extensions&#34;&lt;/a&gt;,&lt;br&gt;
+&amp;ldquo;@type&amp;rdquo;: &amp;ldquo;MessageCard&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;themeColor&amp;rdquo;: &amp;ldquo;00A4EF&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;title&amp;rdquo;: &amp;ldquo;UTF8 Test&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;text&amp;rdquo;: &amp;ldquo;Hello $externalText!&amp;rdquo;&lt;br&gt;
+}&lt;br&gt;
+&amp;ldquo;@&lt;/p&gt;
+&lt;p&gt;Invoke-RestMethod -uri $uri -Method Post -body $body -ContentType &amp;lsquo;application/json; charset=UTF-8&amp;rsquo;&lt;/p&gt;
+&lt;p&gt;This way, the first runbook already knows the correct encoding and it works, just like it did in the first example where we only had one runbook.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SrfMmL5MqVyJJMuygMjA.png&#34;
+	width=&#34;1211&#34;
+	height=&#34;240&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SrfMmL5MqVyJJMuygMjA_hu45160f263fc81e753c1b7fe7beb662f6_19457_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SrfMmL5MqVyJJMuygMjA_hu45160f263fc81e753c1b7fe7beb662f6_19457_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;504&#34;
+		data-flex-basis=&#34;1211px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Let’s assume that we have one main runbook which will just send Message Cards to Teams, but we also have many different runner scripts which will send different kind of messages to Teams.&lt;/p&gt;
+&lt;p&gt;This would make the code quite hard to maintain. Imagine if we want to replace the word “Wörld” with “Zürich” for example. We’d have to do this for each runner script if the variable is stored inside each runner script.&lt;/p&gt;
+&lt;h4 id=&#34;optimized-workaround-1-using-automation-variables&#34;&gt;Optimized Workaround 1 (Using Automation Variables)&lt;/h4&gt;
+&lt;p&gt;Instead, we can just put the code into an Automation Variable as a string. Automation Variables are saved inside the Automation Account but outside of all the runbooks. This effectively gives us a location to store the code once but all runbooks inside that Automation Account will be able to access it.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1MUKW9TSOMNz1gnnQcKeQyA.png&#34;
+	width=&#34;1681&#34;
+	height=&#34;597&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1MUKW9TSOMNz1gnnQcKeQyA_hu6c149f511d2e218ad9a2932b08658834_73454_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1MUKW9TSOMNz1gnnQcKeQyA_hu6c149f511d2e218ad9a2932b08658834_73454_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;281&#34;
+		data-flex-basis=&#34;675px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;In the runner script, we import the Automation Variable using the &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/azure/automation/shared-resources/variables?tabs=azure-powershell#internal-cmdlets-to-access-variables&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;internal Cmdlet&lt;/a&gt;. This is only available in Azure Runbooks and does not require additional authentication.&lt;/p&gt;
+&lt;p&gt;$AutomationVariableCode = Get-AutomationVariable -Name &amp;ldquo;AutomationVariableCode&amp;rdquo; | Out-String&lt;br&gt;
+Invoke-Expression $AutomationVariableCode&lt;/p&gt;
+&lt;p&gt;. .\SendMessageCardMain.ps1&lt;/p&gt;
+&lt;p&gt;There’s no mention of &lt;code&gt;$externalText&lt;/code&gt; inside the runbook but it’s set by &lt;code&gt;Invoke-Expression&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;This allows us to change the value of the variable without touching any of our runner scripts which makes it a lot more scalable and easier to maintain while keeping the correct encoding.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SRNRxJrIZunrddwFIRVKRg.png&#34;
+	width=&#34;1214&#34;
+	height=&#34;241&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SRNRxJrIZunrddwFIRVKRg_hu8b3b51bfdb1e43759be90108b6052381_19163_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SRNRxJrIZunrddwFIRVKRg_hu8b3b51bfdb1e43759be90108b6052381_19163_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;503&#34;
+		data-flex-basis=&#34;1208px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Of course, the Automation Variable could also contain more complex code like a switch statement to define different messages or contain the same message in different language. For demonstration purposes, I kept it simple by just using a single value variable.&lt;/p&gt;
+&lt;p&gt;On the downside, this makes editing the code complicated and error prone, since it’s just a string stored inside a variable without any kind of syntax checking. To tackle that issue, one would need to copy it to a local IDE (e.g. VS Code) each time the code is updated and paste it back into the Automation Variable once it’s done.&lt;/p&gt;
+&lt;h4 id=&#34;optimized-workaround-2-using-powershell-runbooks&#34;&gt;Optimized Workaround 2 (Using PowerShell Runbooks)&lt;/h4&gt;
+&lt;p&gt;What about storing the code in yet another runbook? This would allow for easier editing and testing right in the browser. But is it possible&amp;hellip;? As it turns out, it is!&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1KEZF0gbmFG0gzNvtYMRrg.png&#34;
+	width=&#34;2017&#34;
+	height=&#34;351&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1KEZF0gbmFG0gzNvtYMRrg_hu2a51af41989ae94ed83dbea73120f83b_54690_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1KEZF0gbmFG0gzNvtYMRrg_hu2a51af41989ae94ed83dbea73120f83b_54690_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;574&#34;
+		data-flex-basis=&#34;1379px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1wqc76iVn3V2GHxNTOx8w.png&#34;
+	width=&#34;884&#34;
+	height=&#34;322&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1wqc76iVn3V2GHxNTOx8w_hub09539a59abe0a04ef28a513330bb611_30076_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1wqc76iVn3V2GHxNTOx8w_hub09539a59abe0a04ef28a513330bb611_30076_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;274&#34;
+		data-flex-basis=&#34;658px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;To be able to get the contents/code of what I call the &lt;strong&gt;content runbook&lt;/strong&gt; we need to make sure that the modules &lt;strong&gt;Az.Accounts&lt;/strong&gt; and &lt;strong&gt;Az.Automation&lt;/strong&gt; are installed in our Automation Account.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1azPWChNsXyf25OJAqcoOgQ.png&#34;
+	width=&#34;2792&#34;
+	height=&#34;387&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1azPWChNsXyf25OJAqcoOgQ_hue02207f345e4bba16a99b3f5688f077c_94035_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1azPWChNsXyf25OJAqcoOgQ_hue02207f345e4bba16a99b3f5688f077c_94035_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;721&#34;
+		data-flex-basis=&#34;1731px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1sZzUKlvhywLqZQhTFgIQwg.png&#34;
+	width=&#34;3195&#34;
+	height=&#34;390&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1sZzUKlvhywLqZQhTFgIQwg_hua65cc6657ecb27813df0306c4d75337b_96080_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1sZzUKlvhywLqZQhTFgIQwg_hua65cc6657ecb27813df0306c4d75337b_96080_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;819&#34;
+		data-flex-basis=&#34;1966px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;We also need a &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Managed Identity&lt;/a&gt; to connect to Azure since we’ll be using regular&lt;code&gt;Az*&lt;/code&gt; Cmdlets and not internal ones this time around.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mXMuUMBFEAyxBk9gH7Ad5A.png&#34;
+	width=&#34;2304&#34;
+	height=&#34;1296&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mXMuUMBFEAyxBk9gH7Ad5A_hu7de99e6d55624db6c632667f69153bad_197090_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mXMuUMBFEAyxBk9gH7Ad5A_hu7de99e6d55624db6c632667f69153bad_197090_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;177&#34;
+		data-flex-basis=&#34;426px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Let’s add a little more code to our runner script. My Tenant Id is also stored inside an Automation Variable, thus it’s not visible in the code.&lt;/p&gt;
+&lt;p&gt;$tenantId = Get-AutomationVariable -Name &amp;ldquo;tenantId&amp;rdquo;&lt;br&gt;
+$azAccount = Connect-AzAccount -Identity -TenantId $tenantId&lt;/p&gt;
+&lt;p&gt;$exportRb = Export-AzAutomationRunbook -AutomationAccountName &amp;ldquo;mzz-automation-account-001&amp;rdquo; -ResourceGroupName &amp;ldquo;mzz-rmg-001&amp;rdquo; -Name &amp;ldquo;SendMessageCardContent&amp;rdquo; -OutputFolder $env:temp&lt;/p&gt;
+&lt;p&gt;Get-Content -Path $env:temp\$exportRb -Encoding UTF8 | Out-String | Invoke-Expression&lt;/p&gt;
+&lt;p&gt;. .\SendMessageCardMain.ps1&lt;/p&gt;
+&lt;p&gt;With a Managed Identity, we don’t need to provide any kind of additional authentication. Everything is handled by the Automation Account using the Managed Identity automatically. We only need to provide &lt;code&gt;Connect-AzAccount -Identity -TenantId $tenantId&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;We then export the runbook using &lt;code&gt;Export-AzAutomationRunbook&lt;/code&gt; to &lt;code&gt;$env:temp&lt;/code&gt;. Finally, we import the runbook’s content by using &lt;code&gt;Get-Content&lt;/code&gt; and execute its code by piping it through to &lt;code&gt;Invoke-Expression&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;In case I have lost you at this point, let’s recap very briefly.&lt;/p&gt;
+&lt;p&gt;By using &lt;code&gt;Invoke-Expression&lt;/code&gt; instead of calling the runbook inline, we make sure that the externally stored code is running in the scope of the runner script and not the child runbook, which will keep the encoding intact.&lt;/p&gt;
+&lt;p&gt;And we’re jumping through hoops here by storing the values of the variables in another runbook so that they can be updated without touching each of our runner scripts. If it helps, you can also think about a scenario where you’re hosting some kind of monitoring or reporting solution for different customers inside your own Tenant/Automation Account. Each customer has its own runner script with their own parameters but there’s only one main runbook which contains all the code.&lt;/p&gt;
+&lt;p&gt;If we need to update the script logic, only the main runbook needs to be updated. If we need to make changes to the content of the messages, only the runbook storing these values needs to be updated.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mg0Nja4e5HPo9HbQPgQnA.png&#34;
+	width=&#34;1219&#34;
+	height=&#34;244&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mg0Nja4e5HPo9HbQPgQnA_hu71dafa5ebc1478b4d18648e55377df12_19662_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mg0Nja4e5HPo9HbQPgQnA_hu71dafa5ebc1478b4d18648e55377df12_19662_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;499&#34;
+		data-flex-basis=&#34;1199px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now let’s change the word inside the runbook to something else. Instead of editing an Automation Variable, we can just edit the runbook, which is a lot more user friendly.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1NTgYp7gxGHjy3GN4wNJwMA.png&#34;
+	width=&#34;2019&#34;
+	height=&#34;345&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1NTgYp7gxGHjy3GN4wNJwMA_hu5cbe687375d076b63fe22f93d47eaec6_54546_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1NTgYp7gxGHjy3GN4wNJwMA_hu5cbe687375d076b63fe22f93d47eaec6_54546_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;585&#34;
+		data-flex-basis=&#34;1404px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Don’t forget to publish the runbook. Otherwise, the values won’t be updated. As expected, this works like a charm.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1jYFSVZTopjDmtqdrmufrQ.png&#34;
+	width=&#34;1217&#34;
+	height=&#34;240&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1jYFSVZTopjDmtqdrmufrQ_hu11dd0bea12e3be0cc4551ed15c9e7668_19356_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1jYFSVZTopjDmtqdrmufrQ_hu11dd0bea12e3be0cc4551ed15c9e7668_19356_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;507&#34;
+		data-flex-basis=&#34;1217px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If for some reason you don’t want to read your variables into memory in the runner script and do it in the child runbook instead, you can also use the &lt;code&gt;Invoke-Expression&lt;/code&gt; method from there. This works as well, even if the child runbook is called inline by another runbook and the runner script doesn’t have any reference to the special character variables at all.&lt;/p&gt;
+&lt;p&gt;I have no idea why it doesn’t work if special characters are included explicitly in child runbooks though. And it took me quite some time to figure out a workaround for this. I hope that this article is useful to you, if you’ve been struggling with modular runbooks and encoding issues as well.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='A few days ago, I wrote “How To Handle Password and 2FA Madness Like a Pro”. In this article I explained why I think it’s better to use a…'>
+<title>Forward SMS Verification Codes From iPhone To a Windows PC</title>
+
+<link rel='canonical' href='https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Forward SMS Verification Codes From iPhone To a Windows PC'>
+<meta property='og:description' content='A few days ago, I wrote “How To Handle Password and 2FA Madness Like a Pro”. In this article I explained why I think it’s better to use a…'>
+<meta property='og:url' content='https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/'>
+<meta property='og:site_name' content='HEUSSER.PRO'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2022-11-27T12:46:25&#43;00:00'/><meta property='article:modified_time' content='2022-11-27T12:46:25&#43;00:00'/>
+<meta name="twitter:title" content="Forward SMS Verification Codes From iPhone To a Windows PC">
+<meta name="twitter:description" content="A few days ago, I wrote “How To Handle Password and 2FA Madness Like a Pro”. In this article I explained why I think it’s better to use a…">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "kozb6q2xjn");
+    </script>    
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hud7e6b3cccc21b12ddf35b72eb655064d_860969_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🫡</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
+            <h2 class="site-description">Martin Heusser | M365 Apps &amp; Services MVP</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/mozziemozz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://x.com/@mozzeph'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/imprint/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                
+                <span>Imprint</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li>
+      <ol>
+        <li><a href="#siri-automation">Siri Automation</a>
+          <ol>
+            <li><a href="#building-the-automation">Building the Automation</a></li>
+            <li><a href="#configuring-ios">Configuring iOS</a></li>
+            <li><a href="#demo-of-the-automation-inaction">Demo of the Automation in Action</a></li>
+            <li><a href="#accessing-copied-codes-onwindows">Accessing Copied Codes on Windows</a></li>
+            <li><a href="#copying-the-verification-code">Copying the Verification Code</a></li>
+          </ol>
+        </li>
+        <li><a href="#conclusion">Conclusion</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/ios-shortcuts/" >
+                iOS Shortcuts
+            </a>
+        
+            <a href="/categories/automation/" >
+                Automation
+            </a>
+        
+            <a href="/categories/multi-factor-authentication/" >
+                Multi-Factor Authentication
+            </a>
+        
+            <a href="/categories/iphone/" >
+                iPhone
+            </a>
+        
+            <a href="/categories/windows-11/" >
+                Windows 11
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/">Forward SMS Verification Codes From iPhone To a Windows PC</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            A few days ago, I wrote “How To Handle Password and 2FA Madness Like a Pro”. In this article I explained why I think it’s better to use a…
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Nov 27, 2022</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    6 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>A few days ago, I wrote “<a class="link" href="/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6" >How To Handle Password and 2FA Madness Like a Pro</a>”. In this article I explained why I think it’s better to use a full-fledged password manager instead of a basic Authenticator App such as Microsoft or Google Authenticator to handle your 2FA codes.</p>
+<p>These types of apps work well when the service for which you want to enable 2FA allows you to add a secret key to your authenticator app. But what about services which don’t support such apps and instead only send you an SMS with a verification code? Unfortunately, there are still some services which will only allow one-time codes sent by SMS.</p>
+<p>If you’re using an iPhone and a MAC for example, this shouldn’t be too big of an issue since you can seamlessly sync your clipboard across devices (at least that’s what I’ve heard).</p>
+<p>If you’re using an Android phone together with Phone Link on Windows, you can easily access your SMS from there. But if you use an iPhone and a Windows PC, there’s no way to seamlessly transfer a code received by SMS on your iPhone to your PC.</p>
+<p>![]( which allows you to transfer content between an iPhone and a Windows PC through their Chromium extension.)</p>
+<p>When you use this method, you must open the message containing the verification code and manually select and copy it. Once the code is in your iPhone&rsquo;s clipboard, you need to open Clipt and click Send. The copied content will be added to your PCs clipboard automatically and you’re ready to paste it.</p>
+<p>I didn’t quite like the manual steps involved on the iPhone. So I thought why not tinker around with Siri Shortcuts again, like I did in <a class="link" href="/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa" >this</a> article.</p>
+<h3 id="siri-automation">Siri Automation</h3>
+<h4 id="building-the-automation">Building the Automation</h4>
+<p>The good thing is that there is a trigger for <em>“When I get a message containing <keyword>”.</em> The bad thing is that there’s no way of running it truly automated. You will still need to confirm running the automation each time it’s triggered.</p>
+<p>But that’s only one manual interaction on the iPhone compared to four with Clipt (Open messages, copy code, open clipt, send content).</p>
+<p>I set the trigger to match all messages which contain the string <strong>“verification code”</strong>. If that should not work for the messages you receive, you can adjust it to your liking or create multiple automations with different words.</p>
+<p><img src="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1hvOkUTfWoJtXfbbsied89g.png"
+	width="1125"
+	height="2436"
+	srcset="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1hvOkUTfWoJtXfbbsied89g_hu5b82676aad449807e4a7c3c84bf0a47c_129695_480x0_resize_box_3.png 480w, /p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1hvOkUTfWoJtXfbbsied89g_hu5b82676aad449807e4a7c3c84bf0a47c_129695_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="46"
+		data-flex-basis="110px"
+	
+></p>
+<p>Let’s take a look at the actions. First, we’re going to use the regular expression <code>\d{6,}</code> to match all strings which consist of only numbers and are at least six digits long.</p>
+<p><img src="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FUqHjHbQq1UXAqH7gkHug.png"
+	width="1361"
+	height="263"
+	srcset="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FUqHjHbQq1UXAqH7gkHug_hu4770951244912b439604a7c58dea49a3_61402_480x0_resize_box_3.png 480w, /p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FUqHjHbQq1UXAqH7gkHug_hu4770951244912b439604a7c58dea49a3_61402_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="517"
+		data-flex-basis="1241px"
+	
+></p>
+<p>Then we’re going to create a note in Apple Notes with the extracted verification code. After 60 seconds, we’re going to delete the note.</p>
+<p><img src="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1KUBIIWC2Zk7hIm6K29sD2A.png"
+	width="1125"
+	height="2436"
+	srcset="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1KUBIIWC2Zk7hIm6K29sD2A_huacc27952ce482fabbb8d9e4cd0acd40f_357756_480x0_resize_box_3.png 480w, /p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1KUBIIWC2Zk7hIm6K29sD2A_huacc27952ce482fabbb8d9e4cd0acd40f_357756_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="46"
+		data-flex-basis="110px"
+	
+></p>
+<h4 id="configuring-ios">Configuring iOS</h4>
+<p>You might ask yourself what good does it do if the verification code is stored in Apple Notes when I want to access it on my PC?</p>
+<p>If you configure your Outlook.com or work or school account as the default account for Notes in iOS settings, your notes will automatically synchronize with Microsoft Sticky Notes. Of course, I’m assuming that you’ve already added a Microsoft Account to iOS at this point.</p>
+<p><img src="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1eK5EzyD2ps2osajFS6Zmw.png"
+	width="1125"
+	height="2436"
+	srcset="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1eK5EzyD2ps2osajFS6Zmw_hu701ebc559fbb12b62bf7eaacaae64349_231517_480x0_resize_box_3.png 480w, /p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1eK5EzyD2ps2osajFS6Zmw_hu701ebc559fbb12b62bf7eaacaae64349_231517_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="46"
+		data-flex-basis="110px"
+	
+></p>
+<h4 id="demo-of-the-automation-inaction">Demo of the Automation in Action</h4>
+<p>To show off the automation, I just sent myself an SMS from Skype to my mobile number containing the following text.</p>
+<blockquote>
+<p>Here’s your verification code: 456789. Thanks for using it.</p>
+</blockquote>
+<p>I added the code between other text and added a full stop right after the code to demonstrate how powerful regular expressions are.</p>
+<p>This is what it looks like on an iPhone. First there will be a notification for the new message. Shortly after, the automation will be triggered, and we’ll need to click it, and then click <em>“Ausführen”</em> (German for <em>“Run”</em>).</p>
+<p><img src="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1Cd58DqlhiHJsmyJ43qnR1Q.gif"
+	width="886"
+	height="1920"
+	srcset="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1Cd58DqlhiHJsmyJ43qnR1Q_hufa0e164960fd256a060446e2e59dc4e9_8831390_480x0_resize_box_1.gif 480w, /p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1Cd58DqlhiHJsmyJ43qnR1Q_hufa0e164960fd256a060446e2e59dc4e9_8831390_1024x0_resize_box_1.gif 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="46"
+		data-flex-basis="110px"
+	
+></p>
+<h4 id="accessing-copied-codes-onwindows">Accessing Copied Codes on Windows</h4>
+<p>There are many Apps from which you access to your Sticky Notes on Windows.</p>
+<p>The most obvious one is <strong>Sticky Notes</strong> of course.</p>
+<p><img src="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1gj6ozy5v4BuGa4RWlxETNw.png"
+	width="648"
+	height="1035"
+	srcset="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1gj6ozy5v4BuGa4RWlxETNw_hu0c1f55614f410c6405fa29f8bace575d_33785_480x0_resize_box_3.png 480w, /p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1gj6ozy5v4BuGa4RWlxETNw_hu0c1f55614f410c6405fa29f8bace575d_33785_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="62"
+		data-flex-basis="150px"
+	
+></p>
+<p>You can also access them in <strong>Outlook</strong> or <strong>Outlook on the Web</strong>.</p>
+<p><img src="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1UOcsgxeQRRwdEEur32BwRg.png"
+	width="1684"
+	height="873"
+	srcset="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1UOcsgxeQRRwdEEur32BwRg_hu049811ba8e08b6af09fb17e2680d30e1_108408_480x0_resize_box_3.png 480w, /p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1UOcsgxeQRRwdEEur32BwRg_hu049811ba8e08b6af09fb17e2680d30e1_108408_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="192"
+		data-flex-basis="462px"
+	
+></p>
+<p>And finally, they’re also available in your <strong>OneNote</strong> Feed.</p>
+<p><img src="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1MYZQMg0ggzjHrsx6lBk0w.png"
+	width="471"
+	height="1103"
+	srcset="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1MYZQMg0ggzjHrsx6lBk0w_hu3c7f1b97347a656561a5e2e6bf190fb6_44953_480x0_resize_box_3.png 480w, /p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1MYZQMg0ggzjHrsx6lBk0w_hu3c7f1b97347a656561a5e2e6bf190fb6_44953_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="42"
+		data-flex-basis="102px"
+	
+></p>
+<h4 id="copying-the-verification-code">Copying the Verification Code</h4>
+<p>Unfortunately, Stick Notes does not support copying the contents of a note from a right-click.</p>
+<p><img src="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1T3wMGAbPW9enWGJClr1Q.png"
+	width="697"
+	height="489"
+	srcset="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1T3wMGAbPW9enWGJClr1Q_hu62e0ecc303454fa148ce57b76f5d15b4_45451_480x0_resize_box_3.png 480w, /p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1T3wMGAbPW9enWGJClr1Q_hu62e0ecc303454fa148ce57b76f5d15b4_45451_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="142"
+		data-flex-basis="342px"
+	
+></p>
+<p>We need to open the note, select the text, and then copy it.</p>
+<p><img src="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1vrDPnDLy9MS7pR4ynTxCEw.png"
+	width="462"
+	height="471"
+	srcset="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1vrDPnDLy9MS7pR4ynTxCEw_hu89a35953cacabfb66c22fb60e0f7b91f_42853_480x0_resize_box_3.png 480w, /p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1vrDPnDLy9MS7pR4ynTxCEw_hu89a35953cacabfb66c22fb60e0f7b91f_42853_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="98"
+		data-flex-basis="235px"
+	
+></p>
+<p>The <a class="link" href="https://apps.microsoft.com/store/detail/outlook-for-windows/9NRX63209R7B"  target="_blank" rel="noopener"
+    >new Outlook</a> or Outlook on the Web or OneNote allow you to copy the contents of the note using a right-click though.</p>
+<p><img src="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1w0YaPyh8JvP8zGVeXsMag.png"
+	width="620"
+	height="620"
+	srcset="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1w0YaPyh8JvP8zGVeXsMag_hu06679e72f657804c1ad6d61349688c44_59910_480x0_resize_box_3.png 480w, /p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1w0YaPyh8JvP8zGVeXsMag_hu06679e72f657804c1ad6d61349688c44_59910_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="100"
+		data-flex-basis="240px"
+	
+></p>
+<p>This also works well in the OneNote (for Windows 10) Feed. While it does work in the new, <a class="link" href="https://techcommunity.microsoft.com/t5/microsoft-365-blog/refreshing-the-onenote-app-on-windows/ba-p/3401914"  target="_blank" rel="noopener"
+    >refreshed version of OneNote</a>, it was quite buggy and sluggish for me. I’ll let that slide since that’s an Insider Build.</p>
+<p>OneNote for Windows 10 is not listed in Microsoft Store Search anymore, but you can still get it from <a class="link" href="https://www.microsoft.com/store/productId/9WZDNCRFHVJL"  target="_blank" rel="noopener"
+    >this</a> link. I will keep using OneNote for Windows 10 until the new OneNote also supports vertical sections in <a class="link" href="https://www.microsoft.com/en-us/microsoft-365/roadmap?filters=&amp;searchterms=100492"  target="_blank" rel="noopener"
+    >March 2023</a>.</p>
+<p><img src="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FhUKm1MGidjVrNEd74YA.png"
+	width="463"
+	height="746"
+	srcset="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FhUKm1MGidjVrNEd74YA_hua4ddc1710f36b63890470fe470c4fb27_31698_480x0_resize_box_3.png 480w, /p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FhUKm1MGidjVrNEd74YA_hua4ddc1710f36b63890470fe470c4fb27_31698_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="62"
+		data-flex-basis="148px"
+	
+></p>
+<p>Once the code has been copied from Outlook or OneNote for Windows 10, it will be in your clipboard as plain text without any trailing whitespaces or line breaks so that you’re ready to paste it wherever you need it.</p>
+<p>This was not the case with the new OneNote App. In this case there were two line breaks before the code and one after.</p>
+<p>While it’s theoretically possible to also copy the code from the classic Outlook App, the experience is not the same as with the modern Outlook or OWA.</p>
+<p><img src="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1HXrJSz8Q8JxGFYiZ0kGvCw.png"
+	width="1007"
+	height="308"
+	srcset="/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1HXrJSz8Q8JxGFYiZ0kGvCw_hu972e6eb3448d1c7d8c67fd8424cf9f22_25358_480x0_resize_box_3.png 480w, /p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1HXrJSz8Q8JxGFYiZ0kGvCw_hu972e6eb3448d1c7d8c67fd8424cf9f22_25358_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="326"
+		data-flex-basis="784px"
+	
+></p>
+<p>When you copy the code from there, it will include additional, unwanted metadata such as the subject and date created.</p>
+<p>Subject Created Categories</p>
+<p>456789 So 27.11.2022 11:59</p>
+<p>I like the experience of copying the verification code from the modern Outlook or OWA the best. It will only show Sticky Notes and allows me to copy the raw code by a right-click. I usually have Outlook open all day anyway so it’s very convenient to just switch from inbox to notes to copy a new verification code.</p>
+<p>Because the note is only used to store a temporary verification code and we want to avoid clutter, the Automation will remove the note 60 seconds after it has been created. This should give you plenty of time to copy it from your notes.</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>Both methods, Clipt and Automation + Sticky Notes require manual user interaction, so none of them are perfect. Clipt requires you to do more manual tasks on the phone and Sticky Notes needs more actions on Windows. I like using the Automation + Sticky Notes more because I believe that working on a Desktop with mouse and keyboard is still king in terms of how fast things can get done. I also like that no additional apps or services are required, especially that no Chromium Extension which runs in the background, even when the browser is closed is needed.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">The Easiest Way to Convert HEIC Images to JPG (on Windows 11)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/teams-clipboard-dialer-c5cb737f37f3/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Teams Clipboard Dialer</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Manage Microsoft Teams Call Queues with PowerShell (Force-Sync)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Fix UTF-8 Encoding When Calling Azure Child Runbooks Inline</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Bulk Deploy Microsoft Teams Call Flows with PowerShell in Minutes</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "heusser-pro" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2024 HEUSSER.PRO
+    </section>
+    
+    <section class="powerby">
+        
+            Hosted on Microsoft Azure <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
+

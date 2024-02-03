@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Microsoft Authenticator on HEUSSER.PRO</title>
+        <link>https://heusser.pro/categories/microsoft-authenticator/</link>
+        <description>Recent content in Microsoft Authenticator on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 26 Nov 2022 03:04:56 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/microsoft-authenticator/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>How To Handle Password and 2FA Madness Like a Pro</title>
+        <link>https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/</link>
+        <pubDate>Sat, 26 Nov 2022 03:04:56 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/</guid>
+        <description>&lt;p&gt;Every once in a while, I come across a random Twitter conversation where people share their struggles and frustrations about the current state of 2FA apps and migrating those codes to a new phone.&lt;/p&gt;
+&lt;p&gt;This sparked a private discussion between &lt;a class=&#34;link&#34; href=&#34;https://twitter.com/AndresGorzelany&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Andrés Gorzelany&lt;/a&gt; and me where he asked me if I had written a blog post about this already. I hadn’t, so here we are.&lt;/p&gt;
+&lt;p&gt;First, let’s cover some of the abbreviations which I’m going to use in this article.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2FA&lt;/strong&gt; = Second Factor Authentication &lt;br&gt;
+&lt;em&gt;(Password is not enough, you need to either enter a one time code or verify a login in a mobile app)&lt;/em&gt;&lt;br&gt;
+&lt;strong&gt;MFA&lt;/strong&gt; = Multi Factor Authentication &lt;br&gt;
+&lt;em&gt;(Pretty much the same as 2FA, the term is primarily used by Microsoft)&lt;/em&gt;&lt;br&gt;
+&lt;strong&gt;OTP&lt;/strong&gt; = One Time Password&lt;br&gt;
+_(Usually, a 6 to 8 digit long code received by email or SMS which can only be used once)&lt;br&gt;
+_&lt;strong&gt;TOTP&lt;/strong&gt; = Time Based One Time Password&lt;br&gt;
+&lt;em&gt;(Usually, a 6 to 8 digit long code which gets generated (and hashed against the current time) by an app. Usually, every code is only valid for 30 seconds)&lt;/em&gt;&lt;/p&gt;
+&lt;h3 id=&#34;microsoft-authenticator&#34;&gt;Microsoft Authenticator&lt;/h3&gt;
+&lt;p&gt;I’m sure that many IT Pros use &lt;a class=&#34;link&#34; href=&#34;https://apps.apple.com/us/app/microsoft-authenticator/id983156458&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Microsoft Authenticator&lt;/a&gt; for all or most of their 2FA codes because that’s what they first used, when MFA was initially required by the company they work for. As of drafting this article, the app currently sits on #7 in Productivity on Apple’s App Store, so I assume it’s quite popular.&lt;/p&gt;
+&lt;h4 id=&#34;account-setup&#34;&gt;Account Setup&lt;/h4&gt;
+&lt;p&gt;If you head over to &lt;a class=&#34;link&#34; href=&#34;https://mysignins.microsoft.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://mysignins.microsoft.com/&lt;/a&gt; you will be able to add or edit your MFA methods for a Microsoft work or school account.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1cklX2PhJurEPz0XDmzqvQw.png&#34;
+	width=&#34;1542&#34;
+	height=&#34;365&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1cklX2PhJurEPz0XDmzqvQw_hue033bf58372f432c7ba346cbe9f73103_38099_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1cklX2PhJurEPz0XDmzqvQw_hue033bf58372f432c7ba346cbe9f73103_38099_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;422&#34;
+		data-flex-basis=&#34;1013px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1gWZ6lvVge9MxPPIZ3jNag.png&#34;
+	width=&#34;710&#34;
+	height=&#34;312&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1gWZ6lvVge9MxPPIZ3jNag_hu02c402f9720d932463ea9e8289a872ac_19214_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1gWZ6lvVge9MxPPIZ3jNag_hu02c402f9720d932463ea9e8289a872ac_19214_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;227&#34;
+		data-flex-basis=&#34;546px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1oTRkXMubTJO3zz66gTBdSg.png&#34;
+	width=&#34;1068&#34;
+	height=&#34;386&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1oTRkXMubTJO3zz66gTBdSg_hu6783638d15817b067c1f7e9dce58d1c7_52291_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1oTRkXMubTJO3zz66gTBdSg_hu6783638d15817b067c1f7e9dce58d1c7_52291_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;276&#34;
+		data-flex-basis=&#34;664px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If you click on &lt;em&gt;Next&lt;/em&gt;, your account will be added using the “Microsoft Authenticator” method. If you click on &lt;em&gt;I want to use a different authenticator app&lt;/em&gt; your account will be added as a “different authenticator app”.&lt;/p&gt;
+&lt;p&gt;Let’s take a look at Microsoft Authenticator first.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1iwc5ewsVqKxfrJZpyGZNKQ.png&#34;
+	width=&#34;1045&#34;
+	height=&#34;645&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1iwc5ewsVqKxfrJZpyGZNKQ_hu903a7eda14a03521fc090a959c760511_53068_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1iwc5ewsVqKxfrJZpyGZNKQ_hu903a7eda14a03521fc090a959c760511_53068_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;162&#34;
+		data-flex-basis=&#34;388px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If you just scan the QR code, you won’t notice any difference between the two options. The account will just be added.&lt;/p&gt;
+&lt;p&gt;However, if you click on &lt;em&gt;Can’t scan image?&lt;/em&gt; More information will be revealed. Notice how there’s a code and an URL which also includes a code.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1MM5qGsmVCoTlFfz6hqw.png&#34;
+	width=&#34;1014&#34;
+	height=&#34;246&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1MM5qGsmVCoTlFfz6hqw_hu3e5b230ff2bff81d790c16e7a02218fa_22834_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1MM5qGsmVCoTlFfz6hqw_hu3e5b230ff2bff81d790c16e7a02218fa_22834_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;412&#34;
+		data-flex-basis=&#34;989px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;After adding the account, this sign in method will show as &lt;strong&gt;Microsoft Authenticator&lt;/strong&gt; under Security info.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1vUw5bgZWn5i3AHHS1cq2A.png&#34;
+	width=&#34;1533&#34;
+	height=&#34;355&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1vUw5bgZWn5i3AHHS1cq2A_hu8be7ff365f77241a28c6c975a9f6b9fd_30925_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1vUw5bgZWn5i3AHHS1cq2A_hu8be7ff365f77241a28c6c975a9f6b9fd_30925_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;431&#34;
+		data-flex-basis=&#34;1036px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If we do the same thing again but choose &lt;em&gt;different authenticator app&lt;/em&gt; this time, we can see that there’s just a &lt;strong&gt;Secret key&lt;/strong&gt; but no URL anymore.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1gxdJiEm3V5bY9UWSWMW9zw.png&#34;
+	width=&#34;1001&#34;
+	height=&#34;189&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1gxdJiEm3V5bY9UWSWMW9zw_hu485febba73fa9eb71789e686bd9ddb07_16197_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1gxdJiEm3V5bY9UWSWMW9zw_hu485febba73fa9eb71789e686bd9ddb07_16197_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;529&#34;
+		data-flex-basis=&#34;1271px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If we look at the sign in methods again, we can see that the second one is called &lt;strong&gt;Authenticator App&lt;/strong&gt; even though we also added it to the Microsoft Authenticator App.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1mG8IBsBGe6qAhWgPgyH5bA.png&#34;
+	width=&#34;1524&#34;
+	height=&#34;427&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1mG8IBsBGe6qAhWgPgyH5bA_hud8a2759ca6940c5bf7fd714e4aa861f1_38803_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1mG8IBsBGe6qAhWgPgyH5bA_hud8a2759ca6940c5bf7fd714e4aa861f1_38803_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;356&#34;
+		data-flex-basis=&#34;856px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When we look at the mobile app itself, we can also see some differences between these two accounts. The App knows that the first one is a Microsoft work or school account. But it has absolutely no idea that the second one is in fact also a work or school account or even that it’s the same account.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1h5rb2kwBLtxLfgZjmxYTw.png&#34;
+	width=&#34;750&#34;
+	height=&#34;1334&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1h5rb2kwBLtxLfgZjmxYTw_hu3df1463d40f9dcc24521d1ffc3a5b113_82492_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1h5rb2kwBLtxLfgZjmxYTw_hu3df1463d40f9dcc24521d1ffc3a5b113_82492_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;56&#34;
+		data-flex-basis=&#34;134px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;It’s even clearer on the details page of each account. And because both accounts were added using different secrets, they also generate different codes.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1UB42dCXf3Ct533AiYGOBQ.png&#34;
+	width=&#34;1498&#34;
+	height=&#34;1067&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1UB42dCXf3Ct533AiYGOBQ_hu7e140845ddfe8f8f6944a8b937562c78_140947_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1UB42dCXf3Ct533AiYGOBQ_hu7e140845ddfe8f8f6944a8b937562c78_140947_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;140&#34;
+		data-flex-basis=&#34;336px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;backing-up-our-authenticator-app&#34;&gt;Backing up our Authenticator App&lt;/h4&gt;
+&lt;p&gt;Switching phones has become increasingly complicated since 2FA has gotten so popular (where 2FA becoming a standard is a good thing).&lt;/p&gt;
+&lt;p&gt;Backing up Microsoft Authenticator Data requires a personal Microsoft Account (outlook.com/live.com/hotmail.com).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1loZR0pS5OVVtT78aPpRrDA.png&#34;
+	width=&#34;750&#34;
+	height=&#34;1334&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1loZR0pS5OVVtT78aPpRrDA_hue828c406ddbfa4773ef98c2e150e9287_185160_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1loZR0pS5OVVtT78aPpRrDA_hue828c406ddbfa4773ef98c2e150e9287_185160_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;56&#34;
+		data-flex-basis=&#34;134px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1oI230pk3tWEcv7Qmi2fow.png&#34;
+	width=&#34;1497&#34;
+	height=&#34;795&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1oI230pk3tWEcv7Qmi2fow_hu619c0b6688aece1b01f53a8eb598fc4b_168905_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1oI230pk3tWEcv7Qmi2fow_hu619c0b6688aece1b01f53a8eb598fc4b_168905_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;188&#34;
+		data-flex-basis=&#34;451px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;restoring-microsoft-authenticator&#34;&gt;&lt;strong&gt;Restoring Microsoft Authenticator&lt;/strong&gt;&lt;/h4&gt;
+&lt;p&gt;If the app is deleted or if you switch phones, you can restore from your backup.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1I4VPjVxbWbjEHstl1WeZg.png&#34;
+	width=&#34;1489&#34;
+	height=&#34;1332&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1I4VPjVxbWbjEHstl1WeZg_hu42d24fa408cc2c387aba64cf4535318f_161098_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1I4VPjVxbWbjEHstl1WeZg_hu42d24fa408cc2c387aba64cf4535318f_161098_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;111&#34;
+		data-flex-basis=&#34;268px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;And there it is: a big red warning appears for the work or school account we added using the Microsoft Authenticator method. The generic code was restored just fine.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/12xH4t91wnijwWl0r6Xfw.png&#34;
+	width=&#34;750&#34;
+	height=&#34;1334&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/12xH4t91wnijwWl0r6Xfw_hu18ebda0979e25b4feb96286560dcd2cc_102841_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/12xH4t91wnijwWl0r6Xfw_hu18ebda0979e25b4feb96286560dcd2cc_102841_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;56&#34;
+		data-flex-basis=&#34;134px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;From what I could observe online, many people seemed annoyed (understandably) that there’s an action required for each work or school account which was added using the Microsoft Authenticator method.&lt;/p&gt;
+&lt;p&gt;To be honest, I don’t know if there’s a specific QR code to recover the account. To me it seems more like that the backup only stores your email address and that you need to go through the setup again on a new device.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1ZHcT91WwAGsIFVT5foO31w.png&#34;
+	width=&#34;750&#34;
+	height=&#34;1334&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1ZHcT91WwAGsIFVT5foO31w_huf26de2f977982262824fe4275dd6476c_57043_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1ZHcT91WwAGsIFVT5foO31w_huf26de2f977982262824fe4275dd6476c_57043_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;56&#34;
+		data-flex-basis=&#34;134px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;To restore it, go back to the My-Sign-Ins page and add the Microsoft Authenticator App again.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/10O59nIbYIkqQvOtrLMoGvg.png&#34;
+	width=&#34;1526&#34;
+	height=&#34;501&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/10O59nIbYIkqQvOtrLMoGvg_hua7f8a20ebd5e1e801bed674ff29593d0_48885_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/10O59nIbYIkqQvOtrLMoGvg_hua7f8a20ebd5e1e801bed674ff29593d0_48885_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;304&#34;
+		data-flex-basis=&#34;731px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The same is also possible from this website: &lt;a class=&#34;link&#34; href=&#34;https://aka.ms/mfasetup&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://aka.ms/mfasetup&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1baOzZjJDNtR5vt8cDPUnNA.png&#34;
+	width=&#34;1404&#34;
+	height=&#34;1270&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1baOzZjJDNtR5vt8cDPUnNA_hu4f1d7a4cfa4f2039573766227cb53c37_106021_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1baOzZjJDNtR5vt8cDPUnNA_hu4f1d7a4cfa4f2039573766227cb53c37_106021_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;110&#34;
+		data-flex-basis=&#34;265px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;Restore&lt;/em&gt; button at the bottom of this page didn’t do anything for me. Since it’s a new device, you need to add it again.&lt;/p&gt;
+&lt;p&gt;If you deleted the app on your current phone and restore the backup to the same device, the old registration will stop working. In this case, both Authenticator apps will have the same description in the portal. Delete the one which is sorted last in the list. If you got a new phone and don’t use your old phone anymore or if you’ve lost it, you can delete it from the sign-in methods.&lt;/p&gt;
+&lt;p&gt;If MFA is enforced by your organization, and if you’re not currently excluded from MFA prompts like you maybe would be in an office building/network you may need to provide an alternative 2FA method like an OTP received by SMS or email if you’re not already logged in on your desktop. If you still have your old phone at hand, you can also use the Microsoft Authenticator from there to approve the sign in.&lt;/p&gt;
+&lt;p&gt;This example just shows one work or school account for demonstration purposes. Just imagine that you work for dozens of companies as a consultant or freelancer… In this case, you would need to repeat these steps in all of their tenants in order to recover your accounts.&lt;/p&gt;
+&lt;p&gt;Microsoft Authenticator only backs up 2FA codes for generic accounts and your personal Microsoft Account. All work or school accounts that were added using the Microsoft Authenticator method require that you go through the setup again. Basically, only the account name, tenant name and user principal name will be restored but not the trust relationship itself.&lt;/p&gt;
+&lt;h4 id=&#34;2fa-codes-from-otherservices&#34;&gt;2FA Codes From Other Services&lt;/h4&gt;
+&lt;p&gt;2FA is without doubt a great mechanism for securing your accounts and online identities. It should be used wherever possible. Without exceptions.&lt;/p&gt;
+&lt;p&gt;Microsoft even advertises their Authenticator App as an App in which you can store all your 2FA codes on the App Store.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1nVlZbzfDSWyem4SdQhpqxQ.png&#34;
+	width=&#34;1494&#34;
+	height=&#34;757&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1nVlZbzfDSWyem4SdQhpqxQ_huc3eda9ed20d380d3ab21b9b2dd2527ae_635623_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1nVlZbzfDSWyem4SdQhpqxQ_huc3eda9ed20d380d3ab21b9b2dd2527ae_635623_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;197&#34;
+		data-flex-basis=&#34;473px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If you’re going all-in on 2FA and want to potentially store hundreds of 2FA codes, you should seriously consider not using Microsoft Authenticator for that.&lt;/p&gt;
+&lt;p&gt;Can you believe it? A statement like that from a Microsoft fan as big as me? The first thing you need to think about is that you will either need to read the code from the app and type it on your PC or you need to copy it from the app. Either way you need to find it in the app. Although Microsoft has recently added a search function to the app (which was long overdue to be honest) there’s still no option to create folders to better manage your accounts.&lt;/p&gt;
+&lt;p&gt;The second thing you should consider is lock-in. Once you’ve added all your 2FA codes to Microsoft Authenticator, you can only restore them to another Microsoft Authenticator app. Unless you explicitly save the secret key to a safe place every time you add an account, you won’t be able to extract those secrets again after they’ve been added to Microsoft Authenticator. If you didn’t do that and you want to move them to another app, for example to &lt;a class=&#34;link&#34; href=&#34;https://apps.apple.com/us/app/google-authenticator/id388497605&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Google Authenticator&lt;/a&gt; or &lt;a class=&#34;link&#34; href=&#34;https://apps.apple.com/us/app/twilio-authy/id494168017&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Twilio Authy&lt;/a&gt;, you will need to log into each service and setup 2FA again for the new app. Much like we need to do if we want to move a Microsoft work or school account to a new device.&lt;/p&gt;
+&lt;p&gt;On top of all that, finding and copying or typing 2FA codes is not a good user experience. Some services even force their users to use their specific authenticator app. In these cases, apps like these often support push notifications like Microsoft Authenticator does. While just tapping a button on the phone to verify a login is certainly a better experience than searching for a code and then typing it on your PC, having dozens of service-specific authenticator apps is not a viable solution either.&lt;/p&gt;
+&lt;p&gt;On the plus side, it’s great that Microsoft Authenticator offers a backup capability. Google Authenticator for example still doesn’t support backups. It only supports exporting your data via a QR code to another Google Authenticator App. The problem with that is that your codes will be lost if you lose your device.&lt;/p&gt;
+&lt;p&gt;Authy also offers backing up your 2FA codes. While Microsoft Authenticator requires a personal Microsoft Account to back up your data, Authy uses a separate password to protect your backup. But the lock-in problem remains. Since you can’t retrieve the secret keys from all these Authenticator Apps, your only option of migrating to another app is to go through the 2FA setup for each account again.&lt;/p&gt;
+&lt;p&gt;I think not exposing the secret keys after an account has been added makes sense for most users since secret keys need to be handled with absolute caution. If a secret key gets into the wrong hands, a malicious actor could generate the same TOTPs as you without you even knowing.&lt;/p&gt;
+&lt;p&gt;Here I’ve used the same secret/QR code to add an account to both Microsoft and Google Authenticator.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1ecWsxhP48aEhfo2vGa0VUg.png&#34;
+	width=&#34;1494&#34;
+	height=&#34;702&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1ecWsxhP48aEhfo2vGa0VUg_hud8688062afa01629648291420e420a8f_118217_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1ecWsxhP48aEhfo2vGa0VUg_hud8688062afa01629648291420e420a8f_118217_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;212&#34;
+		data-flex-basis=&#34;510px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;upping-your-2fagame&#34;&gt;Upping Your 2FA Game&lt;/h3&gt;
+&lt;p&gt;So far, we’ve established that using 2FA is a good thing. But we’ve also seen that it can come at the cost of convenience which might put a lot of users off from using it. Weighing security against convenience is an extremely hard decision. But I have found a way wich works well for me and I’m confident that it will work well for others too.&lt;/p&gt;
+&lt;p&gt;I know Microsoft, 1Password and other industry leaders are all talking about getting rid of passwords entirely but in reality, we’re just not there yet.&lt;/p&gt;
+&lt;p&gt;Another advantage of Microsoft Authenticator compared to other authenticator apps is that it now also offers password synchronization from Edge and auto-fill capabilities on mobile devices. While this is a good feature for many non tech savvy users, it’s still way worse than what a full-fledged password manager can offer. And by that, I mean &lt;a class=&#34;link&#34; href=&#34;https://bitwarden.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Bitwarden&lt;/a&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;bitwarden&#34;&gt;Bitwarden&lt;/h4&gt;
+&lt;p&gt;Bitwarden differentiates itself quite a bit from competing services. First of all, it’s completely open source but still backed by a commercial company. While password managers like 1 Password, Dashlane or LastPass are all running on AWS Bitwarden runs on &lt;a class=&#34;link&#34; href=&#34;https://bitwarden.com/help/is-bitwarden-audited/#cloud-hosting&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Azure&lt;/a&gt;. But most importantly, Bitwarden allows self-hosting for those who wish to do so. This means that you can be in control of your own vault data but won’t miss out on any of the awesome features like access and sync from anywhere, awesome mobile apps or browser extensions including auto-fill or even Windows Hello and Touch/FaceID support.&lt;/p&gt;
+&lt;p&gt;And then there’s the super fair &lt;a class=&#34;link&#34; href=&#34;https://bitwarden.com/pricing/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;pricing options&lt;/a&gt;. Unlike many other password managers, their free tier supports unlimited passwords and devices and will stay free forever. It even supports vault sharing with one other user. This is because Bitwarden simply believes that anybody should be able to store their passwords securely and freely.&lt;/p&gt;
+&lt;p&gt;Their premium tier which also supports storing and generating 2FA codes only costs 10$ per year. By the way, I’m not sponsored by them in any way, but I’d gladly pay the 10$ per year even if the free version also included advanced 2FA features just to support their cause.&lt;/p&gt;
+&lt;h4 id=&#34;putting-all-your-eggs-in-onebasket&#34;&gt;Putting All Your Eggs in One Basket&lt;/h4&gt;
+&lt;p&gt;Let’s get to the technical part. Using a password manager means that you will be storing all your passwords in the same place. People often refer to this as putting all your eggs in one basket. It’s a risk for sure but remembering hundreds of complex passwords is definitely not an option. And using more or less the same password for each website isn’t either.&lt;/p&gt;
+&lt;p&gt;I’ve had arguments about this where people claimed that there’s no real difference between using a master password to protect all your passwords or using the same password for each website. This not the case at all. Imagine if you use the same password for each website and one of those sites gets hacked and your password gets leaked on the internet. The chance of a password being compromised by a random website you signed up for is much higher than the chance of someone getting a hold of your master password.&lt;/p&gt;
+&lt;p&gt;Besides, the master password is not the only thing needed to get into the vault of any sane person. You also need a 2FA code or a physical security key to access the vault. I think it was on Reddit where someone said that they call this &lt;strong&gt;“Staged 2FA”.&lt;/strong&gt;&lt;/p&gt;
+&lt;h4 id=&#34;using-a-password-manager-as-an-authenticator-app&#34;&gt;Using a Password Manager as an Authenticator App&lt;/h4&gt;
+&lt;p&gt;Maybe you think that I must be crazy for not only storing all my passwords but almost all of my 2FA codes in the same place as well. Bear with me and let me explain why I think that this is a good idea.&lt;/p&gt;
+&lt;p&gt;The idea of a second factor is that you need an additional physical device which generates a one-time code. This applies if you for example want to log into a website on your PC and then use the TOTP which only your phone/app can generate. But nowadays so much more is done on mobile devices too. So, if I log in to outlook.com on my phone, I don’t technically have a second factor since I can approve the sign-in request on the same device. In fact, if you think about it, most people probably have an app for their password manager and Microsoft Authenticator or another authenticator app on their phone which both can be unlocked biometrically.&lt;/p&gt;
+&lt;p&gt;If somebody wants to access your 2FA codes, they need access to your phone anyway. If they already have access to your phone, does it really matter if they get the 2FA codes from the Microsoft Authenticator App or from the password manager? Of course, this is a hypothetical worst-case scenario as physical violence or serious threats could be involved in order to get you to unlock your phone and apps with biometrics.&lt;/p&gt;
+&lt;p&gt;The key difference between storing your 2FA codes in an authenticator app or in a password manager is that a hacker would always need physical access to your phone if they’re stored in an authenticator app. But even if an attacker would be able to get these codes, the passwords which are protected in the password manager are still needed.&lt;/p&gt;
+&lt;p&gt;To get into the password manager, the uncrackable (at least until quantum computing becomes mainstream) master password is needed. Even if that had been obtained by somebody, physical access to my unlocked phone would still be needed. The way I see it, what really needs to be protected is the phone. Instead of only being a second factor it actually has become the weakest link since it often holds passwords and 2FA codes, regardless of if they’re accessible in different apps.&lt;/p&gt;
+&lt;h4 id=&#34;security-concept&#34;&gt;Security Concept&lt;/h4&gt;
+&lt;p&gt;My security concept consists of two main security elements as I call them. One of them is Bitwarden, the other one is my personal Microsoft Account. Well, basically there’s also a third one which is my Apple Id (which of course is 2FA enabled as well). I don’t store anything from my Microsoft Account in Bitwarden. This is absolutely crucial. Even if a hacker would somehow get temporarily into my vault, they would not be able to take full control over it since they can’t get the 2FA code for the Bitwarden login. To get to the 2FA code, somebody would need to manage to sign into an iPhone with my Apple Id, restore the backup of my Microsoft Authenticator App from iCloud and then log into my Microsoft Account where both the Apple Id and my Microsoft Account are 2FA enabled and neither of the codes are stored in Bitwarden. All account related settings must be done in the Bitwarden Web Vault for which 2FA is required. The 2FA code for Bitwarden is only stored in my Microsoft Authenticator App. In my Microsoft Account there’s no information regarding Bitwarden except for the 2FA code (without the secret key). This means I only need to remember two complex passwords where the master password of Bitwarden is extremely complex (50+ characters).&lt;/p&gt;
+&lt;p&gt;I only enter my master password about once per month to make sure that I don’t forget it. (I do have a backup plan in case I should forget it.) All the other times, I just use biometric authentication on Windows and iOS. Not using or typing the master password reduces the risk of it being obtained by anybody.&lt;/p&gt;
+&lt;p&gt;I trust that my devices are secure, therefore I only use biometric authentication and choose to stay logged in (only biometric auth required) until I explicitly sign out of my Bitwarden Vault. This on the other hand exposes my PC to the same risk as my smartphone. If somebody puts a gun to my head and asks me to unlock Bitwarden on my Phone or my PC, they’d get everything. I’m sure I’ll have bigger problems than that if that should ever happen.&lt;/p&gt;
+&lt;p&gt;As long as we’re excluding attack scenarios where a malicious actor physically attacks us or forces us to unlock our devices and apps, it doesn’t really matter if you store passwords and 2FA codes in the same place. I mean if we’re talking that somebody is targeting you remotely. They can’t get into your vault by using your master password unless they also have access to your authenticator app on your phone, which does exactly what it should — being a second factor.&lt;/p&gt;
+&lt;h4 id=&#34;convenience-of-having-2fa-codes-stored-in-bitwarden&#34;&gt;Convenience of Having 2FA Codes Stored in Bitwarden&lt;/h4&gt;
+&lt;p&gt;Let’s talk about some positive stuff. There are lots of advantages from a convenience point of view by storing all your 2FA codes (except Microsoft Account, Bitwarden and iCloud 2FA) in your password manager.&lt;/p&gt;
+&lt;p&gt;There’s no tedious searching for accounts/codes and no annoying typing of 6-digit codes each time you want to log into a website. Matching accounts will autmatically be detected by a websites base URL. All you have to do is to choose a matching account for any particular website and press Ctrl + V after the username and password have been auto-filled.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1bOQpqyUFe92Ujs56MwkIEQ.png&#34;
+	width=&#34;1505&#34;
+	height=&#34;576&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1bOQpqyUFe92Ujs56MwkIEQ_hub80ba13d599d613ddf99fc99919e425b_27120_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1bOQpqyUFe92Ujs56MwkIEQ_hub80ba13d599d613ddf99fc99919e425b_27120_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;261&#34;
+		data-flex-basis=&#34;627px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;I find that auto-fill with automatic copy/paste of the 2FA is actually even faster than approving a sign-in request on your phone. If you’re using a randomly generated password which is impossible to memorize, you need to use your password manager anyway. Thus, you might as well paste the 2FA code from the password manager as well. When you log into a website or an app on your PC, grabbing your mobile phone is only going to break your flow since you need to pick it up or even take it out of your pants. I for one always choose Bitwarden auto-fill over accepting sign-in requests on my phone.&lt;/p&gt;
+&lt;h4 id=&#34;secret-key-management-in-bitwarden&#34;&gt;Secret Key Management in Bitwarden&lt;/h4&gt;
+&lt;p&gt;If you wish, you can also just store a TOTP without an associated password.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1OAhirvPr9CBNblaE87Bfw.png&#34;
+	width=&#34;636&#34;
+	height=&#34;891&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1OAhirvPr9CBNblaE87Bfw_hu41212a9baa6990bfb5776c3b3a1bcc99_42199_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1OAhirvPr9CBNblaE87Bfw_hu41212a9baa6990bfb5776c3b3a1bcc99_42199_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;71&#34;
+		data-flex-basis=&#34;171px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;You can safely store secret keys and can always access them again if you want to move them to another app. There’s no need to sign into a website and setup 2FA again. You are your own master of keys.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1Xm0GomzXQCGkjICW8yKWoQ.png&#34;
+	width=&#34;636&#34;
+	height=&#34;891&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1Xm0GomzXQCGkjICW8yKWoQ_hued9406c9f92c16d0e2bf8d1bd151e981_48789_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1Xm0GomzXQCGkjICW8yKWoQ_hued9406c9f92c16d0e2bf8d1bd151e981_48789_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;71&#34;
+		data-flex-basis=&#34;171px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If you’re the type of person who likes to organize stuff, you can create as many folders as you like and sort your credentials to fit your needs.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1OrrRoyMiBrT2xIjbee9g.png&#34;
+	width=&#34;634&#34;
+	height=&#34;891&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1OrrRoyMiBrT2xIjbee9g_hue46dbf13bbd4dc86162f1f0f5163227a_62348_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1OrrRoyMiBrT2xIjbee9g_hue46dbf13bbd4dc86162f1f0f5163227a_62348_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;71&#34;
+		data-flex-basis=&#34;170px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;multiple-bitwarden-vaults&#34;&gt;Multiple Bitwarden Vaults&lt;/h4&gt;
+&lt;p&gt;If the idea of storing passwords and 2FA codes in the same place creeps you out, and you don’t mind manually copying or typing in 2FA codes, you could also consider creating a second Bitwarden Vault (account) with a different master password. With this approach you will lose a lot of convenience and ease of use but a dedicated password manager with support for 2FA codes still provides much more freedom and functionality than a classic authenticator app. But if we’re honest with each other you’re probably going to end up with both vaults synced to your phone anyway.&lt;/p&gt;
+&lt;h3 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h3&gt;
+&lt;p&gt;If you’re struggling with your password and 2FA management and finding your current usability questionable I recommend the following basic principles to make your life a little easier.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Use Microsoft Authenticator only for your personal Microsoft Account, for your main work or school account and for the 2FA code of your password manager. Keep it clean.&lt;/li&gt;
+&lt;li&gt;Add all other 2FA codes to your password manager.&lt;/li&gt;
+&lt;li&gt;Choose a super strong master password and type it only as often as necessary.&lt;/li&gt;
+&lt;li&gt;Use biometric authentication whenever possible.&lt;/li&gt;
+&lt;li&gt;Enable 2FA for your password manager.&lt;/li&gt;
+&lt;li&gt;Use 2FA wherever possible without any exceptions.&lt;/li&gt;
+&lt;li&gt;Make sure that you always have a backup plan in case you forget your master password, or you lose your phone.&lt;/li&gt;
+&lt;li&gt;Never save your Microsoft Account password or 2FA code to your password manager.&lt;/li&gt;
+&lt;li&gt;Use a different, strong, randomly generated password for each website.&lt;/li&gt;
+&lt;li&gt;Follow me on Medium.&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

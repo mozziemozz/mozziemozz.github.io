@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Warning: This is another one of those proof of concept “because I can” kind of things. I’m going to do some things which shouldn’t be done…'>
+<title>Automate Setting Work Location in Teams/Outlook [PoC]</title>
+
+<link rel='canonical' href='https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Automate Setting Work Location in Teams/Outlook [PoC]'>
+<meta property='og:description' content='Warning: This is another one of those proof of concept “because I can” kind of things. I’m going to do some things which shouldn’t be done…'>
+<meta property='og:url' content='https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/'>
+<meta property='og:site_name' content='HEUSSER.PRO'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2023-07-08T08:50:29&#43;00:00'/><meta property='article:modified_time' content='2023-07-08T08:50:29&#43;00:00'/>
+<meta name="twitter:title" content="Automate Setting Work Location in Teams/Outlook [PoC]">
+<meta name="twitter:description" content="Warning: This is another one of those proof of concept “because I can” kind of things. I’m going to do some things which shouldn’t be done…">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "kozb6q2xjn");
+    </script>    
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hud7e6b3cccc21b12ddf35b72eb655064d_860969_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🫡</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
+            <h2 class="site-description">Martin Heusser | M365 Apps &amp; Services MVP</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/mozziemozz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://x.com/@mozzeph'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/imprint/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                
+                <span>Imprint</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li>
+      <ol>
+        <li>
+          <ol>
+            <li><a href="#aadinternals">AADInternals</a></li>
+            <li><a href="#credentials">Credentials</a></li>
+            <li><a href="#the-finalscript">The Final Script</a></li>
+            <li><a href="#the-result">The Result</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/microsoft-teams/" >
+                Microsoft Teams
+            </a>
+        
+            <a href="/categories/outlook/" >
+                Outlook
+            </a>
+        
+            <a href="/categories/work-location/" >
+                Work location
+            </a>
+        
+            <a href="/categories/proof-of-concept/" >
+                Proof of Concept
+            </a>
+        
+            <a href="/categories/powershell/" style="background-color: #141e2c; color: #fff;">
+                PowerShell
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/">Automate Setting Work Location in Teams/Outlook [PoC]</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Warning: This is another one of those proof of concept “because I can” kind of things. I’m going to do some things which shouldn’t be done…
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jul 08, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    6 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>Warning: This is another one of those proof of concept <em>“because I can”</em> kind of things. I’m going to do some things which shouldn’t be done in production. It was just for the fun of it.</p>
+<p>Microsoft recently released the new <strong>Work location</strong> feature in Teams and the new Outlook/Outlook on the web. This allows users to set their work location so co-workers can see if their colleagues are working in the <strong>office</strong> or <strong>remotely</strong> on any specific day. You can find more information <a class="link" href="https://techcommunity.microsoft.com/t5/microsoft-365-blog/coordination-is-the-key-to-spontaneity-with-these-features-in/ba-p/3814143"  target="_blank" rel="noopener"
+    >here</a> and <a class="link" href="https://support.microsoft.com/en-au/office/show-your-hybrid-work-location-availability-to-meet-work-hours-and-more-c861198d-f82e-41d7-88ec-c2e716be5ede"  target="_blank" rel="noopener"
+    >here</a>.</p>
+<p>I was extremely disappointed when I learned that there is no support for Microsoft Graph or Power Automate yet, so we could automatically set this each day based on e.g., an IP address or even through geo-fencing on a mobile device.</p>
+<p>Off I went to try and find a way to do it anyway. First, I opened Teams in Microsoft Edge and used the browser dev tools to see what kind of requests are sent to which APIs when the work location is changed.</p>
+<p>Here we can see that a <strong>PUT</strong> request is made to <code>https://presence.teams.microsoft.com/v1/me/workLocation</code> when the location is edited.</p>
+<p><img src="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1Ylwjq2bqJUws0kO0nI6SA.png"
+	width="1435"
+	height="902"
+	srcset="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1Ylwjq2bqJUws0kO0nI6SA_hub93a2b6111ad17327cf969152c680b31_114987_480x0_resize_box_3.png 480w, /p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1Ylwjq2bqJUws0kO0nI6SA_hub93a2b6111ad17327cf969152c680b31_114987_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="159"
+		data-flex-basis="381px"
+	
+></p>
+<p>In this case the location was cleared with the following JSON payload.</p>
+<p><img src="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1TUd3bgXiIp7hyKQIWLDTdA.png"
+	width="975"
+	height="278"
+	srcset="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1TUd3bgXiIp7hyKQIWLDTdA_hued347d18e67613c9cd99f725b4dc1f6d_37427_480x0_resize_box_3.png 480w, /p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1TUd3bgXiIp7hyKQIWLDTdA_hued347d18e67613c9cd99f725b4dc1f6d_37427_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="350"
+		data-flex-basis="841px"
+	
+></p>
+<p>The value <strong>0</strong> clears the location. <strong>1</strong> is used to set it to <strong>Office</strong> and <strong>2</strong> will map to <strong>Remote.</strong></p>
+<p>Next, I inspected the token needed for this request with the help of <a class="link" href="https://jwt.ms"  target="_blank" rel="noopener"
+    >jwt.ms</a>.</p>
+<pre><code>{  
+  &quot;typ&quot;: &quot;JWT&quot;,  
+  &quot;nonce&quot;: &quot;xxxxxxxxxxxxxxxxxxxxxxxxx&quot;,  
+  &quot;alg&quot;: &quot;RS256&quot;,  
+  &quot;x5t&quot;: &quot;-xxxxxxxxxxxxxxxxxxxxxxxxx&quot;,  
+  &quot;kid&quot;: &quot;-xxxxxxxxxxxxxxxxxxxxxxxxx&quot;  
+}.{  
+  &quot;aud&quot;: &quot;https://presence.teams.microsoft.com/&quot;,  
+  &quot;iss&quot;: &quot;https://sts.windows.net/4bffbf87-53a0-4fce-b58b-4179cb3a3b7d/&quot;,  
+  &quot;iat&quot;: 1688763565,  
+  &quot;nbf&quot;: 1688763565,  
+  &quot;exp&quot;: 1688841846,  
+  &quot;acr&quot;: &quot;1&quot;,  
+  &quot;aio&quot;: &quot;xxxxxxxxxxxxxxxxxxxxxxxxx&quot;,  
+  &quot;amr&quot;: [  
+    &quot;pwd&quot;,  
+    &quot;mfa&quot;  
+  ],  
+  &quot;appid&quot;: &quot;5e3ce6c0-2b1f-4285-8d4b-75ee78787346&quot;,  
+  &quot;appidacr&quot;: &quot;0&quot;,  
+  &quot;family_name&quot;: &quot;Mozz&quot;,  
+  &quot;given_name&quot;: &quot;Mozzie&quot;,  
+  &quot;ipaddr&quot;: &quot;xxx.xxx.xxx.xxx&quot;,  
+  &quot;name&quot;: &quot;Mozzism Admin&quot;,  
+  &quot;oid&quot;: &quot;xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx&quot;,  
+  &quot;puid&quot;: &quot;10032000330C6A66&quot;,  
+  &quot;rh&quot;: &quot;xxxxxxxxxxxxxxxxxxxxxxxxx&quot;,  
+  &quot;scp&quot;: &quot;user_impersonation&quot;,  
+  &quot;sub&quot;: &quot;xxxxxxxxxxxxxxxxxxxxxxxxx&quot;,  
+  &quot;tid&quot;: &quot;xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx&quot;,  
+  &quot;unique_name&quot;: &quot;mozzie@mozzism.ch&quot;,  
+  &quot;upn&quot;: &quot;mozzie@mozzism.ch&quot;,  
+  &quot;uti&quot;: &quot;xxxxxxxxxxxxxxxxxxxxxxxxx&quot;,  
+  &quot;ver&quot;: &quot;1.0&quot;,  
+  &quot;xms_cc&quot;: [  
+    &quot;CP1&quot;  
+  ],  
+  &quot;xms_ssm&quot;: &quot;1&quot;  
+}.[Signature]
+</code></pre>
+<h4 id="aadinternals">AADInternals</h4>
+<p>Copying the token from the browser and using it to make a web request with PowerShell is easy. The hard thing was to figure out how I can obtain that token programmatically. Luckily, there’s this awesome PowerShell module called <a class="link" href="https://www.powershellgallery.com/packages/AADInternals/0.9.0"  target="_blank" rel="noopener"
+    ><strong>AADInternals</strong></a> by one Dr. Nestori Syynimaa. This is an amazing resource to test almost anything related to Azure AD and Graph authentication.</p>
+<p>The documentation for this module can be found <a class="link" href="https://aadinternals.com/aadinternals/"  target="_blank" rel="noopener"
+    >here</a>. I discovered that the following command would give me a token for Teams.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$teamsToken</span> <span class="p">=</span> <span class="nb">Get-AADIntAccessTokenForTeams</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>What’s really cool is that now, with PowerShell 7 the whole login process can be done through the CLI without any browser pop-ups! Even MFA is supported!</p>
+<p><img src="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1dsPmfR9rFSmCsWYKlb5mA.png"
+	width="1734"
+	height="957"
+	srcset="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1dsPmfR9rFSmCsWYKlb5mA_hu57c1e88072b457ac988aef5100562695_436977_480x0_resize_box_3.png 480w, /p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1dsPmfR9rFSmCsWYKlb5mA_hu57c1e88072b457ac988aef5100562695_436977_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<p>Even though the audience for this token is <a class="link" href="https://api.spaces.skype.com"  target="_blank" rel="noopener"
+    >https://api.spaces.skype.com</a> and not <a class="link" href="https://presence.teams.microsoft.com/"  target="_blank" rel="noopener"
+    >https://presence.teams.microsoft.com</a> it still works to change the work location in Teams.</p>
+<p>Because everything can be done through the CLI I wondered if I could pass the credentials and the MFA secret to the AADInternals functions so that the login process could be automated to be 100% unattended.</p>
+<p>After some trial and error, I had that figured out too. Not all functions of the AADInternals module are exposed to the user so the key is to make them available to your current PowerShell session by dot sourcing some of the *.ps1 files included in the module.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$functions</span> <span class="p">=</span> <span class="nb">Get-ChildItem</span> <span class="n">-Path</span> <span class="s2">&#34;C:\\Program Files\\WindowsPowerShell\\Modules\\AADInternals\\0.9.0&#34;</span> <span class="n">-Filter</span> <span class="s2">&#34;\*.ps1&#34;</span>  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl"><span class="nv">$functions</span> <span class="p">=</span> <span class="nv">$functions</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="p">{$\</span><span class="n">_</span><span class="p">.</span><span class="py">Name</span> <span class="o">-match</span> <span class="s2">&#34;Teams&#34;</span> <span class="o">-or</span> <span class="p">$\</span><span class="n">_</span><span class="p">.</span><span class="py">Name</span> <span class="o">-match</span> <span class="s2">&#34;AccessToken&#34;</span> <span class="o">-or</span> <span class="p">$\</span><span class="n">_</span><span class="p">.</span><span class="py">Name</span> <span class="o">-match</span> <span class="s2">&#34;CommonUtils&#34;</span><span class="p">}</span>  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl"><span class="k">foreach</span> <span class="p">(</span><span class="nv">$function</span> <span class="k">in</span> <span class="nv">$functions</span><span class="p">)</span> <span class="p">{</span>  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">    <span class="p">.</span> <span class="nv">$function</span><span class="p">.</span><span class="py">FullName</span>  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>By executing this code which uses some of the not exposed functions from AADInternals, we can pass a credential object (and MFA secret) and then get an access token to write Teams presence.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$teamsPresenceToken</span> <span class="p">=</span> <span class="nb">Prompt-Credentials</span> <span class="n">-ClientId</span> <span class="nv">$ClientId</span> <span class="n">-Resource</span> <span class="s2">&#34;https://presence.teams.microsoft.com&#34;</span> <span class="n">-Credentials</span> <span class="nv">$secureCreds</span> <span class="n">-OTPSecretKey</span> <span class="nv">$passwordDecrypted</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="credentials">Credentials</h4>
+<p>I’ve put together a script which does everything for you. However, you must install the AADInternals module first and you also need to clone the repo from my <a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation"  target="_blank" rel="noopener"
+    >GitHub</a> account since it has dependencies on other functions.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">mozziemozz</span><span class="p">/</span><span class="n">TeamsPhoneAutomation</span><span class="p">.</span><span class="py">git</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Even though this was all part of some good Friday night hacking, we obviously don’t want to store the credentials and especially the MFA secret as plain text on our machines. Therefore, I’ve added a couple of <a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Modules/SecureCredsMgmt.ps1"  target="_blank" rel="noopener"
+    >functions</a> to help handle encrypted credentials. We want to be better than <a class="link" href="https://www.theverge.com/2022/9/16/23356213/uber-hack-teen-slack-google-cloud-credentials-powershell"  target="_blank" rel="noopener"
+    >UBER</a>.</p>
+<p>When encrypted credentials are stored on a Windows PC, they can only be decrypted using the same <strong>account</strong> and the same <strong>machine</strong> because of <a class="link" href="https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/understand-security-identifiers"  target="_blank" rel="noopener"
+    >security identifiers</a> (SID).</p>
+<p>If you don’t trust me, see for yourself. Here’ I’m retrieving the password I encrypted on my main PC using my user account.</p>
+<p><img src="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1W628X8LBOfnUCpplMXMj4w.png"
+	width="1734"
+	height="957"
+	srcset="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1W628X8LBOfnUCpplMXMj4w_hu6c0822f1e2f18d322b0568a75b2659c8_599321_480x0_resize_box_3.png 480w, /p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1W628X8LBOfnUCpplMXMj4w_hu6c0822f1e2f18d322b0568a75b2659c8_599321_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<p>I copied the file to a virtual machine where I’m logged in with the same user. This code will let you decrypt the password if the key matches.<br>
+(I found this code years ago, unfortunately I don’t have the source anymore…)</p>
+<pre><code>[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR((Get-Content -Path .\.local\SecureCreds\mozzie@mozzism.ch.txt | ConvertTo-SecureString))) | Out-String
+</code></pre>
+<p>When I run this on another machine with the same logged in user, I get an error that the Key is invalid. Which is good.</p>
+<p><img src="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1xHjGlNGoWxiJ3qTkRNsxBQ.png"
+	width="1758"
+	height="928"
+	srcset="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1xHjGlNGoWxiJ3qTkRNsxBQ_huae7558fdf5fbe404f2179b835079b366_1073714_480x0_resize_box_3.png 480w, /p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1xHjGlNGoWxiJ3qTkRNsxBQ_huae7558fdf5fbe404f2179b835079b366_1073714_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="189"
+		data-flex-basis="454px"
+	
+></p>
+<p>My Function <code>Get-MzzSecureCreds</code> will automatically create a PS Credential Object when <code>-AdminUser &quot;user@domain.com&quot;</code> is specified. The username will be set as file name, and it will also be used as the username of the credential object.</p>
+<h4 id="the-finalscript">The Final Script</h4>
+<p>Here’s the script to change your work location in Teams.</p>
+<script src="https://gist.github.com/mozziemozz/bd60e4c77623b516333e329660e39142.js"></script>
+
+<p>If you run it for the first time, you’ll need to provide the username and password and possibly the MFA secret of the user for which you want to change the work location.</p>
+<p><strong>At this point I want to make clear again that this is a proof of concept. Even though the credentials are encrypted, you should not store production passwords on the device and most importantly, you shouldn’t store the MFA secret in the same place as the password.</strong></p>
+<p>You can determine if you’re working remotely or in the office by specifying either your local or public home/remote IP address.</p>
+<p>Since my private IP is <strong>192.168.127.117</strong>, and I specified <strong>192.168.1.10</strong> my work location is set to <strong>Office.</strong></p>
+<p><img src="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1H9Jn0x3GNJ1gglcfYmRg.png"
+	width="1734"
+	height="957"
+	srcset="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1H9Jn0x3GNJ1gglcfYmRg_hu2c8b638c458bbce84759dbccf2722fbe_680907_480x0_resize_box_3.png 480w, /p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1H9Jn0x3GNJ1gglcfYmRg_hu2c8b638c458bbce84759dbccf2722fbe_680907_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<p>When I change the IP address to <strong>192.168.127.117</strong> the work location is set to remote because that matches my local subnet.</p>
+<p><img src="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1JCJNuJqCHz2FvGnYBkB0A.png"
+	width="1734"
+	height="957"
+	srcset="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1JCJNuJqCHz2FvGnYBkB0A_hub0be134dccfead36822ec41a8a608fbe_638777_480x0_resize_box_3.png 480w, /p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1JCJNuJqCHz2FvGnYBkB0A_hub0be134dccfead36822ec41a8a608fbe_638777_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<p>In case your office and your home network both use the same private address space, you can use <code>-IpType Public</code> and specify your home/remote public IP.</p>
+<h4 id="the-result">The Result</h4>
+<p>The updated work location is then visible in both Teams and Outlook.</p>
+<p><img src="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1rgszjARcTFdFADtwPT9bUg.png"
+	width="490"
+	height="396"
+	srcset="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1rgszjARcTFdFADtwPT9bUg_hu7f25fb382db34e38ec468b9bfb1740e6_32323_480x0_resize_box_3.png 480w, /p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1rgszjARcTFdFADtwPT9bUg_hu7f25fb382db34e38ec468b9bfb1740e6_32323_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="123"
+		data-flex-basis="296px"
+	
+>
+<img src="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/16wcOq4ZGJ4e9Oy2J80Nyw.png"
+	width="686"
+	height="351"
+	srcset="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/16wcOq4ZGJ4e9Oy2J80Nyw_hubd1a54d523e5c7a97cdfb2ddf825199a_16688_480x0_resize_box_3.png 480w, /p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/16wcOq4ZGJ4e9Oy2J80Nyw_hubd1a54d523e5c7a97cdfb2ddf825199a_16688_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="195"
+		data-flex-basis="469px"
+	
+></p>
+<p>Even though I won’t be using this in production, I had great fun developing this and I also learned a thing or two about AADInternals, Json Web Tokens and encrypted credentials in PowerShell.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Sync Local Outlook Contacts to a Teams Desk Phone</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/opt-in-or-opt-out-teams-call-queue-agents-remotely-59fe6147f50d/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Opt In or Opt Out Teams Call Queue Agents Remotely</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/clear-teams-2-1-cache-windows-11-be3e76ff6ea2/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Clear Teams 2.1 Cache (Windows 11)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Advanced Teams Auto Attendant Troubleshooting</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/teams-clipboard-dialer-c5cb737f37f3/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Teams Clipboard Dialer</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "heusser-pro" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2024 HEUSSER.PRO
+    </section>
+    
+    <section class="powerby">
+        
+            Hosted on Microsoft Azure <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
+

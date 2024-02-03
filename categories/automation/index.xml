@@ -1,0 +1,1371 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Automation on HEUSSER.PRO</title>
+        <link>https://heusser.pro/categories/automation/</link>
+        <description>Recent content in Automation on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Tue, 04 Apr 2023 19:42:18 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/automation/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Manage Microsoft Teams Call Queues with PowerShell (Force-Sync)</title>
+        <link>https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/</link>
+        <pubDate>Tue, 04 Apr 2023 19:42:18 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/</guid>
+        <description>&lt;p&gt;After my last article turned into a twenty-minute read, I want to write a short blog post today. At least I’ll try to. We are talking about managing Microsoft Teams Call Queues with PowerShell again.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/0cTgVlbyGhDlU8uu.jpg&#34;
+	width=&#34;1024&#34;
+	height=&#34;1024&#34;
+	srcset=&#34;https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/0cTgVlbyGhDlU8uu_hu51cfae8946aa380f91ae6d29e590a061_134458_480x0_resize_q75_box.jpg 480w, https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/0cTgVlbyGhDlU8uu_hu51cfae8946aa380f91ae6d29e590a061_134458_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;100&#34;
+		data-flex-basis=&#34;240px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Pretty much about one year ago, I wrote an article explaining how to force sync a Call Queue which uses a group or a Microsoft Team as its source of agent list.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0&#34; &gt;Microsoft Teams Call Queue Agent Lists (And how to Force-Sync them) | by martin heusser | Medium&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Since then, I have refined the code a little bit to make it even easier. I wrote two functions which are available in a new &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Modules/TeamsPS.psm1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;PowerShell Module&lt;/strong&gt;&lt;/a&gt; which is available in my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;TeamsPhoneAutomation&lt;/strong&gt;&lt;/a&gt; repository on GitHub.&lt;/p&gt;
+&lt;p&gt;To import the module, simply run the following code after you have &lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;cloned&lt;/a&gt; the repository.&lt;/p&gt;
+&lt;p&gt;$localRepoPath = git rev-parse &amp;ndash;show-toplevel&lt;br&gt;
+Import-Module &amp;ldquo;$localRepoPath/Modules/TeamsPS.psm1&amp;rdquo; -Force&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git rev-parse --show-toplevel&lt;/code&gt; will resolve the cloned repository’s root path to the absolute file path on your system. This is really helpful if different users clone the repo to different folders on their own machine.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1gNxBkz6hW4pvFJjOSPniow.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1gNxBkz6hW4pvFJjOSPniow_hu31e17814aa3dda5d87bfc911e30d0762_669941_480x0_resize_box_3.png 480w, https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1gNxBkz6hW4pvFJjOSPniow_hu31e17814aa3dda5d87bfc911e30d0762_669941_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;There are two Call Queue related functions in the module:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Get-MZZCQAgents&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Sync-MZZCQAgents&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Let’s start with the &lt;strong&gt;Get&lt;/strong&gt; function.&lt;/p&gt;
+&lt;h4 id=&#34;get-mzzcqagents&#34;&gt;Get-MZZCQAgents&lt;/h4&gt;
+&lt;p&gt;This is essentially what &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer/blob/main/Functions/Get-CallQueueAgentsStatus.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this script&lt;/a&gt; mentioned in &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485&#34; &gt;this article&lt;/a&gt; does. However, this function doesn’t have exporting capabilities and the code has been adapted so it plays nice with the &lt;strong&gt;Sync&lt;/strong&gt; function.&lt;/p&gt;
+&lt;p&gt;As we already know, when we check a Call Queues &lt;code&gt;.Agent&lt;/code&gt; property, we will only see GUIDs instead of User Principal Names. Thus, my function. It will search for the users by Id and output UPNs instead of Object Ids.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1pLYCkYoqD9HkTxl7bVetPw.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1pLYCkYoqD9HkTxl7bVetPw_hu31e17814aa3dda5d87bfc911e30d0762_694355_480x0_resize_box_3.png 480w, https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1pLYCkYoqD9HkTxl7bVetPw_hu31e17814aa3dda5d87bfc911e30d0762_694355_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If you run the function without parameters, you will be able to choose a Call Queue from a list.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/10Zw03oQyVVr3Gp1LcOsQ.png&#34;
+	width=&#34;1381&#34;
+	height=&#34;659&#34;
+	srcset=&#34;https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/10Zw03oQyVVr3Gp1LcOsQ_huecd6a3d5b878df5add2f865d951e487d_108016_480x0_resize_box_3.png 480w, https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/10Zw03oQyVVr3Gp1LcOsQ_huecd6a3d5b878df5add2f865d951e487d_108016_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;209&#34;
+		data-flex-basis=&#34;502px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If you already know the Id of your Call Queue, you can pass it via the &lt;code&gt;-CQIdentity&lt;/code&gt; parameter.&lt;/p&gt;
+&lt;p&gt;Get-MZZCQAgents -CQIdentity fe77ecb3-f5a5-47ee-9519-cbb3a52d5771&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1C9HchRKUMR6oQBRLXMBfqg.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1C9HchRKUMR6oQBRLXMBfqg_hu31e17814aa3dda5d87bfc911e30d0762_768562_480x0_resize_box_3.png 480w, https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1C9HchRKUMR6oQBRLXMBfqg_hu31e17814aa3dda5d87bfc911e30d0762_768562_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;sync-mzzcqagents&#34;&gt;Sync-MZZCQAgents&lt;/h4&gt;
+&lt;p&gt;This Call Queue uses a Microsoft Teams Team as Agent List, but this also applies to Agents which are assigned to a queue via Security or M365 Groups.&lt;/p&gt;
+&lt;p&gt;Think about a scenario where a Team owner adds a new employee to a Team which should also start to receive calls to the queue. Without interaction of a Teams Administrator, it’s going to take some time until that’s the case. It will most likely take multiple hours for the change to become effective.&lt;/p&gt;
+&lt;p&gt;If we want to speed up that process, we simply need to run &lt;code&gt;Sync-MZZCQAgents&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;It’s the same for this function, if you do not specify &lt;code&gt;-CQIdentity&lt;/code&gt; you will be asked to choose &lt;strong&gt;one&lt;/strong&gt; or &lt;strong&gt;multiple&lt;/strong&gt; queues from the list. To select multiple queues, just hold &lt;strong&gt;CTRL&lt;/strong&gt; while selecting list entries.&lt;/p&gt;
+&lt;p&gt;Please note that &lt;code&gt;Get-MZZCQAgents&lt;/code&gt; only accepts one selection at a time but &lt;code&gt;Sync-MZZCQAgents&lt;/code&gt; can actually loop through multiple queues after each other if you want to force-sync all or some of your queues.&lt;/p&gt;
+&lt;p&gt;The cool thing about this is that the &lt;strong&gt;Sync&lt;/strong&gt; function runs&lt;code&gt;Get-MZZCQAgents&lt;/code&gt; before and after the queue’s agent list has been synced. This way you can know if the new agent(s) have already been added.&lt;/p&gt;
+&lt;p&gt;If you run the function too soon after the membership of a Team or an M365 Group has been updated, chances are that you will get the following output.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1lMTG7LBodcvUifKt7pZVCQ.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1lMTG7LBodcvUifKt7pZVCQ_hu31e17814aa3dda5d87bfc911e30d0762_684893_480x0_resize_box_3.png 480w, https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1lMTG7LBodcvUifKt7pZVCQ_hu31e17814aa3dda5d87bfc911e30d0762_684893_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;First, let’s remove &lt;strong&gt;Mike&lt;/strong&gt;, who is also an agent of the queue as a member of the Team. We can now see that &lt;strong&gt;Mike&lt;/strong&gt; has been removed from the queue.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1XVULfBs8n282RhyFCWBNUw.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1XVULfBs8n282RhyFCWBNUw_hu31e17814aa3dda5d87bfc911e30d0762_772135_480x0_resize_box_3.png 480w, https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1XVULfBs8n282RhyFCWBNUw_hu31e17814aa3dda5d87bfc911e30d0762_772135_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now let’s add &lt;strong&gt;Mike&lt;/strong&gt; back but remove &lt;strong&gt;Bobby.&lt;/strong&gt; You’ll get a nice overview of all the agents that were removed or added.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1Q6eapw6UeSnMblJv52ra5Q.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1Q6eapw6UeSnMblJv52ra5Q_hu31e17814aa3dda5d87bfc911e30d0762_716380_480x0_resize_box_3.png 480w, https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/1Q6eapw6UeSnMblJv52ra5Q_hu31e17814aa3dda5d87bfc911e30d0762_716380_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;There is no need to run &lt;code&gt;Connect-MicrosoftTeams&lt;/code&gt; before you run either of these two functions because a login mechanism, similar to the one the &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;M365 Call Flow Visualizer&lt;/strong&gt;&lt;/a&gt; uses is already built into the function &lt;code&gt;Connect-MZZTeams&lt;/code&gt; which is also part of the module. If you’re not already logged in, you’ll be prompted to enter your Teams Admin Credentials.&lt;/p&gt;
+&lt;p&gt;For now, it’s only these two or rather three functions (if you count the login function) which are part of this module. I’m sure that I’ll add more useful code over time, so stay tuned and follow me on &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p&#34; &gt;Medium&lt;/a&gt;, &lt;a class=&#34;link&#34; href=&#34;https://twitter.com/mozzeph&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Twitter&lt;/a&gt; or &lt;a class=&#34;link&#34; href=&#34;https://www.linkedin.com/in/martin-heusser117/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;LinkedIn&lt;/a&gt;. And yes, the &lt;strong&gt;117&lt;/strong&gt; in my LinkedIn URL is a reference to Master Chief.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Fix UTF-8 Encoding When Calling Azure Child Runbooks Inline</title>
+        <link>https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/</link>
+        <pubDate>Fri, 03 Mar 2023 10:03:56 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/</guid>
+        <description>&lt;p&gt;I recently came across a very strange issue with Azure Runbooks and UTF-8 encoding. For most IT folks, it’s no issue if everything is in English but if you work with German speaking users, chances are that you’re going to run into encoding issues with &lt;strong&gt;Umlaute&lt;/strong&gt; or other special characters eventually. For those who have no idea what I’m talking about, Umlaute are special characters like “ä”, “ö” and “ü” which are used very frequently in German.&lt;/p&gt;
+&lt;p&gt;The scenario is the following: I have a very simple Azure Runbook which sends a message card to a Teams channel.&lt;/p&gt;
+&lt;p&gt;$uri = &amp;ldquo;YourWebhookUrl&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;$body = @&amp;rsquo;&lt;br&gt;
+{&lt;br&gt;
+&amp;ldquo;@context&amp;rdquo;: &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://schema.org/extensions%22&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://schema.org/extensions&#34;&lt;/a&gt;,&lt;br&gt;
+&amp;ldquo;@type&amp;rdquo;: &amp;ldquo;MessageCard&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;themeColor&amp;rdquo;: &amp;ldquo;00A4EF&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;title&amp;rdquo;: &amp;ldquo;UTF8 Test&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;text&amp;rdquo;: &amp;ldquo;Hello Wörld!&amp;rdquo;&lt;br&gt;
+}&lt;br&gt;
+&amp;lsquo;@&lt;/p&gt;
+&lt;p&gt;Invoke-RestMethod -uri $uri -Method Post -body $body -ContentType &amp;lsquo;application/json; charset=UTF-8&amp;rsquo;&lt;/p&gt;
+&lt;p&gt;As you can see, I purposely wrote &lt;strong&gt;“Hello Wörld”&lt;/strong&gt; instead of &lt;strong&gt;“Hello World”&lt;/strong&gt; to demonstrate this. If the runbook is run directly (meaning, there’s no child runbook involved), there’s no issue at all and the card is sent to Teams using the correct encoding.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1Fjfq1GaXyavb7ynoRqqpg.png&#34;
+	width=&#34;1209&#34;
+	height=&#34;242&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1Fjfq1GaXyavb7ynoRqqpg_hu2389b36a857bb99be532f7e70b9eb792_19981_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1Fjfq1GaXyavb7ynoRqqpg_hu2389b36a857bb99be532f7e70b9eb792_19981_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;499&#34;
+		data-flex-basis=&#34;1199px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;working-with-childrunbooks&#34;&gt;Working With Child Runbooks&lt;/h4&gt;
+&lt;p&gt;So far so good. In more complex scenarios, you might want to build modular runbooks. An example of that would be where you have some code and some parameters in one runbook (let’s call that &lt;strong&gt;main runbook&lt;/strong&gt; or &lt;strong&gt;child runbook&lt;/strong&gt;) and have a couple of other runbooks which call your main runbook inline. Let’s call these &lt;strong&gt;runner scripts&lt;/strong&gt; because they’re only used to run the main runbook.&lt;/p&gt;
+&lt;p&gt;The advantage of such a setup is that you only need to change the code in one place if you need to update it. For example, if the URL of the webhook changes, we only need to edit the main runbook instead of all the other runbooks as well. You can also read more about that concept in this official Microsoft &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/azure/automation/automation-child-runbooks#call-a-child-runbook-by-using-inline-execution&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Learn article&lt;/a&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;wrong-encoding-in-childrunbooks&#34;&gt;Wrong Encoding in Child Runbooks&lt;/h4&gt;
+&lt;p&gt;However, I have found that somehow the encoding gets messed up and special characters are sent to Teams in the wrong format if a child runbook is called inline from another runbook which runs in front of it.&lt;/p&gt;
+&lt;p&gt;If you want to call another runbook from any runbook in the same automation account, you can just reference it by its name. All that’s needed is the following code which really just points to another script. Note that you do need to add &lt;code&gt;.ps1&lt;/code&gt; at the end of your runbook name.&lt;/p&gt;
+&lt;p&gt;. .\SendMessageCardMain.ps1&lt;/p&gt;
+&lt;p&gt;It doesn’t make any difference if &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/scripting/learn/ps101/10-script-modules?view=powershell-7.3&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;dot sourcing&lt;/a&gt; is used or not. The encoding will be wrong in either case.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RIQJDWuX87n08U80GxZBlw.png&#34;
+	width=&#34;1213&#34;
+	height=&#34;241&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RIQJDWuX87n08U80GxZBlw_hud6f048997161982e95b0c549bee3f3fc_19854_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RIQJDWuX87n08U80GxZBlw_hud6f048997161982e95b0c549bee3f3fc_19854_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;503&#34;
+		data-flex-basis=&#34;1207px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This isn’t just about the message which is sent to Teams through a web request. The encoding is wrong in general and thus when using &lt;code&gt;Write-Output&lt;/code&gt; as well.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RxMMGmOGbr82SmAmzuh3cg.png&#34;
+	width=&#34;1414&#34;
+	height=&#34;493&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RxMMGmOGbr82SmAmzuh3cg_hu15d783e8232fb13d93ba5f80564cf0f1_52876_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RxMMGmOGbr82SmAmzuh3cg_hu15d783e8232fb13d93ba5f80564cf0f1_52876_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;286&#34;
+		data-flex-basis=&#34;688px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;workaround&#34;&gt;Workaround&lt;/h4&gt;
+&lt;p&gt;The trick is to store the special characters inside a variable which is already known to the runner script (the one which will be submitted to the worker), and then calls the child runbook.&lt;/p&gt;
+&lt;p&gt;$externalText = &amp;ldquo;Wörld&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;. .\SendMessageCardMain.ps1&lt;/p&gt;
+&lt;p&gt;The word which contains the special character is replaced by the variable in the main script (child runbook).&lt;/p&gt;
+&lt;p&gt;$uri = &amp;ldquo;YourWebhookUrl&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;$body = @&amp;rdquo;&lt;br&gt;
+{&lt;br&gt;
+&amp;ldquo;@context&amp;rdquo;: &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://schema.org/extensions%22&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://schema.org/extensions&#34;&lt;/a&gt;,&lt;br&gt;
+&amp;ldquo;@type&amp;rdquo;: &amp;ldquo;MessageCard&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;themeColor&amp;rdquo;: &amp;ldquo;00A4EF&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;title&amp;rdquo;: &amp;ldquo;UTF8 Test&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;text&amp;rdquo;: &amp;ldquo;Hello $externalText!&amp;rdquo;&lt;br&gt;
+}&lt;br&gt;
+&amp;ldquo;@&lt;/p&gt;
+&lt;p&gt;Invoke-RestMethod -uri $uri -Method Post -body $body -ContentType &amp;lsquo;application/json; charset=UTF-8&amp;rsquo;&lt;/p&gt;
+&lt;p&gt;This way, the first runbook already knows the correct encoding and it works, just like it did in the first example where we only had one runbook.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SrfMmL5MqVyJJMuygMjA.png&#34;
+	width=&#34;1211&#34;
+	height=&#34;240&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SrfMmL5MqVyJJMuygMjA_hu45160f263fc81e753c1b7fe7beb662f6_19457_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SrfMmL5MqVyJJMuygMjA_hu45160f263fc81e753c1b7fe7beb662f6_19457_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;504&#34;
+		data-flex-basis=&#34;1211px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Let’s assume that we have one main runbook which will just send Message Cards to Teams, but we also have many different runner scripts which will send different kind of messages to Teams.&lt;/p&gt;
+&lt;p&gt;This would make the code quite hard to maintain. Imagine if we want to replace the word “Wörld” with “Zürich” for example. We’d have to do this for each runner script if the variable is stored inside each runner script.&lt;/p&gt;
+&lt;h4 id=&#34;optimized-workaround-1-using-automation-variables&#34;&gt;Optimized Workaround 1 (Using Automation Variables)&lt;/h4&gt;
+&lt;p&gt;Instead, we can just put the code into an Automation Variable as a string. Automation Variables are saved inside the Automation Account but outside of all the runbooks. This effectively gives us a location to store the code once but all runbooks inside that Automation Account will be able to access it.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1MUKW9TSOMNz1gnnQcKeQyA.png&#34;
+	width=&#34;1681&#34;
+	height=&#34;597&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1MUKW9TSOMNz1gnnQcKeQyA_hu6c149f511d2e218ad9a2932b08658834_73454_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1MUKW9TSOMNz1gnnQcKeQyA_hu6c149f511d2e218ad9a2932b08658834_73454_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;281&#34;
+		data-flex-basis=&#34;675px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;In the runner script, we import the Automation Variable using the &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/azure/automation/shared-resources/variables?tabs=azure-powershell#internal-cmdlets-to-access-variables&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;internal Cmdlet&lt;/a&gt;. This is only available in Azure Runbooks and does not require additional authentication.&lt;/p&gt;
+&lt;p&gt;$AutomationVariableCode = Get-AutomationVariable -Name &amp;ldquo;AutomationVariableCode&amp;rdquo; | Out-String&lt;br&gt;
+Invoke-Expression $AutomationVariableCode&lt;/p&gt;
+&lt;p&gt;. .\SendMessageCardMain.ps1&lt;/p&gt;
+&lt;p&gt;There’s no mention of &lt;code&gt;$externalText&lt;/code&gt; inside the runbook but it’s set by &lt;code&gt;Invoke-Expression&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;This allows us to change the value of the variable without touching any of our runner scripts which makes it a lot more scalable and easier to maintain while keeping the correct encoding.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SRNRxJrIZunrddwFIRVKRg.png&#34;
+	width=&#34;1214&#34;
+	height=&#34;241&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SRNRxJrIZunrddwFIRVKRg_hu8b3b51bfdb1e43759be90108b6052381_19163_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SRNRxJrIZunrddwFIRVKRg_hu8b3b51bfdb1e43759be90108b6052381_19163_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;503&#34;
+		data-flex-basis=&#34;1208px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Of course, the Automation Variable could also contain more complex code like a switch statement to define different messages or contain the same message in different language. For demonstration purposes, I kept it simple by just using a single value variable.&lt;/p&gt;
+&lt;p&gt;On the downside, this makes editing the code complicated and error prone, since it’s just a string stored inside a variable without any kind of syntax checking. To tackle that issue, one would need to copy it to a local IDE (e.g. VS Code) each time the code is updated and paste it back into the Automation Variable once it’s done.&lt;/p&gt;
+&lt;h4 id=&#34;optimized-workaround-2-using-powershell-runbooks&#34;&gt;Optimized Workaround 2 (Using PowerShell Runbooks)&lt;/h4&gt;
+&lt;p&gt;What about storing the code in yet another runbook? This would allow for easier editing and testing right in the browser. But is it possible&amp;hellip;? As it turns out, it is!&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1KEZF0gbmFG0gzNvtYMRrg.png&#34;
+	width=&#34;2017&#34;
+	height=&#34;351&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1KEZF0gbmFG0gzNvtYMRrg_hu2a51af41989ae94ed83dbea73120f83b_54690_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1KEZF0gbmFG0gzNvtYMRrg_hu2a51af41989ae94ed83dbea73120f83b_54690_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;574&#34;
+		data-flex-basis=&#34;1379px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1wqc76iVn3V2GHxNTOx8w.png&#34;
+	width=&#34;884&#34;
+	height=&#34;322&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1wqc76iVn3V2GHxNTOx8w_hub09539a59abe0a04ef28a513330bb611_30076_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1wqc76iVn3V2GHxNTOx8w_hub09539a59abe0a04ef28a513330bb611_30076_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;274&#34;
+		data-flex-basis=&#34;658px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;To be able to get the contents/code of what I call the &lt;strong&gt;content runbook&lt;/strong&gt; we need to make sure that the modules &lt;strong&gt;Az.Accounts&lt;/strong&gt; and &lt;strong&gt;Az.Automation&lt;/strong&gt; are installed in our Automation Account.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1azPWChNsXyf25OJAqcoOgQ.png&#34;
+	width=&#34;2792&#34;
+	height=&#34;387&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1azPWChNsXyf25OJAqcoOgQ_hue02207f345e4bba16a99b3f5688f077c_94035_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1azPWChNsXyf25OJAqcoOgQ_hue02207f345e4bba16a99b3f5688f077c_94035_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;721&#34;
+		data-flex-basis=&#34;1731px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1sZzUKlvhywLqZQhTFgIQwg.png&#34;
+	width=&#34;3195&#34;
+	height=&#34;390&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1sZzUKlvhywLqZQhTFgIQwg_hua65cc6657ecb27813df0306c4d75337b_96080_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1sZzUKlvhywLqZQhTFgIQwg_hua65cc6657ecb27813df0306c4d75337b_96080_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;819&#34;
+		data-flex-basis=&#34;1966px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;We also need a &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Managed Identity&lt;/a&gt; to connect to Azure since we’ll be using regular&lt;code&gt;Az*&lt;/code&gt; Cmdlets and not internal ones this time around.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mXMuUMBFEAyxBk9gH7Ad5A.png&#34;
+	width=&#34;2304&#34;
+	height=&#34;1296&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mXMuUMBFEAyxBk9gH7Ad5A_hu7de99e6d55624db6c632667f69153bad_197090_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mXMuUMBFEAyxBk9gH7Ad5A_hu7de99e6d55624db6c632667f69153bad_197090_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;177&#34;
+		data-flex-basis=&#34;426px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Let’s add a little more code to our runner script. My Tenant Id is also stored inside an Automation Variable, thus it’s not visible in the code.&lt;/p&gt;
+&lt;p&gt;$tenantId = Get-AutomationVariable -Name &amp;ldquo;tenantId&amp;rdquo;&lt;br&gt;
+$azAccount = Connect-AzAccount -Identity -TenantId $tenantId&lt;/p&gt;
+&lt;p&gt;$exportRb = Export-AzAutomationRunbook -AutomationAccountName &amp;ldquo;mzz-automation-account-001&amp;rdquo; -ResourceGroupName &amp;ldquo;mzz-rmg-001&amp;rdquo; -Name &amp;ldquo;SendMessageCardContent&amp;rdquo; -OutputFolder $env:temp&lt;/p&gt;
+&lt;p&gt;Get-Content -Path $env:temp\$exportRb -Encoding UTF8 | Out-String | Invoke-Expression&lt;/p&gt;
+&lt;p&gt;. .\SendMessageCardMain.ps1&lt;/p&gt;
+&lt;p&gt;With a Managed Identity, we don’t need to provide any kind of additional authentication. Everything is handled by the Automation Account using the Managed Identity automatically. We only need to provide &lt;code&gt;Connect-AzAccount -Identity -TenantId $tenantId&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;We then export the runbook using &lt;code&gt;Export-AzAutomationRunbook&lt;/code&gt; to &lt;code&gt;$env:temp&lt;/code&gt;. Finally, we import the runbook’s content by using &lt;code&gt;Get-Content&lt;/code&gt; and execute its code by piping it through to &lt;code&gt;Invoke-Expression&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;In case I have lost you at this point, let’s recap very briefly.&lt;/p&gt;
+&lt;p&gt;By using &lt;code&gt;Invoke-Expression&lt;/code&gt; instead of calling the runbook inline, we make sure that the externally stored code is running in the scope of the runner script and not the child runbook, which will keep the encoding intact.&lt;/p&gt;
+&lt;p&gt;And we’re jumping through hoops here by storing the values of the variables in another runbook so that they can be updated without touching each of our runner scripts. If it helps, you can also think about a scenario where you’re hosting some kind of monitoring or reporting solution for different customers inside your own Tenant/Automation Account. Each customer has its own runner script with their own parameters but there’s only one main runbook which contains all the code.&lt;/p&gt;
+&lt;p&gt;If we need to update the script logic, only the main runbook needs to be updated. If we need to make changes to the content of the messages, only the runbook storing these values needs to be updated.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mg0Nja4e5HPo9HbQPgQnA.png&#34;
+	width=&#34;1219&#34;
+	height=&#34;244&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mg0Nja4e5HPo9HbQPgQnA_hu71dafa5ebc1478b4d18648e55377df12_19662_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mg0Nja4e5HPo9HbQPgQnA_hu71dafa5ebc1478b4d18648e55377df12_19662_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;499&#34;
+		data-flex-basis=&#34;1199px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now let’s change the word inside the runbook to something else. Instead of editing an Automation Variable, we can just edit the runbook, which is a lot more user friendly.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1NTgYp7gxGHjy3GN4wNJwMA.png&#34;
+	width=&#34;2019&#34;
+	height=&#34;345&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1NTgYp7gxGHjy3GN4wNJwMA_hu5cbe687375d076b63fe22f93d47eaec6_54546_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1NTgYp7gxGHjy3GN4wNJwMA_hu5cbe687375d076b63fe22f93d47eaec6_54546_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;585&#34;
+		data-flex-basis=&#34;1404px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Don’t forget to publish the runbook. Otherwise, the values won’t be updated. As expected, this works like a charm.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1jYFSVZTopjDmtqdrmufrQ.png&#34;
+	width=&#34;1217&#34;
+	height=&#34;240&#34;
+	srcset=&#34;https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1jYFSVZTopjDmtqdrmufrQ_hu11dd0bea12e3be0cc4551ed15c9e7668_19356_480x0_resize_box_3.png 480w, https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1jYFSVZTopjDmtqdrmufrQ_hu11dd0bea12e3be0cc4551ed15c9e7668_19356_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;507&#34;
+		data-flex-basis=&#34;1217px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If for some reason you don’t want to read your variables into memory in the runner script and do it in the child runbook instead, you can also use the &lt;code&gt;Invoke-Expression&lt;/code&gt; method from there. This works as well, even if the child runbook is called inline by another runbook and the runner script doesn’t have any reference to the special character variables at all.&lt;/p&gt;
+&lt;p&gt;I have no idea why it doesn’t work if special characters are included explicitly in child runbooks though. And it took me quite some time to figure out a workaround for this. I hope that this article is useful to you, if you’ve been struggling with modular runbooks and encoding issues as well.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Bulk Deploy Microsoft Teams Call Flows with PowerShell in Minutes</title>
+        <link>https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/</link>
+        <pubDate>Sat, 18 Feb 2023 17:24:32 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/</guid>
+        <description>&lt;p&gt;The M365 Call Flow Visualizer focuses on retrieving configurations of Teams Auto Attendants and Call Queues which have already been built. And it does so by using PowerShell.&lt;/p&gt;
+&lt;p&gt;But what about the opposite? Can we use PowerShell to create a new call flow from scratch in just a few minutes as well?&lt;/p&gt;
+&lt;p&gt;In this article, I’m going to show you how you can create a basic, yet fully functional call flow with PowerShell. The only thing you’ll need to do yourself in the end is to add users to the Team.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;What is Needed to Build a Call Flow?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Before we get into the script, let’s look at what steps we need to take to build a call flow.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Create resource accounts&lt;/li&gt;
+&lt;li&gt;License resource accounts (and set Usage Location)&lt;/li&gt;
+&lt;li&gt;Assign a phone number (and voice routing policy if it’s a Direct Routing number) to the resource accounts&lt;/li&gt;
+&lt;li&gt;Create a Microsoft 365 Group with a Team (For voice enabled channel and shared voicemail)&lt;/li&gt;
+&lt;li&gt;Configure M365 Group for Follow in Inbox and Show in Outlook&lt;/li&gt;
+&lt;li&gt;Create and configure the Call Queue&lt;/li&gt;
+&lt;li&gt;Assign the Resource Account to the Call Queue&lt;/li&gt;
+&lt;li&gt;Create the Auto Attendant and configure forwarding to the queue during business hours&lt;/li&gt;
+&lt;li&gt;Assign the Resource Account to the Auto Attendant&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;These are quite a few steps to conclude but the hardest part about this is remembering the correct order of all the steps so you can do it as fast as possible. For example, if you forget to set the Usage Location to the same country as the phone number you want to assign, you will have to go back and wait for the change to be propagated.&lt;/p&gt;
+&lt;p&gt;Another example is that you should always start at the back of your call flow. You can’t fully configure a Call Queue if you don’t have the Team or the M365 Group for shared voicemail yet. And you can’t finish configuring your Auto Attendant if you haven’t built the queue before.&lt;/p&gt;
+&lt;p&gt;If you want to learn more about resource accounts or shared voicemail, I suggest the following articles of mine.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489&#34; &gt;Everything You Ever Wanted to Know About Teams Resource Accounts | by martin heusser | Medium&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24&#34; &gt;Everything you ever wanted to know about Microsoft Teams Phone and Shared Voicemail | by martin heusser | Medium&lt;/a&gt;&lt;/p&gt;
+&lt;h4 id=&#34;some-notes-about-thisscript&#34;&gt;Some Notes About This Script&lt;/h4&gt;
+&lt;p&gt;The script follows my personal best practices when building call flows and considers all the aforementioned examples of steppingstones for maximum efficiency.&lt;/p&gt;
+&lt;p&gt;This is not intended to build super complex call flows. Instead, it is just an example of how one can write a deployment script, which does everything from A-Z in an efficient order. It can, however, build multiple call flows in a row.&lt;/p&gt;
+&lt;p&gt;While it would be possible to make it even more efficient by, for example, creating and licensing all the resource accounts from the CSV entries first, then create all the Call Queues and at last all the Auto Attendants, I decided not to pursue this road for the sake of simplicity. Instead, the script will create each call flow after the other, which probably takes slightly longer to complete.&lt;/p&gt;
+&lt;p&gt;There are some steps where we need to wait for the previous steps to complete. For example, when a Resource Account is created, it usually takes a few seconds for the corresponding User Object in Teams to be created as well. Rest assured though; the script will handle all of that on its own. So don’t get spooked if you see some red error messages in PowerShell. These are just standard error messages, where the script tries to query a user which couldn’t be found yet.&lt;/p&gt;
+&lt;p&gt;Because we’re also querying a tenant’s domain names and modify licenses this script requires some additional scopes for Microsoft Graph. So be sure to have a Global Admin account ready to consent to these scopes.&lt;/p&gt;
+&lt;p&gt;Connect-MgGraph -Scopes &amp;ldquo;User.ReadWrite.All&amp;rdquo;, `&lt;br&gt;
+&amp;ldquo;Group.ReadWrite.All&amp;rdquo;, `&lt;br&gt;
+&amp;ldquo;Domain.ReadWrite.All&amp;rdquo;, `&lt;br&gt;
+&amp;ldquo;Organization.ReadWrite.All&amp;rdquo;, `&lt;br&gt;
+&amp;ldquo;Directory.ReadWrite.All&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;To configure the Microsoft 365 Group the script requires the &lt;strong&gt;ExchangeOnlineManagement&lt;/strong&gt; PowerShell Module in addition to MicrosoftTeams and Microsoft.Graph**.** If you don’t have it already, you can use the following command to install it.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Install-Module ExchangeOnlineManagement&lt;/code&gt;&lt;/p&gt;
+&lt;h4 id=&#34;how-does-itwork&#34;&gt;How Does it Work?&lt;/h4&gt;
+&lt;p&gt;In my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer/tree/main/Deployment&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub Repository&lt;/a&gt;, you will find a sample file called “VoiceAppList.csv”. All you need to do is to fill in your information there. And run the script.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1l6dmaJHs10JUjUNsetrVnA.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1l6dmaJHs10JUjUNsetrVnA_hu9800bbf346ca27f81ecfffc2aca8e856_877130_480x0_resize_box_3.png 480w, https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1l6dmaJHs10JUjUNsetrVnA_hu9800bbf346ca27f81ecfffc2aca8e856_877130_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;These are the details which can be passed from the CSV file to the script.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;DepartmentName&lt;br&gt;
+This name of the queue or Team. It will be added to all elements in the call flow: Team, Channel, Resource Accounts, Auto Attendant, Call Queue. For example, if you set “Marketing” as your DepartmentName, your queue will be called “Marketing CQ”.&lt;/li&gt;
+&lt;li&gt;TopLevelNumber&lt;br&gt;
+The number which is called by customers and assigned to the Auto Attendant. It must be an E.164 number. See &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/teams/set-csphonenumberassignment?view=teams-ps#-phonenumber&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this&lt;/a&gt; for more information.&lt;/li&gt;
+&lt;li&gt;NumberType&lt;br&gt;
+This is required for the phone number assignment. Valid values: CallingPlan, OperatorConnect, DirectRouting, &lt;code&gt;$null&lt;/code&gt; . Leave the field empty in the CSV if you don’t want to assign a number just yet.&lt;/li&gt;
+&lt;li&gt;VoiceRoutingPolicyName&lt;br&gt;
+This is only required if you want to assign a Direct Routing number. It’s only needed if the AA should be capable of external transfers later on. It’s only added as a precaution. You can read how to get the name of your voice routing policies &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/skype/get-csonlinevoiceroutingpolicy?view=skype-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;UsageLocation&lt;br&gt;
+This must be the same as the Phone Number if your’re using Calling Plans. E.g. “CH” or “GB”.&lt;/li&gt;
+&lt;li&gt;AgentAlertTime&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/skype/set-cscallqueue?view=skype-ps#-agentalerttime&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Set-CsCallQueue (SkypeForBusiness) | Microsoft Learn&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;TimeoutThreshold&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/skype/set-cscallqueue?view=skype-ps#-timeoutthreshold&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Set-CsCallQueue (SkypeForBusiness) | Microsoft Learn&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;PromptLanguage&lt;br&gt;
+This is the language of the text to speech prompt. See &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/fr-fr/powershell/module/skype/get-csautoattendantsupportedlanguage?view=skype-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this&lt;/a&gt; MS Learn article for more information. You will be prompted by &lt;code&gt;Out-GridView&lt;/code&gt; if you specify an invalid language Id.&lt;/li&gt;
+&lt;li&gt;TimeoutSharedVoicemailPrompt&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/skype/set-cscallqueue?view=skype-ps#-timeoutsharedvoicemailtexttospeechprompt&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Set-CsCallQueue (SkypeForBusiness) | Microsoft Learn&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;AfterHoursDisconnectPrompt&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/skype/new-csautoattendantprompt?view=skype-ps#-texttospeechprompt&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;New-CsAutoAttendantPrompt (SkypeForBusiness) | Microsoft Learn&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;TimeZone&lt;br&gt;
+The time zone of the Auto Attendant. See &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/skype/get-csautoattendantsupportedtimezone?view=skype-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this&lt;/a&gt; MS Learn article for more information. You will be prompted by &lt;code&gt;Out-GridView&lt;/code&gt;if you specify an invalid time zone Id.&lt;/li&gt;
+&lt;li&gt;BusinessHoursStart1&lt;br&gt;
+If none of the business hours fields are populated, the script won’t create an after hours call flow for the Auto Attendant. If only &lt;strong&gt;BusinessHoursStart1&lt;/strong&gt; and &lt;strong&gt;BusinessHoursEnd1&lt;/strong&gt; are populated, the AA will only have one time slot. If &lt;strong&gt;BusinessHoursStart2&lt;/strong&gt; and &lt;strong&gt;BusinessHoursEnd2&lt;/strong&gt; are populated as well, the AA will have two time slots, e.g. lunch break.&lt;br&gt;
+E.g. &lt;code&gt;08:00&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;BusinessHoursEnd1&lt;br&gt;
+E.g. &lt;code&gt;12:15&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;BusinessHoursStart2&lt;br&gt;
+E.g. &lt;code&gt;13:30&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;BusinessHoursEnd2&lt;br&gt;
+E.g. &lt;code&gt;17:45&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;DomainSuffix&lt;br&gt;
+By default, the script will use your tenant’s default domain for resource account UPNs or MailNicknames. If you want to change that, you can specify and domain that’s available in your tenant as &lt;code&gt;-DomainSuffix&lt;/code&gt; . E.g. “example.onmicrosoft.com”.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Running the script will deploy a simple call flow with an Auto Attendant, business hours and one Call Queue which uses a Voice Enabled Channel for each line in the CSV file. Outside of business hours, the Auto Attendants will play a message and disconnect the call.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1XEyqntZvtv72Qxuzf1aNw.png&#34;
+	width=&#34;1073&#34;
+	height=&#34;2737&#34;
+	srcset=&#34;https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1XEyqntZvtv72Qxuzf1aNw_hua85223f6dc30bc4a06aa7c9bdb9501df_173158_480x0_resize_box_3.png 480w, https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1XEyqntZvtv72Qxuzf1aNw_hua85223f6dc30bc4a06aa7c9bdb9501df_173158_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;39&#34;
+		data-flex-basis=&#34;94px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The Call Queues will time out after the amount of seconds which is defined in &lt;code&gt;-TimeoutThreshold&lt;/code&gt; and then forward the call to shared voicemail once the greeting has been played back.&lt;/p&gt;
+&lt;p&gt;The script automatically creates a new Team and a Channel for the Queue as well. I prefer to use dedicated over existing Teams and Channels because not all team members of an existing team are potentially going to answer calls.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1XIhvE9DOsrXKapeR0L3zbA.png&#34;
+	width=&#34;982&#34;
+	height=&#34;398&#34;
+	srcset=&#34;https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1XIhvE9DOsrXKapeR0L3zbA_hu1d56b6c7cc2dc5e3872dd8f85ee44af7_35636_480x0_resize_box_3.png 480w, https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1XIhvE9DOsrXKapeR0L3zbA_hu1d56b6c7cc2dc5e3872dd8f85ee44af7_35636_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;246&#34;
+		data-flex-basis=&#34;592px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When a new Team is created and the Microsoft 365 Group has not existed before, the group is by default hidden from Outlook Clients. Because we want the agents of the queue to have access to the group mailbox in Outlook, the script will automatically enable the Follow in Inbox feature and unhide the group from Outlook Clients.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1RQyp3fLFRTkxE2XWTu8Ng.png&#34;
+	width=&#34;900&#34;
+	height=&#34;671&#34;
+	srcset=&#34;https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1RQyp3fLFRTkxE2XWTu8Ng_hua087515fbd4e346c19a58d90354ed2f4_68608_480x0_resize_box_3.png 480w, https://heusser.pro/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/1RQyp3fLFRTkxE2XWTu8Ng_hua087515fbd4e346c19a58d90354ed2f4_68608_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;134&#34;
+		data-flex-basis=&#34;321px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Shared voicemail is another reason I like to use dedicated groups. With a new group, we can make sure that the only kind of emails received in this group&amp;rsquo;s inbox are voicemails, and we can enable Follow in Inbox without any concern of potentially spamming dozens of other team members by sending all group emails to their personal inboxes.&lt;/p&gt;
+&lt;h4 id=&#34;the-script&#34;&gt;The Script&lt;/h4&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/8b4640590b85da1e1f296b9ef599ae9a.js&#34;&gt;&lt;/script&gt;
+
+&lt;h4 id=&#34;finishing-up&#34;&gt;Finishing Up&lt;/h4&gt;
+&lt;p&gt;While the call flow is technically already able to receive calls after it has been deployed by the script, you’ll still need to add members to the queue. Otherwise, the calls will never be signaled to any agent.&lt;/p&gt;
+&lt;p&gt;Remember that only members of the Team who are also Enterprise Voice Enabled will be added to the queue’s agent list. If you don’t want to wait a few hours for the agent list to update after you have added the members, you might want to check out &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0&#34; &gt;this&lt;/a&gt; article. It explains how to force sync an agent list of Call Queues.&lt;/p&gt;
+&lt;p&gt;As mentioned before, this is a mere example of a very simple call flow. However, if most of your call flows only consist of an Auto Attendant forwarding calls to a Call Queue (Like it’s common in many small businesses), PowerShell can still be immensely helpful to lay the ground works.&lt;/p&gt;
+&lt;p&gt;Naturally, you can still go into TAC and adjust everything to your needs after the script has built your scaffolding. You just won’t have to bother adding resources accounts and associating them with your voice apps etc.&lt;/p&gt;
+&lt;p&gt;Creating Auto Attendants with PowerShell is quite a complex process compared to Call Queues or other Microsoft resources. If you want to adjust my script to your specific needs, a good place to start is the official documentation from Microsoft. As far as I can tell, they recently added updated example scripts which might be helpful.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/skype/new-csautoattendant?view=skype-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;New-CsAutoAttendant (SkypeForBusiness) | Microsoft Learn&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/skype/set-csautoattendant?view=skype-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Set-CsAutoAttendant (SkypeForBusiness) | Microsoft Learn&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Now go ask ChatGPT to write you a script that does the same.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>The Easiest Way to Convert HEIC Images to JPG (on Windows 11)</title>
+        <link>https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/</link>
+        <pubDate>Fri, 10 Feb 2023 21:10:34 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/</guid>
+        <description>&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/1zjYShjgSdDz1plzaJGZAdg.png&#34;
+	width=&#34;1356&#34;
+	height=&#34;1125&#34;
+	srcset=&#34;https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/1zjYShjgSdDz1plzaJGZAdg_hu381e803a51b05180a5ed481bbe7c63b8_538429_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/1zjYShjgSdDz1plzaJGZAdg_hu381e803a51b05180a5ed481bbe7c63b8_538429_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;120&#34;
+		data-flex-basis=&#34;289px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;By now, most people should have heard about HEIC (or HEIF) and HEVC. HEVC — High Efficiency Video Codec is a video codec optimized for 4K content and HEIC is the file name extension for images saved with the High Efficiency Image File Format. Apple iPhones have supported these formats for quite some time now. However, they are mutually exclusive options to each other. Meaning, we can’t use HEVC for videos and JPG for photos. We can only choose if we want to use the new or the legacy formats in iOS.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/12I41bLPo3IZokvwTQrI6Bw.png&#34;
+	width=&#34;750&#34;
+	height=&#34;429&#34;
+	srcset=&#34;https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/12I41bLPo3IZokvwTQrI6Bw_hudf808b2fc0c793d1b6211c2db26e419e_57760_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/12I41bLPo3IZokvwTQrI6Bw_hudf808b2fc0c793d1b6211c2db26e419e_57760_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;174&#34;
+		data-flex-basis=&#34;419px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;I back up / sync all my photos from my iPhone to OneDrive. Often, these are not just vacation pictures but also photos which I might need to share with others. While most modern systems can display and work with HEIF photos without issues, there are still some scenarios for which a JPG is simply better suited.&lt;/p&gt;
+&lt;p&gt;![](*.HEIC image, chances are that the corporate IT department of some companies are lagging behind and might have blocked these AppDownloads. The only solution was to convert the images and send them again.)&lt;/p&gt;
+&lt;p&gt;If you bing “HEIC Converter” you’ll be overwhelmed with the number of websites which claim to offer the best HEIC converter. However, I was looking for a much simpler way. All I want to do is to right click any HEIC image and have it converted to JPG.&lt;/p&gt;
+&lt;p&gt;In this &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b&#34; &gt;post&lt;/a&gt;, I explained how the App &lt;a class=&#34;link&#34; href=&#34;https://www.microsoft.com/store/productId/9PC7BZZ28G0X&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Custom Context Menu&lt;/strong&gt;&lt;/a&gt; can be used to create your own context menu entries in Windows 11.&lt;/p&gt;
+&lt;p&gt;Before we create a custom context menu entry for that, we need to install &lt;a class=&#34;link&#34; href=&#34;https://imagemagick.org/script/download.php#windows&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;ImageMagick&lt;/a&gt;. This is a command line tool which lets you do all kinds of image conversion operations.&lt;/p&gt;
+&lt;p&gt;Once that is installed, create a new custom context menu entry like in this example.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/17irVXYoTCRb4ec79DqMKZA.png&#34;
+	width=&#34;1805&#34;
+	height=&#34;1401&#34;
+	srcset=&#34;https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/17irVXYoTCRb4ec79DqMKZA_hua5cab7776737cd8e42d321b0db32f7b1_155479_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/17irVXYoTCRb4ec79DqMKZA_hua5cab7776737cd8e42d321b0db32f7b1_155479_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;128&#34;
+		data-flex-basis=&#34;309px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Param:&lt;/p&gt;
+&lt;p&gt;&amp;ldquo;cmd /c &amp;ldquo;magick &amp;ldquo;{path}&amp;rdquo; &amp;ldquo;{parent}&amp;rdquo;\{name}.jpg&amp;rdquo;&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;If you like, you can also create a second one which will remove the original HEIC files after they have been converted to JPG.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/1Nm5hmCJ7bnkCXwU8ksqtQ.png&#34;
+	width=&#34;1805&#34;
+	height=&#34;1401&#34;
+	srcset=&#34;https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/1Nm5hmCJ7bnkCXwU8ksqtQ_hu0e29dde0476213328cc69a42206f2c27_156979_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/1Nm5hmCJ7bnkCXwU8ksqtQ_hu0e29dde0476213328cc69a42206f2c27_156979_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;128&#34;
+		data-flex-basis=&#34;309px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Param:&lt;/p&gt;
+&lt;p&gt;&amp;ldquo;cmd /c &amp;ldquo;magick &amp;ldquo;{path}&amp;rdquo; &amp;ldquo;{parent}&amp;rdquo;\{name}.jpg &amp;amp; del &amp;ldquo;{path}&amp;rdquo;&amp;rdquo;&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;Make sure to copy the params exactly as they are as the double quotes are important.&lt;/p&gt;
+&lt;p&gt;Or alternatively, open your custom context menu folder by clicking the folder icon in the upper left corner and create a new *.json file for both the examples.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/1uG8cJdskk9ECyaUlIji2g.png&#34;
+	width=&#34;1810&#34;
+	height=&#34;131&#34;
+	srcset=&#34;https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/1uG8cJdskk9ECyaUlIji2g_hu857589e715b2e43e52fab3b55c9f181d_23107_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/1uG8cJdskk9ECyaUlIji2g_hu857589e715b2e43e52fab3b55c9f181d_23107_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;1381&#34;
+		data-flex-basis=&#34;3316px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Example: Keep Original Files&lt;/p&gt;
+&lt;p&gt;{&lt;br&gt;
+&amp;ldquo;title&amp;rdquo;: &amp;ldquo;HEIC to JPG (Keep Original Files)&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;exe&amp;rdquo;: &amp;ldquo;\&amp;ldquo;C:\\Windows\\System32\\cmd.exe\&amp;rdquo;&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;param&amp;rdquo;: &amp;ldquo;\&amp;ldquo;cmd /c \&amp;ldquo;magick \&amp;quot;{path}\&amp;rdquo; \&amp;quot;{parent}\&amp;rdquo;\\{name}.jpg\&amp;rdquo;\&amp;quot;&amp;quot;,&lt;br&gt;
+&amp;ldquo;icon&amp;rdquo;: &amp;ldquo;\&amp;ldquo;C:\\Users\\marti\\OneDrive\\Bilder\\Icons\\Apps\\Gallery.ico\&amp;rdquo;&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;acceptExts&amp;rdquo;: &amp;ldquo;.heic .heif&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;acceptDirectory&amp;rdquo;: false,&lt;br&gt;
+&amp;ldquo;acceptFile&amp;rdquo;: true,&lt;br&gt;
+&amp;ldquo;acceptMultipleFilesFlag&amp;rdquo;: 1,&lt;br&gt;
+&amp;ldquo;pathDelimiter&amp;rdquo;: &amp;ldquo;&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;paramForMultipleFiles&amp;rdquo;: &amp;ldquo;&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;index&amp;rdquo;: 1&lt;br&gt;
+}&lt;/p&gt;
+&lt;p&gt;Example: Remove Original Files&lt;/p&gt;
+&lt;p&gt;{&lt;br&gt;
+&amp;ldquo;title&amp;rdquo;: &amp;ldquo;HEIC to JPG (Remove Original Files)&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;exe&amp;rdquo;: &amp;ldquo;\&amp;ldquo;C:\\Windows\\System32\\cmd.exe\&amp;rdquo;&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;param&amp;rdquo;: &amp;ldquo;\&amp;ldquo;cmd /c \&amp;ldquo;magick \&amp;quot;{path}\&amp;rdquo; \&amp;quot;{parent}\&amp;rdquo;\\{name}.jpg &amp;amp; del \&amp;quot;{path}\&amp;rdquo;\&amp;quot;\&amp;quot;&amp;quot;,&lt;br&gt;
+&amp;ldquo;icon&amp;rdquo;: &amp;ldquo;\&amp;ldquo;C:\\Users\\marti\\OneDrive\\Bilder\\Icons\\Apps\\Gallery.ico\&amp;rdquo;&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;acceptExts&amp;rdquo;: &amp;ldquo;.heic .heif&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;acceptDirectory&amp;rdquo;: false,&lt;br&gt;
+&amp;ldquo;acceptFile&amp;rdquo;: true,&lt;br&gt;
+&amp;ldquo;acceptMultipleFilesFlag&amp;rdquo;: 1,&lt;br&gt;
+&amp;ldquo;pathDelimiter&amp;rdquo;: &amp;ldquo;&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;paramForMultipleFiles&amp;rdquo;: &amp;ldquo;&amp;rdquo;,&lt;br&gt;
+&amp;ldquo;index&amp;rdquo;: 2&lt;br&gt;
+}&lt;/p&gt;
+&lt;p&gt;Save and restart your PC.&lt;/p&gt;
+&lt;p&gt;The next time you need to quickly convert a HEIC file to JPG, simply right click the file (or files) and select one of the options from your custom context menu.&lt;/p&gt;
+&lt;p&gt;Here’s a short demo of both actions.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/1XWJSmwZXC8KyVyZkhMlEQ.gif&#34;
+	width=&#34;2136&#34;
+	height=&#34;1371&#34;
+	srcset=&#34;https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/1XWJSmwZXC8KyVyZkhMlEQ_hufdaa879136479294cdd020158a2247b3_6482336_480x0_resize_box_1.gif 480w, https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/1XWJSmwZXC8KyVyZkhMlEQ_hufdaa879136479294cdd020158a2247b3_6482336_1024x0_resize_box_1.gif 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;155&#34;
+		data-flex-basis=&#34;373px&#34;
+	
+&gt;
+&lt;img src=&#34;https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/1AYTYRznK6xZ8S4vy8ScayA.gif&#34;
+	width=&#34;2137&#34;
+	height=&#34;1371&#34;
+	srcset=&#34;https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/1AYTYRznK6xZ8S4vy8ScayA_hua337c897a30a500342b8dbc94c10907c_15417590_480x0_resize_box_1.gif 480w, https://heusser.pro/p/the-easiest-way-to-convert-heic-images-to-jpg-on-windows-11-44fad1179e98/1AYTYRznK6xZ8S4vy8ScayA_hua337c897a30a500342b8dbc94c10907c_15417590_1024x0_resize_box_1.gif 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;155&#34;
+		data-flex-basis=&#34;374px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Even though it requires some steps to set up, this is by far the easiest and most convenient way to convert HEIC to JPG. There’s no need to install any annoying shareware or let alone pay for one.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Teams Auto Attendant and Call Queue Spring-Cleaning</title>
+        <link>https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/</link>
+        <pubDate>Wed, 01 Feb 2023 20:43:08 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/</guid>
+        <description>&lt;p&gt;Are your Teams Auto Attendants, Call Queues and Resource Accounts a mess? Or have you lost track of who created which accounts or Voice Apps? You know what they say…&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Too Many Cooks Spoil the Broth.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/1eRzA7AqlES8kea2hT4qYQ.png&#34;
+	width=&#34;1800&#34;
+	height=&#34;813&#34;
+	srcset=&#34;https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/1eRzA7AqlES8kea2hT4qYQ_hubfdd2467c009cadcd5a197ebc4ffde88_981011_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/1eRzA7AqlES8kea2hT4qYQ_hubfdd2467c009cadcd5a197ebc4ffde88_981011_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;221&#34;
+		data-flex-basis=&#34;531px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;It’s not really spring yet but who cares? Cleaning up your environment is always a good thing. Today we’re talking Teams Phone reporting again. In case you’ve missed some of my previous articles, here’s an overview of what handy scripts I already released last year.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485&#34; &gt;Report on Teams Call Queue Opt In Status and Assignment Paths&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/find-all-auto-attendants-and-call-queues-a-user-is-associated-with-16710c3adf01&#34; &gt;Find All Auto Attendants and Call Queues a User is Associated with&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/automatically-render-microsoft-teams-call-flow-diagrams-607b89df4154&#34; &gt;Automatically render Microsoft Teams Call Flow Diagrams&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/how-to-export-a-teams-call-flow-to-png-4d38a8c4f183&#34; &gt;How To Export a Teams Call Flow to PNG&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;I remember that somebody on social media asked me if it was possible to get a list of all Resource Accounts which are not assigned to any Auto Attendant or Call Queue. That’s why I wrote this script in December 2022.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer/blob/main/FindUnassignedResourceAccounts.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;M365CallFlowVisualizer/FindUnassignedResourceAccounts.ps1 at main · mozziemozz/M365CallFlowVisualizer (github.com)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This time, I’ve taken it even further and used the M365 Call Flow Visualizer to not only find unused Resource Accounts but also Call Queues and Auto Attendants which are not in use.&lt;/p&gt;
+&lt;h4 id=&#34;what-qualifies-as-not-inuse&#34;&gt;What Qualifies as Not in Use?&lt;/h4&gt;
+&lt;p&gt;First of all, any Attendant or any Queue which does not have a Resource Account assigned, can’t be called, or transferred to. They exist, but they’re useless until a Resource Account is linked. This means that all Queues and Attendants which do not have a Resource Account assigned, will be included in the report.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/1CV5FzZbrRUB99oY2E3hSdg.png&#34;
+	width=&#34;1775&#34;
+	height=&#34;203&#34;
+	srcset=&#34;https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/1CV5FzZbrRUB99oY2E3hSdg_huf126b39da9dc1a67c4dd4fd47bc62319_22921_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/1CV5FzZbrRUB99oY2E3hSdg_huf126b39da9dc1a67c4dd4fd47bc62319_22921_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;874&#34;
+		data-flex-basis=&#34;2098px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The concept of how Resource Accounts work in combination with Queues and Attendants is explained in detail in the article linked below.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-resource-accounts-2ff9661fc489&#34; &gt;Everything You Ever Wanted to Know About Teams Resource Accounts&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Next, the script checks for all Auto Attendants and Call Queues which have a Resource Account without Phone Number assigned. Of course, these are often nested behind top-level Voice Apps and thus can be called without issues. My new script runs the Visualizer (without creating any diagrams) for all top-level Voice Apps (Attendants and Queues with phone numbers) to create a list of all their nested Voice Apps.&lt;/p&gt;
+&lt;p&gt;Because the Visualizer is also able to read and process user calling settings, it will even detect if a Voice App is set as a user’s forwarding or unanswered target and thus also add it to the list of all nested Voice Apps.&lt;/p&gt;
+&lt;p&gt;If this list does not contain the current Voice App, it will be included in the report as well. In complex environments, this will save you a lot of time since you don’t need to click through all your Voice Apps manually to check them.&lt;/p&gt;
+&lt;p&gt;Last but not least, it uses the same code bits from the original “FindUnassignedResourceAccounts.ps1” script to add any Resource Account which is not associated with any Voice App to the report.&lt;/p&gt;
+&lt;h4 id=&#34;caveats&#34;&gt;Caveats&lt;/h4&gt;
+&lt;p&gt;There’s one caveat though. In theory, you could have a Voice App (or multiple) which are only called internally by their SIP Address. In this case, the Voice App doesn’t need to be nested anywhere and it doesn’t need a phone number either. All it needs is to have a Resource Account assigned. These Apps will be included in the report as well, so make sure to be extra careful before you actually delete anything.&lt;/p&gt;
+&lt;h4 id=&#34;under-thehood&#34;&gt;Under the Hood&lt;/h4&gt;
+&lt;p&gt;During testing, I noticed that Voice Apps which are nested inside a Holiday Call Handling were not detected by the script either. I’ve updated my M365 Call Flow Visualizer so that it will now also expand Auto Attendants and Call Queues which are part of a Holiday transfer action.&lt;/p&gt;
+&lt;p&gt;Initially, I thought I’d only be able to do this for transfers to Call Queues and Auto Attendants. But with some persistence I was able to also display IVRs which are configured as part of a Holiday Call Handling! Yes, really! This means that the Visualizer can now render every possible call flow which can be configured. At least to my knowledge.&lt;/p&gt;
+&lt;p&gt;Here’s an example of the new functionality. We can see that the Call Handling for &lt;strong&gt;National Swiss Holiday&lt;/strong&gt; forwards to the Call Queue &lt;strong&gt;Ext Pstn Fwd Test&lt;/strong&gt; inside the Holiday table. Unfortunately, linking both CQ Nodes together, would have messed up the left-right direction of the subgraph and instead made it a top-down one. Therefore, I had to get creative and just link the call flow of the Voice App to the Holiday Subgraph. As an exception, there are now two nodes for the &lt;strong&gt;Call Queue&lt;/strong&gt; &lt;strong&gt;Ext Pstn Fwd Test&lt;/strong&gt;. One is inside the Holiday table, and one is placed in the main diagram.&lt;/p&gt;
+&lt;p&gt;It’s basically the same for Holiday IVRs (Voice Menus). They include the name of the Holiday Call Handling in which they are configured. This makes it a little easier to spot the corresponding node in the main diagram.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/158SyiEyoyXEYRfJ7qCgaw.png&#34;
+	width=&#34;2034&#34;
+	height=&#34;1696&#34;
+	srcset=&#34;https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/158SyiEyoyXEYRfJ7qCgaw_hu6cd0e337839241ed14f1d32970129584_154756_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/158SyiEyoyXEYRfJ7qCgaw_hu6cd0e337839241ed14f1d32970129584_154756_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;119&#34;
+		data-flex-basis=&#34;287px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If you want to try this for yourself, you need to add the following parameters when you call the script.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-ShowNestedHolidayCallFlows $true&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-ShowNestedHolidayIVRs $true&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;If you’re interested in learning more about how Holidays work in Teams, consider giving this article a read.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743&#34; &gt;Everything You Ever Wanted to Know About Teams Holidays&lt;/a&gt;&lt;/p&gt;
+&lt;h4 id=&#34;example-output&#34;&gt;Example Output&lt;/h4&gt;
+&lt;p&gt;The script will generate a CSV file containing all unused components including the reason as to why they’re not in use.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/1bhf0biV7bVukIdpxKpnfA.png&#34;
+	width=&#34;1619&#34;
+	height=&#34;618&#34;
+	srcset=&#34;https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/1bhf0biV7bVukIdpxKpnfA_huebf7c61395586c2000e69f992e4488e4_135347_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/1bhf0biV7bVukIdpxKpnfA_huebf7c61395586c2000e69f992e4488e4_135347_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;261&#34;
+		data-flex-basis=&#34;628px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;I struggled a bit to find a perfect naming for all the columns. The column “Association” tells you whether the Voice App has a Resource Account assigned or if the Resource Account is assigned to a Voice App. The other ones should be self-explanatory.&lt;/p&gt;
+&lt;h4 id=&#34;free-download&#34;&gt;Free Download&lt;/h4&gt;
+&lt;p&gt;The script is available for free in my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub Repo&lt;/a&gt; of the M365 Call Flow Visualizer. Make sure that you clone it or download the whole repository as Zip file since there are dependencies.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer/blob/main/FindUnusedVoiceAppsAndResourceAccounts.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;M365CallFlowVisualizer/FindUnusedVoiceAppsAndResourceAccounts.ps1 at main · mozziemozz/M365CallFlowVisualizer (github.com)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Please use this script at your own risk, even though the script does not change or delete anything in your environment. (It only uses &lt;code&gt;Get-*&lt;/code&gt; Cmdlets). Just promise to make sure that you verify that any Auto Attendant or Call Queues are indeed not needed anymore before you hit that delete button. Even if you still have to manually confirm and delete unused Voice Apps, I still hope that the output of the script makes it easier for you to identify them at scale.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Forward SMS Verification Codes From iPhone To a Windows PC</title>
+        <link>https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/</link>
+        <pubDate>Sun, 27 Nov 2022 12:46:25 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/</guid>
+        <description>&lt;p&gt;A few days ago, I wrote “&lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6&#34; &gt;How To Handle Password and 2FA Madness Like a Pro&lt;/a&gt;”. In this article I explained why I think it’s better to use a full-fledged password manager instead of a basic Authenticator App such as Microsoft or Google Authenticator to handle your 2FA codes.&lt;/p&gt;
+&lt;p&gt;These types of apps work well when the service for which you want to enable 2FA allows you to add a secret key to your authenticator app. But what about services which don’t support such apps and instead only send you an SMS with a verification code? Unfortunately, there are still some services which will only allow one-time codes sent by SMS.&lt;/p&gt;
+&lt;p&gt;If you’re using an iPhone and a MAC for example, this shouldn’t be too big of an issue since you can seamlessly sync your clipboard across devices (at least that’s what I’ve heard).&lt;/p&gt;
+&lt;p&gt;If you’re using an Android phone together with Phone Link on Windows, you can easily access your SMS from there. But if you use an iPhone and a Windows PC, there’s no way to seamlessly transfer a code received by SMS on your iPhone to your PC.&lt;/p&gt;
+&lt;p&gt;![]( which allows you to transfer content between an iPhone and a Windows PC through their Chromium extension.)&lt;/p&gt;
+&lt;p&gt;When you use this method, you must open the message containing the verification code and manually select and copy it. Once the code is in your iPhone&amp;rsquo;s clipboard, you need to open Clipt and click Send. The copied content will be added to your PCs clipboard automatically and you’re ready to paste it.&lt;/p&gt;
+&lt;p&gt;I didn’t quite like the manual steps involved on the iPhone. So I thought why not tinker around with Siri Shortcuts again, like I did in &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa&#34; &gt;this&lt;/a&gt; article.&lt;/p&gt;
+&lt;h3 id=&#34;siri-automation&#34;&gt;Siri Automation&lt;/h3&gt;
+&lt;h4 id=&#34;building-the-automation&#34;&gt;Building the Automation&lt;/h4&gt;
+&lt;p&gt;The good thing is that there is a trigger for &lt;em&gt;“When I get a message containing &lt;keyword&gt;”.&lt;/em&gt; The bad thing is that there’s no way of running it truly automated. You will still need to confirm running the automation each time it’s triggered.&lt;/p&gt;
+&lt;p&gt;But that’s only one manual interaction on the iPhone compared to four with Clipt (Open messages, copy code, open clipt, send content).&lt;/p&gt;
+&lt;p&gt;I set the trigger to match all messages which contain the string &lt;strong&gt;“verification code”&lt;/strong&gt;. If that should not work for the messages you receive, you can adjust it to your liking or create multiple automations with different words.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1hvOkUTfWoJtXfbbsied89g.png&#34;
+	width=&#34;1125&#34;
+	height=&#34;2436&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1hvOkUTfWoJtXfbbsied89g_hu5b82676aad449807e4a7c3c84bf0a47c_129695_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1hvOkUTfWoJtXfbbsied89g_hu5b82676aad449807e4a7c3c84bf0a47c_129695_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;46&#34;
+		data-flex-basis=&#34;110px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Let’s take a look at the actions. First, we’re going to use the regular expression &lt;code&gt;\d{6,}&lt;/code&gt; to match all strings which consist of only numbers and are at least six digits long.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FUqHjHbQq1UXAqH7gkHug.png&#34;
+	width=&#34;1361&#34;
+	height=&#34;263&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FUqHjHbQq1UXAqH7gkHug_hu4770951244912b439604a7c58dea49a3_61402_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FUqHjHbQq1UXAqH7gkHug_hu4770951244912b439604a7c58dea49a3_61402_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;517&#34;
+		data-flex-basis=&#34;1241px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Then we’re going to create a note in Apple Notes with the extracted verification code. After 60 seconds, we’re going to delete the note.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1KUBIIWC2Zk7hIm6K29sD2A.png&#34;
+	width=&#34;1125&#34;
+	height=&#34;2436&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1KUBIIWC2Zk7hIm6K29sD2A_huacc27952ce482fabbb8d9e4cd0acd40f_357756_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1KUBIIWC2Zk7hIm6K29sD2A_huacc27952ce482fabbb8d9e4cd0acd40f_357756_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;46&#34;
+		data-flex-basis=&#34;110px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;configuring-ios&#34;&gt;Configuring iOS&lt;/h4&gt;
+&lt;p&gt;You might ask yourself what good does it do if the verification code is stored in Apple Notes when I want to access it on my PC?&lt;/p&gt;
+&lt;p&gt;If you configure your Outlook.com or work or school account as the default account for Notes in iOS settings, your notes will automatically synchronize with Microsoft Sticky Notes. Of course, I’m assuming that you’ve already added a Microsoft Account to iOS at this point.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1eK5EzyD2ps2osajFS6Zmw.png&#34;
+	width=&#34;1125&#34;
+	height=&#34;2436&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1eK5EzyD2ps2osajFS6Zmw_hu701ebc559fbb12b62bf7eaacaae64349_231517_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1eK5EzyD2ps2osajFS6Zmw_hu701ebc559fbb12b62bf7eaacaae64349_231517_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;46&#34;
+		data-flex-basis=&#34;110px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;demo-of-the-automation-inaction&#34;&gt;Demo of the Automation in Action&lt;/h4&gt;
+&lt;p&gt;To show off the automation, I just sent myself an SMS from Skype to my mobile number containing the following text.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Here’s your verification code: 456789. Thanks for using it.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;I added the code between other text and added a full stop right after the code to demonstrate how powerful regular expressions are.&lt;/p&gt;
+&lt;p&gt;This is what it looks like on an iPhone. First there will be a notification for the new message. Shortly after, the automation will be triggered, and we’ll need to click it, and then click &lt;em&gt;“Ausführen”&lt;/em&gt; (German for &lt;em&gt;“Run”&lt;/em&gt;).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1Cd58DqlhiHJsmyJ43qnR1Q.gif&#34;
+	width=&#34;886&#34;
+	height=&#34;1920&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1Cd58DqlhiHJsmyJ43qnR1Q_hufa0e164960fd256a060446e2e59dc4e9_8831390_480x0_resize_box_1.gif 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1Cd58DqlhiHJsmyJ43qnR1Q_hufa0e164960fd256a060446e2e59dc4e9_8831390_1024x0_resize_box_1.gif 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;46&#34;
+		data-flex-basis=&#34;110px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;accessing-copied-codes-onwindows&#34;&gt;Accessing Copied Codes on Windows&lt;/h4&gt;
+&lt;p&gt;There are many Apps from which you access to your Sticky Notes on Windows.&lt;/p&gt;
+&lt;p&gt;The most obvious one is &lt;strong&gt;Sticky Notes&lt;/strong&gt; of course.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1gj6ozy5v4BuGa4RWlxETNw.png&#34;
+	width=&#34;648&#34;
+	height=&#34;1035&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1gj6ozy5v4BuGa4RWlxETNw_hu0c1f55614f410c6405fa29f8bace575d_33785_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1gj6ozy5v4BuGa4RWlxETNw_hu0c1f55614f410c6405fa29f8bace575d_33785_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;62&#34;
+		data-flex-basis=&#34;150px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;You can also access them in &lt;strong&gt;Outlook&lt;/strong&gt; or &lt;strong&gt;Outlook on the Web&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1UOcsgxeQRRwdEEur32BwRg.png&#34;
+	width=&#34;1684&#34;
+	height=&#34;873&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1UOcsgxeQRRwdEEur32BwRg_hu049811ba8e08b6af09fb17e2680d30e1_108408_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1UOcsgxeQRRwdEEur32BwRg_hu049811ba8e08b6af09fb17e2680d30e1_108408_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;192&#34;
+		data-flex-basis=&#34;462px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;And finally, they’re also available in your &lt;strong&gt;OneNote&lt;/strong&gt; Feed.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1MYZQMg0ggzjHrsx6lBk0w.png&#34;
+	width=&#34;471&#34;
+	height=&#34;1103&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1MYZQMg0ggzjHrsx6lBk0w_hu3c7f1b97347a656561a5e2e6bf190fb6_44953_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1MYZQMg0ggzjHrsx6lBk0w_hu3c7f1b97347a656561a5e2e6bf190fb6_44953_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;42&#34;
+		data-flex-basis=&#34;102px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;copying-the-verification-code&#34;&gt;Copying the Verification Code&lt;/h4&gt;
+&lt;p&gt;Unfortunately, Stick Notes does not support copying the contents of a note from a right-click.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1T3wMGAbPW9enWGJClr1Q.png&#34;
+	width=&#34;697&#34;
+	height=&#34;489&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1T3wMGAbPW9enWGJClr1Q_hu62e0ecc303454fa148ce57b76f5d15b4_45451_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1T3wMGAbPW9enWGJClr1Q_hu62e0ecc303454fa148ce57b76f5d15b4_45451_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;142&#34;
+		data-flex-basis=&#34;342px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;We need to open the note, select the text, and then copy it.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1vrDPnDLy9MS7pR4ynTxCEw.png&#34;
+	width=&#34;462&#34;
+	height=&#34;471&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1vrDPnDLy9MS7pR4ynTxCEw_hu89a35953cacabfb66c22fb60e0f7b91f_42853_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1vrDPnDLy9MS7pR4ynTxCEw_hu89a35953cacabfb66c22fb60e0f7b91f_42853_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;98&#34;
+		data-flex-basis=&#34;235px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;a class=&#34;link&#34; href=&#34;https://apps.microsoft.com/store/detail/outlook-for-windows/9NRX63209R7B&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;new Outlook&lt;/a&gt; or Outlook on the Web or OneNote allow you to copy the contents of the note using a right-click though.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1w0YaPyh8JvP8zGVeXsMag.png&#34;
+	width=&#34;620&#34;
+	height=&#34;620&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1w0YaPyh8JvP8zGVeXsMag_hu06679e72f657804c1ad6d61349688c44_59910_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1w0YaPyh8JvP8zGVeXsMag_hu06679e72f657804c1ad6d61349688c44_59910_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;100&#34;
+		data-flex-basis=&#34;240px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This also works well in the OneNote (for Windows 10) Feed. While it does work in the new, &lt;a class=&#34;link&#34; href=&#34;https://techcommunity.microsoft.com/t5/microsoft-365-blog/refreshing-the-onenote-app-on-windows/ba-p/3401914&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;refreshed version of OneNote&lt;/a&gt;, it was quite buggy and sluggish for me. I’ll let that slide since that’s an Insider Build.&lt;/p&gt;
+&lt;p&gt;OneNote for Windows 10 is not listed in Microsoft Store Search anymore, but you can still get it from &lt;a class=&#34;link&#34; href=&#34;https://www.microsoft.com/store/productId/9WZDNCRFHVJL&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this&lt;/a&gt; link. I will keep using OneNote for Windows 10 until the new OneNote also supports vertical sections in &lt;a class=&#34;link&#34; href=&#34;https://www.microsoft.com/en-us/microsoft-365/roadmap?filters=&amp;amp;searchterms=100492&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;March 2023&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FhUKm1MGidjVrNEd74YA.png&#34;
+	width=&#34;463&#34;
+	height=&#34;746&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FhUKm1MGidjVrNEd74YA_hua4ddc1710f36b63890470fe470c4fb27_31698_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FhUKm1MGidjVrNEd74YA_hua4ddc1710f36b63890470fe470c4fb27_31698_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;62&#34;
+		data-flex-basis=&#34;148px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Once the code has been copied from Outlook or OneNote for Windows 10, it will be in your clipboard as plain text without any trailing whitespaces or line breaks so that you’re ready to paste it wherever you need it.&lt;/p&gt;
+&lt;p&gt;This was not the case with the new OneNote App. In this case there were two line breaks before the code and one after.&lt;/p&gt;
+&lt;p&gt;While it’s theoretically possible to also copy the code from the classic Outlook App, the experience is not the same as with the modern Outlook or OWA.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1HXrJSz8Q8JxGFYiZ0kGvCw.png&#34;
+	width=&#34;1007&#34;
+	height=&#34;308&#34;
+	srcset=&#34;https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1HXrJSz8Q8JxGFYiZ0kGvCw_hu972e6eb3448d1c7d8c67fd8424cf9f22_25358_480x0_resize_box_3.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1HXrJSz8Q8JxGFYiZ0kGvCw_hu972e6eb3448d1c7d8c67fd8424cf9f22_25358_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;326&#34;
+		data-flex-basis=&#34;784px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When you copy the code from there, it will include additional, unwanted metadata such as the subject and date created.&lt;/p&gt;
+&lt;p&gt;Subject Created Categories&lt;/p&gt;
+&lt;p&gt;456789 So 27.11.2022 11:59&lt;/p&gt;
+&lt;p&gt;I like the experience of copying the verification code from the modern Outlook or OWA the best. It will only show Sticky Notes and allows me to copy the raw code by a right-click. I usually have Outlook open all day anyway so it’s very convenient to just switch from inbox to notes to copy a new verification code.&lt;/p&gt;
+&lt;p&gt;Because the note is only used to store a temporary verification code and we want to avoid clutter, the Automation will remove the note 60 seconds after it has been created. This should give you plenty of time to copy it from your notes.&lt;/p&gt;
+&lt;h3 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h3&gt;
+&lt;p&gt;Both methods, Clipt and Automation + Sticky Notes require manual user interaction, so none of them are perfect. Clipt requires you to do more manual tasks on the phone and Sticky Notes needs more actions on Windows. I like using the Automation + Sticky Notes more because I believe that working on a Desktop with mouse and keyboard is still king in terms of how fast things can get done. I also like that no additional apps or services are required, especially that no Chromium Extension which runs in the background, even when the browser is closed is needed.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Change Business Hours of a Teams Auto Attendant with PowerShell</title>
+        <link>https://heusser.pro/p/change-business-hours-of-a-teams-auto-attendant-with-powershell-ed03a15881d2/</link>
+        <pubDate>Tue, 23 Aug 2022 18:21:59 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/change-business-hours-of-a-teams-auto-attendant-with-powershell-ed03a15881d2/</guid>
+        <description>&lt;p&gt;Changing the business hours on a Teams Auto Attendant can be quite cumbersome. Especially if you have multiple hours a day, like a lunch break. If you’ve been working long enough with Teams, you probably remember how easy it was in Skype for Business Online Admin Center. There, we could just select opening hours from a timetable and be done with it. Nowadays we have to select the start and end time from a drop-down list for each day individually.&lt;/p&gt;
+&lt;p&gt;To speed up this process, I’ve created a PowerShell Script. Right now, there are no parameters. After all, the idea is to be quicker and not make you pick times from a drop-down in PowerShell rather than in TAC.&lt;/p&gt;
+&lt;p&gt;By default, the script will allow you to set a time range for mornings and one for afternoons. These are defined in the variables &lt;code&gt;$tr1&lt;/code&gt; and &lt;code&gt;$tr2&lt;/code&gt; on line 7 and 8. You can adjust them to your liking, as long as they don’t overlap each other. Only 15minute increments are supported. You must use the 24-hour clock system.&lt;/p&gt;
+&lt;p&gt;Edit (08.09.2022): I’ve updated line 16 to look for the CallFlowId of the Auto Attendants CallHandlingAssociation with type “AfterHours” instead of the CallFlow Name matching “After hours call flow”.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/389d9107fdd2cf5f0727c331ec27d636.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;Once you run the script, the defined time ranges will be applied to the Auto Attendant which was selected from the list.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/change-business-hours-of-a-teams-auto-attendant-with-powershell-ed03a15881d2/19tJFZYDGgLaWooIZxwZXUQ.png&#34;
+	width=&#34;1472&#34;
+	height=&#34;382&#34;
+	srcset=&#34;https://heusser.pro/p/change-business-hours-of-a-teams-auto-attendant-with-powershell-ed03a15881d2/19tJFZYDGgLaWooIZxwZXUQ_hu6874f9b06b6209446cc0a32428e6af2b_28012_480x0_resize_box_3.png 480w, https://heusser.pro/p/change-business-hours-of-a-teams-auto-attendant-with-powershell-ed03a15881d2/19tJFZYDGgLaWooIZxwZXUQ_hu6874f9b06b6209446cc0a32428e6af2b_28012_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;385&#34;
+		data-flex-basis=&#34;924px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This works for both, Auto Attendants which already have business hours configured and Auto Attendants which didn’t have business hours already. Your configured after hours call flow (e.g. forward to shared voicemail etc.) will not be impacted/overwritten. It will stay exactly the same as it was.&lt;/p&gt;
+&lt;p&gt;If your call flow has different business hours for specific days, just add more &lt;code&gt;$tr&lt;/code&gt; variables and make sure to add/change them on line 40. For example, if your business closes early on Fridays but has no lunch break, create a &lt;code&gt;$tr3&lt;/code&gt; variable and change &lt;code&gt;-FridayHours @($tr1,$tr2)&lt;/code&gt; to &lt;code&gt;-FridayHours @($tr3)&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;By default, the script will not add any business hours for Saturday and Sunday. This means that the after hours call flow will be active on the weekend. If you also want to configure hours for these days, add them using the switch &lt;code&gt;-SaturdayHours&lt;/code&gt; followed by the array &lt;code&gt;@($tr4,$tr5)&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/change-business-hours-of-a-teams-auto-attendant-with-powershell-ed03a15881d2/1Dwi1PcIhDweQdaV4OSw64w.png&#34;
+	width=&#34;713&#34;
+	height=&#34;133&#34;
+	srcset=&#34;https://heusser.pro/p/change-business-hours-of-a-teams-auto-attendant-with-powershell-ed03a15881d2/1Dwi1PcIhDweQdaV4OSw64w_hu99337b2211c4b60cda8ea3366d0729dc_9052_480x0_resize_box_3.png 480w, https://heusser.pro/p/change-business-hours-of-a-teams-auto-attendant-with-powershell-ed03a15881d2/1Dwi1PcIhDweQdaV4OSw64w_hu99337b2211c4b60cda8ea3366d0729dc_9052_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;536&#34;
+		data-flex-basis=&#34;1286px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;On a final note, when changing business hours via PowerShell, we must use the &lt;code&gt;-Complement&lt;/code&gt; switch. This will invert the time ranges. Meaning that the after hours call flow will be active during times which are outside of what is shown on the timetable. TAC displays the business hours, during which the Auto Attendant is open but it does so on the after hours call flow page. This can be a little misleading. When business hours are set through TAC, the complement flag is automatically enabled.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/change-business-hours-of-a-teams-auto-attendant-with-powershell-ed03a15881d2/12hwGZALSqgnj9JLZEmK8g.png&#34;
+	width=&#34;837&#34;
+	height=&#34;278&#34;
+	srcset=&#34;https://heusser.pro/p/change-business-hours-of-a-teams-auto-attendant-with-powershell-ed03a15881d2/12hwGZALSqgnj9JLZEmK8g_hufd66022d87c00e2ae0cd6917873c74e4_72793_480x0_resize_box_3.png 480w, https://heusser.pro/p/change-business-hours-of-a-teams-auto-attendant-with-powershell-ed03a15881d2/12hwGZALSqgnj9JLZEmK8g_hufd66022d87c00e2ae0cd6917873c74e4_72793_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;301&#34;
+		data-flex-basis=&#34;722px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;I hope this helps you save some time as well.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>How To Add a New Domain to M365 with MS Graph PowerShell</title>
+        <link>https://heusser.pro/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/</link>
+        <pubDate>Thu, 21 Jul 2022 15:16:51 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/</guid>
+        <description>&lt;p&gt;As you might have &lt;a class=&#34;link&#34; href=&#34;https://techcommunity.microsoft.com/t5/microsoft-entra-azure-ad-blog/azure-ad-change-management-simplified/ba-p/2967456&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;heard&lt;/a&gt;, Microsoft will soon be deprecating the MSOnline PowerShell Module. Even though Microsoft is giving us a little bit more time (now after December 2022 instead of June 2022) it’s time to move on and start working with the new, Microsoft.Graph PowerShell Module. I’m already using it in my &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/automatically-render-microsoft-teams-call-flow-diagrams-607b89df4154&#34; &gt;Microsoft 365 Call Flow Visualizer&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Today, I updated a Direct Routing provisioning script which I wrote at work. This script does everything that’s needed to set up Direct Routing in a tenant.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Add the FQDN of the SBC as a new Domain to the customer tenant&lt;/li&gt;
+&lt;li&gt;Add the TXT verification DNS record to our Azure DNS zone&lt;/li&gt;
+&lt;li&gt;Verify/confirm the domain in the customer tenant&lt;/li&gt;
+&lt;li&gt;Create a resource account to &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-activate-fqdn-of-online-pstn-gateway-without-license-85e9ee4ca4cc&#34; &gt;activate the domain&lt;/a&gt; without a license&lt;/li&gt;
+&lt;li&gt;Add the gateway, PSTN usage, voice route and voice routing policy&lt;/li&gt;
+&lt;li&gt;Remove the activation user/resource account&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;prepare-graph-powershell&#34;&gt;Prepare Graph PowerShell&lt;/h4&gt;
+&lt;p&gt;Before you can use Microsoft.Graph PowerShell you need to install the Module.&lt;/p&gt;
+&lt;p&gt;Install-Module Microsoft.Graph&lt;/p&gt;
+&lt;p&gt;This will install all Graph Modules. It’s also possible to install only select modules (e.g. &lt;code&gt;Install-Module Microsoft.Graph.Users&lt;/code&gt;) but since many modules have dependencies (e.g. Authentication etc.) it’s easier to just install all Modules from the get-go.&lt;/p&gt;
+&lt;p&gt;When you connect to Microsoft Graph PowerShell you need to provide the required scopes. For the Cmdlets shown in t his blog article you need at least the following:&lt;/p&gt;
+&lt;p&gt;Connect-MgGraph -Scopes &amp;ldquo;User.ReadWrite.All&amp;rdquo;,&amp;ldquo;Domain.ReadWrite.All&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;If you connect to Graph PowerShell for the first time, you will need to grant consent for the defined scopes. I’ve also defined the scope “Group.ReadWrite.All”, that’s why it also requests access for Read and write all groups.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/1SX5hicBOkwEmlZmJp8tBw.png&#34;
+	width=&#34;541&#34;
+	height=&#34;815&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/1SX5hicBOkwEmlZmJp8tBw_hu7f5f53e697de24f1f005a0e158c9b3ae_59037_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/1SX5hicBOkwEmlZmJp8tBw_hu7f5f53e697de24f1f005a0e158c9b3ae_59037_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;66&#34;
+		data-flex-basis=&#34;159px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Here are the old MSOnline Cmdlets vs the new Microsoft.Graph Cmdlets for the relevant actions.&lt;/p&gt;
+&lt;h4 id=&#34;add-thedomain&#34;&gt;Add the Domain&lt;/h4&gt;
+&lt;p&gt;MSol&lt;/p&gt;
+&lt;p&gt;New-MsolDomain -Name &amp;ldquo;sbc001.domain.com&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;Mg&lt;/p&gt;
+&lt;p&gt;New-MgDomain -BodyParameter @{Id=&amp;ldquo;sbc001domain.com&amp;rdquo;;IsDefault=&amp;ldquo;False&amp;rdquo;}&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;IsDefault&lt;/code&gt; is optional. The domain won’t be added as the new default domain, even if you don’t include this key in the hash table. You can still include it though, it might give you some sort of comfort.&lt;/p&gt;
+&lt;h4 id=&#34;get-the-verification-text&#34;&gt;Get the Verification Text&lt;/h4&gt;
+&lt;p&gt;This was the only one which was a bit tricky since the actual value is hidden in the “AdditionalProperties” property which won’t be shown in the output.&lt;/p&gt;
+&lt;p&gt;Output:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/14I3XovOid37okdOGNmCHYw.png&#34;
+	width=&#34;1486&#34;
+	height=&#34;113&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/14I3XovOid37okdOGNmCHYw_hu337786dcb6830ecf6f4806e4e206aab0_36539_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/14I3XovOid37okdOGNmCHYw_hu337786dcb6830ecf6f4806e4e206aab0_36539_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;1315&#34;
+		data-flex-basis=&#34;3156px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If we use &lt;code&gt;| Format-Lsit&lt;/code&gt; or &lt;code&gt;| Select-Object *&lt;/code&gt; we will see that there’s a property called “AdditionalProperties”.&lt;/p&gt;
+&lt;p&gt;This code, however, will store the verification code in the &lt;code&gt;$MgVerificationCode&lt;/code&gt; variable.&lt;/p&gt;
+&lt;p&gt;Mg&lt;/p&gt;
+&lt;p&gt;$MgVerificationCode = (Get-MgDomainVerificationDnsRecord -DomainId &amp;ldquo;sbc001.domain.com&amp;rdquo; | Where-Object {$_.RecordType -eq &amp;ldquo;Txt&amp;rdquo;}).AdditionalProperties.text&lt;/p&gt;
+&lt;p&gt;Msol&lt;/p&gt;
+&lt;p&gt;With Msol, the code did not include the first “MS=” why I needed to add it to the variable before getting the value. This is not the case with Graph anymore.&lt;/p&gt;
+&lt;p&gt;$MsolVerificationCode = &amp;ldquo;MS=&amp;quot;+ (Get-MsolDomainVerificationDNS -DomainName $FQDNs.Values.FQDN).Label.Split(&amp;rdquo;.&amp;quot;)[0]&lt;/p&gt;
+&lt;h4 id=&#34;verify-thedomain&#34;&gt;Verify the Domain&lt;/h4&gt;
+&lt;p&gt;If you use an Azure DNS zone you can now use Az.DNS to create a new TXT record which contains &lt;code&gt;$MgVerificationCode&lt;/code&gt; as the value.&lt;/p&gt;
+&lt;p&gt;New-AzDnsRecordSet -Name &amp;ldquo;sbc001&amp;rdquo; -RecordType TXT -ResourceGroupName &amp;ldquo;ResourceGroupX&amp;rdquo; -TTL 3600 -ZoneName &amp;ldquo;domain.com&amp;rdquo; -DnsRecords (New-AzDnsRecordConfig -Value $MgVerificationCode)&lt;/p&gt;
+&lt;p&gt;Once the record is created, we can confirm the domain. This usually works within seconds if you use Azure DNS.&lt;/p&gt;
+&lt;p&gt;Mg&lt;/p&gt;
+&lt;p&gt;Confirm-MgDomain -DomainId &amp;ldquo;sbc001.domain.com&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;Msol&lt;/p&gt;
+&lt;p&gt;Confirm-MsolDomain -DomainName &amp;ldquo;sbc001.domain.com&amp;rdquo;&lt;/p&gt;
+&lt;h4 id=&#34;remvoe-theuser&#34;&gt;Remvoe the User&lt;/h4&gt;
+&lt;p&gt;When everything is set up, the activation user can be removed again.&lt;/p&gt;
+&lt;p&gt;Mg&lt;/p&gt;
+&lt;p&gt;Remove-MgUser -UserId $UpnAA&lt;/p&gt;
+&lt;p&gt;Msol&lt;/p&gt;
+&lt;p&gt;Remove-MsolUser -UserPrincipalName $UpnAA -Force&lt;/p&gt;
+&lt;p&gt;While we needed to specify the &lt;code&gt;-Force&lt;/code&gt; parameter with MSol, we don’t need to specify anything when using Microsoft Graph. If you wish to make the script interactive and have a user confirm the deletion when using &lt;code&gt;Remove-MgUser&lt;/code&gt;, you can use the &lt;code&gt;-Confirm&lt;/code&gt; parameter instead.&lt;/p&gt;
+&lt;p&gt;That’s all for today. Don’t fear Microsoft.Graph and happy scripting everybody!&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Create a Dynamic Azure AD Group with all Teams Phone Standard Licensed Users</title>
+        <link>https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/</link>
+        <pubDate>Mon, 28 Mar 2022 15:01:16 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/</guid>
+        <description>&lt;p&gt;When it comes to Azure AD and licensing, we usually use Azure AD Groups to assign certain licenses to group members. It’s an effective way to assign different licenses to different teams within your organization. For example, you could have a group which assigns a Microsoft 365 E5 license to all the IT-Staff.&lt;/p&gt;
+&lt;p&gt;Is there a need to do the opposite? Add all users who have a specific service plan assigned to an Azure AD group? Although this scenario might not be as common as the first one, there’s certainly a use case for it.&lt;/p&gt;
+&lt;p&gt;Think about a Teams call queue in a small to mid-sized firm which distributes incoming calls to, let’s say 5–10 call agents. If none of these agents are able to answer the call within a certain time, the call is then escalated to a second call queue which contains all the company’s Teams Phone Standard enabled users. A call queue can have up to &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/microsoftteams/create-a-phone-system-call-queue#teams-channel&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;two hundred&lt;/a&gt; call agents, if they’re added via a Teams Channel or a group.&lt;/p&gt;
+&lt;p&gt;Instead of adding all phone enabled users manually we can create an Azure AD group which uses a dynamic query to include all users which have the service plan “MCOEV” assigned.&lt;/p&gt;
+&lt;h4 id=&#34;heres-how-to-doit&#34;&gt;Here’s how to do it&lt;/h4&gt;
+&lt;p&gt;First, head over to &lt;a class=&#34;link&#34; href=&#34;https://portal.azure.com/#blade/Microsoft_AAD_IAM/GroupsManagementMenuBlade/AllGroups&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;portal.azure.com&lt;/a&gt; and go to Azure AD, Groups. Then click New group.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1gDIaXRlNKUOM1U71nGgEvg.png&#34;
+	width=&#34;1422&#34;
+	height=&#34;324&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1gDIaXRlNKUOM1U71nGgEvg_huc9b2e618b9b96aa8b6e494a55e689da4_52396_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1gDIaXRlNKUOM1U71nGgEvg_huc9b2e618b9b96aa8b6e494a55e689da4_52396_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;438&#34;
+		data-flex-basis=&#34;1053px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;You can choose between a Microsoft 365 Group or a Security Group. For the Membership type, choose Dynamic User and then Add dynamic query.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1myN3vL9tTOdiDlRKgoQdyQ.png&#34;
+	width=&#34;1035&#34;
+	height=&#34;892&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1myN3vL9tTOdiDlRKgoQdyQ_hu824f2c985134642ae141667afab7730d_87507_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1myN3vL9tTOdiDlRKgoQdyQ_hu824f2c985134642ae141667afab7730d_87507_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;116&#34;
+		data-flex-basis=&#34;278px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Click the Edit button on Rule syntax.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1y3zKCrheFFtZhMuefUHg.png&#34;
+	width=&#34;1556&#34;
+	height=&#34;677&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1y3zKCrheFFtZhMuefUHg_hu6172bfd86123ef115f365a18f9e89ede_67221_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1y3zKCrheFFtZhMuefUHg_hu6172bfd86123ef115f365a18f9e89ede_67221_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;229&#34;
+		data-flex-basis=&#34;551px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now enter the following query and click OK.&lt;/p&gt;
+&lt;p&gt;USER.ASSIGNEDPLANS -ANY (ASSIGNEDPLAN.SERVICEPLANID -EQ &amp;ldquo;4828c8ec-dc2e-4779-b502-87ac9ce28ab7&amp;rdquo; -AND ASSIGNEDPLAN.CAPABILITYSTATUS -EQ &amp;ldquo;ENABLED&amp;rdquo;)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1RWeLgN5BP5RFAkr7lS50Q.png&#34;
+	width=&#34;1257&#34;
+	height=&#34;447&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1RWeLgN5BP5RFAkr7lS50Q_hu1bd13b4dc8c3bab958f42da1688b5b23_41386_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1RWeLgN5BP5RFAkr7lS50Q_hu1bd13b4dc8c3bab958f42da1688b5b23_41386_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;281&#34;
+		data-flex-basis=&#34;674px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The Id we are querying is the Id for the service plan “MCOEV” which can be seen &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/azure/active-directory/enterprise-users/licensing-service-plan-reference&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;. Since we’re looking for the service plan Id, it doesn’t matter if the license is assigned to a user via the Teams Phone Standard add-on, E5 or even Common Area Phone SKU. With the second part of the query (-AND) we’re also making sure, that we’re only including users where the service plan is actually enabled.&lt;/p&gt;
+&lt;p&gt;Click Save.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1HMIASp06A45oOvCFOU4i6g.png&#34;
+	width=&#34;1549&#34;
+	height=&#34;710&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1HMIASp06A45oOvCFOU4i6g_hub7f425d430ba3cdfa0bb2d5b8c5c162c_94707_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1HMIASp06A45oOvCFOU4i6g_hub7f425d430ba3cdfa0bb2d5b8c5c162c_94707_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;218&#34;
+		data-flex-basis=&#34;523px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;And finally, click Create.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1LsdWbsig2hQJzrErXoUTw.png&#34;
+	width=&#34;1026&#34;
+	height=&#34;1166&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1LsdWbsig2hQJzrErXoUTw_huf1b4bdec47b8a4a323475e2d2b31fa0f_95851_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1LsdWbsig2hQJzrErXoUTw_huf1b4bdec47b8a4a323475e2d2b31fa0f_95851_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;87&#34;
+		data-flex-basis=&#34;211px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;It will take a while until all the members have been added. We can check if our rule works by clicking on Dynamic membership rules and navigating to Validate Rules (preview). Let’s add some users and check if they meet the criteria.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1MFwrIBncdH8pWcWrwXFLw.png&#34;
+	width=&#34;1551&#34;
+	height=&#34;872&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1MFwrIBncdH8pWcWrwXFLw_hud61c41663de72d2f9cf20c8bf0c973bf_184490_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1MFwrIBncdH8pWcWrwXFLw_hud61c41663de72d2f9cf20c8bf0c973bf_184490_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;177&#34;
+		data-flex-basis=&#34;426px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;By clicking View details we can examine the query and see exactly why a user will be included or not.&lt;/p&gt;
+&lt;p&gt;Here’s an example of a user where the service plan is assigned and also enabled.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1mz1us2OGznfSo1FaVQG8qA.png&#34;
+	width=&#34;1243&#34;
+	height=&#34;467&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1mz1us2OGznfSo1FaVQG8qA_hu9347a5c5179c7beebff4b079810516a0_71081_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1mz1us2OGznfSo1FaVQG8qA_hu9347a5c5179c7beebff4b079810516a0_71081_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;266&#34;
+		data-flex-basis=&#34;638px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The user Bill has a Teams Phone Standard License but won’t be added to the group because the service plan is disabled.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1xeKYbn5MmNhGywENqNvKdw.png&#34;
+	width=&#34;1553&#34;
+	height=&#34;364&#34;
+	srcset=&#34;https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1xeKYbn5MmNhGywENqNvKdw_huec94ab3e83c7f053d4dd8ff95d1b01dc_58799_480x0_resize_box_3.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1xeKYbn5MmNhGywENqNvKdw_huec94ab3e83c7f053d4dd8ff95d1b01dc_58799_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;426&#34;
+		data-flex-basis=&#34;1023px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now you can use this group to assign it to a call queue. Whenever you license newly created users for the service plan MCOEV, the agent list of the call queue will automatically be updated. From my experience it can take some time until the agent lists of call queues are updated if you’re using group or channel assignments. I will write another article on how to force an agent list sync for call queues which use group assignments. So stay tuned!&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Opt In or Opt Out Teams Call Queue Agents Remotely</title>
+        <link>https://heusser.pro/p/opt-in-or-opt-out-teams-call-queue-agents-remotely-59fe6147f50d/</link>
+        <pubDate>Thu, 24 Mar 2022 21:10:13 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/opt-in-or-opt-out-teams-call-queue-agents-remotely-59fe6147f50d/</guid>
+        <description>&lt;p&gt;This is an interesting one. First of all, let’s give credits where they’re due. This blog post is inspired by &lt;a class=&#34;link&#34; href=&#34;https://alexholmeset.blog/2021/12/13/microsoft-teams-speed-dial-contacts-provisioning/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this post&lt;/a&gt; by the great &lt;a class=&#34;link&#34; href=&#34;https://twitter.com/AlexHolmeset&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Alexander Holmeset.&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The PowerShell code to generate the TOTP is forked from this &lt;a class=&#34;link&#34; href=&#34;https://github.com/ecspresso/TOTPPowerShellModule&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;repo&lt;/a&gt;. And the code from this repo is from this &lt;a class=&#34;link&#34; href=&#34;https://gist.github.com/jonfriesen/234c7471c3e3199f97d5&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;gist&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The code to create the interactive sign in window and to get the token is based of &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/answers/questions/491498/invoke-webrequest-to-get-access-token.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this example&lt;/a&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;disclaimer&#34;&gt;Disclaimer&lt;/h4&gt;
+&lt;p&gt;Before we get into it, I should probably add a disclaimer that this is a proof of concept, at best. You should not use it in production as it uses some bad security practices (like sharing a user&amp;rsquo;s password). For real. Don’t say I didn’t warn you.&lt;/p&gt;
+&lt;h4 id=&#34;whats-this-aboutagain&#34;&gt;What’s this about again?&lt;/h4&gt;
+&lt;p&gt;However, being able to remotely change the opt in status of call queue agents seems to be quite a big ask from several Microsoft Teams admins and customers, so I decided to publish this piece anyway.&lt;/p&gt;
+&lt;h4 id=&#34;changing-opt-in-status-as-auser&#34;&gt;Changing opt in status as a user&lt;/h4&gt;
+&lt;p&gt;Can the opt in status of a user be changed as an admin? The answer is both yes and no. You can’t do it in any delegated way if that’s what you’re asking. You will need the user’s credentials.&lt;/p&gt;
+&lt;p&gt;If you’re a Teams User which is also a call queue agent, there are numerous ways to change your own opt in status for call queues. That is, if your admin allows opting out of queues of course. Let’s go through them.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;From Teams Desktop Client Settings&lt;/li&gt;
+&lt;li&gt;From a Teams Voice Enabled Channel&lt;/li&gt;
+&lt;li&gt;From Teams Web Client Settings&lt;/li&gt;
+&lt;li&gt;From Teams Certified Desk Phones&lt;/li&gt;
+&lt;li&gt;From Teams Mobile Apps (Android / iOS)&lt;/li&gt;
+&lt;li&gt;From the good old &lt;a class=&#34;link&#34; href=&#34;https://aka.ms/cqsettings&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://aka.ms/cqsettings&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;im-an-admin-why-cant-i-change-the-damn-opt-instatus&#34;&gt;I’m an Admin, why can’t I change the damn opt in status?&lt;/h4&gt;
+&lt;p&gt;From a Teams PowerShell session, we can only view the opt in status of a queue’s agents but not change it.&lt;/p&gt;
+&lt;p&gt;(Get-CsCallQueue -Identity xxxxxxxx-f74b-46bb-9743-xxxxxxxxxxxx).Agents&lt;/p&gt;
+&lt;p&gt;This will spit out something like this.&lt;/p&gt;
+&lt;p&gt;ObjectId                             OptIn&lt;br&gt;
+-&amp;mdash;&amp;mdash;-                             &amp;mdash;&amp;ndash;&lt;br&gt;
+xxxxxxxx-4d28-4246-9c08-xxxxxxxxxxxx  True&lt;br&gt;
+xxxxxxxx-8bae-419d-a4eb-xxxxxxxxxxxx  True&lt;br&gt;
+xxxxxxxx-49db-40ee-9d05-xxxxxxxxxxxx False&lt;/p&gt;
+&lt;p&gt;Every attempt to change the returned PowerShell object failed. Miserably.&lt;/p&gt;
+&lt;h3 id=&#34;how-can-we-at-least-do-it-as-the-user-but-remotely&#34;&gt;How can we at least do it as the user, but remotely?&lt;/h3&gt;
+&lt;p&gt;Similar to Alex’s approach of creating Teams Contacts from CLI we also have to acquire a user token to be able to change the opt in status of a user by CLI.&lt;/p&gt;
+&lt;p&gt;In his scenario, he’s mainly thinking about new users or even accounts which are used to sign into common area phones which might not be MFA enabled yet. In our case this might look different because we want to be able to alter the opt in state of already working staff.&lt;/p&gt;
+&lt;p&gt;At first, I also tried to use the AAD Internals PowerShell Module to receive a user token. In this case, however, it turned out to be much more complicated. When a user opens the Calls settings page in Teams, another token is requested from a different issuing service than the one which is used to access all the other features in Teams.&lt;/p&gt;
+&lt;p&gt;After a long night of googling and binging (yes, I was this desperate) I finally was able to get a working token by modifying the example from the Docs Q&amp;amp;A which is linked in the intro of this article.&lt;/p&gt;
+&lt;h4 id=&#34;prerequisites&#34;&gt;Prerequisites&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;Let’s get one thing straight. This approach ONLY works if you know the password of the user and / or the user agrees to share their password or even an MFA secret with you.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I’m thinking of the following scenario: we want to be able to automatically and remotely opt in and opt out agents of call queues based on various criteria such as working schedules etc.&lt;/p&gt;
+&lt;p&gt;To have at least some kind of security, my script is encrypting the password and the MFA secret before it’s saved to the disk. Once they’re encrypted, they can only be decrypted by the same user account and the same Windows system which was used to encrypt them.&lt;/p&gt;
+&lt;p&gt;Why do we need to save the password to disk, when it’s an interactive login process anyway? Well, if you want to automate it by any means, we can use SendKeys to emulate a user&amp;rsquo;s keystrokes. To be completely honest, I only went so far because I wanted to see for myself if I can get it working…&lt;/p&gt;
+&lt;h4 id=&#34;how-the-scriptworks&#34;&gt;How the script works&lt;/h4&gt;
+&lt;p&gt;The script needs a few parameters to work. We need to provide a user principal name, a user object Id and a call queue Id.&lt;/p&gt;
+&lt;p&gt;It will then check the current directory for two or three files depending on whether the -MFA switch is used.&lt;/p&gt;
+&lt;p&gt;You will be prompted to enter the password and the MFA secret if these files do not already exist. The token will be saved to a file once you’ve successfully logged in and acquired one. If the token is expired (happens every few hours or so), you will be prompted for credentials again and the token inside the file will be replaced with the new one. Since we also saved the password to disk, you do not need to enter the password again. The script will decrypt and enter the password by emulating automated keystrokes automatically.&lt;/p&gt;
+&lt;h4 id=&#34;script-modes&#34;&gt;Script modes&lt;/h4&gt;
+&lt;p&gt;The script features a -QueryStatusOnly switch, which will only check if the user is opted in or out of a queue. This will not change anything.&lt;/p&gt;
+&lt;p&gt;For the sake of simplicity, I’ve already stored the values of $UserId, $CallQueueId and $UserName as default values for the parameters. Of course, you can pass your own values if you call the script yourself.&lt;/p&gt;
+&lt;p&gt;In this video, you can see how the username and password are automatically entered, which will ultimately get us the token we need to call the API and query the user’s opt in status.&lt;/p&gt;
+&lt;p&gt;If we run the same thing again, we will already have a valid token.&lt;/p&gt;
+&lt;p&gt;Now let’s take a look at an MFA enabled user. For this, we use the optional -MFA switch. Besides the password, this will also prompt us for the MFA secret. The script then pulls down the PowerShell Script from GitHub and uses it’s code to do some magic and generate the TOTP from the secret.&lt;/p&gt;
+&lt;h4 id=&#34;okbut-how-do-we-opt-a-userout&#34;&gt;Ok — But how do we opt a user out!?&lt;/h4&gt;
+&lt;p&gt;Since we can already see the opt in status of members either in Voice Enabled Channels or via PowerShell this is nothing new. Let’s opt a user out already!&lt;/p&gt;
+&lt;h4 id=&#34;script&#34;&gt;Script&lt;/h4&gt;
+&lt;p&gt;Here’s the script. Please notice that sometimes, activating the AAD Login Window does not always work, so you might have to cancel and run it again. For me, it usually worked the second time I ran the script.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/ce70f39f720bf17632f60a3d6b1be110.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;Here’s an example of running the script with parameters.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;.\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CallQueueOptInOptOutGist&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;ps1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-UserId&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;xxxxxxxx-8bae-419d-a4eb-xxxxxxxxxxxx&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-UserName&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;user@domain.com&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-CallQueueId&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;xxxxxxxx-f74b-46bb-9743-xxxxxxxxxxxx&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Action&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;OptOut&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h4&gt;
+&lt;p&gt;Even though this method uses some real dirty tricks it still get’s the job done. Well, kind of, at least. I really hope that Microsoft will add the functionality to allow Queue managers to remotely opt in or opt out their agents in a more practical way. It’s a real pity that not even the new &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/powershell/module/teams/set-csusercallingsettings?view=teams-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Set-CsUserCallingSettings&lt;/a&gt; or the Boss/Admin feature can do this!&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

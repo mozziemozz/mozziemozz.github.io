@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='I recently came across a very strange issue with Azure Runbooks and UTF-8 encoding. For most IT folks, it’s no issue if everything is in…'>
+<title>Fix UTF-8 Encoding When Calling Azure Child Runbooks Inline</title>
+
+<link rel='canonical' href='https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Fix UTF-8 Encoding When Calling Azure Child Runbooks Inline'>
+<meta property='og:description' content='I recently came across a very strange issue with Azure Runbooks and UTF-8 encoding. For most IT folks, it’s no issue if everything is in…'>
+<meta property='og:url' content='https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/'>
+<meta property='og:site_name' content='HEUSSER.PRO'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2023-03-03T10:03:56&#43;00:00'/><meta property='article:modified_time' content='2023-03-03T10:03:56&#43;00:00'/>
+<meta name="twitter:title" content="Fix UTF-8 Encoding When Calling Azure Child Runbooks Inline">
+<meta name="twitter:description" content="I recently came across a very strange issue with Azure Runbooks and UTF-8 encoding. For most IT folks, it’s no issue if everything is in…">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "kozb6q2xjn");
+    </script>    
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hud7e6b3cccc21b12ddf35b72eb655064d_860969_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🫡</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
+            <h2 class="site-description">Martin Heusser | M365 Apps &amp; Services MVP</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/mozziemozz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://x.com/@mozzeph'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/imprint/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                
+                <span>Imprint</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li>
+      <ol>
+        <li>
+          <ol>
+            <li><a href="#working-with-childrunbooks">Working With Child Runbooks</a></li>
+            <li><a href="#wrong-encoding-in-childrunbooks">Wrong Encoding in Child Runbooks</a></li>
+            <li><a href="#workaround">Workaround</a></li>
+            <li><a href="#optimized-workaround-1-using-automation-variables">Optimized Workaround 1 (Using Automation Variables)</a></li>
+            <li><a href="#optimized-workaround-2-using-powershell-runbooks">Optimized Workaround 2 (Using PowerShell Runbooks)</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/azure-automation/" >
+                Azure Automation
+            </a>
+        
+            <a href="/categories/powershell/" style="background-color: #141e2c; color: #fff;">
+                PowerShell
+            </a>
+        
+            <a href="/categories/umlaute/" >
+                Umlaute
+            </a>
+        
+            <a href="/categories/runbooks/" >
+                Runbooks
+            </a>
+        
+            <a href="/categories/automation/" >
+                Automation
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/">Fix UTF-8 Encoding When Calling Azure Child Runbooks Inline</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            I recently came across a very strange issue with Azure Runbooks and UTF-8 encoding. For most IT folks, it’s no issue if everything is in…
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Mar 03, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    7 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>I recently came across a very strange issue with Azure Runbooks and UTF-8 encoding. For most IT folks, it’s no issue if everything is in English but if you work with German speaking users, chances are that you’re going to run into encoding issues with <strong>Umlaute</strong> or other special characters eventually. For those who have no idea what I’m talking about, Umlaute are special characters like “ä”, “ö” and “ü” which are used very frequently in German.</p>
+<p>The scenario is the following: I have a very simple Azure Runbook which sends a message card to a Teams channel.</p>
+<p>$uri = &ldquo;YourWebhookUrl&rdquo;</p>
+<p>$body = @&rsquo;<br>
+{<br>
+&ldquo;@context&rdquo;: &ldquo;<a class="link" href="https://schema.org/extensions%22"  target="_blank" rel="noopener"
+    >https://schema.org/extensions"</a>,<br>
+&ldquo;@type&rdquo;: &ldquo;MessageCard&rdquo;,<br>
+&ldquo;themeColor&rdquo;: &ldquo;00A4EF&rdquo;,<br>
+&ldquo;title&rdquo;: &ldquo;UTF8 Test&rdquo;,<br>
+&ldquo;text&rdquo;: &ldquo;Hello Wörld!&rdquo;<br>
+}<br>
+&lsquo;@</p>
+<p>Invoke-RestMethod -uri $uri -Method Post -body $body -ContentType &lsquo;application/json; charset=UTF-8&rsquo;</p>
+<p>As you can see, I purposely wrote <strong>“Hello Wörld”</strong> instead of <strong>“Hello World”</strong> to demonstrate this. If the runbook is run directly (meaning, there’s no child runbook involved), there’s no issue at all and the card is sent to Teams using the correct encoding.</p>
+<p><img src="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1Fjfq1GaXyavb7ynoRqqpg.png"
+	width="1209"
+	height="242"
+	srcset="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1Fjfq1GaXyavb7ynoRqqpg_hu2389b36a857bb99be532f7e70b9eb792_19981_480x0_resize_box_3.png 480w, /p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1Fjfq1GaXyavb7ynoRqqpg_hu2389b36a857bb99be532f7e70b9eb792_19981_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="499"
+		data-flex-basis="1199px"
+	
+></p>
+<h4 id="working-with-childrunbooks">Working With Child Runbooks</h4>
+<p>So far so good. In more complex scenarios, you might want to build modular runbooks. An example of that would be where you have some code and some parameters in one runbook (let’s call that <strong>main runbook</strong> or <strong>child runbook</strong>) and have a couple of other runbooks which call your main runbook inline. Let’s call these <strong>runner scripts</strong> because they’re only used to run the main runbook.</p>
+<p>The advantage of such a setup is that you only need to change the code in one place if you need to update it. For example, if the URL of the webhook changes, we only need to edit the main runbook instead of all the other runbooks as well. You can also read more about that concept in this official Microsoft <a class="link" href="https://learn.microsoft.com/en-us/azure/automation/automation-child-runbooks#call-a-child-runbook-by-using-inline-execution"  target="_blank" rel="noopener"
+    >Learn article</a>.</p>
+<h4 id="wrong-encoding-in-childrunbooks">Wrong Encoding in Child Runbooks</h4>
+<p>However, I have found that somehow the encoding gets messed up and special characters are sent to Teams in the wrong format if a child runbook is called inline from another runbook which runs in front of it.</p>
+<p>If you want to call another runbook from any runbook in the same automation account, you can just reference it by its name. All that’s needed is the following code which really just points to another script. Note that you do need to add <code>.ps1</code> at the end of your runbook name.</p>
+<p>. .\SendMessageCardMain.ps1</p>
+<p>It doesn’t make any difference if <a class="link" href="https://learn.microsoft.com/en-us/powershell/scripting/learn/ps101/10-script-modules?view=powershell-7.3"  target="_blank" rel="noopener"
+    >dot sourcing</a> is used or not. The encoding will be wrong in either case.</p>
+<p><img src="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RIQJDWuX87n08U80GxZBlw.png"
+	width="1213"
+	height="241"
+	srcset="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RIQJDWuX87n08U80GxZBlw_hud6f048997161982e95b0c549bee3f3fc_19854_480x0_resize_box_3.png 480w, /p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RIQJDWuX87n08U80GxZBlw_hud6f048997161982e95b0c549bee3f3fc_19854_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="503"
+		data-flex-basis="1207px"
+	
+></p>
+<p>This isn’t just about the message which is sent to Teams through a web request. The encoding is wrong in general and thus when using <code>Write-Output</code> as well.</p>
+<p><img src="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RxMMGmOGbr82SmAmzuh3cg.png"
+	width="1414"
+	height="493"
+	srcset="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RxMMGmOGbr82SmAmzuh3cg_hu15d783e8232fb13d93ba5f80564cf0f1_52876_480x0_resize_box_3.png 480w, /p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1RxMMGmOGbr82SmAmzuh3cg_hu15d783e8232fb13d93ba5f80564cf0f1_52876_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="286"
+		data-flex-basis="688px"
+	
+></p>
+<h4 id="workaround">Workaround</h4>
+<p>The trick is to store the special characters inside a variable which is already known to the runner script (the one which will be submitted to the worker), and then calls the child runbook.</p>
+<p>$externalText = &ldquo;Wörld&rdquo;</p>
+<p>. .\SendMessageCardMain.ps1</p>
+<p>The word which contains the special character is replaced by the variable in the main script (child runbook).</p>
+<p>$uri = &ldquo;YourWebhookUrl&rdquo;</p>
+<p>$body = @&rdquo;<br>
+{<br>
+&ldquo;@context&rdquo;: &ldquo;<a class="link" href="https://schema.org/extensions%22"  target="_blank" rel="noopener"
+    >https://schema.org/extensions"</a>,<br>
+&ldquo;@type&rdquo;: &ldquo;MessageCard&rdquo;,<br>
+&ldquo;themeColor&rdquo;: &ldquo;00A4EF&rdquo;,<br>
+&ldquo;title&rdquo;: &ldquo;UTF8 Test&rdquo;,<br>
+&ldquo;text&rdquo;: &ldquo;Hello $externalText!&rdquo;<br>
+}<br>
+&ldquo;@</p>
+<p>Invoke-RestMethod -uri $uri -Method Post -body $body -ContentType &lsquo;application/json; charset=UTF-8&rsquo;</p>
+<p>This way, the first runbook already knows the correct encoding and it works, just like it did in the first example where we only had one runbook.</p>
+<p><img src="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SrfMmL5MqVyJJMuygMjA.png"
+	width="1211"
+	height="240"
+	srcset="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SrfMmL5MqVyJJMuygMjA_hu45160f263fc81e753c1b7fe7beb662f6_19457_480x0_resize_box_3.png 480w, /p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SrfMmL5MqVyJJMuygMjA_hu45160f263fc81e753c1b7fe7beb662f6_19457_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="504"
+		data-flex-basis="1211px"
+	
+></p>
+<p>Let’s assume that we have one main runbook which will just send Message Cards to Teams, but we also have many different runner scripts which will send different kind of messages to Teams.</p>
+<p>This would make the code quite hard to maintain. Imagine if we want to replace the word “Wörld” with “Zürich” for example. We’d have to do this for each runner script if the variable is stored inside each runner script.</p>
+<h4 id="optimized-workaround-1-using-automation-variables">Optimized Workaround 1 (Using Automation Variables)</h4>
+<p>Instead, we can just put the code into an Automation Variable as a string. Automation Variables are saved inside the Automation Account but outside of all the runbooks. This effectively gives us a location to store the code once but all runbooks inside that Automation Account will be able to access it.</p>
+<p><img src="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1MUKW9TSOMNz1gnnQcKeQyA.png"
+	width="1681"
+	height="597"
+	srcset="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1MUKW9TSOMNz1gnnQcKeQyA_hu6c149f511d2e218ad9a2932b08658834_73454_480x0_resize_box_3.png 480w, /p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1MUKW9TSOMNz1gnnQcKeQyA_hu6c149f511d2e218ad9a2932b08658834_73454_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="281"
+		data-flex-basis="675px"
+	
+></p>
+<p>In the runner script, we import the Automation Variable using the <a class="link" href="https://learn.microsoft.com/en-us/azure/automation/shared-resources/variables?tabs=azure-powershell#internal-cmdlets-to-access-variables"  target="_blank" rel="noopener"
+    >internal Cmdlet</a>. This is only available in Azure Runbooks and does not require additional authentication.</p>
+<p>$AutomationVariableCode = Get-AutomationVariable -Name &ldquo;AutomationVariableCode&rdquo; | Out-String<br>
+Invoke-Expression $AutomationVariableCode</p>
+<p>. .\SendMessageCardMain.ps1</p>
+<p>There’s no mention of <code>$externalText</code> inside the runbook but it’s set by <code>Invoke-Expression</code> .</p>
+<p>This allows us to change the value of the variable without touching any of our runner scripts which makes it a lot more scalable and easier to maintain while keeping the correct encoding.</p>
+<p><img src="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SRNRxJrIZunrddwFIRVKRg.png"
+	width="1214"
+	height="241"
+	srcset="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SRNRxJrIZunrddwFIRVKRg_hu8b3b51bfdb1e43759be90108b6052381_19163_480x0_resize_box_3.png 480w, /p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1SRNRxJrIZunrddwFIRVKRg_hu8b3b51bfdb1e43759be90108b6052381_19163_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="503"
+		data-flex-basis="1208px"
+	
+></p>
+<p>Of course, the Automation Variable could also contain more complex code like a switch statement to define different messages or contain the same message in different language. For demonstration purposes, I kept it simple by just using a single value variable.</p>
+<p>On the downside, this makes editing the code complicated and error prone, since it’s just a string stored inside a variable without any kind of syntax checking. To tackle that issue, one would need to copy it to a local IDE (e.g. VS Code) each time the code is updated and paste it back into the Automation Variable once it’s done.</p>
+<h4 id="optimized-workaround-2-using-powershell-runbooks">Optimized Workaround 2 (Using PowerShell Runbooks)</h4>
+<p>What about storing the code in yet another runbook? This would allow for easier editing and testing right in the browser. But is it possible&hellip;? As it turns out, it is!</p>
+<p><img src="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1KEZF0gbmFG0gzNvtYMRrg.png"
+	width="2017"
+	height="351"
+	srcset="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1KEZF0gbmFG0gzNvtYMRrg_hu2a51af41989ae94ed83dbea73120f83b_54690_480x0_resize_box_3.png 480w, /p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1KEZF0gbmFG0gzNvtYMRrg_hu2a51af41989ae94ed83dbea73120f83b_54690_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="574"
+		data-flex-basis="1379px"
+	
+>
+<img src="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1wqc76iVn3V2GHxNTOx8w.png"
+	width="884"
+	height="322"
+	srcset="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1wqc76iVn3V2GHxNTOx8w_hub09539a59abe0a04ef28a513330bb611_30076_480x0_resize_box_3.png 480w, /p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1wqc76iVn3V2GHxNTOx8w_hub09539a59abe0a04ef28a513330bb611_30076_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="274"
+		data-flex-basis="658px"
+	
+></p>
+<p>To be able to get the contents/code of what I call the <strong>content runbook</strong> we need to make sure that the modules <strong>Az.Accounts</strong> and <strong>Az.Automation</strong> are installed in our Automation Account.</p>
+<p><img src="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1azPWChNsXyf25OJAqcoOgQ.png"
+	width="2792"
+	height="387"
+	srcset="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1azPWChNsXyf25OJAqcoOgQ_hue02207f345e4bba16a99b3f5688f077c_94035_480x0_resize_box_3.png 480w, /p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1azPWChNsXyf25OJAqcoOgQ_hue02207f345e4bba16a99b3f5688f077c_94035_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="721"
+		data-flex-basis="1731px"
+	
+>
+<img src="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1sZzUKlvhywLqZQhTFgIQwg.png"
+	width="3195"
+	height="390"
+	srcset="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1sZzUKlvhywLqZQhTFgIQwg_hua65cc6657ecb27813df0306c4d75337b_96080_480x0_resize_box_3.png 480w, /p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1sZzUKlvhywLqZQhTFgIQwg_hua65cc6657ecb27813df0306c4d75337b_96080_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="819"
+		data-flex-basis="1966px"
+	
+></p>
+<p>We also need a <a class="link" href="https://learn.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview"  target="_blank" rel="noopener"
+    >Managed Identity</a> to connect to Azure since we’ll be using regular<code>Az*</code> Cmdlets and not internal ones this time around.</p>
+<p><img src="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mXMuUMBFEAyxBk9gH7Ad5A.png"
+	width="2304"
+	height="1296"
+	srcset="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mXMuUMBFEAyxBk9gH7Ad5A_hu7de99e6d55624db6c632667f69153bad_197090_480x0_resize_box_3.png 480w, /p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mXMuUMBFEAyxBk9gH7Ad5A_hu7de99e6d55624db6c632667f69153bad_197090_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="177"
+		data-flex-basis="426px"
+	
+></p>
+<p>Let’s add a little more code to our runner script. My Tenant Id is also stored inside an Automation Variable, thus it’s not visible in the code.</p>
+<p>$tenantId = Get-AutomationVariable -Name &ldquo;tenantId&rdquo;<br>
+$azAccount = Connect-AzAccount -Identity -TenantId $tenantId</p>
+<p>$exportRb = Export-AzAutomationRunbook -AutomationAccountName &ldquo;mzz-automation-account-001&rdquo; -ResourceGroupName &ldquo;mzz-rmg-001&rdquo; -Name &ldquo;SendMessageCardContent&rdquo; -OutputFolder $env:temp</p>
+<p>Get-Content -Path $env:temp\$exportRb -Encoding UTF8 | Out-String | Invoke-Expression</p>
+<p>. .\SendMessageCardMain.ps1</p>
+<p>With a Managed Identity, we don’t need to provide any kind of additional authentication. Everything is handled by the Automation Account using the Managed Identity automatically. We only need to provide <code>Connect-AzAccount -Identity -TenantId $tenantId</code> .</p>
+<p>We then export the runbook using <code>Export-AzAutomationRunbook</code> to <code>$env:temp</code>. Finally, we import the runbook’s content by using <code>Get-Content</code> and execute its code by piping it through to <code>Invoke-Expression</code> .</p>
+<p>In case I have lost you at this point, let’s recap very briefly.</p>
+<p>By using <code>Invoke-Expression</code> instead of calling the runbook inline, we make sure that the externally stored code is running in the scope of the runner script and not the child runbook, which will keep the encoding intact.</p>
+<p>And we’re jumping through hoops here by storing the values of the variables in another runbook so that they can be updated without touching each of our runner scripts. If it helps, you can also think about a scenario where you’re hosting some kind of monitoring or reporting solution for different customers inside your own Tenant/Automation Account. Each customer has its own runner script with their own parameters but there’s only one main runbook which contains all the code.</p>
+<p>If we need to update the script logic, only the main runbook needs to be updated. If we need to make changes to the content of the messages, only the runbook storing these values needs to be updated.</p>
+<p><img src="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mg0Nja4e5HPo9HbQPgQnA.png"
+	width="1219"
+	height="244"
+	srcset="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mg0Nja4e5HPo9HbQPgQnA_hu71dafa5ebc1478b4d18648e55377df12_19662_480x0_resize_box_3.png 480w, /p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1mg0Nja4e5HPo9HbQPgQnA_hu71dafa5ebc1478b4d18648e55377df12_19662_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="499"
+		data-flex-basis="1199px"
+	
+></p>
+<p>Now let’s change the word inside the runbook to something else. Instead of editing an Automation Variable, we can just edit the runbook, which is a lot more user friendly.</p>
+<p><img src="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1NTgYp7gxGHjy3GN4wNJwMA.png"
+	width="2019"
+	height="345"
+	srcset="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1NTgYp7gxGHjy3GN4wNJwMA_hu5cbe687375d076b63fe22f93d47eaec6_54546_480x0_resize_box_3.png 480w, /p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1NTgYp7gxGHjy3GN4wNJwMA_hu5cbe687375d076b63fe22f93d47eaec6_54546_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="585"
+		data-flex-basis="1404px"
+	
+></p>
+<p>Don’t forget to publish the runbook. Otherwise, the values won’t be updated. As expected, this works like a charm.</p>
+<p><img src="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1jYFSVZTopjDmtqdrmufrQ.png"
+	width="1217"
+	height="240"
+	srcset="/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1jYFSVZTopjDmtqdrmufrQ_hu11dd0bea12e3be0cc4551ed15c9e7668_19356_480x0_resize_box_3.png 480w, /p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242/1jYFSVZTopjDmtqdrmufrQ_hu11dd0bea12e3be0cc4551ed15c9e7668_19356_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="507"
+		data-flex-basis="1217px"
+	
+></p>
+<p>If for some reason you don’t want to read your variables into memory in the runner script and do it in the child runbook instead, you can also use the <code>Invoke-Expression</code> method from there. This works as well, even if the child runbook is called inline by another runbook and the runner script doesn’t have any reference to the special character variables at all.</p>
+<p>I have no idea why it doesn’t work if special characters are included explicitly in child runbooks though. And it took me quite some time to figure out a workaround for this. I hope that this article is useful to you, if you’ve been struggling with modular runbooks and encoding issues as well.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Automatically Enable Overflow Action on Call Queues if No Agents are Opted In</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Microsoft Teams Self-Service Auto Attendants (Without Premium Connectors)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Manage Microsoft Teams Call Queues with PowerShell (Force-Sync)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/bulk-deploy-microsoft-teams-call-flows-with-powershell-in-minutes-1a78099fe94f/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Bulk Deploy Microsoft Teams Call Flows with PowerShell in Minutes</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/teams-auto-attendant-and-call-queue-spring-cleaning-5e7e6d54b9ca/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Teams Auto Attendant and Call Queue Spring-Cleaning</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "heusser-pro" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2024 HEUSSER.PRO
+    </section>
+    
+    <section class="powerby">
+        
+            Hosted on Microsoft Azure <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
+

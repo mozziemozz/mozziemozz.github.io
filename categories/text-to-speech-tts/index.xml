@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Text-to-Speech (TTS) on HEUSSER.PRO</title>
+        <link>https://heusser.pro/categories/text-to-speech-tts/</link>
+        <description>Recent content in Text-to-Speech (TTS) on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sun, 22 Jan 2023 23:52:58 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/text-to-speech-tts/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>What’s Up with Teams Auto Attendants Suddenly Using a Male Voice for TTS?</title>
+        <link>https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/</link>
+        <pubDate>Sun, 22 Jan 2023 23:52:58 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/</guid>
+        <description>&lt;p&gt;If you’re reading this article; it probably means that you’re wondering why suddenly some of your auto attendants are using male voices in greetings. Just as I was. You might also have noticed, that Microsoft introduced a few new supported languages for Teams auto attendant and call queue text-to-speech (TTS) greetings a couple of months ago.&lt;/p&gt;
+&lt;p&gt;Which is very nice — in theory. But in reality, they messed up, at least to some exent. All newly created or any existing auto attendant where you change the language will now default to a male voice in TTS greetings for many languages. Before that it was female for at least all the languages I had worked with in the past.&lt;/p&gt;
+&lt;h4 id=&#34;why-is-that-aproblem&#34;&gt;Why Is That a Problem?&lt;/h4&gt;
+&lt;p&gt;There’s no option to change the &lt;strong&gt;VoiceId&lt;/strong&gt; (female/male) from Teams Admin Center for either auto attendants or call queues. Call Queues still default to a female VoiceId while auto attendants now default to a male voice for most major languages. This means that if your call flow uses both, attendants and queues (like most call flows do), you will face a rather unpleasant inconsistency. In one part of the call flow, your callers will hear male voices and in other parts they will hear female voices in greetings and announcements. This is not a good user experience.&lt;/p&gt;
+&lt;h4 id=&#34;what-about-powershell&#34;&gt;What About PowerShell?&lt;/h4&gt;
+&lt;p&gt;While it’s possible to change the voice (female/male) on an auto attendant with PowerShell, it’s not possible to do the same for call queues.&lt;/p&gt;
+&lt;p&gt;This means that greetings of call queues will always be synthesized by a female voice. There’s not even a &lt;strong&gt;VoiceId&lt;/strong&gt; property returned by PowerShell, only &lt;strong&gt;LanguageId&lt;/strong&gt;. The only way to verify this is to actually call the queue and listen to the announcements.&lt;/p&gt;
+&lt;p&gt;I did just that. I created a new call queue with &lt;strong&gt;en-US&lt;/strong&gt; set as it’s language and configured a TTS welcome greeting. Once I called the number, I was indeed greeted by a female voice, like it’s always been.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1Ru2MOHg0zn9BLAreKRV5PQ.png&#34;
+	width=&#34;1719&#34;
+	height=&#34;559&#34;
+	srcset=&#34;https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1Ru2MOHg0zn9BLAreKRV5PQ_hubbb8ee9d8a3eb0fed8117c56e0943dc6_71602_480x0_resize_box_3.png 480w, https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1Ru2MOHg0zn9BLAreKRV5PQ_hubbb8ee9d8a3eb0fed8117c56e0943dc6_71602_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;307&#34;
+		data-flex-basis=&#34;738px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Welcome greetings are not the only greetings a caller can hear when interacting with a call queue though. Other scenarios are shared voicemail on timeout or overflow. The funny thing with the welcome TTS greeting is that as of the time of drafting this article, there’s still no option to set or even view this property in PowerShell. Not even in Teams PowerShell 4.9.1.&lt;/p&gt;
+&lt;p&gt;If you’re using TTS welcome greetings on your call queues in production, please read the following section very carefully. &lt;strong&gt;Because there’s no PowerShell support for TTS welcome greetings on call queues yet, any configured TTS welcome greeting will be deleted from your queues, every time you save a queue using PowerShell!&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Don’t believe me? I’m going to show you. Notice how I only changed the overflow threshold. This doesn’t even remotely have anything to do with greetings or language settings.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1XOkmcCdXA0ImkELMcYqjQ.gif&#34;
+	width=&#34;3819&#34;
+	height=&#34;1761&#34;
+	srcset=&#34;https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1XOkmcCdXA0ImkELMcYqjQ_hucee136f1013434a3256a6bde3f0a657a_3622221_480x0_resize_box_1.gif 480w, https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1XOkmcCdXA0ImkELMcYqjQ_hucee136f1013434a3256a6bde3f0a657a_3622221_1024x0_resize_box_1.gif 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;216&#34;
+		data-flex-basis=&#34;520px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;After the queue has been updated by PowerShell, the TTS welcome greeting is gone. For Teams Voice Admins, this means that we either can’t use TTS welcome greetings, if we frequently use PS to update our queues, we can only use TAC to update queues or that we have to think about setting the greeting in TAC again, every time a change was made via PowerShell. None of them are good options and the last of them certainly defeats the purpose of PowerShell entirely. The only real option here is to use an audio file as welcome greeting until Microsoft has fixed this.&lt;/p&gt;
+&lt;h4 id=&#34;what-about-auto-attendants&#34;&gt;What About Auto Attendants?&lt;/h4&gt;
+&lt;p&gt;So far, we’ve established that call queues always use a female voice for TTS greetings. On auto attendants it’s actually possible to change the VoiceId by PowerShell.&lt;/p&gt;
+&lt;p&gt;Here’s a newly created auto attendant with en-US language.&lt;/p&gt;
+&lt;p&gt;$aa =  Get-CsAutoAttendant -Identity 77b1706a-59a8-4832-9f49-f7ff80e0da97&lt;br&gt;
+$aa&lt;/p&gt;
+&lt;p&gt;Identity                 : 77b1706a-59a8-4832-9f49-f7ff80e0da97&lt;br&gt;
+TenantId                 : 4bffbf87-53a0-4fce-b58b-4179cb3a3b7d&lt;br&gt;
+Name                     : Test Voice&lt;br&gt;
+LanguageId               : en-US&lt;br&gt;
+VoiceId                  : Male&lt;br&gt;
+DefaultCallFlow          : Test Voice Default call flow&lt;br&gt;
+Operator                 :&lt;br&gt;
+TimeZoneId               : W. Europe Standard Time&lt;br&gt;
+VoiceResponseEnabled     : False&lt;br&gt;
+CallFlows                : Test Voice After hours call flow&lt;br&gt;
+Schedules                : After hours Test Voice&lt;br&gt;
+CallHandlingAssociations : AfterHours(1)&lt;br&gt;
+Status                   :&lt;br&gt;
+DialByNameResourceId     :&lt;br&gt;
+DirectoryLookupScope     :&lt;br&gt;
+ApplicationInstances     : {}&lt;br&gt;
+AuthorizedUsers          : {}&lt;/p&gt;
+&lt;p&gt;To change the VoiceId we can use the following code.&lt;/p&gt;
+&lt;p&gt;$aa.VoiceId = &amp;ldquo;Female&amp;rdquo;&lt;br&gt;
+Set-CsAutoAttendant -Instance $aa&lt;/p&gt;
+&lt;p&gt;This will return the following output. Notice how the VoiceId changed to Female.&lt;/p&gt;
+&lt;p&gt;Identity                 : 77b1706a-59a8-4832-9f49-f7ff80e0da97&lt;br&gt;
+TenantId                 : 4bffbf87-53a0-4fce-b58b-4179cb3a3b7d&lt;br&gt;
+Name                     : Test Voice&lt;br&gt;
+LanguageId               : en-US&lt;br&gt;
+VoiceId                  : Female&lt;br&gt;
+DefaultCallFlow          : Test Voice Default call flow&lt;br&gt;
+Operator                 :&lt;br&gt;
+TimeZoneId               : W. Europe Standard Time&lt;br&gt;
+VoiceResponseEnabled     : False&lt;br&gt;
+CallFlows                : Test Voice After hours call flow&lt;br&gt;
+Schedules                : After hours Test Voice&lt;br&gt;
+CallHandlingAssociations : AfterHours(1)&lt;br&gt;
+Status                   :&lt;br&gt;
+DialByNameResourceId     :&lt;br&gt;
+DirectoryLookupScope     :&lt;br&gt;
+ApplicationInstances     : {}&lt;br&gt;
+AuthorizedUsers          : {}&lt;/p&gt;
+&lt;p&gt;When I initially discovered this a couple of months ago, I could have sworn that every time I changed something in TAC, that the VoiceId was reset to male. While writing this article I did some further tests, and I was not able to reproduce this 100% or recognize a pattern anymore. Sometimes, it defaulted back to male, sometimes it stayed on female, no matter which setting I changed in TAC. Therefore, I’m going to leave it like that and just tell you to be extra careful, when updating auto attendants through TAC, if you want to keep a female voice. You definitely shouldn’t count on TAC preserving your configured VoiceId.&lt;/p&gt;
+&lt;p&gt;One thing is for sure though, every time you change the language of an auto attendant through TAC, it will default to male for all the affected languages. We’re going to see which they are in a bit.&lt;/p&gt;
+&lt;p&gt;Again, this is very bad news for Teams Voice Admins as this basically restricts us to either using TAC only (if we’re fine with male voices even though call queues use female voices) or using PowerShell only, if we want to make sure that we’re always using a female voice.&lt;/p&gt;
+&lt;h4 id=&#34;why-has-this-happened&#34;&gt;Why Has This Happened?&lt;/h4&gt;
+&lt;p&gt;Auto attendants and call queues use the Azure Cognitive Services TTS API, which is actually available to all Azure customers. You can try the different voices &lt;a class=&#34;link&#34; href=&#34;https://azure.microsoft.com/en-us/products/cognitive-services/text-to-speech/#features&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;. Many of them are also used by Teams. Over time, some of these voices get imporved or some languages even get entirely new voices. I don’t know when it happend exactly, but Microsoft added support for new voices a couple of months ago. For example, there’s an option for my native language, Swiss German available now.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1QTgYIJQa3uUyIBBUwF0elA.png&#34;
+	width=&#34;1125&#34;
+	height=&#34;253&#34;
+	srcset=&#34;https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1QTgYIJQa3uUyIBBUwF0elA_hu07e35648648906500488e3c56c4d4ae1_20523_480x0_resize_box_3.png 480w, https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1QTgYIJQa3uUyIBBUwF0elA_hu07e35648648906500488e3c56c4d4ae1_20523_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;444&#34;
+		data-flex-basis=&#34;1067px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Available voices on Teams auto attendants are not particularly easy to find. There’s &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/skype/new-csautoattendant?view=skype-ps#-voiceid&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this&lt;/a&gt; Learn article which has some info on it though.&lt;/p&gt;
+&lt;p&gt;By using this code, we can get all the available voices for e.g., en-US.&lt;/p&gt;
+&lt;p&gt;PS C:\Temp&amp;gt; (Get-CsAutoAttendantSupportedLanguage -Identity &amp;ldquo;en-US&amp;rdquo;).Voices&lt;/p&gt;
+&lt;p&gt;Name : GuyNeural&lt;br&gt;
+Id   : Male&lt;/p&gt;
+&lt;p&gt;Name : JessaNeural&lt;br&gt;
+Id   : Female&lt;/p&gt;
+&lt;p&gt;Name : AriaNeural&lt;br&gt;
+Id   : Female&lt;/p&gt;
+&lt;p&gt;Name : JennyNeural&lt;br&gt;
+Id   : Female&lt;/p&gt;
+&lt;p&gt;Let’s do the same for Swiss German, which is a newly supported language.&lt;/p&gt;
+&lt;p&gt;PS C:\Temp&amp;gt; (Get-CsAutoAttendantSupportedLanguage -Identity &amp;ldquo;de-CH&amp;rdquo;).Voices&lt;/p&gt;
+&lt;p&gt;Name : JanNeural&lt;br&gt;
+Id   : Male&lt;/p&gt;
+&lt;p&gt;Name : LeniNeural&lt;br&gt;
+Id   : Female&lt;/p&gt;
+&lt;p&gt;The docs say that we can retrieve the default voice used for any language by using this code.&lt;/p&gt;
+&lt;p&gt;PS C:\Temp&amp;gt; (Get-CsAutoAttendantSupportedLanguage -Identity &amp;ldquo;en-US&amp;rdquo;).Voices.Id[0]&lt;br&gt;
+Male&lt;/p&gt;
+&lt;p&gt;I can’t say for sure, but I’m fairly confident that TAC just reads the array of supported languages and uses whichever comes first as the default voice. That’s why en-US or de-CH now have male voices by default now.&lt;/p&gt;
+&lt;p&gt;Here’s a little script I wrote to extract the default VoiceId for all the supported languages and export them to CSV.&lt;/p&gt;
+&lt;p&gt;Connect-MicrosoftTeams&lt;/p&gt;
+&lt;p&gt;$allLanguages = Get-CsAutoAttendantSupportedLanguage&lt;/p&gt;
+&lt;p&gt;$languageVoiceTable = @()&lt;/p&gt;
+&lt;p&gt;foreach ($language in $allLanguages) {&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$currentLanguageVoice = New-Object -TypeName psobject  
+
+$currentLanguageVoice | Add-Member -MemberType NoteProperty -Name &amp;quot;LanguageId&amp;quot; -Value $language.Id  
+$currentLanguageVoice | Add-Member -MemberType NoteProperty -Name &amp;quot;LanguageName&amp;quot; -Value $language.DisplayName  
+$currentLanguageVoice | Add-Member -MemberType NoteProperty -Name &amp;quot;VoiceId&amp;quot; -Value $language.Voices\[0\].Id  
+
+$languageVoiceTable += $currentLanguageVoice  
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;}&lt;/p&gt;
+&lt;p&gt;$languageVoiceTable | Export-Csv -Path C:\Temp\autoAttendantLanguageVoiceTable.csv -Delimiter &amp;ldquo;;&amp;rdquo; -NoTypeInformation -Encoding UTF8 -Force&lt;/p&gt;
+&lt;p&gt;Here’s the full list which should help you identify if you’re using any affected languages.&lt;/p&gt;
+&lt;p&gt;LanguageId LanguageName VoiceId&lt;br&gt;
+ar-EG Arabic (Egypt) Female&lt;br&gt;
+ar-SA Arabic (Saudi Arabia) Female&lt;br&gt;
+bg-BG Bulgarian (Bulgaria) Female&lt;br&gt;
+ca-ES Catalan (Spain) Female&lt;br&gt;
+cs-CZ Czech (Czech) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+cy-GB Welsh (United Kingdom) Female&lt;br&gt;
+da-DK Danish (Denmark) Female&lt;br&gt;
+de-AT German (Austria) Female&lt;br&gt;
+de-CH German (Switzerland) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+de-DE German (Germany) Female&lt;br&gt;
+el-GR Greek (Greek) Female&lt;br&gt;
+en-AU English (Australia) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+en-CA English (Canada) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+en-GB English (United Kingdom) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+en-IE English (Ireland) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+en-IN English (India) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+en-PH English (Philippines) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+en-US English (United States) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+en-ZA English (South Africa) Female&lt;br&gt;
+es-ES Spanish (Spain) Female&lt;br&gt;
+es-MX Spanish (Mexico) Female&lt;br&gt;
+et-EE Estonian (Estonia) Female&lt;br&gt;
+fi-FI Finnish (Finland) Female&lt;br&gt;
+fr-BE French (Belgium) Female&lt;br&gt;
+fr-CA French (Canada) Female&lt;br&gt;
+fr-CH French (Switzerland) Female&lt;br&gt;
+fr-FR French (France) Female&lt;br&gt;
+he-IL Hebrew (Israel) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+hi-IN Hindi (India) Female&lt;br&gt;
+hr-HR Croatian (Croatia) Female&lt;br&gt;
+hu-HU Hungarian (Hungary) Female&lt;br&gt;
+id-ID Indonesian (Indonesia) Female&lt;br&gt;
+it-IT Italian (Italy) Female&lt;br&gt;
+lt-LT Lithuanian (Lithuania) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+lv-LV Latvian (Latvia) Female&lt;br&gt;
+ja-JP Japanese (Japan) Female&lt;br&gt;
+ko-KR Korean (Korea) Female&lt;br&gt;
+nb-NO Norwegian, Bokmål (Norway) Female&lt;br&gt;
+nl-BE Dutch (Belgium) Female&lt;br&gt;
+nl-NL Dutch (Netherlands) Female&lt;br&gt;
+pl-PL Polish (Poland) Female&lt;br&gt;
+pt-BR Portuguese (Brazil) Female&lt;br&gt;
+pt-PT Portuguese (Portugal) Female&lt;br&gt;
+ro-RO Romanian (Romania) Female&lt;br&gt;
+ru-RU Russian (Russia) Female&lt;br&gt;
+sk-SK Slovak (Slovakia) &lt;strong&gt;Male&lt;/strong&gt;&lt;br&gt;
+sl-SI Slovenian (Slovenia) Female&lt;br&gt;
+sv-SE Swedish (Sweden) Female&lt;br&gt;
+th-TH Thai (Thai) Female&lt;br&gt;
+tr-TR Turkish (Turkey) Female&lt;br&gt;
+vi-VN Vietnamese (Vietnam) Female&lt;br&gt;
+zh-CN Chinese (Simplified, PRC) Female&lt;br&gt;
+zh-HK Chinese (Traditional, Hong Kong S.A.R.) Female&lt;br&gt;
+zh-TW Chinese (Traditional, Taiwan) Female&lt;/p&gt;
+&lt;p&gt;You can use this one-liner to check if any of your existing auto attendants are currently using a male voice.&lt;/p&gt;
+&lt;p&gt;Get-CsAutoAttendant -First 1000 | ft Name, LanguageId, VoiceId&lt;/p&gt;
+&lt;p&gt;I really hope that Microsofts recognizes that this is a major annoyance and that they fix it rather sooner than later. In the meantime, I hope that I was able to provide you with some useful insight and hope that it helps you keeping the problem in check.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

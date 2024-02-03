@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>REST API on HEUSSER.PRO</title>
+        <link>https://heusser.pro/categories/rest-api/</link>
+        <description>Recent content in REST API on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Tue, 11 Oct 2022 16:10:04 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/rest-api/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>How To Handle Microsoft Graph Paging in PowerShell</title>
+        <link>https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/</link>
+        <pubDate>Tue, 11 Oct 2022 16:10:04 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/</guid>
+        <description>&lt;p&gt;Even though Microsoft Graph has been around for some years now, I’m going out on a limb here and say that it’s still quite new to a lot of engineers. This article won’t cover basic topics like what Graph is or how to get started. It focuses on a rather specific topic with which I struggled with at first: &lt;strong&gt;pagination (also known as paging&lt;/strong&gt;).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1Wt4AThn1lsDlW0eFYohd9g.jpeg&#34;
+	width=&#34;2288&#34;
+	height=&#34;2037&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1Wt4AThn1lsDlW0eFYohd9g_hudbbf0a83c75b03d5ec7871acd25b2d95_287947_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1Wt4AThn1lsDlW0eFYohd9g_hudbbf0a83c75b03d5ec7871acd25b2d95_287947_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;112&#34;
+		data-flex-basis=&#34;269px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;As the name suggests, we’re talking about multiple pages of results, if a response is too large for one request/response or if the page size is “hardcoded” by Microsoft. Microsoft also offers a &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/odata/client/pagination&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;dedicated article&lt;/a&gt; on Microsoft Learn about that.&lt;/p&gt;
+&lt;p&gt;For example, if we want to query all the users in an Azure AD tenant and that tenant has 10&#39;000 users, it wouldn’t make sense to return all these objects in a single request.&lt;/p&gt;
+&lt;p&gt;Let’s continue with the example of querying an organization’s Azure AD users. The official documentation, which also includes a note about the default page size can be found &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/graph/api/user-list?view=graph-rest-1.0&amp;amp;tabs=http#optional-query-parameters&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The default and maximum page sizes are 100 and 999 user objects respectively.&lt;/p&gt;
+&lt;p&gt;This means that if we make a request like this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$aadUsers2&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;Invoke-RestMethod&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Uri&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;https://graph.microsoft.com/v1.0/users&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Headers&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$Header&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Method&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Get&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-ContentType&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;application/json&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Graph will only return the first 100 users, even though we didn’t include any filter in the request URL.&lt;/p&gt;
+&lt;p&gt;If there are less than 100 users, all users will be returned of course. We can see that this is the case because the variable &lt;code&gt;$aadUsers2&lt;/code&gt; does not contain an &lt;code&gt;@odata.nextLink&lt;/code&gt; property.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1BcaLfQ6GqY3RFXEIseFjGQ.png&#34;
+	width=&#34;913&#34;
+	height=&#34;148&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1BcaLfQ6GqY3RFXEIseFjGQ_hu9d49e63c44685280b5b1596c7a3d854f_16077_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1BcaLfQ6GqY3RFXEIseFjGQ_hu9d49e63c44685280b5b1596c7a3d854f_16077_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;616&#34;
+		data-flex-basis=&#34;1480px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Because Microsoft Graph uses the OData (&lt;a class=&#34;link&#34; href=&#34;https://www.odata.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Open Data Protocol&lt;/a&gt;) for their REST API, we can also specify the page size by including the &lt;code&gt;$top&lt;/code&gt; filter. In fact, I need to use this to simulate and demonstrate paging because I don’t have more than 100 users in my test tenant.&lt;/p&gt;
+&lt;p&gt;In this example, I’m using &lt;code&gt;?`$top=5&lt;/code&gt; to make Graph only return 5 objects per page. The ` before the $ sign is needed to escape the character.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$aadUsers&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;Invoke-RestMethod&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Uri&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;https://graph.microsoft.com/v1.0/users?\&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;`$&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;top=5&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Headers&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$Header&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Method&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Get&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-ContentType&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;application/json&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Here we can see that the result now includes an &lt;code&gt;@odata.nextLink&lt;/code&gt; property. If a Get request is made to this URL, we will receive the next 5 users.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1fPtkKakBcKkyHil6QVY9w.png&#34;
+	width=&#34;1057&#34;
+	height=&#34;134&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1fPtkKakBcKkyHil6QVY9w_hu2834aaacf57483c47254cd2d661eecc6_14862_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1fPtkKakBcKkyHil6QVY9w_hu2834aaacf57483c47254cd2d661eecc6_14862_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;788&#34;
+		data-flex-basis=&#34;1893px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;In a more realistic scenario, a tenant may have tens of thousands of Azure AD users though. So, setting the top filter to 999 is more realistic but still wouldn’t return all the users. But what if we really need to get all the users?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;How can we keep requesting the next page until we have received all the pages/objects?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I’ve come up with a very simple solution for this. We’ll just use a do-until loop in PowerShell which will keep requesting the next page via the URL returned by the &lt;code&gt;@odata.nextLink&lt;/code&gt; until there’s no &lt;code&gt;@odata.nextLink&lt;/code&gt; property anymore. Once it’s done, we’ll have all the users in the &lt;code&gt;$allPages&lt;/code&gt; variable. And finally, we set the initial variable &lt;code&gt;$aadUsers&lt;/code&gt; to the value of &lt;code&gt;$allPages&lt;/code&gt;.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mozziemozz/070c44a49274159f66c8b42fb3a2bbf1.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;Please be aware that you will need to include your own Authorization Header before you are able to make any requests towards Microsoft Graph. A very comprehensive guide about that can be found &lt;a class=&#34;link&#34; href=&#34;https://adamtheautomator.com/powershell-graph-api/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt; for example.&lt;/p&gt;
+&lt;p&gt;For most of these commands, like getting users, there are also PowerShell Modules and Cmdlets available. However, I like to use PowerShell web requests (&lt;code&gt;Invoke-RestMethod&lt;/code&gt; ) to reduce dependencies. This way, I don’t need to install any modules if I ever need to run this code from another system or a serverless Azure Function, for example.&lt;/p&gt;
+&lt;p&gt;Let me know what you think. Do you think that’s useful, or have you found a better way to handle paging in Microsoft Graph?&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='The purpose of a call queue in Teams is to distribute incoming calls to multiple call agents. Every call queue stores its own “Agent List”…'>
+<title>Microsoft Teams Call Queue Agent Lists (And how to Force-Sync them)</title>
+
+<link rel='canonical' href='https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Microsoft Teams Call Queue Agent Lists (And how to Force-Sync them)'>
+<meta property='og:description' content='The purpose of a call queue in Teams is to distribute incoming calls to multiple call agents. Every call queue stores its own “Agent List”…'>
+<meta property='og:url' content='https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/'>
+<meta property='og:site_name' content='HEUSSER.PRO'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2022-04-10T10:13:53&#43;00:00'/><meta property='article:modified_time' content='2022-04-10T10:13:53&#43;00:00'/>
+<meta name="twitter:title" content="Microsoft Teams Call Queue Agent Lists (And how to Force-Sync them)">
+<meta name="twitter:description" content="The purpose of a call queue in Teams is to distribute incoming calls to multiple call agents. Every call queue stores its own “Agent List”…">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "kozb6q2xjn");
+    </script>    
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hud7e6b3cccc21b12ddf35b72eb655064d_860969_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🫡</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
+            <h2 class="site-description">Martin Heusser | M365 Apps &amp; Services MVP</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/mozziemozz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://x.com/@mozzeph'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/imprint/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                
+                <span>Imprint</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li>
+      <ol>
+        <li>
+          <ol>
+            <li><a href="#agent-listtypes">Agent List Types</a></li>
+            <li><a href="#summary-andcaveats">Summary and Caveats</a></li>
+            <li><a href="#agent-listsync">Agent List Sync</a></li>
+            <li><a href="#force-agent-list-sync-usingtac">Force Agent List Sync using TAC</a></li>
+            <li><a href="#force-agent-list-sync-by-powershell">Force Agent List Sync by PowerShell</a></li>
+            <li><a href="#addendum">Addendum</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/call-queues/" >
+                Call Queues
+            </a>
+        
+            <a href="/categories/microsoft-teams/" >
+                Microsoft Teams
+            </a>
+        
+            <a href="/categories/teams-phone/" >
+                Teams Phone
+            </a>
+        
+            <a href="/categories/powershell/" style="background-color: #141e2c; color: #fff;">
+                PowerShell
+            </a>
+        
+            <a href="/categories/teams-admin-center/" >
+                Teams Admin Center
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/">Microsoft Teams Call Queue Agent Lists (And how to Force-Sync them)</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            The purpose of a call queue in Teams is to distribute incoming calls to multiple call agents. Every call queue stores its own “Agent List”…
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Apr 10, 2022</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    8 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>The purpose of a call queue in Teams is to distribute incoming calls to multiple call agents. Every call queue stores its own “Agent List” which is basically just an array of Microsoft 365 users object Ids. Incoming Teams or PSTN calls are then distributed to the call queue’s agents. In this post, we’ll take a look at the types of agent lists which are available and how to configure them. We’ll also explore some useful tips how to cope with unexpected behavior during configuration.</p>
+<h4 id="agent-listtypes">Agent List Types</h4>
+<p>There are three (or four, depending how you look at it) different ways of adding Agents to a queue</p>
+<ol>
+<li>Direct user assignments</li>
+</ol>
+<p>Users are assigned by display name and will be visible directly in a queue’s settings. This method is suitable for small teams because you can see who’s in the queue in TAC without checking the group members in M365 Admin or AAD. Since you can’t control the order agents will be added in when using a group or channel based agent list, direct assignments are crucial when your queue is using serial routing. <a class="link" href="https://docs.microsoft.com/en-us/microsoftteams/create-a-phone-system-call-queue#users-and-groups"  target="_blank" rel="noopener"
+    >You can add up to 20 agents individually.</a></p>
+<p><img src="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1JnhguYQCBAml6b1TDgAiA.png"
+	width="1383"
+	height="927"
+	srcset="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1JnhguYQCBAml6b1TDgAiA_huf325dbf47a900a129970d3ed520bbd40_55457_480x0_resize_box_3.png 480w, /p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1JnhguYQCBAml6b1TDgAiA_huf325dbf47a900a129970d3ed520bbd40_55457_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="149"
+		data-flex-basis="358px"
+	
+></p>
+<p>2. Group assignments</p>
+<p>With group assignments, you can add up to 200 agents but you can’t control the order in which the agents are added. Thus, you can’t control the order in which the users are signaled by the queue when using serial routing either. Based on my testing, the order of the agent list will correspond to the order in which the users show up when viewing it in AAD. Although it might not be a common scenario, you can even add multiple groups to the list. <a class="link" href="https://docs.microsoft.com/en-us/microsoftteams/create-a-phone-system-call-queue#users-and-groups"  target="_blank" rel="noopener"
+    >All common group types are supported.</a></p>
+<p><img src="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/17ssSjJFxHxXZTdtm8BpupQ.png"
+	width="1380"
+	height="923"
+	srcset="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/17ssSjJFxHxXZTdtm8BpupQ_hu7eae838453589cf1c0c2f64dce6882d5_58726_480x0_resize_box_3.png 480w, /p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/17ssSjJFxHxXZTdtm8BpupQ_hu7eae838453589cf1c0c2f64dce6882d5_58726_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="149"
+		data-flex-basis="358px"
+	
+></p>
+<p>3. Combination of direct and groups</p>
+<p>If you want to use a group but still need to add other users which are not a member of this group, you can add them individually. Here I’ve got a group called “CQ Agents 1” which has two members.</p>
+<p><img src="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1Dkc15OvPzERAne0L7pTXgA.png"
+	width="1109"
+	height="292"
+	srcset="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1Dkc15OvPzERAne0L7pTXgA_hu36e48e243e13c7cbca14017e7bcfdeaa_43594_480x0_resize_box_3.png 480w, /p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1Dkc15OvPzERAne0L7pTXgA_hu36e48e243e13c7cbca14017e7bcfdeaa_43594_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="379"
+		data-flex-basis="911px"
+	
+></p>
+<p>I’ve also added Mike and Bobby as individual agents. Of course. the queue will add Mike only once.</p>
+<p><img src="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1r2hQr9rHxDqI24577P61lg.png"
+	width="1380"
+	height="1251"
+	srcset="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1r2hQr9rHxDqI24577P61lg_hu1b4ec12460c75d422e3c76349a322169_74195_480x0_resize_box_3.png 480w, /p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1r2hQr9rHxDqI24577P61lg_hu1b4ec12460c75d422e3c76349a322169_74195_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="110"
+		data-flex-basis="264px"
+	
+></p>
+<p>Unfortunately, querying the queue’s agents only yields object Ids and no display names.</p>
+<p>(Get-CsCallQueue -Identity a11d15d3-79d8-4bd2-8a35-xxxxxxxxxxxx).Agents</p>
+<p>Output:</p>
+<pre><code>ObjectId                             OptIn  
+--------                             -----  
+76606d0b-4d28-4246-9c08-xxxxxxxxxxxx  True This is Bobby's Object Id  
+9a7c1bb4-49db-40ee-9d05-xxxxxxxxxxxx  True This is Mike's Object Id  
+fa19b242-8bae-419d-a4eb-xxxxxxxxxxxx  True This is Wendy's Object Id
+</code></pre>
+<p>As you can see, individually added agents will be first in the list, just like TAC is displaying it (individual agents above groups).</p>
+<p>I have now replaced the direct assignment of Mike with Wendy and placed her on top.</p>
+<p><img src="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1ua3yDYWFbd0Z2T5OKyeBIQ.png"
+	width="1276"
+	height="360"
+	srcset="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1ua3yDYWFbd0Z2T5OKyeBIQ_hu0f0795e399129c16044556ce1e814e5d_21328_480x0_resize_box_3.png 480w, /p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1ua3yDYWFbd0Z2T5OKyeBIQ_hu0f0795e399129c16044556ce1e814e5d_21328_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="354"
+		data-flex-basis="850px"
+	
+></p>
+<p>When we query the agent list again, we can see that Wendy is on top now, even though she would be added last if we’re using just a group.</p>
+<pre><code>ObjectId                             OptIn  
+--------                             -----  
+fa19b242-8bae-419d-a4eb-xxxxxxxxxxxx  True This is Wendy's Object Id  
+76606d0b-4d28-4246-9c08-xxxxxxxxxxxx  True This is Bobby's Object Id  
+9a7c1bb4-49db-40ee-9d05-xxxxxxxxxxxx  True This is Mike's Object Id
+</code></pre>
+<p>4. Teams channel assignment</p>
+<p>The third and last option is to use a Teams Channel. In this case, the group type obviously needs to be a Team. <a class="link" href="https://docs.microsoft.com/en-us/microsoftteams/create-a-phone-system-call-queue#teams-channel"  target="_blank" rel="noopener"
+    >Private or shared channels are not supported.</a> From an agent list perspective this method is the same as a group-based assignment, except that you can’t add individual members or multiple groups as well.</p>
+<h4 id="summary-andcaveats">Summary and Caveats</h4>
+<p>In order for a user to be added as an agent, Enterprise Voice must be enabled. <strong>Having a Teams Phone Standard license is not enough</strong>. Unfortunately, there’s no straightforward way of checking if EV is enabled in TAC.</p>
+<p>You might think that the “Phone System” Column in Teams Users will tell you that but that’s actually just evaluating if the user is licensed for Teams Phone Standard. (I hope Microsoft updates the column name at some point…).</p>
+<p><img src="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1o3uFzdE2500fMsfRDgRo3Q.png"
+	width="1273"
+	height="126"
+	srcset="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1o3uFzdE2500fMsfRDgRo3Q_hu22c1b9f043e8478a11c245ca9343627f_14076_480x0_resize_box_3.png 480w, /p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1o3uFzdE2500fMsfRDgRo3Q_hu22c1b9f043e8478a11c245ca9343627f_14076_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="1010"
+		data-flex-basis="2424px"
+	
+></p>
+<p>When you try to add a user which is not EV enabled to a queue, TAC will throw an error message:</p>
+<p><img src="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1onUinLhMf93WDYAt0S0g.png"
+	width="568"
+	height="101"
+	srcset="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1onUinLhMf93WDYAt0S0g_huff7c9e611c141b86924e16387f3a1f5e_14069_480x0_resize_box_3.png 480w, /p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1onUinLhMf93WDYAt0S0g_huff7c9e611c141b86924e16387f3a1f5e_14069_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="562"
+		data-flex-basis="1349px"
+	
+></p>
+<p>This is the only way I know of to check if a user is EV enabled or not through a GUI based tool. It’s easy in PS though:</p>
+<p>Get-CsOnlineUser -Identity <a class="link" href="mailto:bill@domain.com" >bill@domain.com</a> | ft DisplayName,FeatureTypes,EnterpriseVoiceEnabled</p>
+<p>Again, having a Teams Phone service plan, does not mean EV is enabled by default. A user’s feature types can be read from the .FeatureTypes attribute (Teams PS 4.x.x and later).</p>
+<pre><code>DisplayName FeatureTypes         EnterpriseVoiceEnabled  
+----------- ------------         ----------------------  
+Bill Stearn {PhoneSystem, Teams}                  False
+</code></pre>
+<p>Does this mean we can only add groups to an agent list if all the members are already EV enabled? Certainly not. In this case, only EV enabled members will be added to a queue but you won’t see any warnings or errors if your group contains users without EV.</p>
+<p>I’ve added Bill to the “CQ Agents 1” group:</p>
+<p><img src="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1pTf4EjM79Dcv21SuFa1IPQ.png"
+	width="1107"
+	height="212"
+	srcset="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1pTf4EjM79Dcv21SuFa1IPQ_hu648445925f7993484e5b1bdae7fd899f_39328_480x0_resize_box_3.png 480w, /p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1pTf4EjM79Dcv21SuFa1IPQ_hu648445925f7993484e5b1bdae7fd899f_39328_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="522"
+		data-flex-basis="1253px"
+	
+></p>
+<p>Let’s check our queue again by storing it’s properties in the variable <code>$cq</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$cq</span> <span class="p">=</span> <span class="nb">Get-CsCallQueue</span> <span class="n">-Identity</span> <span class="n">a11d15d3</span><span class="p">-</span><span class="n">79d8</span><span class="p">-</span><span class="n">4bd2</span><span class="p">-</span><span class="n">8a35-xxxxxxxxxxxx</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>By accessing $cq.DistributionListsLastExpanded we can verify that the queue has indeed updated its agent list when we saved it.</p>
+<p><img src="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1MP0g1DqtuGySqfMbguKw.png"
+	width="1059"
+	height="28"
+	srcset="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1MP0g1DqtuGySqfMbguKw_huc8eb3d54e1a48fd2b3501f0f3c7361d2_28909_480x0_resize_box_3.png 480w, /p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1MP0g1DqtuGySqfMbguKw_huc8eb3d54e1a48fd2b3501f0f3c7361d2_28909_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="3782"
+		data-flex-basis="9077px"
+	
+></p>
+<p>As expected, the object Id of bill does not show up when we check $cq.Agents. I’ve also removed the direct assignments, that’s why we only see two object Ids now.</p>
+<pre><code>ObjectId                             OptIn  
+--------                             -----  
+fa19b242-8bae-419d-a4eb-xxxxxxxxxxxx  True That's Wendy's Object Id  
+9a7c1bb4-49db-40ee-9d05-xxxxxxxxxxxx  True That's Mike's Object Id
+</code></pre>
+<p>What’s interesting is that even though the direct assignments were removed, the queue remembered the specific order we defined using direct assignments before. Wendy is still above mike.</p>
+<p>No matter in which way the agents are added, in the end, all EV enabled agents will always be stored in one single array on the queue’s properties in the “Agents” attribute.</p>
+<h4 id="agent-listsync">Agent List Sync</h4>
+<p>Now you know what types of agent lists you can have and how to configure them. Let’s talk about syncing agent lists. With direct assignments, it’s easy. Every time you add or remove an agent and save the queue, the agent list is updated immediately.</p>
+<p>If you’re adding a group which already has a bunch of users in it, that’s no problem either. But what about if you add a Team or a group which does not have any members yet, or if you add new users to an existing group which is already linked to a queue?</p>
+<p>I created a new, empty Team called “PS Test CQ” and added it to the queue’s agent list. As expected, TAC now says that this queue has zero agents.</p>
+<p><img src="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1TnPbQ99tL2GNctNLkDd9A.png"
+	width="1850"
+	height="253"
+	srcset="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1TnPbQ99tL2GNctNLkDd9A_hu646a022f1882af0a05cc9564812e24f2_18519_480x0_resize_box_3.png 480w, /p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1TnPbQ99tL2GNctNLkDd9A_hu646a022f1882af0a05cc9564812e24f2_18519_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="731"
+		data-flex-basis="1754px"
+	
+></p>
+<p>So, let’s head over to Teams and add some members. After a browser refresh, TAC still shows zero call agents. Let’s check again with PowerShell:</p>
+<p>(Get-CsCallQueue -Identity a11d15d3-79d8-4bd2-8a35-xxxxxxxxxxxx) | ft Name, DistributionListsLastExpanded, Agents</p>
+<p>Although the output at least tells us when the agent list was last synchronized, it also shows no agents:</p>
+<pre><code>Name       DistributionListsLastExpanded Agents  
+----       ----------------------------- ------  
+PS Test CQ 04/10/2022 09:12:22 +00:00    {}
+</code></pre>
+<p>I don’t know the exact interval Teams uses to sync call queue agent lists. But I’m guessing it checks every few hours or so. Is there a way to force a sync?</p>
+<h4 id="force-agent-list-sync-usingtac">Force Agent List Sync using TAC</h4>
+<p>If we’re doing it via TAC, we must change any value of the queue to be able to save it. Otherwise, the submit button will be greyed out.</p>
+<p><img src="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1Cuo5HASr68JnCdmDDLpxKQ.png"
+	width="1224"
+	height="725"
+	srcset="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1Cuo5HASr68JnCdmDDLpxKQ_hu55b79e8fe22f4e58ff39313479940ce6_58789_480x0_resize_box_3.png 480w, /p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1Cuo5HASr68JnCdmDDLpxKQ_hu55b79e8fe22f4e58ff39313479940ce6_58789_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="168"
+		data-flex-basis="405px"
+	
+></p>
+<p>If you want to do it via TAC, I recommend changing a non-critical value like up the overflow threshold value by 1 and submit.</p>
+<p><img src="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1rCOHPX3fUTdnLRivr8ckdQ.png"
+	width="666"
+	height="536"
+	srcset="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1rCOHPX3fUTdnLRivr8ckdQ_hu597fdd23ac8a5c39e462678be0b8b5ce_33211_480x0_resize_box_3.png 480w, /p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1rCOHPX3fUTdnLRivr8ckdQ_hu597fdd23ac8a5c39e462678be0b8b5ce_33211_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="124"
+		data-flex-basis="298px"
+	
+></p>
+<p>This will submit the new configuration which will also update the agent list. Now our queue has 1 agent (the one we added to the Team earlier).</p>
+<p><img src="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1Y80efOkZInQnO0FtDwHNMw.png"
+	width="1731"
+	height="137"
+	srcset="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1Y80efOkZInQnO0FtDwHNMw_hu1469c17f83b6982290c065d940933f48_12731_480x0_resize_box_3.png 480w, /p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/1Y80efOkZInQnO0FtDwHNMw_hu1469c17f83b6982290c065d940933f48_12731_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="1263"
+		data-flex-basis="3032px"
+	
+></p>
+<p>To minimize service impact, remember to revert the change back to its original value and submit again.</p>
+<p>Since TAC evaluates if you changed anything before you’re allowed to save the queue and you always have to save the queue twice to force a sync, this is a pretty cumbersome way to do it.</p>
+<h4 id="force-agent-list-sync-by-powershell">Force Agent List Sync by PowerShell</h4>
+<p><strong>Update 05.04.2023</strong></p>
+<blockquote>
+<p>I wrote a new function to make this even easier. Please check out this article.</p>
+</blockquote>
+<blockquote>
+<p><a class="link" href="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552" >Manage Microsoft Teams Call Queues with PowerShell (Force-Sync) | by martin heusser | Apr, 2023 | Medium</a></p>
+</blockquote>
+<p><strong>/Update</strong></p>
+<p>Luckily, PowerShell allows us to save queues, even if none of the values have changed. To test this, I’ve added another EV enabled user to the Team.</p>
+<p>With this little code snippet, we will get all our call queues and set the OverflowThreshold value to the exact same value which was returned by PowerShell.</p>
+<script src="https://gist.github.com/mozziemozz/10283870a4485a30ae9792da12f9a91b.js"></script>
+
+<p>To use Set-CsCallQueue we need to provide at least one property and a value which should be changed. But unlike TAC, PS doesn’t care if the new value is the same as the old value. Hence, we only need to touch each queue once.</p>
+<p>Tip: If you only want to sync queues which have no agents at all, just change the first line to:</p>
+<p>$callQueues = Get-CsCallQueue | Where-Object {$_.Agents.Count -lt 1}</p>
+<p>After running this foreach loop, our queue now shows two agents, and all the other queues settings remain unchanged.</p>
+<p><img src="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/13kP8m8OOxnADWJlDOpjQ.png"
+	width="1735"
+	height="145"
+	srcset="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/13kP8m8OOxnADWJlDOpjQ_hua2c95b01bccdaa4696c51456e5ea792d_13395_480x0_resize_box_3.png 480w, /p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/13kP8m8OOxnADWJlDOpjQ_hua2c95b01bccdaa4696c51456e5ea792d_13395_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="1196"
+		data-flex-basis="2871px"
+	
+></p>
+<h4 id="addendum">Addendum</h4>
+<p>There’s also a Cmdlet called “<a class="link" href="https://docs.microsoft.com/es-es/powershell/module/skype/sync-csonlineapplicationinstance?view=skype-ps"  target="_blank" rel="noopener"
+    >Sync-CsOnlineApplicationInstance</a>”. Microsoft says the following:</p>
+<blockquote>
+<p>Use the Sync-CsOnlineApplicationInstance cmdlet to sync the application instance from Azure Active Directory into Agent Provisioning Service.</p>
+</blockquote>
+<p>Based on my testing, this had no effect on a queue&rsquo;s agent list. Since it’s also the only Cmdlet containing *Sync-Cs* in its name, I assume that there currently is no easier workaround as the one described by me in this blog post.</p>
+<p>I hope that this information is useful to you when planning and deploying Microsoft Teams Phone solutions. But most importantly, I hope that you don’t get chills when all your queues show up with no agents even though you long added the Team or group members!</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Manage Microsoft Teams Call Queues with PowerShell (Force-Sync)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Advanced Teams Auto Attendant Troubleshooting</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Pick Up Held and Join Active Calls for Boss/Delegate Scenarios in Microsoft Teams</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How to Validate Phone Number Assignments in Teams (in Bulk)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">PowerShell Script: Set Emergency Location for Unassigned Numbers in Teams</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "heusser-pro" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2024 HEUSSER.PRO
+    </section>
+    
+    <section class="powerby">
+        
+            Hosted on Microsoft Azure <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
+
