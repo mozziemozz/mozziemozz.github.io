@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='This blog post includes a code sample to test and validate dynamic Entra ID group membership queries.'>
+<title>Test Entra ID Dynamic Group Queries with PowerShell</title>
+
+<link rel='canonical' href='https://heusser.pro/p/test-entra-id-dynamic-group-queries-with-powershell-cv29crjhsbzc/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Test Entra ID Dynamic Group Queries with PowerShell'>
+<meta property='og:description' content='This blog post includes a code sample to test and validate dynamic Entra ID group membership queries.'>
+<meta property='og:url' content='https://heusser.pro/p/test-entra-id-dynamic-group-queries-with-powershell-cv29crjhsbzc/'>
+<meta property='og:site_name' content='HEUSSER.PRO'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-03-04T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2024-03-04T00:00:00&#43;00:00'/><meta property='og:image' content='https://heusser.pro/p/test-entra-id-dynamic-group-queries-with-powershell-cv29crjhsbzc/cover.png' />
+<meta name="twitter:title" content="Test Entra ID Dynamic Group Queries with PowerShell">
+<meta name="twitter:description" content="This blog post includes a code sample to test and validate dynamic Entra ID group membership queries."><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://heusser.pro/p/test-entra-id-dynamic-group-queries-with-powershell-cv29crjhsbzc/cover.png' />
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "kozb6q2xjn");
+    </script>    
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hud7e6b3cccc21b12ddf35b72eb655064d_860969_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🫡</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
+            <h2 class="site-description">Martin Heusser | M365 Apps &amp; Services MVP</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/mozziemozz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://x.com/@mozzeph'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/imprint/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                
+                <span>Imprint</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#rule-validation-in-entra-id">Rule Validation in Entra ID</a></li>
+    <li><a href="#rule-validation">Rule Validation</a>
+      <ol>
+        <li><a href="#script-example">Script Example</a></li>
+        <li><a href="#result">Result</a></li>
+      </ol>
+    </li>
+    <li><a href="#summary">Summary</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/test-entra-id-dynamic-group-queries-with-powershell-cv29crjhsbzc/">
+                <img src="/p/test-entra-id-dynamic-group-queries-with-powershell-cv29crjhsbzc/cover_hu8d01b4376ad519464820b909c1a39d06_181115_800x0_resize_box_3.png"
+                        srcset="/p/test-entra-id-dynamic-group-queries-with-powershell-cv29crjhsbzc/cover_hu8d01b4376ad519464820b909c1a39d06_181115_800x0_resize_box_3.png 800w, /p/test-entra-id-dynamic-group-queries-with-powershell-cv29crjhsbzc/cover_hu8d01b4376ad519464820b909c1a39d06_181115_1600x0_resize_box_3.png 1600w"
+                        width="800" 
+                        height="267" 
+                        loading="lazy"
+                        alt="Featured image of post Test Entra ID Dynamic Group Queries with PowerShell" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/test-entra-id-dynamic-group-queries-with-powershell-cv29crjhsbzc/">Test Entra ID Dynamic Group Queries with PowerShell</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            This blog post includes a code sample to test and validate dynamic Entra ID group membership queries.
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Mar 04, 2024</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    3 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>Dynamic groups in Entra ID are extremely powerful. That also means that updating a query of an existing group is not always an easy task. Making a mistake in an updated query could lead to really big problems. Especially when dynamic groups are used to assign licenses or control access to certain resources. Imagine making a mistake where suddenly all users lose their license because they&rsquo;re not included in the group after the query has been changed.</p>
+<p>Luckily, something like this never happened to me. And nor should it happen to you. That&rsquo;s why I&rsquo;m sharing a script sample to validate rules before you update a query or even create a group for that matter.</p>
+<h2 id="rule-validation-in-entra-id">Rule Validation in Entra ID</h2>
+<p>The Entra ID portal already features a rule validation feature which is still in preview. This is great if you just need to check a handful of users. It even gives you detailed results on each of your expressions.</p>
+<p><img src="/p/test-entra-id-dynamic-group-queries-with-powershell-cv29crjhsbzc/image.png"
+	width="1677"
+	height="1019"
+	srcset="/p/test-entra-id-dynamic-group-queries-with-powershell-cv29crjhsbzc/image_hub77b6abb2869fcdb5942207bdece65dc_186450_480x0_resize_box_3.png 480w, /p/test-entra-id-dynamic-group-queries-with-powershell-cv29crjhsbzc/image_hub77b6abb2869fcdb5942207bdece65dc_186450_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Rule Validation in Entra ID (Preview)"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="164"
+		data-flex-basis="394px"
+	
+></p>
+<h2 id="rule-validation">Rule Validation</h2>
+<p>The <code>Microsoft.Graph.Beta.Groups</code> PowerShell module includes a nice little Cmdlet to test dynamic group queries so you can create your own scripts and potentially check your queries against hundreds of users.</p>
+<p>I use two external files for this script. The first one stores the dynamic query in an <code>*.sql</code> file. Technically, dynamic Entra ID groups use their own syntax but I&rsquo;ve found that the SQL syntax is pretty close to it. That means we&rsquo;ll also get linting in VS Code and syntax errors such as a missing parenthesis are quite easy to spot.</p>
+<p>If you check the screenshot above, the original query was <code>(user.userPrincipalName -match &quot;nocaptech.ch&quot;)</code> which also included a user called <strong>Admin NCT</strong>. This is the content of my <code>DynamicUserGroupRule.sql</code> file which gets imported on line 8:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="p">(</span><span class="k">user</span><span class="p">.</span><span class="n">userPrincipalName</span><span class="w"> </span><span class="o">-</span><span class="k">match</span><span class="w"> </span><span class="s2">&#34;nocaptech.ch&#34;</span><span class="w"> </span><span class="o">-</span><span class="k">and</span><span class="w"> </span><span class="k">user</span><span class="p">.</span><span class="n">userPrincipalName</span><span class="w"> </span><span class="o">-</span><span class="n">notmatch</span><span class="w"> </span><span class="s2">&#34;admin&#34;</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>The <code>DynamicUserGroupTestMembers.txt</code> which is imported on line 10 just contains the IDs of a couple of Entra ID users.</p>
+<h3 id="script-example">Script Example</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$localRepoPath</span> <span class="p">=</span> <span class="n">git</span> <span class="nb">rev-parse</span> <span class="p">-</span><span class="n">-show-toplevel</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$localTestPath</span> <span class="p">=</span> <span class="s2">&#34;./.local&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">Connect-MgGraph</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">Import-Module</span> <span class="n">Microsoft</span><span class="p">.</span><span class="py">Graph</span><span class="p">.</span><span class="py">Beta</span><span class="p">.</span><span class="py">Groups</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$membershipRule</span> <span class="p">=</span> <span class="nb">Get-Content</span> <span class="n">-Path</span> <span class="s2">&#34;</span><span class="nv">$localRepoPath</span><span class="s2">/Scripts/EntraID/DynamicGroupResources/DynamicUserGroupRule.sql&#34;</span> <span class="p">|</span> <span class="nb">Out-String</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$userIds</span> <span class="p">=</span> <span class="nb">Get-Content</span> <span class="n">-Path</span> <span class="s2">&#34;</span><span class="nv">$localTestPath</span><span class="s2">/DynamicUserGroupTestMembers.txt&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$results</span> <span class="p">=</span> <span class="vm">@</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">foreach</span> <span class="p">(</span><span class="nv">$userId</span> <span class="k">in</span> <span class="nv">$userIds</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nv">$params</span> <span class="p">=</span> <span class="vm">@</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">MemberId</span>       <span class="p">=</span> <span class="nv">$userId</span>
+</span></span><span class="line"><span class="cl">        <span class="n">MembershipRule</span> <span class="p">=</span> <span class="nv">$membershipRule</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nv">$evaluation</span> <span class="p">=</span> <span class="nb">Test-MgBetaGroupDynamicMembershipRule</span> <span class="n">-BodyParameter</span> <span class="nv">$params</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nv">$userProperties</span> <span class="p">=</span> <span class="nb">Get-MgUser</span> <span class="n">-UserId</span> <span class="nv">$userId</span> <span class="n">-Property</span> <span class="n">City</span><span class="p">,</span> <span class="n">UserPrincipalName</span><span class="p">,</span> <span class="n">DisplayName</span><span class="p">,</span> <span class="n">JobTitle</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nv">$userDetails</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">-TypeName</span> <span class="n">psobject</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nv">$userDetails</span> <span class="p">|</span> <span class="nb">Add-Member</span> <span class="n">-MemberType</span> <span class="n">NoteProperty</span> <span class="n">-Name</span> <span class="n">UserId</span> <span class="n">-Value</span> <span class="nv">$userId</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$userDetails</span> <span class="p">|</span> <span class="nb">Add-Member</span> <span class="n">-MemberType</span> <span class="n">NoteProperty</span> <span class="n">-Name</span> <span class="n">UserPrincipalName</span> <span class="n">-Value</span> <span class="nv">$userProperties</span><span class="p">.</span><span class="py">UserPrincipalName</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$userDetails</span> <span class="p">|</span> <span class="nb">Add-Member</span> <span class="n">-MemberType</span> <span class="n">NoteProperty</span> <span class="n">-Name</span> <span class="n">DisplayName</span> <span class="n">-Value</span> <span class="nv">$userProperties</span><span class="p">.</span><span class="py">DisplayName</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$userDetails</span> <span class="p">|</span> <span class="nb">Add-Member</span> <span class="n">-MemberType</span> <span class="n">NoteProperty</span> <span class="n">-Name</span> <span class="n">JobTitle</span> <span class="n">-Value</span> <span class="nv">$userProperties</span><span class="p">.</span><span class="py">JobTitle</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$userDetails</span> <span class="p">|</span> <span class="nb">Add-Member</span> <span class="n">-MemberType</span> <span class="n">NoteProperty</span> <span class="n">-Name</span> <span class="n">Result</span> <span class="n">-Value</span> <span class="nv">$evaluation</span><span class="p">.</span><span class="py">MembershipRuleEvaluationResult</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$userDetails</span> <span class="p">|</span> <span class="nb">Add-Member</span> <span class="n">-MemberType</span> <span class="n">NoteProperty</span> <span class="n">-Name</span> <span class="n">City</span> <span class="n">-Value</span> <span class="nv">$userProperties</span><span class="p">.</span><span class="py">City</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nv">$results</span> <span class="p">+=</span> <span class="nv">$userDetails</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$results</span> <span class="p">|</span> <span class="nb">Format-Table</span> <span class="n">-AutoSize</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$date</span> <span class="p">=</span> <span class="nb">Get-Date</span> <span class="n">-Format</span> <span class="s2">&#34;yyyy-MM-dd-HH-mm&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$results</span> <span class="p">|</span> <span class="nb">Export-Csv</span> <span class="n">-Path</span> <span class="s2">&#34;</span><span class="nv">$localTestPath</span><span class="s2">/DynamicGroupEvaluationReport-</span><span class="nv">$date</span><span class="s2">.csv&#34;</span> <span class="n">-Delimiter</span> <span class="s2">&#34;;&#34;</span> <span class="n">-Encoding</span> <span class="n">utf8</span> <span class="n">-Force</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>As you can see, there&rsquo;s not even a reference of any group ID. Therefore you can test dynamic group queries before you even create a group. Or you can test an updated query without the risk of touching a production group.</p>
+<h3 id="result">Result</h3>
+<p>Because of the updated query, <strong>Admin NCT</strong> should not be a member of the group any more. Let&rsquo;s see if that&rsquo;s the case&hellip;</p>
+<p><img src="/p/test-entra-id-dynamic-group-queries-with-powershell-cv29crjhsbzc/image-1.png"
+	width="1734"
+	height="957"
+	srcset="/p/test-entra-id-dynamic-group-queries-with-powershell-cv29crjhsbzc/image-1_huacc420254b9b471ae67ad8c796486287_1208691_480x0_resize_box_3.png 480w, /p/test-entra-id-dynamic-group-queries-with-powershell-cv29crjhsbzc/image-1_huacc420254b9b471ae67ad8c796486287_1208691_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Script Output"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<p>Looks good to me. Now I can update my production group with the new query in confidence.</p>
+<h2 id="summary">Summary</h2>
+<p>The code sample uses a function so it can easily be adjusted and you could for example test multiple queries against different sets of user IDs by creating your own <code>for-each</code> loop. If you find this code sample useful, you can also grab it from my <a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/EntraID/EvaluateDynamicUserGroupRule.ps1"  target="_blank" rel="noopener"
+    >GitHub repo</a>.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "heusser-pro" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2024 HEUSSER.PRO
+    </section>
+    
+    <section class="powerby">
+        
+            Hosted on GitHub Pages <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
+
