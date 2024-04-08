@@ -138,22 +138,37 @@
 &lt;p&gt;The first thing we need to do is to create or define a shared mailbox so we can subscribe it to new messages of the M365 group. The flow will only process emails which have attachments, and the attachments name must end with &lt;code&gt;.mp3&lt;/code&gt; . But I still strongly recommend to create a dedicated shared mailbox which will only receive emails from the M365 group. To keep things clean, I would also deter from sending any kind of other emails to the M365 group. If you also use a dedicated Team for your call queues, that shouldn’t be an issue.&lt;/p&gt;
 &lt;p&gt;Once the shared mailbox is created, we need to give the user which will own the Flow full access to it.&lt;/p&gt;
 &lt;p&gt;You will need the PowerShell module &lt;code&gt;ExchangeOnlineManagement&lt;/code&gt; and need to run &lt;code&gt;Connect-ExchangeOnline&lt;/code&gt; before you can run these commands.&lt;/p&gt;
-&lt;p&gt;# Create shared mailbox&lt;br&gt;
-New-Mailbox -Shared -Name &amp;ldquo;PS Test EV Enabled SharedVoicemail&amp;rdquo; -DisplayName &amp;ldquo;PS Test EV Enabled SharedVoicemail&amp;rdquo; -Alias &amp;ldquo;PSTestEVEnabledSharedVoicemail&amp;rdquo;&lt;/p&gt;
+&lt;h3 id=&#34;create-shared-mailbox&#34;&gt;Create shared mailbox&lt;/h3&gt;
+&lt;p&gt;New-Mailbox -Shared -Name &amp;ldquo;PS Test EV Enabled SharedVoicemail&amp;rdquo; -DisplayName &amp;ldquo;PS Test EV Enabled SharedVoicemail&amp;rdquo; -Alias &amp;ldquo;PSTestEVEnabledSharedVoicemail&amp;rdquo;&lt;/p&gt;
 &lt;p&gt;Start-Sleep -Seconds 30&lt;/p&gt;
-&lt;p&gt;# Grant full mailbox access to the flow owner&lt;br&gt;
-Add-MailboxPermission -Identity &amp;ldquo;PSTestEVEnabledSharedVoicemail&amp;rdquo; -User &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;mailto:mozzie@mozzism.ch&#34; &gt;mozzie@mozzism.ch&lt;/a&gt;&amp;rdquo; -AccessRights FullAccess -InheritanceType All&lt;/p&gt;
+&lt;h4 id=&#34;grant-full-mailbox-access-to-the-flow-owner&#34;&gt;Grant full mailbox access to the flow owner&lt;/h4&gt;
+&lt;p&gt;Add-MailboxPermission -Identity &amp;ldquo;PSTestEVEnabledSharedVoicemail&amp;rdquo; -User &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;mailto:mozzie@mozzism.ch&#34; &gt;mozzie@mozzism.ch&lt;/a&gt;&amp;rdquo; -AccessRights FullAccess -InheritanceType All&lt;/p&gt;
 &lt;h4 id=&#34;subscribing-the-shared-mailbox-to-the-m365-groupinbox&#34;&gt;Subscribing the Shared Mailbox to the M365 Group Inbox&lt;/h4&gt;
 &lt;p&gt;Next, we add the newly created shared mailbox as a member of the group and then also subscribe it to the group’s inbox.&lt;/p&gt;
-&lt;p&gt;# Add the shared mailbox as a member to the M365 group&lt;br&gt;
-Add-UnifiedGroupLinks -Identity $groupId -LinkType Members -Links &amp;ldquo;PSTestEVEnabledSharedVoicemail&amp;rdquo;&lt;/p&gt;
-&lt;p&gt;# Subscribe the shared mailbox to the M365 group&amp;rsquo;s emails (enable follow in inbox)&lt;br&gt;
-Add-UnifiedGroupLinks -Identity $groupId -LinkType Subscribers -Links &amp;ldquo;PSTestEVEnabledSharedVoicemail&amp;rdquo;&lt;/p&gt;
-&lt;p&gt;We can verify that the shared mailbox is indeed subscribed by using this code. (I have no idea why it says &lt;code&gt;UserMailbox&lt;/code&gt; though…)&lt;/p&gt;
+&lt;h4 id=&#34;add-the-shared-mailbox-as-a-member-to-the-m365-group&#34;&gt;Add the shared mailbox as a member to the M365 group&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Add-UnifiedGroupLinks&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Identity&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$groupId&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-LinkType&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Members&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Links&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;PSTestEVEnabledSharedVoicemail&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;subscribe-the-shared-mailbox-to-the-m365-groups-emails-enable-follow-in-inbox&#34;&gt;Subscribe the shared mailbox to the M365 group&amp;rsquo;s emails (enable follow in inbox)&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Add-UnifiedGroupLinks&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Identity&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$groupId&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-LinkType&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Subscribers&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Links&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;PSTestEVEnabledSharedVoicemail&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;We can verify that the shared mailbox is indeed subscribed by using this code. (I have no idea why it says &lt;code&gt;UserMailbox&lt;/code&gt; though…)&lt;/p&gt;
 &lt;p&gt;PS V:\GitHub\TeamsPhoneAutomation&amp;gt; Get-UnifiedGroupLinks -Identity $groupId -LinkType Subscribers&lt;/p&gt;
-&lt;p&gt;Name                               RecipientType&lt;br&gt;
--&amp;mdash;                               &amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;-&lt;br&gt;
-PS Test EV Enabled SharedVoicemail UserMailbox&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Name                               RecipientType  
+----                               -------------  
+PS Test EV Enabled SharedVoicemail UserMailbox
+&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The idea here is that only the shared mailbox gets new voicemails in its mailbox. None of the users should get the voicemails in their personal inbox because they receive them in Teams. This allows for much better and efficient collaboration.&lt;/p&gt;
 &lt;h3 id=&#34;the-result&#34;&gt;The Result&lt;/h3&gt;
 &lt;p&gt;This is the Team I created for this call flow. Channels 1 and 2 are linked to the queues which receive calls. 3 and 4 are the ones which receive the voicemails. As explained earlier in this article, the flow can easily determine at which stage in the call flow (during business hours or on-call/after hours) a voicemail was left. That’s why we have two separate voicemail channels.&lt;/p&gt;
