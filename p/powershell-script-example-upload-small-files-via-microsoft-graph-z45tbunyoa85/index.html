@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Learn how you can upload small files (up to 250 MB) to SharePoint Online with Microsoft Graph and PowerShell.'>
+<title>PowerShell Script Example: Upload Small Files to SharePoint via Microsoft Graph</title>
+
+<link rel='canonical' href='https://heusser.pro/p/powershell-script-example-upload-small-files-via-microsoft-graph-z45tbunyoa85/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='PowerShell Script Example: Upload Small Files to SharePoint via Microsoft Graph'>
+<meta property='og:description' content='Learn how you can upload small files (up to 250 MB) to SharePoint Online with Microsoft Graph and PowerShell.'>
+<meta property='og:url' content='https://heusser.pro/p/powershell-script-example-upload-small-files-via-microsoft-graph-z45tbunyoa85/'>
+<meta property='og:site_name' content='HEUSSER.PRO'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-04-13T11:25:07&#43;00:00'/><meta property='article:modified_time' content='2024-04-13T11:25:07&#43;00:00'/>
+<meta name="twitter:title" content="PowerShell Script Example: Upload Small Files to SharePoint via Microsoft Graph">
+<meta name="twitter:description" content="Learn how you can upload small files (up to 250 MB) to SharePoint Online with Microsoft Graph and PowerShell.">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "kozb6q2xjn");
+    </script>    
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hud7e6b3cccc21b12ddf35b72eb655064d_860969_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🫡</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
+            <h2 class="site-description">Martin Heusser | M365 Apps &amp; Services MVP</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/mozziemozz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://x.com/@mozzeph'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/imprint/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                
+                <span>Imprint</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#lacking-documentation">Lacking Documentation</a>
+      <ol>
+        <li><a href="#example-as-of-2024-04-13">Example as of 2024-04-13</a></li>
+      </ol>
+    </li>
+    <li><a href="#script-examples">Script Examples</a>
+      <ol>
+        <li><a href="#example-using-delegated-auth-and-invoke-graphrequest">Example Using Delegated Auth and Invoke-GraphRequest</a></li>
+        <li><a href="#example-using-app-auth-and-invoke-restmethod">Example Using App Auth and Invoke-RestMethod</a></li>
+      </ol>
+    </li>
+    <li><a href="#summary">Summary</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/powershell/" style="background-color: #141e2c; color: #fff;">
+                PowerShell
+            </a>
+        
+            <a href="/categories/microsoft-graph/" >
+                Microsoft Graph
+            </a>
+        
+            <a href="/categories/sharepoint/" >
+                SharePoint
+            </a>
+        
+            <a href="/categories/automation/" >
+                Automation
+            </a>
+        
+            <a href="/categories/microsoft-365/" >
+                Microsoft 365
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/powershell-script-example-upload-small-files-via-microsoft-graph-z45tbunyoa85/">PowerShell Script Example: Upload Small Files to SharePoint via Microsoft Graph</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Learn how you can upload small files (up to 250 MB) to SharePoint Online with Microsoft Graph and PowerShell.
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Apr 13, 2024</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    5 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="lacking-documentation">Lacking Documentation</h2>
+<p>I recently wanted to upload a couple of files to SharePoint Online using Microsoft Graph. It took me a while to figure it out so I thought that sharing my working script examples will probably help other people accomplish this task faster.</p>
+<p>The documentation for uploading files with Microsoft Graph can be found <a class="link" href="https://learn.microsoft.com/en-us/graph/api/driveitem-put-content?view=graph-rest-1.0&amp;tabs=http"  target="_blank" rel="noopener"
+    >here</a>. The problem is that Microsoft Learn only lists an example for a web request and doesn&rsquo;t really include any examples as to what the <strong>Body</strong> of the request needs to contain.</p>
+<h3 id="example-as-of-2024-04-13">Example as of 2024-04-13</h3>
+<p>This is all we get today:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-http" data-lang="http"><span class="line"><span class="cl"><span class="err">PUT https://graph.microsoft.com/v1.0/me/drive/root:/FolderA/FileB.txt:/content
+</span></span></span><span class="line"><span class="cl"><span class="err">Content-Type: text/plain
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">The contents of the file goes here.
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>While there is an example of how to update an existing file using <code>Set-MgDriveItemContent</code> it doesn&rsquo;t mention how to construct the <code>$params</code> either:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-PowerShell" data-lang="PowerShell"><span class="line"><span class="cl"><span class="nb">Import-Module</span> <span class="n">Microsoft</span><span class="p">.</span><span class="py">Graph</span><span class="p">.</span><span class="py">Files</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$params</span> <span class="p">=</span> <span class="n">The</span> <span class="n">contents</span> <span class="n">of</span> <span class="n">the</span> <span class="n">file</span> <span class="n">goes</span> <span class="n">here</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">Set-MgDriveItemContent</span> <span class="n">-DriveId</span> <span class="nv">$driveId</span> <span class="n">-DriveItemId</span> <span class="nv">$driveItemId</span> <span class="n">-BodyParameter</span> <span class="nv">$params</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="script-examples">Script Examples</h2>
+<p>Through trial and error, I discovered two different ways of uploading files to SharePoint Online through Microsoft Graph. One uses a simple web request using <code>Invoke-RestMethod</code> and app authentication and the other one uses the <code>Invoke-GraphRequest</code> Cmdlet from the <code>Microsoft.Graph.Authentication</code> module. The second one uses delegated permissions.</p>
+<p>As it&rsquo;s often the case with Graph operations, you first need to know some specific Ids before you can make your request. In this case, we need to know the Id of the <strong>drive</strong> in SharePoint. The DriveId is the Id of the Document Library. However, to get the DriveId, we also need to know the Id of the SharePoint Site. Therefore we must first find the SiteId, and then the DriveId. Unfortunately, the examples on the Graph documentation always assume that we already know these Ids so we need to get this data on our own&hellip;</p>
+<h3 id="example-using-delegated-auth-and-invoke-graphrequest">Example Using Delegated Auth and Invoke-GraphRequest</h3>
+<p>Let&rsquo;s look at the script using the Graph PowerShell module first. The first thing you want to do is to replace <code>$siteName</code> with the name of your destination site. When you run the script, you&rsquo;ll be prompted to sign into Microsoft Graph. Make sure that you&rsquo;ve previously configured and consented the delegated permissions <code>Sites.Read.All</code> and <code>Files.ReadWrite.All</code> to the <strong>Microsoft Graph Command Line Tools</strong> Enterprise Application or that you&rsquo;re using your own App which has at least these two permissions configured.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$siteName</span> <span class="p">=</span> <span class="s2">&#34;Azure Automation&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">Connect-MgGraph</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Site</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$site</span> <span class="p">=</span> <span class="nb">Get-MgSite</span> <span class="n">-Search</span> <span class="nv">$siteName</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$siteId</span> <span class="p">=</span> <span class="nv">$site</span><span class="p">.</span><span class="py">id</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Drives</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$drives</span> <span class="p">=</span> <span class="nb">Get-MgSiteDrive</span> <span class="n">-SiteId</span> <span class="nv">$siteId</span> <span class="n">-All</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$drive</span> <span class="p">=</span> <span class="nv">$drives</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="py">Name</span> <span class="o">-eq</span> <span class="s2">&#34;Documents&#34;</span> <span class="o">-or</span> <span class="nv">$_</span><span class="p">.</span><span class="py">Name</span> <span class="o">-eq</span> <span class="s2">&#34;Dokumente&#34;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># SharePoint Drive Id (Document Library)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$driveId</span> <span class="p">=</span> <span class="nv">$drive</span><span class="p">.</span><span class="py">id</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># File to upload</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$filePath</span> <span class="p">=</span> <span class="s2">&#34;C:\Temp\Test.txt&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$fileProperties</span> <span class="p">=</span> <span class="nb">Get-ChildItem</span> <span class="n">-Path</span> <span class="nv">$filePath</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Read the file content as a byte array</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$fileContent</span> <span class="p">=</span> <span class="p">[</span><span class="no">System.IO.File</span><span class="p">]::</span><span class="n">ReadAllBytes</span><span class="p">(</span><span class="nv">$filePath</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Destination file name</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$destinationName</span> <span class="p">=</span> <span class="s2">&#34;</span><span class="p">$(</span><span class="nv">$fileProperties</span><span class="p">.</span><span class="n">BaseName</span><span class="p">)</span><span class="s2">-</span><span class="p">$(</span><span class="nb">Get-Date</span> <span class="n">-Format</span> <span class="s2">&#34;yyyy-MM-dd HH-mm-ss&#34;</span><span class="p">)</span><span class="s2">.</span><span class="p">$(</span><span class="nv">$fileProperties</span><span class="p">.</span><span class="n">Extension</span><span class="p">)</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Upload the file to SharePoint</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Invoke-GraphRequest</span> <span class="n">-Method</span> <span class="n">PUT</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/drives/</span><span class="nv">$driveId</span><span class="s2">/root:/Test/</span><span class="nv">$destinationName</span><span class="s2">`:/content&#34;</span> <span class="n">-Body</span> <span class="nv">$fileContent</span> <span class="n">-ContentType</span> <span class="s2">&#34;application/octet-stream&#34;</span> <span class="n">-Headers</span> <span class="nv">$Header</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>This will upload files up to 250 MB to SharePoint Online. If you rather want to use application authentication and not have any dependencies on installed Graph modules, you can do the same using HTTP requests.</p>
+<h3 id="example-using-app-auth-and-invoke-restmethod">Example Using App Auth and Invoke-RestMethod</h3>
+<p>The required permissions stay the same as for the first example. However, in this case they need to be application permissions. This script uses an external function to acquire a token which is then used to perform the web requests to the Graph API. The easiest way is to just clone the entire <a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation"  target="_blank" rel="noopener"
+    >repository</a>. This will keep the relative paths working. Alternatively, you can download the function from <a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Functions/Connect-MgGraphHTTP.ps1"  target="_blank" rel="noopener"
+    >here</a> and either copy it into the script or adjust the relative path. At this point, I&rsquo;d like to thank Alex Asplund again for providing this awesome function to acquire a token for Microsoft Graph. I use <a class="link" href="https://adamtheautomator.com/powershell-graph-api"  target="_blank" rel="noopener"
+    >his function</a> in quite a lot in my scripts.</p>
+<p>Before you run the script, fill in your own data for <code>$TenantId</code>, <code>$AppId</code>, <code>$AppSecret</code> and <code>$SiteName</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$TenantId</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$AppId</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$AppSecret</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$SiteName</span> <span class="p">=</span> <span class="s2">&#34;Azure Automation&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">.</span> <span class="p">.\</span><span class="n">Functions</span><span class="p">\</span><span class="nb">Connect-MgGraphHTTP</span><span class="p">.</span><span class="py">ps1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">.</span> <span class="nb">Connect-MgGraphHTTP</span> <span class="n">-TenantId</span> <span class="nv">$TenantId</span> <span class="n">-AppId</span> <span class="nv">$AppId</span> <span class="n">-AppSecret</span> <span class="nv">$AppSecret</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Site</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$site</span> <span class="p">=</span> <span class="nb">Invoke-RestMethod</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Headers</span> <span class="nv">$Header</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/sites?search=</span><span class="nv">$siteName</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$siteId</span> <span class="p">=</span> <span class="nv">$site</span><span class="p">.</span><span class="py">value</span><span class="p">.</span><span class="py">id</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Drives</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$drives</span> <span class="p">=</span> <span class="nb">Invoke-RestMethod</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Headers</span> <span class="nv">$Header</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/sites/</span><span class="nv">$siteId</span><span class="s2">/drives&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># SharePoint Drive Id (Document Library)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$driveId</span> <span class="p">=</span> <span class="p">(</span><span class="nv">$drives</span><span class="p">.</span><span class="py">value</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="py">Name</span> <span class="o">-eq</span> <span class="s2">&#34;Documents&#34;</span> <span class="o">-or</span> <span class="nv">$_</span><span class="p">.</span><span class="py">Name</span> <span class="o">-eq</span> <span class="s2">&#34;Dokumente&#34;</span> <span class="p">}).</span><span class="py">Id</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># File to upload</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$filePath</span> <span class="p">=</span> <span class="s2">&#34;C:\Temp\Test.txt&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$fileProperties</span> <span class="p">=</span> <span class="nb">Get-ChildItem</span> <span class="n">-Path</span> <span class="nv">$filePath</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Read the file content as a byte array</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$fileContent</span> <span class="p">=</span> <span class="p">[</span><span class="no">System.IO.File</span><span class="p">]::</span><span class="n">ReadAllBytes</span><span class="p">(</span><span class="nv">$filePath</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Destination file name</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$destinationName</span> <span class="p">=</span> <span class="s2">&#34;</span><span class="p">$(</span><span class="nv">$fileProperties</span><span class="p">.</span><span class="n">BaseName</span><span class="p">)</span><span class="s2">-</span><span class="p">$(</span><span class="nb">Get-Date</span> <span class="n">-Format</span> <span class="s2">&#34;yyyy-MM-dd HH-mm-ss&#34;</span><span class="p">)</span><span class="s2">.</span><span class="p">$(</span><span class="nv">$fileProperties</span><span class="p">.</span><span class="n">Extension</span><span class="p">)</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Upload the file to SharePoint</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Invoke-RestMethod</span> <span class="n">-Method</span> <span class="n">PUT</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/drives/</span><span class="nv">$driveId</span><span class="s2">/root:/Test/</span><span class="nv">$destinationName</span><span class="s2">`:/content&#34;</span> <span class="n">-Body</span> <span class="nv">$fileContent</span> <span class="n">-ContentType</span> <span class="s2">&#34;application/octet-stream&#34;</span> <span class="n">-Headers</span> <span class="nv">$Header</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>This code will give you the exact same result as the first script does but it will only use out-of-the-box PowerShell commands and doesn&rsquo;t have any dependencies on PowerShell modules.</p>
+<h2 id="summary">Summary</h2>
+<p>I hope you like these two examples on how to upload small files to SharePoint Online using Microsoft Graph. I think this can be a really powerful tool, especially when you pair it with your own Entra ID App Registration/Enterprise Application. When you create your own app to connect to Microsoft Graph, you can limit the use of it to a specific subset of users, such as IT staff and the app is only allowed to read all sites and read/write all files the signed in user has access to.</p>
+<p>I&rsquo;m thinking of scenarios where IT runs a diagnostic script or any other script that collects information on a users device and then uploads the log files/collected data directly to the specified SharePoint Site.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How To Add a New Domain to M365 with MS Graph PowerShell</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Translate Microsoft 365 License GUIDs to Product Names in PowerShell</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/opt-in-or-opt-out-teams-call-queue-agents-remotely-59fe6147f50d/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Opt In or Opt Out Teams Call Queue Agents Remotely</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/m365-call-flow-visualizer-update-show-shared-voicemail-group-subscribers-s30piv4qliee/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">M365 Call Flow Visualizer Update: Show Shared Voicemail Group Subscribers</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Everything You Ever Wanted to Know About Creating Teams and Microsoft 365 Groups</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "heusser-pro" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2024 HEUSSER.PRO
+    </section>
+    
+    <section class="powerby">
+        
+            Hosted on GitHub Pages <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
+
