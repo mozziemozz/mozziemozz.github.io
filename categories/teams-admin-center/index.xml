@@ -6,7 +6,145 @@
         <description>Recent content in Teams Admin Center on HEUSSER.PRO</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Tue, 07 Nov 2023 13:41:33 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/teams-admin-center/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 01 May 2024 15:31:57 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/teams-admin-center/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Teams Call Queues now Support Greetings in Exception Handlings</title>
+        <link>https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/</link>
+        <pubDate>Wed, 01 May 2024 15:31:57 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/</guid>
+        <description>&lt;img src="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/cover.png" alt="Featured image of post Teams Call Queues now Support Greetings in Exception Handlings" /&gt;&lt;h2 id=&#34;how-it-was-before&#34;&gt;How It Was Before&lt;/h2&gt;
+&lt;p&gt;I noticed a whole lot of new properties returned by &lt;code&gt;Get-CsCallQueue&lt;/code&gt; quite a while ago but somehow I completely missed that Microsoft has now added this feature in Teams Admin Center. Before this was rolled out, the only way to play a message before disconnecting when a call timed out, when there were too many concurrent calls or when no agents were available in a call queue, you had to forward the call to an additional auto attendant which only played the message and then disconnected the call.&lt;/p&gt;
+&lt;p&gt;A call flow which had no message looked like this. The call disconnected without any message.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow.png&#34;
+	width=&#34;2110&#34;
+	height=&#34;3840&#34;
+	srcset=&#34;https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_hu9a41712bea05c105cce00e8ee4d47d78_457578_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_hu9a41712bea05c105cce00e8ee4d47d78_457578_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;No Disconnect Message&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;54&#34;
+		data-flex-basis=&#34;131px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;A call flow using the workaround with an additional auto attendant looked like this. The call had to be forwarded to an auto attendant so that a message could be played back before disconnecting the call.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_Disconnect_AA.png&#34;
+	width=&#34;1947&#34;
+	height=&#34;3840&#34;
+	srcset=&#34;https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_Disconnect_AA_hud8799100385cd5077c67ca0694550ab6_430101_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_Disconnect_AA_hud8799100385cd5077c67ca0694550ab6_430101_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Disconnect Message on Auto Attendant&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;50&#34;
+		data-flex-basis=&#34;121px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;While it wasn&amp;rsquo;t very hard to build something like that, it certainly required more time and added unnecessary complexity to otherwise relatively simple call flows.&lt;/p&gt;
+&lt;h2 id=&#34;whats-changed&#34;&gt;What&amp;rsquo;s Changed?&lt;/h2&gt;
+&lt;p&gt;With the recently added functionality, it&amp;rsquo;s now possible to configure greetings on call queues in exception handling actions. At the time of writing this blog post it&amp;rsquo;s possible to configure a greeting for &lt;strong&gt;Disconnect&lt;/strong&gt; and &lt;strong&gt;Redirect to External Phone Number&lt;/strong&gt; or &lt;strong&gt;Redirect to Voice App&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image.png&#34;
+	width=&#34;1992&#34;
+	height=&#34;826&#34;
+	srcset=&#34;https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image_hu7bd3392f7dd1ded220a4677d786033d2_57355_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image_hu7bd3392f7dd1ded220a4677d786033d2_57355_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Greeting on Disconnect&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;241&#34;
+		data-flex-basis=&#34;578px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image-1.png&#34;
+	width=&#34;1398&#34;
+	height=&#34;655&#34;
+	srcset=&#34;https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image-1_hua1d7e441c45ba0c67456bb739528297b_43345_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image-1_hua1d7e441c45ba0c67456bb739528297b_43345_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Greeting for Redirect to Phone Number&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;213&#34;
+		data-flex-basis=&#34;512px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image-2.png&#34;
+	width=&#34;1412&#34;
+	height=&#34;960&#34;
+	srcset=&#34;https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image-2_hu4525acce454994458fa05bf3227e074c_75762_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image-2_hu4525acce454994458fa05bf3227e074c_75762_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Greeting for Redirect to Voice App&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;147&#34;
+		data-flex-basis=&#34;353px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;I&amp;rsquo;ve already added support for these new configuration options to the &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;M365 Call Flow Visualizer&lt;/a&gt;. In this demo call flow I&amp;rsquo;m just using text to speech greetings but of course it also works for audio files including exporting them to disk. This is how it looks now.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_New_Greetings.png&#34;
+	width=&#34;1978&#34;
+	height=&#34;3840&#34;
+	srcset=&#34;https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_New_Greetings_hu931dbaf6700091893deebd0799b3ad4d_472003_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_New_Greetings_hu931dbaf6700091893deebd0799b3ad4d_472003_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Greetings are configured on call queue directly&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;51&#34;
+		data-flex-basis=&#34;123px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;As you can see, the greetings are now configured directly on the call queue and there&amp;rsquo;s no need to deploy and manage additional auto attendants anymore. The greeting options for redirect to shared voicemail are unchanged. This can be seen on the &lt;strong&gt;PS Test EV Enabled On Call CQ&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;powershell-vs-teams-admin-center&#34;&gt;PowerShell vs Teams Admin Center&lt;/h2&gt;
+&lt;p&gt;Teams Admin Center doesn&amp;rsquo;t support configuring a greeting if the call is being forwarded to another Teams user (person in organization) or a personal voicemail. However, the available properties which are returned in &lt;code&gt;Get-CsCallQueue&lt;/code&gt; hint that support for greetings before a call is forwarded to a person might be coming soon too.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$cq&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Get-CsCallQueue&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Identity&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$cq&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;Identity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;PS &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;V:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GitHub&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;M365CallFlowVisualizer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$cq&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;fl &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;person&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;*&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;OverflowRedirectPersonAudioFilePrompt&lt;/span&gt;         &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;OverflowRedirectPersonAudioFilePromptFileName&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;OverflowRedirectPersonTextToSpeechPrompt&lt;/span&gt;      &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;TimeoutRedirectPersonAudioFilePrompt&lt;/span&gt;          &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;TimeoutRedirectPersonAudioFilePromptFileName&lt;/span&gt;  &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;TimeoutRedirectPersonTextToSpeechPrompt&lt;/span&gt;       &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;NoAgentRedirectPersonAudioFilePrompt&lt;/span&gt;          &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;NoAgentRedirectPersonAudioFilePromptFileName&lt;/span&gt;  &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;NoAgentRedirectPersonTextToSpeechPrompt&lt;/span&gt;       &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;I wouldn&amp;rsquo;t be me unless I tested this. Using &lt;code&gt;Set-CsCallQueue -Identity $cq.Identity -OverflowRedirectPersonTextToSpeechPrompt &amp;quot;Test overflow redirect to person greeting&amp;quot;&lt;/code&gt; I was able to configure a greeting before the call was forwarded to the specified Teams user. A quick test call to the queue successfully played back the message before the call was forwarded to the Teams user. &lt;strong&gt;But&lt;/strong&gt; when I updated the call queue in TAC again, the greeting was deleted (as expected) from the queue. I strongly recommend not to configure a greeting before redirecting to a person until the feature is officially available in Teams Admin Center. Otherwise, you can only update the queue through PS until Microsoft has added the feature to TAC as well. Because of that, I also didn&amp;rsquo;t include this in the Visualizer yet.&lt;/p&gt;
+&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
+&lt;p&gt;I haven&amp;rsquo;t seen anybody talk about this new feature online before so I thought that it would be worth sharing. And of course I also wanted to share that the M365 Call Flow Visualizer has been updated to display all configured greetings accurately. I hope you like the new feature and that the Visualizer will help you to get your documentation up to speed quickly.&lt;/p&gt;
+&lt;p&gt;If you want to learn how to download existing audio files from call queues through TAC or PowerShell without the M365 Call Flow Visualizer, you can check out &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0&#34; &gt;this&lt;/a&gt; post.&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Advanced Teams Auto Attendant Troubleshooting</title>
         <link>https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/</link>
         <pubDate>Tue, 07 Nov 2023 13:41:33 +0000</pubDate>
