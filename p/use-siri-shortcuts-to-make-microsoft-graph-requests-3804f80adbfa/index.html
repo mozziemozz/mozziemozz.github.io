@@ -355,33 +355,45 @@
 ></p>
 <p>Let’s take a detailed look of what’s going on inside the Shortcut.</p>
 <p>First, an http POST request is made to request the access token. Client_id and client_secret are passed to the request body as variables from the Text fields you populated at the top of the Shortcut.</p>
-<p><img src="V:%5cGitHub%5cheusser-pro-v2%5ccontent%5cpost%5cmedium-export%5cposts%5cmd_1702475460664%5cimg%5c1__QlYK0AE2DSj3SKPpfSJaug.jpeg"
-	
-	
-	
+<p><img src="/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1QlYK0AE2DSj3SKPpfSJaug.jpeg"
+	width="750"
+	height="917"
+	srcset="/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1QlYK0AE2DSj3SKPpfSJaug_hued510fab658db057612eff5fa2a88521_59509_480x0_resize_q75_box.jpeg 480w, /p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1QlYK0AE2DSj3SKPpfSJaug_hued510fab658db057612eff5fa2a88521_59509_1024x0_resize_q75_box.jpeg 1024w"
 	loading="lazy"
 	
+	
+		class="gallery-image" 
+		data-flex-grow="81"
+		data-flex-basis="196px"
 	
 ></p>
 <p>The Microsoft authentication endpoint returns a JSON string which is similar to what you get when you use <code>Invoke-WebRequest</code> instead of <code>Invoke-RestMethod</code> in PowerShell.</p>
 <p>{&ldquo;token_type&rdquo;:&ldquo;Bearer&rdquo;,&ldquo;expires_in&rdquo;:3599,&ldquo;ext_expires_in&rdquo;:3599,&ldquo;access_token&rdquo;:&ldquo;eyJ0eXAixboxOiJKV1QiLCJub25jZSI6ITUROWEtpblE4THcwNVN1Z1JMOU1aUUpwdXlqedasd1VpQXNjU3ciLseriesCJhbGciOiJSUzI1NiIsIng1dCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSIsImtpZCI6IXjJaUXBKM1VBWVhZR2FYRUp&rdquo;}</p>
 <p>This means that we’ll have to get the <code>value</code> of both the <code>keys</code> “token_type” and “access_token”.</p>
-<p><img src="V:%5cGitHub%5cheusser-pro-v2%5ccontent%5cpost%5cmedium-export%5cposts%5cmd_1702475460664%5cimg%5c1__VKksWkNAJ7ESWUEjkQWd7Q.jpeg"
-	
-	
-	
+<p><img src="/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1VKksWkNAJ7ESWUEjkQWd7Q.jpeg"
+	width="750"
+	height="850"
+	srcset="/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1VKksWkNAJ7ESWUEjkQWd7Q_hu295ee41d856beca2d4778d0d41435d72_56266_480x0_resize_q75_box.jpeg 480w, /p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1VKksWkNAJ7ESWUEjkQWd7Q_hu295ee41d856beca2d4778d0d41435d72_56266_1024x0_resize_q75_box.jpeg 1024w"
 	loading="lazy"
 	
+	
+		class="gallery-image" 
+		data-flex-grow="88"
+		data-flex-basis="211px"
 	
 ></p>
 <p>The access token is now stored in the variables <code>token_type</code> (Bearer ) and <code>access_token</code> (Actual token) and available to use in this Shortcut and subsequent web requests. To see if it’s working, we’re just going to make a GET request and return some Azure AD Users.</p>
 <p>Here you can see that we use both variables to include the access token in the <code>Authorization</code> Header.</p>
-<p><img src="V:%5cGitHub%5cheusser-pro-v2%5ccontent%5cpost%5cmedium-export%5cposts%5cmd_1702475460664%5cimg%5c1__RCYyCinwNHAg14Dd1DKWUw.jpeg"
-	
-	
-	
+<p><img src="/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1RCYyCinwNHAg14Dd1DKWUw.jpeg"
+	width="750"
+	height="562"
+	srcset="/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1RCYyCinwNHAg14Dd1DKWUw_hud8d47da795b0e327addef39f804007f7_34068_480x0_resize_q75_box.jpeg 480w, /p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1RCYyCinwNHAg14Dd1DKWUw_hud8d47da795b0e327addef39f804007f7_34068_1024x0_resize_q75_box.jpeg 1024w"
 	loading="lazy"
 	
+	
+		class="gallery-image" 
+		data-flex-grow="133"
+		data-flex-basis="320px"
 	
 ></p>
 <p>Because this is an OData query, the values will be stored in the <code>value</code> key. So we need to get the value of the <code>value</code> key one more time to see some results.</p>
