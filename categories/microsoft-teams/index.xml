@@ -6,7 +6,115 @@
         <description>Recent content in Microsoft Teams on HEUSSER.PRO</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Wed, 01 May 2024 15:31:57 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/microsoft-teams/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 26 May 2024 10:06:44 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/microsoft-teams/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Microsoft Teams Auto Attendants: What You Didn&#39;t Know Part 2</title>
+        <link>https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/</link>
+        <pubDate>Sun, 26 May 2024 10:06:44 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/</guid>
+        <description>&lt;h2 id=&#34;intro&#34;&gt;Intro&lt;/h2&gt;
+&lt;p&gt;I always love it when members of the community reach out to me via Twitter (Sorry, I&amp;rsquo;m still not calling it X&amp;hellip;), LinkedIn, or any other way. Last week, somebody named Ben reached out to me regarding an issue one of his Teams Phone clients was facing. He turned to me because apparently he couldn&amp;rsquo;t find an answer anywhere online and nor was Microsoft Support able to help him. To me, that&amp;rsquo;s what being an MVP is all about. Being able to help others by sharing knowledge and by providing technical expertise.&lt;/p&gt;
+&lt;h2 id=&#34;the-problem&#34;&gt;The Problem&lt;/h2&gt;
+&lt;p&gt;The problem was that Teams auto attendants are automatically disconnecting a call after some time, if the caller makes no selection in a voice menu. I tested this myself and discovered that the auto attendant will disconnect the call after the IVR greeting has been played back three times. That means that there is no hardcoded timeout value and the time to disconnect depends on how long the greeting is. Before the call is disconnected, callers will hear the greeting: &lt;code&gt;Sorry, we cannot connect your call at the moment. Please try again later.&lt;/code&gt; Even though I personally don&amp;rsquo;t view this as a real problem but rather a slight inconvenience, it was really important to Ben/his client that the caller is sent to voicemail if no selection is made by the caller in the voice menu.&lt;/p&gt;
+&lt;h2 id=&#34;the-solution&#34;&gt;The Solution&lt;/h2&gt;
+&lt;p&gt;After understanding the issue, I just thought that adding an operator to the auto attendant and assigning a dial key to the operator in the voice menu will likely fix the issue. Luckily, I was correct and that indeed proved itself to be the solution.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;If you don&amp;rsquo;t want to hang up on callers who just &amp;ldquo;hang out&amp;rdquo; in your auto attendant menus, make sure that you add an operator to your attendant.&lt;/strong&gt; As a reminder, an operater can be one of the following types:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/44b04089-e32a-40ed-b42f-08001084f0fb.png&#34;
+	width=&#34;973&#34;
+	height=&#34;532&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/44b04089-e32a-40ed-b42f-08001084f0fb_hu860f38c1cfa56048c74e18f98b3e1450_44090_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/44b04089-e32a-40ed-b42f-08001084f0fb_hu860f38c1cfa56048c74e18f98b3e1450_44090_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Supported operator types are: Teams user (Person in your organization), voice apps (auto attendants, call queues) or external phone numbers (in this case the auto attendant&amp;rsquo;s resource account needs to be set up for outbound calling as well).&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;182&#34;
+		data-flex-basis=&#34;438px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Read more about the requirements for auto attendant transfers to external phone numbers &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/microsoftteams/create-a-phone-system-auto-attendant?tabs=general-info#external-phone-number-transfers---technical-details&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If you want to send callers who idle around in a voice menu to a voicemail, I still recommend to set up a call queue with overflow threshold 0 instead of an auto attendant. I explained the reason for that &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/#one-lastcaveat&#34; &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;example-diagrams&#34;&gt;Example Diagrams&lt;/h3&gt;
+&lt;p&gt;Here you can see that this auto attendant has a default call flow greeting and an a voice menu greeting. Only the voice menu greeting will be repeated if no selection is made. The default call flow greeting will only be played back once.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/NoOperator.png&#34;
+	width=&#34;7840&#34;
+	height=&#34;11980&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/NoOperator_hue76ef7c82c9c7cb5f9bbb75ed3323777_1586825_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/NoOperator_hue76ef7c82c9c7cb5f9bbb75ed3323777_1586825_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Since there is no operator configured on this auto attendant, the call will disconnect if the caller hasn&amp;rsquo;t made a selection before the voice menu greeting has been played back three times.&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;65&#34;
+		data-flex-basis=&#34;157px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/WithOperator.png&#34;
+	width=&#34;7840&#34;
+	height=&#34;12490&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/WithOperator_hu89408d2c6554e9892854c23a9fef4a89_1738103_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/WithOperator_hu89408d2c6554e9892854c23a9fef4a89_1738103_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;In this case, I&amp;rsquo;ve added an operator to the auto attendant and also added it as a selection in the voice menu which means the call will be transferred to the operator, if no selection is made by the caller before the message has been played back three times.&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;62&#34;
+		data-flex-basis=&#34;150px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If you don&amp;rsquo;t want callers to dial the operator straight away, you can just not include any hint in the greeting, that it could be dialed by pressing &lt;code&gt;0&lt;/code&gt; (or whatever dial key you&amp;rsquo;ve assigned to the operator). You can see that my greeting &lt;code&gt;Please press 1 for English or 2 for German&lt;/code&gt; doesn&amp;rsquo;t mention anything about an operator.&lt;/p&gt;
+&lt;p&gt;I didn&amp;rsquo;t expand the nested queues in these diagrams so the operator only shows as &lt;strong&gt;Call Queue VIP Support CQ&lt;/strong&gt; but that actually forwards to a shared voicemail immediately.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/CallQueueVoicemail.png&#34;
+	width=&#34;480&#34;
+	height=&#34;732&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/CallQueueVoicemail_hubc66e5ef0d8d76a85bbedb9c0fb458aa_59041_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/CallQueueVoicemail_hubc66e5ef0d8d76a85bbedb9c0fb458aa_59041_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;This is the call queue that forwards immediately to shared voicemail.&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;65&#34;
+		data-flex-basis=&#34;157px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;configuration-in-teams-admin-center&#34;&gt;Configuration in Teams Admin Center&lt;/h3&gt;
+&lt;p&gt;This is how your auto attendant must be configured.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/image.png&#34;
+	width=&#34;1313&#34;
+	height=&#34;813&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/image_hu040390ba1bb2a810f5549ed860b2ea6d_77121_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/image_hu040390ba1bb2a810f5549ed860b2ea6d_77121_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;First, add an operator to the auto attendant. In this case, I&amp;rsquo;m using a voice app (call queue).&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;161&#34;
+		data-flex-basis=&#34;387px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/image-1.png&#34;
+	width=&#34;1522&#34;
+	height=&#34;942&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/image-1_huff13491d3a6371a27741818abc25cbae_80507_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/image-1_huff13491d3a6371a27741818abc25cbae_80507_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;In the default call flow, make sure to assign a dial key to the operator and not to the voice app itself.&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;161&#34;
+		data-flex-basis=&#34;387px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
+&lt;p&gt;I think this is another great example that Teams Phone is slowly maturing and that in fact, most features and scenarios one would expect can be realized. It&amp;rsquo;s just that sometimes it can be a little hard to discover or figure our how something can be achieved. That&amp;rsquo;s what we have the Teams community for. I hope that this short tutorial helps others as well.&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Teams Call Queues now Support Greetings in Exception Handlings</title>
         <link>https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/</link>
         <pubDate>Wed, 01 May 2024 15:31:57 +0000</pubDate>
