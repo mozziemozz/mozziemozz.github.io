@@ -114,6 +114,87 @@
 &lt;p&gt;I hope this little Gist also helps you formatting your logs a little quicker.&lt;/p&gt;
 </description>
         </item>
+        <item>
+        <title>Microsoft Teams: Activate FQDN of Online PSTN Gateway without License</title>
+        <link>https://heusser.pro/p/microsoft-teams-activate-fqdn-of-online-pstn-gateway-without-license-85e9ee4ca4cc/</link>
+        <pubDate>Tue, 08 Feb 2022 21:29:25 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/microsoft-teams-activate-fqdn-of-online-pstn-gateway-without-license-85e9ee4ca4cc/</guid>
+        <description>&lt;p&gt;If you’re a Microsoft Teams Admin, like me, you are probably aware that setting up a new Online PSTN Gateway in Teams Admin Center (TAC) or via PowerShell requires the domain of the SBC’s FQDN to be activated. This is done by creating at least one account using the SBC’s FQDN as the UPN Suffix.&lt;/p&gt;
+&lt;h3 id=&#34;domains&#34;&gt;Domains&lt;/h3&gt;
+&lt;p&gt;Now keep in mind that there are two ways how you can add an Online PSTN Gateway in Teams. Either you use your own Gateway in which case the domain usually has one segment less and is a subdomain of your main domain. E.g.&lt;/p&gt;
+&lt;p&gt;sbc.domain.com&lt;/p&gt;
+&lt;p&gt;In this case you don’t need to create a user to activate the domain because &lt;em&gt;domain.com&lt;/em&gt; is already used for other UPNs and thus already known in your tenant.&lt;/p&gt;
+&lt;p&gt;If you want to use Direct Routing offered by one of the various managed service providers, your FQDN might look something like this. E.g.&lt;/p&gt;
+&lt;p&gt;customer1.customers.domain.com&lt;/p&gt;
+&lt;p&gt;In this case you need to add a user with the following UPN. E.g.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;mailto:domainactivation@customer1.customers.domain.com&#34; &gt;domainactivation@customer1.customers.domain.com&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;microsoft-docs&#34;&gt;Microsoft Docs&lt;/h3&gt;
+&lt;p&gt;The information on Microsoft’s &lt;a class=&#34;link&#34; href=&#34;https://t.umblr.com/redirect?z=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fmicrosoftteams%2Fdirect-routing-sbc-multiple-tenants%23activate-the-subdomain-name&amp;amp;t=OTVkYjk5ZDBiMDNhNmNhOGIxNjY2YzlmYjZkZTdjMzA3ODkxYjk1Yiw5MmY5MzI0OTk0Y2RjZTUwZWM0N2I0YmIyOWYxNWM2YzQ2ZmY1ZmIw&amp;amp;ts=1633444148&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;official documentation&lt;/a&gt; is a bit controversial. They have two sections mentioning the activation of the domain. One time for the base domain (Carrier Tenant) and one time for the subdomains (Customer Tenants).&lt;/p&gt;
+&lt;p&gt;As of writing this article, the information looks like this.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://t.umblr.com/redirect?z=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fmicrosoftteams%2Fdirect-routing-sbc-multiple-tenants%23activate-the-domain-name&amp;amp;t=OWMxYjUzYzU2ZDI3OWRiZDBkNjQ3YWJjYjZjMTBmZTJhNzg3MDVlMiwxNWQ4NjM5NjY2NzdhZDgzZGM1NTU2NTBmOGFlMGY2YzhkMjIxMjA1&amp;amp;ts=1633444148&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Base Domain&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;After you have registered a domain name, you need to activate it by adding at least one user with Phone System license and assigning a SIP address with the FQDN portion of the SIP address matching the created base domain.&lt;/p&gt;
+&lt;p&gt;Previously, Microsoft always said that this user needs an E5 License. This is still visible in their screenshots. If you want to review the change history of this particular documentation, you can always see it here on &lt;a class=&#34;link&#34; href=&#34;https://href.li/?https://github.com/MicrosoftDocs/OfficeDocs-SkypeForBusiness/commits/live/Teams/direct-routing-sbc-multiple-tenants.md&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If you’re a customer and want to add a domain name assigned to you by your managed service provider, you don’t need to worry about this part. The assigned licenses will determine what voice capabilities your tenant has. You can check this by running the following in a Teams PowerShell session.&lt;/p&gt;
+&lt;p&gt;(Get-CsTenant).ProvisionedPlan&lt;/p&gt;
+&lt;p&gt;This will return an XML string containing all assigned licenses. It’s still a little weird that they only mention Phone System. Because Phone System is just an add-on which can’t be assigned without a corresponding Enterprise License (one of the SKUs which actually triggers the creation of an SfB user object), unless you use Common Area Phone.&lt;/p&gt;
+&lt;p&gt;Oddly enough though, for the subdomain they don’t mention licensing at all. The subdomain part describes what needs to be done in the customer tenant.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://t.umblr.com/redirect?z=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fmicrosoftteams%2Fdirect-routing-sbc-multiple-tenants%23activate-the-subdomain-name&amp;amp;t=OTVkYjk5ZDBiMDNhNmNhOGIxNjY2YzlmYjZkZTdjMzA3ODkxYjk1Yiw5MmY5MzI0OTk0Y2RjZTUwZWM0N2I0YmIyOWYxNWM2YzQ2ZmY1ZmIw&amp;amp;ts=1633444148&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Sub Domains&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;After you register a domain name, you need to activate it by adding at least one user and assign a SIP address with the FQDN portion of the SIP address matching the created subdomain in the customer tenant.&lt;/p&gt;
+&lt;p&gt;Here they just say that the user needs to be assigned a SIP address, which is not possible without assigning a SfB Online Plan 2 license. Unless you keep on reading…&lt;/p&gt;
+&lt;h3 id=&#34;what-will-assigning-the-licensedo&#34;&gt;What will assigning the license do?&lt;/h3&gt;
+&lt;p&gt;So why is a License needed in the first place? Assigning a user a SfB License will provision an SfB Online user object for each licensed user.&lt;/p&gt;
+&lt;p&gt;Once the SfB user is provisioned, the domain will also be stored in your tenants DomainUrlMap. If the FQDN of your Gateway is not present in your DomainUrlMap, you will not be able to create the gateway. MVP Luca Vitali has en excellent &lt;a class=&#34;link&#34; href=&#34;https://href.li/?https://lucavitali.wordpress.com/2019/03/15/new-csonlinepstngateway/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Blog Post&lt;/a&gt; about that.&lt;/p&gt;
+&lt;h3 id=&#34;do-we-really-need-a-license-to-create-thegateway&#34;&gt;Do we really need a license to create the Gateway?&lt;/h3&gt;
+&lt;p&gt;Based on my various tests, it really doesn’t matter if it’s an E1, E3, E5 or even a Business Basic License. As long as the SKU includes SfB Online Plan 2, a SIP address and an entry in the DomainUrlMap for that domain will be created.&lt;/p&gt;
+&lt;p&gt;So, I asked myself, is there an easier way to activate the domain? One without assigning a license which would help automate things even further? Turns out there is indeed!&lt;/p&gt;
+&lt;p&gt;A resource account in Teams does not need a license, unless you want to assign a phone number to it. If you create one without a license, Microsoft 365 will still provision an SfB Online object for this resource account and add its domain to your DomainUrlMap.&lt;/p&gt;
+&lt;p&gt;By running &lt;em&gt;Get-CsOnlineApplicationInstance&lt;/em&gt; we can query our resource accounts in Teams.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-activate-fqdn-of-online-pstn-gateway-without-license-85e9ee4ca4cc/0ERujVXcteQftrsYE.png&#34;
+	width=&#34;640&#34;
+	height=&#34;351&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-activate-fqdn-of-online-pstn-gateway-without-license-85e9ee4ca4cc/0ERujVXcteQftrsYE_hu7977328df1e1474667a67bdd237ae9ef_172350_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-activate-fqdn-of-online-pstn-gateway-without-license-85e9ee4ca4cc/0ERujVXcteQftrsYE_hu7977328df1e1474667a67bdd237ae9ef_172350_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;182&#34;
+		data-flex-basis=&#34;437px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;After a few minutes, the account will also be visible when you run Get-CsOnlineUser. I always create my resource accounts using &lt;em&gt;ra_aa_&lt;/em&gt; as a UPN prefix. Another easy way of identifying resource accounts is to look for the &lt;em&gt;Department Attribute.&lt;/em&gt; A resource account will always have &lt;em&gt;Microsoft Communication Application Instance&lt;/em&gt; set as &lt;em&gt;Department.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-activate-fqdn-of-online-pstn-gateway-without-license-85e9ee4ca4cc/0yI6AyClljJe7j1X0.png&#34;
+	width=&#34;640&#34;
+	height=&#34;351&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-activate-fqdn-of-online-pstn-gateway-without-license-85e9ee4ca4cc/0yI6AyClljJe7j1X0_hu0b0addbd932257f620d1aaa3a69fcf90_159485_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-activate-fqdn-of-online-pstn-gateway-without-license-85e9ee4ca4cc/0yI6AyClljJe7j1X0_hu0b0addbd932257f620d1aaa3a69fcf90_159485_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;182&#34;
+		data-flex-basis=&#34;437px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;caveats&#34;&gt;Caveats&lt;/h3&gt;
+&lt;p&gt;The only caveat is that you don’t usually configure the SfB Online DNS entries for a domain which you want to use for your Direct Routing Gateway domain. If the DNS records are not configured, creating a resource account using your SBC FQDN will fail. Jeff Brown over at Jeff Brown Tech also has a great &lt;a class=&#34;link&#34; href=&#34;https://href.li/?https://jeffbrown.tech/microsoft-teams-unable-to-create-resource-accounts/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Blog Post&lt;/a&gt; covering this topic.&lt;/p&gt;
+&lt;p&gt;According to my research and testing, the only record that’s needed in order to create the resource account is the &lt;a class=&#34;link&#34; href=&#34;https://t.umblr.com/redirect?z=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2FSkypeForBusiness%2Ftroubleshoot%2Fonline-configuration%2Fdns-configuration-issue%23solution&amp;amp;t=NDY5M2UyYjRmZGZhNjdjYTJkZjFjMGQ5NDdmMzgwNjBkZGYwNjU1MCxhMjFjMmJjOTg1YWQ2Zjk2MjU2NzE0Yzc5MGNjMzE5NzllMTBmY2I4&amp;amp;ts=1633642291&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;SIP Federation TLS SRV Record.&lt;/a&gt; The other three SfB records can be ignored.&lt;/p&gt;
+&lt;p&gt;Once this record is created you will be able to create a resource account using your SBCs FQDN as UPN suffix. Now you just have to wait for the account to be provisioned and for the domain to show up in your DomainUrlMap. This usually takes around 5–15 minutes but can take a lot longer sometimes.&lt;/p&gt;
+&lt;p&gt;You can check your DomainUrlMap using this command:&lt;/p&gt;
+&lt;p&gt;(Get-CsTenant).DomainUrlMap&lt;/p&gt;
+&lt;p&gt;Based on my Testing, DomainMapUrl was not available anymore in Teams PowerShell Modules above version 2.6.0. This caused my provisioning script to end up in an infinite loop because it was checking the DomainUrlMap every few minutes but always returned empty.&lt;/p&gt;
+&lt;p&gt;The last module I know of which returned the DomainUrlMap was 2.3.1. Since we’re now at version 3.1.1 I suggest to query the SfB users by using Get-CsOnlineUser to check if the domain is already activated. However, it might still take a few minutes before the gateway can be created. By working with Try {} Catch{} and a Do-Until loop you can keep trying to create the gateway until it succeeds.&lt;/p&gt;
+&lt;h3 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h3&gt;
+&lt;p&gt;So, there you have it. It’s indeed possible to create a PSTN Online Gateway without ever assigning a license. Not every tenant even has available licenses and not every tenant has the same type of available licenses. This means that you don’t need to make sure anymore that your script is assigning the correct license or even that enough licenses are available in the first place. In scenarios where you want to automate everything using unattended scripts, this comes in quite handy.&lt;/p&gt;
+&lt;p&gt;Because the license and the user can be removed after you created the gateway, I see no problem in setting up a resource account without a license. Unless you’re setting up the carrier tenant. In this case you don’t usually have any other production users which means that you need to keep at minimum one license assigned. Otherwise, the tenant will lose its voice capabilities and break your Direct Routing configuration for all your customers.&lt;/p&gt;
+</description>
+        </item>
         
     </channel>
 </rss>

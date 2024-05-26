@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Forwarding on HEUSSER.PRO</title>
+        <link>https://heusser.pro/tags/forwarding/</link>
+        <description>Recent content in Forwarding on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Thu, 10 Mar 2022 19:01:47 +0000</lastBuildDate><atom:link href="https://heusser.pro/tags/forwarding/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>How to Permanently Forward PSTN Calls in Microsoft Teams (Without License)</title>
+        <link>https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/</link>
+        <pubDate>Thu, 10 Mar 2022 19:01:47 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/</guid>
+        <description>&lt;p&gt;When you’re using Microsoft Teams Direct Routing as your primary calling solution, chances are that sometimes you also need to permanently forward calls to one of your numbers to another external phone number.&lt;/p&gt;
+&lt;p&gt;In many cases, forwarding of numbers can also be handled outside of Teams. Most SIP providers offer a web-based portal for number management and forwarding. However, controlling all your numbers inside Teams without relying on third parties can still be an advantage sometimes.&lt;/p&gt;
+&lt;p&gt;Note: this blog post only considers Teams Direct Routing scenarios. Calling Plans or Operator Connect are not covered.&lt;/p&gt;
+&lt;h4 id=&#34;forwarding-by-a-licensed-teamsuser&#34;&gt;Forwarding by a Licensed Teams User&lt;/h4&gt;
+&lt;p&gt;Setting up a forwarding of numbers can be achieved in multiple ways. The most obvious one to just create and license a Teams user and setup a permanent call forwarding for that user in the Teams Client.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1hF9oWNMacZgIt1dCtfkcOQ.png&#34;
+	width=&#34;1156&#34;
+	height=&#34;485&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1hF9oWNMacZgIt1dCtfkcOQ_hud2f68a252ad9d90fa2fed0467d55a8ba_58788_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1hF9oWNMacZgIt1dCtfkcOQ_hud2f68a252ad9d90fa2fed0467d55a8ba_58788_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;238&#34;
+		data-flex-basis=&#34;572px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This user will need at minimum a Business Basic + Teams Phone Standard License. A CAP (Common Area Phone License) *in theory* should also present this option when using the Desktop or Web Client but call forwarding won’t be available when using a Teams certified Desk Phone. Thus, this is an unsupported scenario and should not be used. There’s a better way which will even allow you to get rid of the license costs entirely. I’ll explain how later in this article.&lt;/p&gt;
+&lt;p&gt;Since there is no voice app like an auto attendant or call queue involved in this scenario, all calls to the direct number of this particular user will be forwarded right away. This also means that the caller will hear the ring back tone, until the external participant (forwaring target) answers the call.&lt;/p&gt;
+&lt;p&gt;Advantages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Direct forwarding, call does not get picked up or intercepted by Teams&lt;/li&gt;
+&lt;li&gt;Should be possible to forward calls to a FAX number&lt;/li&gt;
+&lt;li&gt;Good for scenarios where the forwarding target often changes (can be changed by other Teams users from inside their client by using the Boss/Delegate feature)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Disadvantages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;License costs&lt;/li&gt;
+&lt;li&gt;Configuration can only be reviewed or changed by logging in, using Boss/Delegate or PowerShell Preview Cmdlets (Get-CsUserCallingSettings)&lt;/li&gt;
+&lt;li&gt;Can’t use Service or Toll-Free numbers&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;forwaring-by-a-resourceaccount&#34;&gt;Forwaring by a Resource Account&lt;/h4&gt;
+&lt;p&gt;It’s also possible to transfer calls to external PSTN numbers by using resource accounts assigned to auto attendants or call queues. Before you can assign a number to a resource account, you need to assign a free &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/microsoftteams/teams-add-on-licensing/virtual-user#virtual-user-license-allocation&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Teams Phone Standard — Virtual User License&lt;/a&gt; to the resource account.&lt;/p&gt;
+&lt;p&gt;Once the license is assigned, we need to assign a phone number to the resource account:&lt;/p&gt;
+&lt;p&gt;Set-CsPhoneNumberAssignment -Identity ra_cq_PS_Test@mozzism.ch -PhoneNumber +41445124077 -PhoneNumberType DirectRouting&lt;/p&gt;
+&lt;p&gt;Next we also need to assign it a Voice Routing Policy:&lt;/p&gt;
+&lt;p&gt;Grant-CsOnlineVoiceRoutingPolicy -Identity &lt;a class=&#34;link&#34; href=&#34;mailto:ra_cq_PS_Test@mozzism.ch&#34; &gt;ra_cq_PS_Test@mozzism.ch&lt;/a&gt; -PolicyName &amp;ldquo;FirstTrunk&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;The most obvious way, at least for me was to create an auto attendant and set it up without business hours so it will always perform the same action: forward the call to an external number. This works, no doubt but the problem is that the auto attendant *ALWAYS* answers the call before it’s actually forwarded. Because of that, this method can’t be used to forward calls to a FAX number.&lt;/p&gt;
+&lt;p&gt;Since it’s also possible to forward calls from a call queue to an external number, we can leverage this to create a similar experience as to when the call is permanently forwarded by a Teams user.&lt;/p&gt;
+&lt;p&gt;A call queue has two options to control actions or forwardings. Overflow (max. number of simultaneous calls) or timeout.&lt;/p&gt;
+&lt;p&gt;If we set the timeout to zero (0 minutes, 0 seconds) the queue still answers the call, before it’s forwarded. Even if there is no greeting configured.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1YgnBVoi8wRNzxMl3TedyyQ.png&#34;
+	width=&#34;1768&#34;
+	height=&#34;734&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1YgnBVoi8wRNzxMl3TedyyQ_hue64e3524f799987c0a7f03b0e55629b2_83302_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1YgnBVoi8wRNzxMl3TedyyQ_hue64e3524f799987c0a7f03b0e55629b2_83302_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;240&#34;
+		data-flex-basis=&#34;578px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;A good example to see that the queue picked up the call is that the counter starts on any phone. Here I’m using Skype to call the call queue and you can see that the call has been established for 5 seconds, even though the configured forwarding target has not answered the call yet. While the call rings the forwarding target, Teams will generate a ring back tone inside the already established call.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1QAUIogXcABSjdUwIzj5LDQ.png&#34;
+	width=&#34;1590&#34;
+	height=&#34;1017&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1QAUIogXcABSjdUwIzj5LDQ_hu0edb9f3b89aaea4b10989c563ce6f412_890223_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1QAUIogXcABSjdUwIzj5LDQ_hu0edb9f3b89aaea4b10989c563ce6f412_890223_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;156&#34;
+		data-flex-basis=&#34;375px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If we set the overflow threshold of the queue to zero on the other hand, TAC shows a warning message that the queue won’t play the greeting when the overflow threshold is set to 0.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1jxc3VpgcSiWVumahjggBRg.png&#34;
+	width=&#34;1766&#34;
+	height=&#34;765&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1jxc3VpgcSiWVumahjggBRg_hub16c720000d59c96133901d009d78a60_94963_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1jxc3VpgcSiWVumahjggBRg_hub16c720000d59c96133901d009d78a60_94963_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;230&#34;
+		data-flex-basis=&#34;554px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;It’s not entirely clear that this has always been the case, but I’m pretty sure that at least this warning message has been introduced a only few weeks ago when the call queue wizard was redesigned. It was this warning message that tipped me of and inspired me to test this.&lt;/p&gt;
+&lt;p&gt;So, let’s make another call to the queue’s number. This time, there’s no counter visible in Skype’s call screen which means that the call gets forwarded without being intercepted by the queue first. In this case, because I’m using Skype I can only hear Skype’s own “ring back jingle”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1d3NXW1fGGCCxHfm0jhDKzw.png&#34;
+	width=&#34;1590&#34;
+	height=&#34;1017&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1d3NXW1fGGCCxHfm0jhDKzw_hu7a27d03f3960869f3f9f5792b35aa6f0_58709_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1d3NXW1fGGCCxHfm0jhDKzw_hu7a27d03f3960869f3f9f5792b35aa6f0_58709_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;156&#34;
+		data-flex-basis=&#34;375px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When using a “real phone” like my cell phone the ring back tone gets played back just like when any other number is dialed.&lt;/p&gt;
+&lt;p&gt;Altough I haven’t actually tested sending a FAX message end to end, I tested forwarding to a FAX number and was able to hear the typical FAX noises when I called the queue’s number. I can’t see any reason why this shouldn’t work.&lt;/p&gt;
+&lt;p&gt;Advantages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;No License costs&lt;/li&gt;
+&lt;li&gt;Can use Service or Toll-Free numbers&lt;/li&gt;
+&lt;li&gt;Should be possible to forward calls to a FAX number (when using a CQ)&lt;/li&gt;
+&lt;li&gt;Configured forwarding is more obvious because it’s visible in TAC&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Disadvantages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Only Teams admins can change the forwarding target&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;summary&#34;&gt;Summary&lt;/h4&gt;
+&lt;p&gt;Even though it might not be an obvious solution, using a call queue to permanently forward calls is still a great way to have more control over all your DIDs right inside Teams itself without adding any license costs.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
