@@ -6,7 +6,102 @@
         <description>Recent content in Proof of Concept on HEUSSER.PRO</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sat, 08 Jul 2023 08:50:29 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/proof-of-concept/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 05 Jun 2024 19:24:44 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/proof-of-concept/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Microsoft Graph: Get an Access Token from a PowerShell Session</title>
+        <link>https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/</link>
+        <pubDate>Wed, 05 Jun 2024 19:24:44 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/</guid>
+        <description>&lt;p&gt;Authentication with the Microsoft Graph PowerShell SDK is pretty easy. All you have to do to establish a session is to run &lt;code&gt;Connect-MgGraph&lt;/code&gt;. After that, you can use all Cmdlets for which you&amp;rsquo;ve installed the necessary modules. It&amp;rsquo;s no secret that not all Cmdlets are as well documented as the REST API itself and in rare cases, the PowerShell Cmdlets might even have some limitations compared to their REST counterparts. In such cases, you can usually just use the universal &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/microsoft.graph.authentication/invoke-mggraphrequest?view=graph-powershell-1.0&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;code&gt;Invoke-MgGraphRequest&lt;/code&gt;&lt;/a&gt; Cmdlet without providing your own access token. This Cmdlet will use the same authentication like any other &lt;strong&gt;&lt;code&gt;Mg*&lt;/code&gt;&lt;/strong&gt; Cmdlet.&lt;/p&gt;
+&lt;p&gt;This is how Microsoft describes the &lt;code&gt;Invoke-MgGraphRequest&lt;/code&gt; Cmdlet on Microsoft Learn:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Invoke-MgGraphRequest issues REST API requests to the Graph API. It works for any Graph API if you know the REST URI, method, and optional body parameter. This command is especially useful for accessing APIs for which there isn&amp;rsquo;t an equivalent cmdlet yet.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Note that there is also an alias called &lt;code&gt;Invoke-GraphRequest&lt;/code&gt; for this Cmdlet. A perfect example of where you would need &lt;code&gt;Invoke-MgGraphRequest&lt;/code&gt; is uploading a small file to SharePoint. I recently published a script example making use of this method &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/powershell-script-example-upload-small-files-via-microsoft-graph-z45tbunyoa85&#34; &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;what-is-mgcontext&#34;&gt;What is MgContext?&lt;/h2&gt;
+&lt;p&gt;By running &lt;code&gt;Get-MgContext&lt;/code&gt; you can get some information about the current session. Unfortunately, this doesn&amp;rsquo;t reveal any kind of tokens used for requests to the Graph API. Then again, this is most likely by design, because tokens should always be handled with care.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image_hu754d71b654ea23e9f5c87bfe16932a68_1172389_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image_hu754d71b654ea23e9f5c87bfe16932a68_1172389_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Output of Get-MgContext&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;what-if-you-need-a-token-anyway&#34;&gt;What if you need a token anyway?&lt;/h2&gt;
+&lt;p&gt;One option is to provide a client Id and a client secret and make a request to &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://login.microsoftonline.com/%7bYour&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://login.microsoftonline.com/{Your&lt;/a&gt; Tenant Name}/oauth2/v2.0/token&lt;/strong&gt;. If I want to do that, I always come back to this blog post on &lt;a class=&#34;link&#34; href=&#34;https://adamtheautomator.com/powershell-graph-api/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;adamtheautomator.com&lt;/a&gt;. But when I do that, I also want to call the REST API directly for all requests that the script I&amp;rsquo;m working on is doing. In my case, I &lt;strong&gt;want&lt;/strong&gt; to use the SDK and only &lt;strong&gt;need&lt;/strong&gt; to call the API directly for one specific request.&lt;/p&gt;
+&lt;p&gt;I recently was working on something where neither the &lt;code&gt;Get-Mg*&lt;/code&gt; nor the &lt;code&gt;Invoke-MgGraphRequest&lt;/code&gt; were working. I wanted to fetch a profile picture of an Entra ID user but wanted to keep the image in memory and not save it to disk. Both the Cmdlets, &lt;code&gt;Get-MgUserPhotoContent&lt;/code&gt; and &lt;code&gt;Invoke-MgGraphRequest&lt;/code&gt; expected a value for an output file though. I know I could have just used a temporary file but if I had given up this easily, I wouldn&amp;rsquo;t have discovered how to get an access token from a Microsoft Graph PowerShell session.&lt;/p&gt;
+&lt;p&gt;When I was testing the &lt;code&gt;Invoke-MgGraphRequest&lt;/code&gt; Cmdlet, I noticed that there were different accepted values for the parameter &lt;code&gt;-OutputType&lt;/code&gt;. One of the accepted values is &lt;strong&gt;HttpResponseMessage&lt;/strong&gt; and if you select this, Graph will return the access token in the HTTP response.&lt;/p&gt;
+&lt;p&gt;This is the Graph URI/endpoint that I was using:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$mgRequest&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Invoke-MgGraphRequest&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Uri&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;https://graph.microsoft.com/v1.0/users/&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;$(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$userId&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;/photo/&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;`$&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;value&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-ContentType&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;image/jpeg&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-OutputType&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HttpResponseMessage&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1_hu1f3a68c31f9f6d09b32402eaf728180d_992335_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1_hu1f3a68c31f9f6d09b32402eaf728180d_992335_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Graph access token retrieved using Invoke-MgGraphRequest&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;To access the token directly, you can use: &lt;code&gt;$mgRequest.RequestMessage.Headers.Authorization.Parameter&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2_hu481e61ac623856a0fe9b6eff6bbbfa8f_621204_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2_hu481e61ac623856a0fe9b6eff6bbbfa8f_621204_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;The access token is now stored in a variable&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If you want to build your own Authorization header to call the API directly without first requesting a dedicated token from &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://login.microsoftonline.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://login.microsoftonline.com&lt;/a&gt;&lt;/strong&gt; you can use this code:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$authHeader&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;vm&#34;&gt;@&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;Authorization&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;$(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$mgRequest&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;RequestMessage&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;Headers&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;Authorization&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Scheme&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;$(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$mgRequest&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;RequestMessage&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;Headers&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;Authorization&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;Parameter&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$profilePhoto&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;Invoke-WebRequest&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Uri&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;https://graph.microsoft.com/v1.0/users/&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;$(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$userId&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;/photo/&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;`$&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;value&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Headers&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$authHeader&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;Content&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;This allowed me to retrieve the profile photo as a byte array without saving it to disk first.&lt;/p&gt;
+&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
+&lt;p&gt;This is a very niche use case but I&amp;rsquo;m glad that I discovered how to get an access token from an already authenticated Microsoft Graph PowerShell session. I&amp;rsquo;m sure that this will come in handy again some day and I hope that it will come in handy for you some day as well. I also published the entire example script including helpful comments in one of my GitHub &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/Authentication/Get-AccessTokenFromEstablishedMgSession.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;repositories&lt;/a&gt;.&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Automate Setting Work Location in Teams/Outlook [PoC]</title>
         <link>https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/</link>
         <pubDate>Sat, 08 Jul 2023 08:50:29 +0000</pubDate>
