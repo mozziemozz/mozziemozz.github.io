@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='In this blog, I&#39;ll present a proof of concept on how you can change someone else&#39;s opt in status without the need for Microsoft Teams Premium licenses.'>
+<title>Microsoft Teams: Change Call Queue Opt In Status on Behalf of Other User Without Teams Premium!</title>
+
+<link rel='canonical' href='https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Microsoft Teams: Change Call Queue Opt In Status on Behalf of Other User Without Teams Premium!'>
+<meta property='og:description' content='In this blog, I&#39;ll present a proof of concept on how you can change someone else&#39;s opt in status without the need for Microsoft Teams Premium licenses.'>
+<meta property='og:url' content='https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/'>
+<meta property='og:site_name' content='HEUSSER.PRO'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-06-14T16:48:53&#43;00:00'/><meta property='article:modified_time' content='2024-06-14T16:48:53&#43;00:00'/>
+<meta name="twitter:title" content="Microsoft Teams: Change Call Queue Opt In Status on Behalf of Other User Without Teams Premium!">
+<meta name="twitter:description" content="In this blog, I&#39;ll present a proof of concept on how you can change someone else&#39;s opt in status without the need for Microsoft Teams Premium licenses.">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "kozb6q2xjn");
+    </script>    
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hud7e6b3cccc21b12ddf35b72eb655064d_860969_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🫡</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
+            <h2 class="site-description">Martin Heusser | M365 Apps &amp; Services MVP</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/mozziemozz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://x.com/@mozzeph'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/support-me/' >
+                
+                
+                
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-cup"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 11h14v-3h-14z" /><path d="M17.5 11l-1.5 10h-8l-1.5 -10" /><path d="M6 8v-1a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v1" /><path d="M15 5v-2" /></svg>
+                
+                <span>Support Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/imprint/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                
+                <span>Imprint</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#history-lesson">History Lesson</a></li>
+    <li><a href="#inspiration-from-the-community">Inspiration from the Community</a></li>
+    <li><a href="#setting-up-the-prerequisites">Setting up the Prerequisites</a></li>
+    <li><a href="#the-power-of-power-automate">The Power of Power Automate</a>
+      <ol>
+        <li><a href="#flow-for-each-agent">Flow For Each Agent</a>
+          <ol>
+            <li><a href="#import-the-flow-package">Import the Flow Package</a></li>
+            <li><a href="#share-the-flow-with-all-the-other-agents">Share the Flow with all the other Agents</a></li>
+          </ol>
+        </li>
+        <li><a href="#flow-to-keep-the-list-in-sync">Flow to keep the List in Sync</a>
+          <ol>
+            <li><a href="#import-the-flow-package-1">Import the Flow Package</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#user-experience">User Experience</a></li>
+    <li><a href="#additional-benefits">Additional Benefits</a></li>
+    <li><a href="#summary">Summary</a>
+      <ol>
+        <li><a href="#download-flow-packages">Download Flow Packages</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/teams-phone/" >
+                Teams Phone
+            </a>
+        
+            <a href="/categories/power-automate/" >
+                Power Automate
+            </a>
+        
+            <a href="/categories/call-queues/" >
+                Call Queues
+            </a>
+        
+            <a href="/categories/sharepoint/" >
+                SharePoint
+            </a>
+        
+            <a href="/categories/proof-of-concept/" >
+                Proof of Concept
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/">Microsoft Teams: Change Call Queue Opt In Status on Behalf of Other User Without Teams Premium!</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            In this blog, I&#39;ll present a proof of concept on how you can change someone else&#39;s opt in status without the need for Microsoft Teams Premium licenses.
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jun 14, 2024</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    12 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="history-lesson">History Lesson</h2>
+<p>Up until now, it hasn&rsquo;t been possible for a queue manager to opt in or opt out other agents on their behalf. Opting in or out of a queue was always an action that had to be done by agents themselves. This changes with the <strong>Queues</strong> app which is currently still in private preview. If you&rsquo;re reading this blog, I doubt that this is the first time that you&rsquo;re hearing of this but nevertheless, I&rsquo;m still going to add a couple of links to this blog post.</p>
+<p>You can read the official announcement of the Queues app <a class="link" href="https://techcommunity.microsoft.com/t5/microsoft-teams-blog/introducing-the-queues-app-enabling-customer-engagement-in/ba-p/4095971"  target="_blank" rel="noopener"
+    >here</a> and you&rsquo;ll find the official support article <a class="link" href="https://support.microsoft.com/en-us/office/use-the-queues-app-for-microsoft-teams-370ad83e-c2c1-4a9f-8a59-16c98be102e9"  target="_blank" rel="noopener"
+    >here</a>. On <a class="link" href="https://regale.cloud/Microsoft/viewer/2963/queues-app/index.html"  target="_blank" rel="noopener"
+    >this</a> page you can see an interactive demo of the queues app.</p>
+<p>While this will finally make it possible to change the opt in status on someone else&rsquo;s behalf, it comes at a price. The Queues app will be part of Teams Premium and thus increase your monthly license costs. At this point, I don&rsquo;t think it&rsquo;s confirmed if only a supervisor can have a Teams Premium license and still be able to change the opt in status of others, or if all the members of a queue will require a Teams Premium license. My best guess is that every member of the queue will require an additional license but please don&rsquo;t take my word for it.</p>
+<p>Since this was one of the most requested features of Teams Phone customers, I already experimented with creating something that would allow somebody to change an agent&rsquo;s opt in statuses remotely in the past. I blogged about this <a class="link" href="/p/opt-in-or-opt-out-teams-call-queue-agents-remotely-59fe6147f50d" >here</a>. I don&rsquo;t think that this method still works today but it did work at the time. However, this never made it past a proof of concept because it required the username, password and potentially an MFA secret for the user account for which the opt in status needed to be changed.</p>
+<p>Today, I&rsquo;m presenting a different solution. It&rsquo;s still very much a proof of concept and not very scalable but at least it doesn&rsquo;t need user credentials anymore. But most importantly, it doesn&rsquo;t need any additional licenses.</p>
+<h2 id="inspiration-from-the-community">Inspiration from the Community</h2>
+<p>I initially got the idea from fellow MVP <a class="link" href="https://www.loryanstrant.com/2023/06/05/automatically-change-your-microsoft-teams-working-location-with-home-assistant/"  target="_blank" rel="noopener"
+    >Loryan Strant</a>. In this blog post, he explains how you can leverage the <strong>Send an HTTP request to SharePoint</strong> in Power Automate to make web requests to other end points. In his case, he&rsquo;s targeting the endpoint which is used to update a user&rsquo;s work location. Unknowingly at that time, I worked on <a class="link" href="/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d" >my own way</a> of programmatically setting my work location using PowerShell and AADInternals. I&rsquo;ll soon be writing something new about this too but today&rsquo;s issue is all about call queues and changing opt in statuses.</p>
+<p>My next step was to look at the browser dev tools in Edge to see if anything had changed in how the Teams web client handles an opt in change. I already used this method in my first proof of concept over two years ago and I learned how you can effectively use the browser dev tools to see what&rsquo;s going on under the hood from Alexander Holmeset in <a class="link" href="https://alexholmeset.blog/2021/02/28/teams-network-planner-automated/"  target="_blank" rel="noopener"
+    >this</a> blog post. On that note I want to point out that I&rsquo;ll forever be grateful for that post. Acquiring this skill has helped me achieve something so many times already!</p>
+<p>In V1 of this PoC the request used to update an agent&rsquo;s opt in status looked like this and the call queue Id was referenced in the payload.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Invoke-RestMethod</span> <span class="n">-Uri</span> <span class="s2">&#34;https://api.interfaces.records.teams.microsoft.com/Teams.VoiceApps/cq-agents/{User Id}&#34;</span> <span class="n">-Body</span> <span class="nv">$payload</span> <span class="n">-Method</span> <span class="n">Put</span> <span class="n">-Headers</span> <span class="nv">$Headers</span> <span class="n">-ContentType</span> <span class="s2">&#34;application/json&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Today, this request looks like this and the call queue Id is now part of the URI:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Invoke-RestMethod</span> <span class="n">-Uri</span> <span class="s2">&#34;https://api.interfaces.records.teams.microsoft.com/Teams.DLX/optinsettings/callqueues/{Call Queue Id}/agents/{User Id}&#34;</span> <span class="n">-Body</span> <span class="s1">&#39;{&#34;optIn&#34;: {true/false}&#39;</span> <span class="n">-Method</span> <span class="n">Put</span> <span class="n">-Headers</span> <span class="nv">$Headers</span> <span class="n">-ContentType</span> <span class="s2">&#34;application/json&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>I have no idea what <strong>DLX</strong> stands for. The only thing I could find was <a class="link" href="https://learn.microsoft.com/en-us/openspecs/office_protocols/ms-dlx/fa0e41cd-2b34-4081-b3cf-59ecdad7a5da"  target="_blank" rel="noopener"
+    >this</a> reference.</p>
+<p>The challenge with these web requests is that you still need to provide a valid access token in the authorization header. In PowerShell, there&rsquo;s no way around user credentials to obtain a token. This is different in Power Automate though.</p>
+<h2 id="setting-up-the-prerequisites">Setting up the Prerequisites</h2>
+<p>Before we build the Flow, we&rsquo;ll need something to trigger it. The best and easiest thing I could think of was to create a SharePoint list and add it as a tab to the Teams channel that&rsquo;s linked to the call queue. If you don&rsquo;t already know how to do that, follow the steps below.</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1.png"
+	width="2108"
+	height="1191"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1_hu705d3dd1f94a6b3b904e76444a3d0637_148619_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1_hu705d3dd1f94a6b3b904e76444a3d0637_148619_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Click the &#43; to add a tab."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="176"
+		data-flex-basis="424px"
+	
+> <img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2.png"
+	width="2108"
+	height="1191"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2_hu1253170ae1e6d8d32cc7dd91d61f7b33_159304_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2_hu1253170ae1e6d8d32cc7dd91d61f7b33_159304_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Search for &lsquo;Lists&rsquo; and click on it."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="176"
+		data-flex-basis="424px"
+	
+> <img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3.png"
+	width="2108"
+	height="1191"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3_hu1981b327dab3269273baf078857540e5_139248_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3_hu1981b327dab3269273baf078857540e5_139248_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Click Save."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="176"
+		data-flex-basis="424px"
+	
+> <img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4.png"
+	width="2108"
+	height="1191"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4_hufc846614001176d240a692d25adaf975_133450_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4_hufc846614001176d240a692d25adaf975_133450_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Select Create a list."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="176"
+		data-flex-basis="424px"
+	
+> <img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5.png"
+	width="2108"
+	height="1191"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5_huacaf45050b991d31068ac87efc4bd7c2_859731_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5_huacaf45050b991d31068ac87efc4bd7c2_859731_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Click on Blank list."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="176"
+		data-flex-basis="424px"
+	
+> <img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6.png"
+	width="2108"
+	height="1191"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6_huec9ccb95cb6ab597156bec78ae69cb98_149835_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6_huec9ccb95cb6ab597156bec78ae69cb98_149835_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Give your list a name and select a color and an icon. Then click create."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="176"
+		data-flex-basis="424px"
+	
+></p>
+<p>Now that the tab shows your list, we&rsquo;ll need to add the columns. Start by clicking <strong>+ Add column</strong>.</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8.png"
+	width="2108"
+	height="1191"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8_hu23f739f1510daf28fe5989a42a18975a_157919_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8_hu23f739f1510daf28fe5989a42a18975a_157919_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Select Person and click Next."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="176"
+		data-flex-basis="424px"
+	
+> <img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7.png"
+	width="2108"
+	height="1191"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7_huab70de38417ae9161f2732f264c35229_149436_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7_huab70de38417ae9161f2732f264c35229_149436_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Enter &lsquo;Agent&rsquo; as column name and toggle Show profile photos to Yes."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="176"
+		data-flex-basis="424px"
+	
+> <img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9.png"
+	width="2108"
+	height="1191"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9_hu23f739f1510daf28fe5989a42a18975a_151690_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9_hu23f739f1510daf28fe5989a42a18975a_151690_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Add another column and choose Yes/No as type."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="176"
+		data-flex-basis="424px"
+	
+> <img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10.png"
+	width="2108"
+	height="1191"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10_hu4d934adf18ece1692cdb8db8d877ac44_161516_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10_hu4d934adf18ece1692cdb8db8d877ac44_161516_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Name it &lsquo;Opt In&rsquo; and click Save."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="176"
+		data-flex-basis="424px"
+	
+> <img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11.png"
+	width="2108"
+	height="1191"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11_hu4d934adf18ece1692cdb8db8d877ac44_164504_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11_hu4d934adf18ece1692cdb8db8d877ac44_164504_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Add another Yes/No column called &lsquo;Updated by Power Automate&rsquo; and set the default value to No."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="176"
+		data-flex-basis="424px"
+	
+></p>
+<p>Next, hide the <strong>Title</strong> column from the view. We don&rsquo;t need it.</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12.png"
+	width="2108"
+	height="1191"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12_hu9f879f0ffa03899bc8792f08bfb01a90_166451_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12_hu9f879f0ffa03899bc8792f08bfb01a90_166451_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Click on the column, then select Column settings, Show/hide columns."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="176"
+		data-flex-basis="424px"
+	
+> <img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13.png"
+	width="2108"
+	height="1191"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13_hubf67ffab44e23f844473ef5753689496_183451_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13_hubf67ffab44e23f844473ef5753689496_183451_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Uncheck Title and click Apply."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="176"
+		data-flex-basis="424px"
+	
+></p>
+<p>Now select <strong>Edit in grid view</strong> and add your call queue agents to the list.</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14.png"
+	width="2108"
+	height="1191"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14_hu472be461d9195151156240ff3dcbd634_123994_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14_hu472be461d9195151156240ff3dcbd634_123994_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Add all call queue agents to the Agent column."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="176"
+		data-flex-basis="424px"
+	
+></p>
+<p>Once you&rsquo;re done, click <strong>Exit grid view</strong> to save the list. It should look something like this:</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18.png"
+	width="2108"
+	height="1216"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18_hu4965c34d251136e0aedc58cd0c328ee9_132892_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18_hu4965c34d251136e0aedc58cd0c328ee9_132892_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Tip: You can reorder tabs by dragging. I&rsquo;ve put my List tab next to the Calls tab."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="173"
+		data-flex-basis="416px"
+	
+></p>
+<h2 id="the-power-of-power-automate">The Power of Power Automate</h2>
+<p>In Power Automate, Flows are able to leverage connections for which Power Automate will automatically obtain a token for the user that&rsquo;s running the Flow. While you can&rsquo;t view the token, you can certainly use it to make web requests. The principle is quite simple. Each user needs to set up a Power Automate Flow which will update their opt in status when the Flow is triggered.</p>
+<p>The downside is that a Flow needs to be set up for each user and for each call queue where you want to leverage this custom solution. So, if a user is part of multiple queues, there also need to be multiple Flows per user. To be fair, I did say that this is a PoC at the beginning.</p>
+<p>The good thing about this is that I&rsquo;ve built the Flow in a way, in which it will work for any user. A queue supervisor or an IT admin can just create Flow and then share it with all the agents. Each of the agents can then access the Flow using their own account and save a copy of the Flow to their own Flows. If they&rsquo;ve never worked with Power Automate before, they might need help doing that but sharing and saving a copy is still the quickest way to set it all up.</p>
+<h3 id="flow-for-each-agent">Flow For Each Agent</h3>
+<p>Let&rsquo;s look at the first Flow. I&rsquo;ll call this the <strong>User-Flow</strong> from now on.</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image.png"
+	width="2064"
+	height="1823"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image_hua6ee506cbc2419494ce0f0d532dea99d_118762_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image_hua6ee506cbc2419494ce0f0d532dea99d_118762_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="This is the Power Automate Flow in all it&rsquo;s glory."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="113"
+		data-flex-basis="271px"
+	
+></p>
+<p>The Flow will trigger any time the SharePoint list which is now a tab in Teams is updated.</p>
+<h4 id="import-the-flow-package">Import the Flow Package</h4>
+<p>Start by downloading the Flow from <a class="link" href="#download-flow-packages" >here</a> and then import it in Power Automate with a user that is part of the call queue, for which you want to add the functionality.</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21.png"
+	width="876"
+	height="242"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21_hu962d5e19297e6d6930aa4bca62cb9ac3_24104_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21_hu962d5e19297e6d6930aa4bca62cb9ac3_24104_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Click on Import Package (Legacy)."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="361"
+		data-flex-basis="868px"
+	
+></p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22.png"
+	width="2233"
+	height="431"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22_hu0893b0183081de56a0d93eebea21c7db_58125_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22_hu0893b0183081de56a0d93eebea21c7db_58125_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Next, select and upload the Zip file."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="518"
+		data-flex-basis="1243px"
+	
+></p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23.png"
+	width="1847"
+	height="1147"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23_hu8d935318f03b9143db17882353e5d7e9_106175_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23_hu8d935318f03b9143db17882353e5d7e9_106175_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Click the first Wrench Icon to update the name of the Flow."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="161"
+		data-flex-basis="386px"
+	
+></p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24.png"
+	width="1895"
+	height="1326"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24_hud97c690956c2dd92220355f92bd41ce7_160167_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24_hud97c690956c2dd92220355f92bd41ce7_160167_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Click the Wrench Icon for both connections and choose an existing connection or set up a new one."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="142"
+		data-flex-basis="342px"
+	
+></p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25.png"
+	width="1856"
+	height="1326"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25_hu58b25bebb3809deda371a4fe62d382ca_119335_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25_hu58b25bebb3809deda371a4fe62d382ca_119335_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Finally, click Import."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="139"
+		data-flex-basis="335px"
+	
+></p>
+<p>After successfully importing the Flow, it will be disabled at first. Navigate to <strong>My flows</strong> and click on the imported Flow to enable it.</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26.png"
+	width="1439"
+	height="515"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26_hu18bb5e1c7156c13d48546c066a298e42_75124_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26_hu18bb5e1c7156c13d48546c066a298e42_75124_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Click Trun on"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="279"
+		data-flex-basis="670px"
+	
+></p>
+<p>Then, click <strong>Edit</strong>. Now you need to update the trigger and select the correct Team/Site and List for the trigger. This will be the SharePoint site of the Team in which you created the list tab.</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15.png"
+	width="933"
+	height="330"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15_hu8f6849b48dae2ab7886792ce8704706e_23895_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15_hu8f6849b48dae2ab7886792ce8704706e_23895_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Set the Flow trigger to your Site and List."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="282"
+		data-flex-basis="678px"
+	
+></p>
+<p>In the third step <strong>Initialize CallQueueId</strong> fill in the Id of your call queue. The easiest way to obtain the Id is to edit the queue in Teams Admin Center and copy the Id from the URL.</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16.png"
+	width="937"
+	height="298"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16_hu2f2caad5241154c735a1113e351a4495_16328_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16_hu2f2caad5241154c735a1113e351a4495_16328_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Set the call queue Id"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="314"
+		data-flex-basis="754px"
+	
+></p>
+<p>These are the only two things you need to adjust. Because the Flow uses the action <strong>Get my profile (V2)</strong> you don&rsquo;t need to set anything that&rsquo;s user specific. That action will always get the details of the user that is running the Flow.</p>
+<h4 id="share-the-flow-with-all-the-other-agents">Share the Flow with all the other Agents</h4>
+<p>Now that you have the Flow imported to your account, share it with all agents of the call queue.</p>
+<p>Go back to <strong>My flows</strong> and select the Flow again to share it with your team.</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27.png"
+	width="1440"
+	height="422"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27_hu7fa896e8737707abd7bc43eaefce1b60_60538_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27_hu7fa896e8737707abd7bc43eaefce1b60_60538_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="From there, click Share."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="341"
+		data-flex-basis="818px"
+	
+></p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28.png"
+	width="1716"
+	height="470"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28_huafa7453bc481c1dc50907b9694463b07_72474_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28_huafa7453bc481c1dc50907b9694463b07_72474_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Search for another call queue agent and select them from the drop-down menu."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="365"
+		data-flex-basis="876px"
+	
+></p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29.png"
+	width="1039"
+	height="734"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29_hu5418d2bb3bc7d2bea736732f88cd74bf_83748_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29_hu5418d2bb3bc7d2bea736732f88cd74bf_83748_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Confirm by clicking Ok."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="141"
+		data-flex-basis="339px"
+	
+></p>
+<p>Now ask the user you shared the Flow with to sing in to <a class="link" href="https://make.powerautomate.com"  target="_blank" rel="noopener"
+    >Power Automate</a> and navigate to <strong>My flows</strong> and switch to the <strong>Shared with me</strong> tab.</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30.png"
+	width="1403"
+	height="955"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30_hud85e770d6a9681de46a3ed65fa1fed3d_89488_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30_hud85e770d6a9681de46a3ed65fa1fed3d_89488_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Instruct them to click the three dots and select Save as."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="146"
+		data-flex-basis="352px"
+	
+></p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31.png"
+	width="1030"
+	height="472"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31_hu3503ffc67329ae9e6469c6c87f117f7f_26625_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31_hu3503ffc67329ae9e6469c6c87f117f7f_26625_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Instruct them to create the connections by clicking Continue."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="218"
+		data-flex-basis="523px"
+	
+></p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32.png"
+	width="1038"
+	height="420"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32_huf04498416c4c212182fcd07016b94c8b_45683_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32_huf04498416c4c212182fcd07016b94c8b_45683_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="They can rename the Flow before saving."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="247"
+		data-flex-basis="593px"
+	
+></p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33.png"
+	width="1057"
+	height="947"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33_hue187d858fb1d43531950e4490d61070e_67598_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33_hue187d858fb1d43531950e4490d61070e_67598_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Finally, they&rsquo;ll need to go to My flows again and turn on the copied Flow using the menu behind the three dots."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="111"
+		data-flex-basis="267px"
+	
+></p>
+<p>Repeat these steps for all the other call queue agents. Each agent needs to have this Flow in their own Power Automate environment since the Flow will need to run with their credentials to be able to change their opt in status.</p>
+<h3 id="flow-to-keep-the-list-in-sync">Flow to keep the List in Sync</h3>
+<p>Obviously the agents will still be able to change their opt in status on their own using their Teams clients. In that case, we want to keep the SharePoint list updated as well and reflect changes to opt in status made outside of the list. For this, I&rsquo;ve created another Flow. I&rsquo;ll call that one the <strong>Sync-Flow</strong>. This Flow will update the list for all agents and it will need to be created only once. In my Lab, I&rsquo;ve configured this Flow with a recurring trigger every 15 minutes.</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17.png"
+	width="1428"
+	height="1835"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17_hu7822eedc376cdddd5f0d997034945251_84170_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17_hu7822eedc376cdddd5f0d997034945251_84170_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Flow to update the List if CQ Agents opt in/out via Teams clients."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="77"
+		data-flex-basis="186px"
+	
+></p>
+<p>This Flow will send an HTTP Get request via the <strong>Send an HTTP request to SharePoint</strong> to the call queue endpoint used to read and write the opt in states of agents. This is basically the same as what I&rsquo;m using to update the opt in states but this time, I&rsquo;m only reading from it. The JSON response will include a list of each agent&rsquo;s Object Id and their current opt in state. Then it uses the <strong>Get user profile (V2)</strong> action to find the email address of the current user by Object Id. This is needed so that the Flow can query the list item of each agent.</p>
+<p>Once the Flow knows both values, the actual opt in state and what&rsquo;s currently stored in the list, it will compare the values. If they&rsquo;re the same, nothing happens. If they&rsquo;re not the same, the Flow will update the SharePoint list with the actual value.</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19.png"
+	width="2108"
+	height="1216"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19_hu13dde0b83477463bacfbed9010e265f4_119473_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19_hu13dde0b83477463bacfbed9010e265f4_119473_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="The List tab after it&rsquo;s been updated by Power Automate."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="173"
+		data-flex-basis="416px"
+	
+></p>
+<p>If an opt in status was updated by Power Automate, it will also set the value in <strong>Updated by Power Automate</strong> to <code>True</code> (Checkmark). By doing it like this, we can avoid an infinite trigger loop on the User-Flows. Since they use <strong>When an item is created or modified</strong> as their trigger, they would be triggered any time the List is updated. That will include updates made by the recurring Sync-Flow.</p>
+<p>Since we definitely don&rsquo;t want that, I&rsquo;ve added a trigger condition to the User-Flows. A trigger condition is an expression, which must evaluate to <code>True</code> for the Flow to be triggered.</p>
+<p>This expression will check if the <strong>Updated by Power Automate</strong> checkbox is not checked. So, whenever the list is updated by the Sync-Flow, the user Flows won&rsquo;t be triggered.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">@equals(triggerOutputs()?[&#39;body/UpdatedByPowerAutomate&#39;], false)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20.png"
+	width="917"
+	height="1395"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20_hua3fab719cdf0b59eb124952147058e88_113321_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20_hua3fab719cdf0b59eb124952147058e88_113321_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="The trigger condition will prevent infinite trigger loops."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="65"
+		data-flex-basis="157px"
+	
+></p>
+<p>It&rsquo;s important to note that when you or somebody else wants to change the opt in status of an agent again from the list, the <strong>Updated by Power Automate</strong> checkbox must be unchecked again. Otherwise the User-Flows won&rsquo;t run and the opt in status won&rsquo;t be changed.</p>
+<h4 id="import-the-flow-package-1">Import the Flow Package</h4>
+<p>You can download this Flow from <a class="link" href="#download-flow-packages" >here</a>. Use the same process to import the Flow package as you already did with the User-Flow and don&rsquo;t forget to turn it as well on once you&rsquo;re done. In this Flow, you will need to do the following adjustments.</p>
+<p>Replace the value of the <strong>CallQueueId</strong> variable with your call queue Id.</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35.png"
+	width="923"
+	height="410"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35_hu1e4d1ce95122be4f96ee08eac420c8e0_23942_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35_hu1e4d1ce95122be4f96ee08eac420c8e0_23942_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Set the CallQueueId variable."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="225"
+		data-flex-basis="540px"
+	
+></p>
+<p>Then expand all the action boxes and select your <strong>Site Address</strong> and <strong>List Name</strong> in the action <strong>Get items</strong>.</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36.png"
+	width="939"
+	height="446"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36_hu711920aa01d34bc8ccf9581338979efc_29013_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36_hu711920aa01d34bc8ccf9581338979efc_29013_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Replace Site Address and List Name."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="210"
+		data-flex-basis="505px"
+	
+></p>
+<p>Finally, do the same for the <strong>Update item</strong> action inside the <strong>If yes</strong> condition.</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37.png"
+	width="969"
+	height="717"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37_hu660262918bbce269d293b222aec9bd83_34854_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37_hu660262918bbce269d293b222aec9bd83_34854_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Replace Site Address and List Name."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="135"
+		data-flex-basis="324px"
+	
+></p>
+<p>That&rsquo;s it for the set up part. Let&rsquo;s take a look at the user experience!</p>
+<h2 id="user-experience">User Experience</h2>
+<p>Here you can see how it works. Anyone that has access to the list, can simply edit the list and change the opt in status of another colleague.</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/TeamsCQOptIn.gif"
+	width="1195"
+	height="672"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/TeamsCQOptIn_huc59211e8f7e1e5c1d08e18b8085cfb7f_759523_480x0_resize_box_1.gif 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/TeamsCQOptIn_huc59211e8f7e1e5c1d08e18b8085cfb7f_759523_1024x0_resize_box_1.gif 1024w"
+	loading="lazy"
+	
+		alt="Note: The Flow was in test mode to speed up the demo. In real life, it will usually take a few minutes to change an opt in status."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="177"
+		data-flex-basis="426px"
+	
+></p>
+<p>Bonus tip: If you switch to the new designer in Power Automate you can change how often it checks for updated list items in the trigger configuration.</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34.png"
+	width="1488"
+	height="1090"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34_hu05285cc3066715cc19a9df546850a5bf_140226_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34_hu05285cc3066715cc19a9df546850a5bf_140226_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="The default polling interval is 5 minutes."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="136"
+		data-flex-basis="327px"
+	
+></p>
+<h2 id="additional-benefits">Additional Benefits</h2>
+<p>As you may know, the <strong>Calls</strong> tab in channels is not supported on the Teams mobile app. The call queue agents and their opt in status can only be viewed in the Teams desktop or web client. At this point I want to clarify again, that mobile clients can still receive calls from a call queue, even when the call queue is linked to a voice enabled channel. It&rsquo;s only the view/tab that&rsquo;s not supported on Teams mobile apps.</p>
+<p>But since this solution uses a SharePoint list, it will actually give you the ability to view and change the opt in status of other agents from a mobile device too. This can be done by either opening the list tab in Teams mobile or by accessing the list directly in the Lists mobile app.</p>
+<p><img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS.png"
+	width="1125"
+	height="2436"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS_huec20a803642c2679aa37025ba2a31364_121062_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS_huec20a803642c2679aa37025ba2a31364_121062_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="List tab in Teams mobile."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="46"
+		data-flex-basis="110px"
+	
+> <img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS.png"
+	width="1125"
+	height="2436"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS_hu8028d64d3a7364db64b08f35efe98733_136987_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS_hu8028d64d3a7364db64b08f35efe98733_136987_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Editing a list item in Teams mobile."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="46"
+		data-flex-basis="110px"
+	
+> <img src="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS.png"
+	width="1125"
+	height="2436"
+	srcset="/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS_hu9635423d25551d7e97b961a20c4d5b90_230407_480x0_resize_box_3.png 480w, /p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS_hu9635423d25551d7e97b961a20c4d5b90_230407_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Toggle switches in Lists app."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="46"
+		data-flex-basis="110px"
+	
+></p>
+<p>The list app will even give you toggle switches which not only looks better but is also easier to edit compared to the experience within the Teams mobile app.</p>
+<h2 id="summary">Summary</h2>
+<p>While Teams Premium provides a lot of benefits over the Standard license, the additional $10 per user per month can make quite the difference in your monthly license cost. I fully understand the price tag since Teams Premium also includes AI generated notes which use a lot of computing resources and thus cost Microsoft more money to run their services in the backend.</p>
+<p>However, if you&rsquo;re only looking for a way to opt in/out other call queue agents on their behalf and don&rsquo;t want to spend another $10 PUPM, I think this solution can be a suitable workaround. Especially for small companies which don&rsquo;t have a lot of call queues with a lot of agents. Of course there is some work to be done by admins and the end users (agents) but it should be manageable for small teams. And let&rsquo;s not forget the fact this will even allow you to change the opt in status for other agents on mobile platforms too!</p>
+<h3 id="download-flow-packages">Download Flow Packages</h3>
+<p>You can download both Flow packages for free from <a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/UpdateCallQueueOptInStatus_20240614215253.zip"  target="_blank" rel="noopener"
+    >here</a> and <a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/SyncOptInStatustoList_20240614215356.zip"  target="_blank" rel="noopener"
+    >here</a>. If you like what I&rsquo;ve presented in this blog post and if it will save you the money you would have otherwise spent on Teams Premium licenses, you can still choose to support me by <a class="link" href="https://buymeacoffee.com/martin.heusser"  target="_blank" rel="noopener"
+    >buying me a coffee</a> or by sponsoring me on <a class="link" href="https://github.com/sponsors/mozziemozz?frequency=one-time&amp;sponsor=mozziemozz"  target="_blank" rel="noopener"
+    >GitHub</a>.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Microsoft Teams Auto Attendants: What You Didn&#39;t Know Part 2</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/">
+        
+        
+            <div class="article-image">
+                <img src="/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/cover.f4838225804739dad554c1b9648b2b8d_hu28492fa5d2bc203e9449ee66080cd141_51573_250x150_fill_box_smart1_3.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post Teams Shared Voicemail for Basic Call Flows"
+                        data-key="/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju" 
+                        data-hash="md5-9IOCJYBHOdrVVMG5ZIsrjQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Teams Shared Voicemail for Basic Call Flows</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">The Ultimate Teams Shared Voicemail Solution</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Microsoft Teams: Handle Shared Voicemail More Efficiently</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Microsoft Teams Call Queue Agent Lists (And how to Force-Sync them)</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "heusser-pro" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2024 HEUSSER.PRO
+    </section>
+    
+    <section class="powerby">
+        
+            Hosted on GitHub Pages <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
+
