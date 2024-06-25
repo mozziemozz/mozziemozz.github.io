@@ -9883,17 +9883,87 @@ fa19b242-8bae-419d-a4eb-12796577c81f  True&lt;br&gt;
 &lt;p&gt;We can use these examples and build on them to create something similar for Auto Attendant Holidays.&lt;/p&gt;
 &lt;h4 id=&#34;how-does-itwork&#34;&gt;How Does it Work?&lt;/h4&gt;
 &lt;p&gt;It’s important to understand that there needs to be an existing, initial configuration in your Tenant. This means that you as a Teams Phone admin need to sit down with the person in charge of the reception phone or whoever oversees Holidays at your company. You then need to configure either a single or multiple Holiday lists in TAC and link them to each Auto Attendant, where they’re required.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1fQcNBnDUDxER2RrRYDd3w.png&#34;
+	width=&#34;2190&#34;
+	height=&#34;315&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1fQcNBnDUDxER2RrRYDd3w_hu566f6967f18e739f97133f47e8795545_41073_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1fQcNBnDUDxER2RrRYDd3w_hu566f6967f18e739f97133f47e8795545_41073_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Holiday Schedules in Teams Admin Center&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;695&#34;
+		data-flex-basis=&#34;1668px&#34;
+	
+&gt;&lt;/p&gt;
 &lt;p&gt;My solution currently doesn’t have an option to allow users to add new Holidays to a list. When a new Holiday needs to be added, users must still request the change at IT. After it has been added to the list, there’s no additional work required for the new Holiday to also support user self-serviced updating.&lt;/p&gt;
 &lt;p&gt;I created an Azure Runbook which runs on a schedule. I suppose running it weekly will suffice. If you wish, you can even run it daily. The script checks if the difference between the &lt;strong&gt;run time of the Job&lt;/strong&gt; and the &lt;strong&gt;end date&lt;/strong&gt; of a Holiday is bigger than 24 hours. This is because Holiday dates/lists itself don’t have a time zone property. But Auto Attendants do have a time zone setting, thus, we need to make sure that a Holiday is not updated/deleted before the Holiday would end in an Attendant specific time zone. A buffer of 24 hours should work well considering that the largest UTC offset is +14 hours.&lt;/p&gt;
 &lt;p&gt;When the script runs, it will send a Teams Message Card to a Channel for each Holiday which now lies in the past. (Even though they are technically &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Legacy Actionable Message Cards&lt;/a&gt; I will just refer to them as &lt;a class=&#34;link&#34; href=&#34;https://adaptivecards.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Adaptive Cards&lt;/a&gt; from now on.)&lt;/p&gt;
 &lt;p&gt;Members of the channel will be able to see the dates, the name of the Holiday schedule as well as all linked Auto Attendants on the Adaptive Card. Furthermore, the script will add one year to the current dates and pre-fill the dates of next year as a suggested value in the date picker.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1QKq3e17FCDqQEvn5hbJzfg.png&#34;
+	width=&#34;1489&#34;
+	height=&#34;745&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1QKq3e17FCDqQEvn5hbJzfg_huc70f0e625d6de404417cec12bf5bbdad_88199_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1QKq3e17FCDqQEvn5hbJzfg_huc70f0e625d6de404417cec12bf5bbdad_88199_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;en-US date format&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;199&#34;
+		data-flex-basis=&#34;479px&#34;
+	
+&gt;&lt;/p&gt;
 &lt;p&gt;Because we’re using Adaptive Cards, the date format will automatically adjust to the Teams Clients display language. In this example, the Teams Client was set to German (Switzerland).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/15exIWj45WBr92GT2Jut6UQ.png&#34;
+	width=&#34;1478&#34;
+	height=&#34;737&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/15exIWj45WBr92GT2Jut6UQ_hu511f00ce72f53e1d7362bd42dfb8b45b_86746_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/15exIWj45WBr92GT2Jut6UQ_hu511f00ce72f53e1d7362bd42dfb8b45b_86746_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;de-CH date format&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;200&#34;
+		data-flex-basis=&#34;481px&#34;
+	
+&gt;&lt;/p&gt;
 &lt;p&gt;Members can then review and accept the new dates or change them in case a Holiday falls on a different day next year.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AcxduYIh3KWZjYOITozFQ.png&#34;
+	width=&#34;1485&#34;
+	height=&#34;794&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AcxduYIh3KWZjYOITozFQ_hu598c0580cccbb0e42acaa8293abd63ae_104838_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AcxduYIh3KWZjYOITozFQ_hu598c0580cccbb0e42acaa8293abd63ae_104838_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Adaptive Card date picker&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;187&#34;
+		data-flex-basis=&#34;448px&#34;
+	
+&gt;&lt;/p&gt;
 &lt;p&gt;If needed, they can also configure a start or end time, if for example, a Holiday only starts at noon.&lt;/p&gt;
 &lt;p&gt;Finally, they will need to select their local time zone. This is due to the fact that the Adaptive Card will submit the date and time based on the time zone which is configured on the local PC where Teams is running.&lt;/p&gt;
 &lt;p&gt;In early testing stages of this solution, “00:00” was always passed to the Azure Function as “23:00” because I live in UTC-1. Without this information the Function wouldn’t be able to do its magic and convert it back to the correct date.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1h3iWOIBo7n33yhjeAHKNow.png&#34;
+	width=&#34;1397&#34;
+	height=&#34;420&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1h3iWOIBo7n33yhjeAHKNow_hu1110f4762f6de09525b47d659c1db887_62767_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1h3iWOIBo7n33yhjeAHKNow_hu1110f4762f6de09525b47d659c1db887_62767_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Adaptive Card drop-down list&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;332&#34;
+		data-flex-basis=&#34;798px&#34;
+	
+&gt;&lt;/p&gt;
 &lt;p&gt;I’ve included all time zones which are supported on Windows Systems.&lt;/p&gt;
 &lt;p&gt;Now all a user needs to do is to click “Submit New Dates”. This will pass all the information to an Azure Function, Update the card, and fire up the Runbook.&lt;/p&gt;
 &lt;p&gt;In other words, users won’t need to bother you to update their Holidays anymore. After each time a Holiday has passed, they will get a card which allows them to update it for next year by themselves.&lt;/p&gt;
@@ -9905,7 +9975,7 @@ fa19b242-8bae-419d-a4eb-12796577c81f  True&lt;br&gt;
 &lt;li&gt;Azure Automation Credentials with Teams Administrator Permissions&lt;/li&gt;
 &lt;li&gt;An Incoming Teams Webhook&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;If you struggle to set up any of these, I recommend reading my &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851?source=user_profile---------11----------------------------&#34; &gt;first article&lt;/a&gt; about this topic. I also suggest creating a dedicated Teams Channel where the webhook will be added. More on that later.&lt;/p&gt;
+&lt;p&gt;If you struggle to set up any of these, I recommend reading my &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851&#34; &gt;first article&lt;/a&gt; about this topic. I also suggest creating a dedicated Teams Channel where the webhook will be added. More on that later.&lt;/p&gt;
 &lt;h4 id=&#34;azure-runbook-checkholidayschedules&#34;&gt;Azure Runbook: CheckHolidaySchedules&lt;/h4&gt;
 &lt;p&gt;Let’s create the first Runbook. This will be the one which logs into Teams PowerShell and checks if there are any Holidays which already lie in the past compared to the time of the Runbook Job.&lt;/p&gt;
 &lt;p&gt;Enter your &lt;code&gt;$teamsWebhookUrl&lt;/code&gt; on line 2. If you like, you can change the &lt;code&gt;$defaultLocalTimeZone&lt;/code&gt; on line 3 to the time zone where most of your users are located. Make sure you also adjust the name of your Credential if yours has a different name.&lt;/p&gt;
@@ -9942,14 +10012,98 @@ fa19b242-8bae-419d-a4eb-12796577c81f  True&lt;br&gt;
 &gt;&lt;/p&gt;
 &lt;h4 id=&#34;test-drive&#34;&gt;Test Drive&lt;/h4&gt;
 &lt;p&gt;During normal operation, we would need to wait for a Holiday to be over before anything happens. In our case, we can test by manually starting the Runbook.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1H9UkxAEL3jrTfviZvVSgg.png&#34;
+	width=&#34;1520&#34;
+	height=&#34;235&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1H9UkxAEL3jrTfviZvVSgg_hu747e59c015796a6b0567a2fbfcd8f12a_48021_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1H9UkxAEL3jrTfviZvVSgg_hu747e59c015796a6b0567a2fbfcd8f12a_48021_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Start the Runbook to test&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;646&#34;
+		data-flex-basis=&#34;1552px&#34;
+	
+&gt;&lt;/p&gt;
 &lt;p&gt;After a few seconds, we should start seeing some new Adaptive Cards in our channel. Keep in mind that triggering the Runbook for the first time will post a card for each Holiday which has already passed. We can also see which Auto Attendants are affected on the card.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AYdQc3exHJ9FyyXQiVqSA.png&#34;
+	width=&#34;1480&#34;
+	height=&#34;746&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AYdQc3exHJ9FyyXQiVqSA_hub2b8aedf00e11d925bf19bc15d7ce787_88013_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AYdQc3exHJ9FyyXQiVqSA_hub2b8aedf00e11d925bf19bc15d7ce787_88013_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Adaptive Card sent by the Runbook&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;198&#34;
+		data-flex-basis=&#34;476px&#34;
+	
+&gt;&lt;/p&gt;
 &lt;p&gt;After new dates have been submitted by a user, the Function will update the card.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/19gmVaYLQTt48rRlAxtOv3g.png&#34;
+	width=&#34;1478&#34;
+	height=&#34;239&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/19gmVaYLQTt48rRlAxtOv3g_hubfd1aca977c57076cfa4c39ac9334293_34008_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/19gmVaYLQTt48rRlAxtOv3g_hubfd1aca977c57076cfa4c39ac9334293_34008_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Adaptive Card after it has been updated by the Function&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;618&#34;
+		data-flex-basis=&#34;1484px&#34;
+	
+&gt;&lt;/p&gt;
 &lt;p&gt;As soon as the Runbook has finished, it will post another card to the channel to confirm that the Holiday has been renewed for next year. For review purposes both the old and new dates are included. If anybody made a mistake, they could still contact IT to manually fix the dates.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1DTMQw26Duejt40miV2ig.png&#34;
+	width=&#34;1482&#34;
+	height=&#34;304&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1DTMQw26Duejt40miV2ig_hu704bf8f956c3214c88230f7c7196ef92_49852_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1DTMQw26Duejt40miV2ig_hu704bf8f956c3214c88230f7c7196ef92_49852_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Adaptive Card confirmation sent by the second Runbook&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;487&#34;
+		data-flex-basis=&#34;1170px&#34;
+	
+&gt;&lt;/p&gt;
 &lt;p&gt;If we switch to the Holiday list in TAC, we can see that the Runbook added the new Holiday and removed the old one.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/11Wx5wc7HVIBSgXum5COQLA.png&#34;
+	width=&#34;1290&#34;
+	height=&#34;866&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/11Wx5wc7HVIBSgXum5COQLA_hu9819c5d3af9f7b3c27ade27e6e31c607_101306_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/11Wx5wc7HVIBSgXum5COQLA_hu9819c5d3af9f7b3c27ade27e6e31c607_101306_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;01. September 2023 has been added at the end of the list by the Runbook&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;148&#34;
+		data-flex-basis=&#34;357px&#34;
+	
+&gt;&lt;/p&gt;
 &lt;h4 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h4&gt;
-&lt;p&gt;Out of all the Teams self-service automations I already did, I think that this is actually the coolest one. Not only does it provide a great user experience because everything can be done from within Teams, but it also makes sure nobody forgets to update the company’s Holiday list. No more last-minute support tickets just before you were about to leave for the Christmas break.&lt;/p&gt;
+&lt;p&gt;Out of all the Teams self-service automation solutions I already did, I think that this is actually the coolest one. Not only does it provide a great user experience because everything can be done from within Teams, but it also makes sure nobody forgets to update the company’s Holiday list. No more last-minute support tickets just before you were about to leave for the Christmas break.&lt;/p&gt;
 &lt;p&gt;And the best part is that we don’t need to grant any kind of admin permission. The only thing we need to make sure is that only the people who are allowed to update the Holidays have access to the Teams Channel.&lt;/p&gt;
 &lt;p&gt;The whole point of using a script to automatically notify us when a Holiday has passed instead of using the &lt;strong&gt;request a change on-demand approach&lt;/strong&gt; like with the other two self-service examples is that nobody forgets about updating the Holidays. To make sure that users don’t miss the Adaptive Cards in Teams, I suggest using a dedicated channel and having them turn on notifications for all activity on said channel.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1VTj3UiR6hEnLHyOiYbAUQ.png&#34;
+	width=&#34;1186&#34;
+	height=&#34;398&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1VTj3UiR6hEnLHyOiYbAUQ_hua27dfc0373145416591fb095ee23bcbc_36471_480x0_resize_box_3.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1VTj3UiR6hEnLHyOiYbAUQ_hua27dfc0373145416591fb095ee23bcbc_36471_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Channel notification Settings in Teams&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;297&#34;
+		data-flex-basis=&#34;715px&#34;
+	
+&gt;&lt;/p&gt;
 &lt;p&gt;By using a dedicated channel for Holiday self-service, we don’t need to force users to turn on all notifications for channels which might have much more activity/trigger too many notifications.&lt;/p&gt;
 </description>
         </item>
