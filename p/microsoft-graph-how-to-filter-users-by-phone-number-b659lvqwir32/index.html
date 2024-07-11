@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='This blog post contains PowerShell examples on how to filter Entra ID users by a matching mobile or business phone number.'>
+<title>Microsoft Graph: How To Filter Users by Phone Number</title>
+
+<link rel='canonical' href='https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Microsoft Graph: How To Filter Users by Phone Number'>
+<meta property='og:description' content='This blog post contains PowerShell examples on how to filter Entra ID users by a matching mobile or business phone number.'>
+<meta property='og:url' content='https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/'>
+<meta property='og:site_name' content='HEUSSER.PRO'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-07-04T20:20:00&#43;00:00'/><meta property='article:modified_time' content='2024-07-04T20:20:00&#43;00:00'/>
+<meta name="twitter:title" content="Microsoft Graph: How To Filter Users by Phone Number">
+<meta name="twitter:description" content="This blog post contains PowerShell examples on how to filter Entra ID users by a matching mobile or business phone number.">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "kozb6q2xjn");
+    </script>    
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hud7e6b3cccc21b12ddf35b72eb655064d_860969_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🫡</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
+            <h2 class="site-description">Martin Heusser | M365 Apps &amp; Services MVP</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/mozziemozz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://x.com/@mozzeph'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/support-me/' >
+                
+                
+                
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-cup"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 11h14v-3h-14z" /><path d="M17.5 11l-1.5 10h-8l-1.5 -10" /><path d="M6 8v-1a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v1" /><path d="M15 5v-2" /></svg>
+                
+                <span>Support Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/imprint/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                
+                <span>Imprint</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#number-types">Number Types</a></li>
+    <li><a href="#filter-queries">Filter Queries</a>
+      <ol>
+        <li><a href="#powershell-example">PowerShell Example</a>
+          <ol>
+            <li><a href="#example-output">Example Output</a></li>
+          </ol>
+        </li>
+        <li><a href="#bonus-tip-power-automate">Bonus Tip (Power Automate)</a>
+          <ol>
+            <li><a href="#example-output-1">Example Output</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#summary--download">Summary &amp; Download</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/powershell/" style="background-color: #141e2c; color: #fff;">
+                PowerShell
+            </a>
+        
+            <a href="/categories/microsoft-graph/" >
+                Microsoft Graph
+            </a>
+        
+            <a href="/categories/phone-numbers/" >
+                Phone Numbers
+            </a>
+        
+            <a href="/categories/entra-id/" >
+                Entra ID
+            </a>
+        
+            <a href="/categories/power-automate/" >
+                Power Automate
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/">Microsoft Graph: How To Filter Users by Phone Number</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            This blog post contains PowerShell examples on how to filter Entra ID users by a matching mobile or business phone number.
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jul 04, 2024</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    6 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>Sometimes, something simple as writing a filter query to search for Entra ID users which have a specific phone number can take way longer than we would like. Instead of making you search through numerous Stack Overflow posts or ask ChatGPT on how to do it, I decided to write this short blog post which will give you everything you need to quickly find Entra ID users which have a specific phone number.</p>
+<h2 id="number-types">Number Types</h2>
+<p>The most common numbers in Entra ID are <strong>Mobile phone</strong> and <strong>Business Phone</strong>. While the Entra ID admin portal displays <code>Business phone</code> in singular, the property is actually called <code>businessPhones</code> and is a string collection.</p>
+<p><img src="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image.png"
+	width="1793"
+	height="693"
+	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu221bd5b4269b12a931c42eb60e683664_134687_480x0_resize_box_3.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu221bd5b4269b12a931c42eb60e683664_134687_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Phone numbers in Entra ID"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="258"
+		data-flex-basis="620px"
+	
+></p>
+<h2 id="filter-queries">Filter Queries</h2>
+<p><a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#properties"  target="_blank" rel="noopener"
+    >This</a> page tells us which conditions are supported for which user properties. I wasn&rsquo;t able to get this to work using <code>Get-MgUser -Filter &quot;Filter Query&quot;</code> since an API request using an advanced filter query will require a special header. Not long ago, I wrote about the <code>Invoke-MgGraphRequest</code> <a class="link" href="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86" >Cmdlet</a> and how that can be used to call the Graph REST API directly using the session token from <code>Connect-MgGraph</code>.</p>
+<p>To make it work, you&rsquo;ll need to create a header with <strong>ConsistencyLevel</strong>: <code>eventual</code> which is then added to the Graph Request.</p>
+<p>Since this is a web request, you&rsquo;ll also need to url encode the <code>+</code> character. A simple <strong>replace</strong> with <code>%2B</code> will do the trick here. It&rsquo;s important to note that this will only work if the phone number is stored on the Entra user exactly the same as what&rsquo;s in the filter query. For example, it won&rsquo;t work if the phone number is stored without spaces in Entra but you&rsquo;re querying it with spaces. If your phone numbers in Entra are a mess, I recommend to take a look at <a class="link" href="/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5" >this</a> blog post. This will show you how you can format all phone numbers in the same, and most importantly in the correct way.</p>
+<p>Here&rsquo;s how to create the header.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$header</span> <span class="p">=</span> <span class="vm">@</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ConsistencyLevel</span> <span class="p">=</span> <span class="s2">&#34;eventual&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="powershell-example">PowerShell Example</h3>
+<p>Here is an example script which contains all possible filter conditions for both mobile and business phone numbers. The important thing here is that the custom header is included and that the <strong>Uri</strong> includes the <strong>Count</strong> variable. Note that the <code>businessPhones</code> property does not support the <code>in</code> condition.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Connect-MgGraph</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$mobileNumber</span> <span class="p">=</span> <span class="s2">&#34;+41 79 456 78 90&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$businessNumber</span> <span class="p">=</span> <span class="s2">&#34;+41 43 123 45 67&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$mobileNumberUrlSafe</span> <span class="p">=</span> <span class="nv">$mobileNumber</span><span class="p">.</span><span class="py">Replace</span><span class="p">(</span><span class="s2">&#34;+&#34;</span><span class="p">,</span> <span class="s2">&#34;%2B&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$businessNumberUrlSafe</span> <span class="p">=</span> <span class="nv">$businessNumber</span><span class="p">.</span><span class="py">Replace</span><span class="p">(</span><span class="s2">&#34;+&#34;</span><span class="p">,</span> <span class="s2">&#34;%2B&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$header</span> <span class="p">=</span> <span class="vm">@</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ConsistencyLevel</span> <span class="p">=</span> <span class="s2">&#34;eventual&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Filter users by mobile phone number exact match (equals)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$mgUserMatchesMobilePhone</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/users?</span><span class="se">`$</span><span class="s2">filter=mobilePhone eq &#39;</span><span class="nv">$mobileNumberUrlSafe</span><span class="s2">&#39;&amp;</span><span class="se">`$</span><span class="s2">count=true&#34;</span> <span class="n">-ContentType</span> <span class="s2">&#34;application/json&#34;</span> <span class="n">-Headers</span> <span class="nv">$header</span><span class="p">).</span><span class="py">value</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Filter users by business phone number exact match (equals)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$mgUserMatchesBusinessPhone</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/users?</span><span class="se">`$</span><span class="s2">filter=businessPhones/any(p:p eq &#39;</span><span class="nv">$businessNumberUrlSafe</span><span class="s2">&#39;)&amp;</span><span class="se">`$</span><span class="s2">count=true&#34;</span> <span class="n">-ContentType</span> <span class="s2">&#34;application/json&#34;</span> <span class="n">-Headers</span> <span class="nv">$header</span><span class="p">).</span><span class="py">value</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Filter users by mobile phone number not equals</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$mgUserMatchesMobilePhone</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/users?</span><span class="se">`$</span><span class="s2">filter=mobilePhone ne &#39;</span><span class="nv">$mobileNumberUrlSafe</span><span class="s2">&#39;&amp;</span><span class="se">`$</span><span class="s2">count=true&#34;</span> <span class="n">-ContentType</span> <span class="s2">&#34;application/json&#34;</span> <span class="n">-Headers</span> <span class="nv">$header</span><span class="p">).</span><span class="py">value</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Filter users by business phone number not equals</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$mgUserMatchesBusinessPhone</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/users?</span><span class="se">`$</span><span class="s2">filter=not businessPhones/any(p:p eq &#39;</span><span class="nv">$businessNumberUrlSafe</span><span class="s2">&#39;)&amp;</span><span class="se">`$</span><span class="s2">count=true&#34;</span> <span class="n">-ContentType</span> <span class="s2">&#34;application/json&#34;</span> <span class="n">-Headers</span> <span class="nv">$header</span><span class="p">).</span><span class="py">value</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Filter users by mobile phone number starts with</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$mgUserMatchesMobilePhone</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/users?</span><span class="se">`$</span><span class="s2">filter=startsWith(mobilePhone, &#39;</span><span class="nv">$mobileNumberUrlSafe</span><span class="s2">&#39;)&amp;</span><span class="se">`$</span><span class="s2">count=true&#34;</span> <span class="n">-ContentType</span> <span class="s2">&#34;application/json&#34;</span> <span class="n">-Headers</span> <span class="nv">$header</span><span class="p">).</span><span class="py">value</span>  
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Filter users by business phone number starts with</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$mgUserMatchesBusinessPhone</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/users?</span><span class="se">`$</span><span class="s2">filter=businessPhones/any(p:startswith(p,&#39;</span><span class="nv">$businessNumberUrlSafe</span><span class="s2">&#39;))&amp;</span><span class="se">`$</span><span class="s2">count=true&#34;</span> <span class="n">-ContentType</span> <span class="s2">&#34;application/json&#34;</span> <span class="n">-Headers</span> <span class="nv">$header</span><span class="p">).</span><span class="py">value</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Filter users by mobile phone number greater or equal</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$mgUserMatchesMobilePhone</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/users?</span><span class="se">`$</span><span class="s2">filter=mobilePhone ge &#39;</span><span class="nv">$mobileNumberUrlSafe</span><span class="s2">&#39;&amp;</span><span class="se">`$</span><span class="s2">count=true&#34;</span> <span class="n">-ContentType</span> <span class="s2">&#34;application/json&#34;</span> <span class="n">-Headers</span> <span class="nv">$header</span><span class="p">).</span><span class="py">value</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Filter users by business phone number greater or equal</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$mgUserMatchesBusinessPhone</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/users?</span><span class="se">`$</span><span class="s2">filter=businessPhones/any(p:p ge &#39;</span><span class="nv">$businessNumberUrlSafe</span><span class="s2">&#39;)&amp;</span><span class="se">`$</span><span class="s2">count=true&#34;</span> <span class="n">-ContentType</span> <span class="s2">&#34;application/json&#34;</span> <span class="n">-Headers</span> <span class="nv">$header</span><span class="p">).</span><span class="py">value</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Filter users by mobile phone number less or equal</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$mgUserMatchesMobilePhone</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/users?</span><span class="se">`$</span><span class="s2">filter=mobilePhone le &#39;</span><span class="nv">$mobileNumberUrlSafe</span><span class="s2">&#39;&amp;</span><span class="se">`$</span><span class="s2">count=true&#34;</span> <span class="n">-ContentType</span> <span class="s2">&#34;application/json&#34;</span> <span class="n">-Headers</span> <span class="nv">$header</span><span class="p">).</span><span class="py">value</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Filter users by business phone number less or equal</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$mgUserMatchesBusinessPhone</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/users?</span><span class="se">`$</span><span class="s2">filter=businessPhones/any(p:p le &#39;</span><span class="nv">$businessNumberUrlSafe</span><span class="s2">&#39;)&amp;</span><span class="se">`$</span><span class="s2">count=true&#34;</span> <span class="n">-ContentType</span> <span class="s2">&#34;application/json&#34;</span> <span class="n">-Headers</span> <span class="nv">$header</span><span class="p">).</span><span class="py">value</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Filter users by mobile phone number in</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$mobileNumberUrlSafe2</span> <span class="p">=</span> <span class="s2">&#34;+41 79 456 78 91&#34;</span><span class="p">.</span><span class="py">Replace</span><span class="p">(</span><span class="s2">&#34;+&#34;</span><span class="p">,</span> <span class="s2">&#34;%2B&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$mgUserMatchesMobilePhone</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/users?</span><span class="se">`$</span><span class="s2">filter=mobilePhone in [&#39;</span><span class="nv">$mobileNumberUrlSafe</span><span class="s2">&#39;,&#39;</span><span class="nv">$mobileNumberUrlSafe2</span><span class="s2">&#39;]&amp;</span><span class="se">`$</span><span class="s2">count=true&#34;</span> <span class="n">-ContentType</span> <span class="s2">&#34;application/json&#34;</span> <span class="n">-Headers</span> <span class="nv">$header</span><span class="p">).</span><span class="py">value</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="example-output">Example Output</h4>
+<p>What&rsquo;s a little weird is that PowerShell outputs an array with name/value pairs instead of a PS custom object.</p>
+<p><img src="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1.png"
+	width="1644"
+	height="899"
+	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hueb5231a21863bd4453ba706f74f1c47e_1102062_480x0_resize_box_3.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hueb5231a21863bd4453ba706f74f1c47e_1102062_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Output from Invoke-MgGraphRequest"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="182"
+		data-flex-basis="438px"
+	
+></p>
+<p>While it&rsquo;s possible to access properties directly, it doesn&rsquo;t work in <code>Format-Table</code>.</p>
+<p><img src="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4.png"
+	width="1644"
+	height="262"
+	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu70f2a1ded8f51c6e3e908386c91482b2_303137_480x0_resize_box_3.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu70f2a1ded8f51c6e3e908386c91482b2_303137_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Format-Table does not work with specific properties"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="627"
+		data-flex-basis="1505px"
+	
+></p>
+<p>A simple trick to convert the <strong>array</strong> returned by Graph into a <strong>PS custom object</strong> I often use is to convert it <strong>to</strong> Json and than convert it <strong>from</strong> Json straight away again.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$mgUserMatchesMobilePhone</span> <span class="p">=</span> <span class="nv">$mgUserMatchesMobilePhone</span> <span class="p">|</span> <span class="nb">ConvertTo-Json</span> <span class="p">|</span> <span class="nb">ConvertFrom-Json</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Obviously, you can do the same for the <code>$mgUserMatchesBusinessPhone</code> variable. That will store and display the values as a proper PowerShell object.</p>
+<p><img src="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3.png"
+	width="1644"
+	height="899"
+	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu08af9aeaa01698a49ff71fd97429eb7d_1184796_480x0_resize_box_3.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu08af9aeaa01698a49ff71fd97429eb7d_1184796_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="There are no name/value pairs anymore."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="182"
+		data-flex-basis="438px"
+	
+></p>
+<p>Now you can work with the <code>$mgUserMatchesMobilePhone</code>and <code>$mgUserMatchesBusinessPhone</code> as expected and do anything you want with them.</p>
+<h3 id="bonus-tip-power-automate">Bonus Tip (Power Automate)</h3>
+<p>The standard action <strong>Search for users (V2)</strong> from the <strong>Office 365 Users</strong> connector doesn&rsquo;t support to filter for phone numbers of any type.</p>
+<p><img src="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2.png"
+	width="1507"
+	height="262"
+	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu8fe2b873d91223cd6efe29a596cdb26d_21976_480x0_resize_box_3.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu8fe2b873d91223cd6efe29a596cdb26d_21976_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Supported filters for Office 365 Users"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="575"
+		data-flex-basis="1380px"
+	
+></p>
+<p>Luckily, there&rsquo;s also a an action called <strong>Send an HTTP request</strong> within the <strong>Office 365 Users</strong> connector. This will allow you to make the same kinds of advanced requests to the Graph API as I&rsquo;ve shown above with PowerShell.</p>
+<p>Below is an example of a simple Power Automate Flow that can also filter for Entra ID users by phone number. What&rsquo;s important is that you also need to add the <strong>ConsistencyLevel</strong> header and that you must remove all occurrences of the escape character <code>`</code> from the Uri. Since Power Automate does not use <code>$</code> to define variables, the escape character is not needed/supported here. The <code>&amp;$count=true</code> also needs to be included at the end of the Uri.</p>
+<p><img src="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5.png"
+	width="938"
+	height="1296"
+	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_huc85c688f683dabe0d55b1dc50c3a2715_86670_480x0_resize_box_3.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_huc85c688f683dabe0d55b1dc50c3a2715_86670_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Power Automate Flow to filter for users by phone number"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="72"
+		data-flex-basis="173px"
+	
+></p>
+<p>Since this is just an example, the phone number used as the filter is simply stored in <strong>Compose Phone Number</strong> action. The next action, <strong>Compose Phone Number URL Safe</strong> will replace the <code>+</code> with <code>%2B</code> using an expression.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">replace(outputs(&#39;Compose_Phone_Number&#39;), &#39;+&#39;, &#39;%2B&#39;)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>To extract the Display Name of the result, I&rsquo;m using another compose action with the following expression.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">outputs(&#39;Send_an_HTTP_request&#39;)?[&#39;body&#39;]?[&#39;value&#39;][0][&#39;displayName&#39;]
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="example-output-1">Example Output</h4>
+<p>If there is a user match for the phone number, Graph will return a nice Json response to Power Automate.</p>
+<p><img src="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6.png"
+	width="960"
+	height="1138"
+	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu35494fb6171d17df94b862267ce52501_82901_480x0_resize_box_3.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu35494fb6171d17df94b862267ce52501_82901_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Output from Microsoft Graph within Power Automate"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="84"
+		data-flex-basis="202px"
+	
+></p>
+<h2 id="summary--download">Summary &amp; Download</h2>
+<p>I hope that these examples help you with whatever you&rsquo;re trying to achieve. I&rsquo;m certainly going to use this blog post as a cheat sheet for myself in the future. You can also download the entire script from my <a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/EntraID/FilterGraphUsersByPhoneNumber.ps1"  target="_blank" rel="noopener"
+    >GitHub</a> profile.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Microsoft Graph: Get an Access Token from a PowerShell Session</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Translate Microsoft 365 License GUIDs to Product Names in PowerShell</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How To Handle Microsoft Graph Paging in PowerShell</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How To Add a New Domain to M365 with MS Graph PowerShell</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/powershell-script-example-upload-small-files-via-microsoft-graph-z45tbunyoa85/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">PowerShell Script Example: Upload Small Files to SharePoint via Microsoft Graph</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "heusser-pro" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2024 HEUSSER.PRO
+    </section>
+    
+    <section class="powerby">
+        
+            Hosted on GitHub Pages <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
+
