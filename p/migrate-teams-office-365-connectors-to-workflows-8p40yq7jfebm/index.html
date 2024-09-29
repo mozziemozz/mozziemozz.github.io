@@ -307,6 +307,30 @@
 
     <div class="article-details">
     
+    <header class="article-category">
+        
+            <a href="/categories/microsoft-teams/" >
+                Microsoft Teams
+            </a>
+        
+            <a href="/categories/power-automate/" >
+                Power Automate
+            </a>
+        
+            <a href="/categories/microsoft-365/" >
+                Microsoft 365
+            </a>
+        
+            <a href="/categories/office-365-connectors/" >
+                Office 365 Connectors
+            </a>
+        
+            <a href="/categories/webhooks/" >
+                Webhooks
+            </a>
+        
+    </header>
+    
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
@@ -351,7 +375,7 @@
 
 
                 <time class="article-time--reading">
-                    9 minute read
+                    10 minute read
                 </time>
             </div>
         
@@ -502,7 +526,7 @@
 </span></span><span class="line"><span class="cl"><span class="nb">Invoke-RestMethod</span> <span class="n">-Uri</span> <span class="nv">$flowTriggerUri</span> <span class="n">-Method</span> <span class="n">Post</span> <span class="n">-Body</span> <span class="nv">$adaptiveCard</span> <span class="n">-ContentType</span> <span class="s2">&#34;application/json&#34;</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>To my surprise, this failed.</p>
+</div><p>To my surprise, this failed. This is how I have been typically sending data to incoming webhooks.</p>
 <p><img src="/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5.png"
 	width="2153"
 	height="1388"
@@ -546,7 +570,6 @@
 		data-flex-basis="206px"
 	
 ></p>
-<p>So, the error must lie somewhere in the Flow that was automatically created by Teams itself and not in the way I sent the POST request.</p>
 <p>For the record, this is how the Flow that was created from the template looks like.</p>
 <p><img src="/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-16.png"
 	width="2153"
@@ -562,8 +585,95 @@
 		data-flex-basis="372px"
 	
 ></p>
+<p>I then did some more research and stumbled upon another <a class="link" href="https://office365itpros.com/2024/06/17/teams-post-to-channel-workflow/"  target="_blank" rel="noopener"
+    >blog post</a> from Tony Redmond. This blog post also includes a link to his script on <a class="link" href="https://github.com/12Knocksinna/Office365itpros/blob/master/Post-ItemsToHTTPWorkFlow.PS1"  target="_blank" rel="noopener"
+    >GitHub</a>.</p>
+<p>From this, I learned that the Flow is expecting the actual Adaptive Card JSON inside <code>content</code> which itself is an item in the <code>attachments</code> array. Also the JSON needs to include <code>&quot;type&quot;: &quot;message&quot;</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;message&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;attachments&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;contentType&#34;</span><span class="p">:</span> <span class="s2">&#34;application/vnd.microsoft.card.adaptive&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;contentUrl&#34;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;content&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;AdaptiveCard&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;$schema&#34;</span><span class="p">:</span> <span class="s2">&#34;http://adaptivecards.io/schemas/adaptive-card.json&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;1.3&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;body&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">          <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;TextBlock&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;text&#34;</span><span class="p">:</span> <span class="s2">&#34;Hello World!&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;wrap&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;color&#34;</span><span class="p">:</span> <span class="s2">&#34;Accent&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;size&#34;</span><span class="p">:</span> <span class="s2">&#34;ExtraLarge&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17.png"
+	width="2153"
+	height="1388"
+	srcset="/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17_hu3950e0ee8735047fa286af9bb2b9204a_233474_480x0_resize_box_3.png 480w, /p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17_hu3950e0ee8735047fa286af9bb2b9204a_233474_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="It works!"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="155"
+		data-flex-basis="372px"
+	
+></p>
+<p>For comparison, here&rsquo;s the trigger outputs.</p>
+<p><img src="/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18.png"
+	width="915"
+	height="1315"
+	srcset="/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18_hufca17898f0de8536f4dd2b8f517259f4_187894_480x0_resize_box_3.png 480w, /p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18_hufca17898f0de8536f4dd2b8f517259f4_187894_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Trigger Outputs when the Adaptive Card is inside the attachments/content"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="69"
+		data-flex-basis="166px"
+	
+></p>
+<p>Before I found this information, I long tinkered with the Flow itself and made it accept a payload which only includes an Adaptive Card. I basically made this just a few days after the change was announced but I only had time to write about it and figured out how to successfully use the default Flow (Thanks to Tony&rsquo;s post) today.</p>
+<p>Since I&rsquo;ve been using my Flow for months now and it&rsquo;s working great, I see no harm in showing you an alternative way which will accept a payload which <strong>only</strong> includes an Adaptive Card, just like incoming webhooks did.</p>
 <h2 id="set-up-a-flow-from-scratch">Set Up a Flow From Scratch</h2>
-<p>I don&rsquo;t know if it would be possible to get this working somehow. But even if it was, it would mean that I&rsquo;d likely have to significantly change all my scripts which post notifications to Teams. My goal is to minimize the changes I have to do to my scripts and only swap the old webhook Uri for the new Power Automate trigger Uri and update the payload to use the official Adaptive Card schema.</p>
+<p>My goal is to minimize the changes I have to do to my scripts and only swap the old webhook Uri for the new Power Automate trigger Uri and update the payload to use the official Adaptive Card schema. By using this method, I don&rsquo;t need to bother about changing the structure of the JSON payload as well.</p>
 <p>When the Flow is set up through Teams, it&rsquo;s set up in the environment of the user which created it. This is not what I wanted anyway. I want this to run under a service account. So let&rsquo;s take a look on how to build a working Flow from scratch.</p>
 <p><strong>Step 1:</strong> Start by creating a new Flow and search for <strong>Microsoft Teams Webhook</strong> for the trigger. Select the only option which is called <strong>When a Teams webhook request is received</strong>. Make sure that the option <strong>Who can trigger the flow?</strong> is set to <strong>Anyone</strong>. (Why this trigger still used the old Teams logo is beyond me&hellip;)</p>
 <p><strong>Step 2:</strong> Then add a <strong>Compose</strong> action and add the <strong>Body</strong> as Inputs from the dynamic content selection. (Note: Select the one with a capital <strong>B</strong>.)</p>
@@ -768,9 +878,8 @@
 <p>Pretty cool, right?</p>
 <h2 id="summary">Summary</h2>
 <p>Over all, I really like this change. The biggest advantage to me is that we&rsquo;ll finally be able to fully utilize the huge potential of Adaptive Cards and there&rsquo;s no trial and error involved anymore to find out which card elements are supported and which are not.</p>
-<p>Finding out which Teams are using Office 365 Connectors/incoming webhooks will be a pain though. But in my opinion this also presents itself as an opportunity to get a hold of which of your end users are making use of sending data to Teams channels and offer them to set up service accounts for them instead. In other words, you&rsquo;re telling them that you want to manage/govern what Power Automate connectors for notifications they can use.</p>
+<p>Finding out which Teams are using Office 365 Connectors/incoming webhooks should be easy enough using Tony&rsquo;s script. Approaching all the users and letting them know that their integration will break unless they take action will be the painful part of this migration. But in my opinion this also presents itself as an opportunity to get a hold of which of your end users are making use of sending data to Teams channels and offer them to set up service accounts for them instead.</p>
 <p>However, this doesn&rsquo;t mean that there won&rsquo;t be users which will set up their own Workflows in Teams. With incoming webhooks, Admins had the possibility to block the use of the app through Teams app permission policies. If you want to block users from using the Workflows app, that&rsquo;s still possible through the same policy but that would also mean that you&rsquo;re blocking them from using the Workflows app entirely, which might be suboptimal in many scenarios.</p>
-<p>But then again, since the template in Teams doesn&rsquo;t seem to work out of the box, I doubt that many end users will be able to get this going, unless they read this blog post. So, chances that they reach out to IT for help are pretty high. And at this point, you can tell them that you&rsquo;re setting up a service account for them and that you&rsquo;ll share the Flow with their account, so that they can manage it on their own.</p>
 <p>To end this post on a positive note, I&rsquo;d like to mention that I believe that this change will make a lot of sense in the future. Power Automate is a very well established platform and has seen some great improvements over the last years. This gives us a much better supported and very promising foundation to build awesome notification and user input processes powered by Adaptive Cards.</p>
 <p>Oh, and I also really like the fact that the Teams webhook trigger doesn&rsquo;t require a Power Automate Premium license.</p>
 
@@ -801,6 +910,91 @@
     
 
     
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Microsoft Teams: Handle Shared Voicemail More Efficiently</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/m365-call-flow-visualizer-update-show-shared-voicemail-group-subscribers-s30piv4qliee/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">M365 Call Flow Visualizer Update: Show Shared Voicemail Group Subscribers</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/">
+        
+        
+            <div class="article-image">
+                <img src="/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/cover.f4838225804739dad554c1b9648b2b8d_hu28492fa5d2bc203e9449ee66080cd141_51573_250x150_fill_box_smart1_3.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post Teams Shared Voicemail for Basic Call Flows"
+                        data-key="/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju" 
+                        data-hash="md5-9IOCJYBHOdrVVMG5ZIsrjQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Teams Shared Voicemail for Basic Call Flows</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">The Ultimate Teams Shared Voicemail Solution</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How to Pin a Phone Number to the Teams Side Rail</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
 
      
     
