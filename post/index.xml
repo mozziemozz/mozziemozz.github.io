@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <lastBuildDate>Thu, 29 Aug 2024 19:08:52 +0000</lastBuildDate><atom:link href="https://heusser.pro/post/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>Migrate Teams Office 365 Connectors (Incoming Webhooks) to Workflows (Power Automate)</title>
+        <title>Migrate Teams Incoming Webhooks to Workflows (Power Automate)</title>
         <link>https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/</link>
         <pubDate>Thu, 29 Aug 2024 19:08:52 +0000</pubDate>
         
@@ -148,7 +148,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Invoke-RestMethod&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Uri&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$flowTriggerUri&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Method&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Post&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Body&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$adaptiveCard&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-ContentType&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;application/json&amp;#34;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;To my surprise, this failed. This is how I have been typically sending data to incoming webhooks.&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;To my surprise, this failed. This is how I have typically been sending data to incoming webhooks.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
@@ -193,10 +193,10 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;For the record, this is how the Flow that was created from the template looks like.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-16.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-16_hu038a48cd17ba8c4937734e0727588be7_125033_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-16_hu038a48cd17ba8c4937734e0727588be7_125033_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19_hucec72868a518da22de833eeafc174ae4_132808_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19_hucec72868a518da22de833eeafc174ae4_132808_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Flow created by Teams&#34;
@@ -210,7 +210,7 @@
 &lt;p&gt;I then did some more research and stumbled upon another &lt;a class=&#34;link&#34; href=&#34;https://office365itpros.com/2024/06/17/teams-post-to-channel-workflow/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;blog post&lt;/a&gt; from Tony Redmond. This blog post also includes a link to his script on &lt;a class=&#34;link&#34; href=&#34;https://github.com/12Knocksinna/Office365itpros/blob/master/Post-ItemsToHTTPWorkFlow.PS1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;GitHub&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;From this, I learned that the Flow is expecting the actual Adaptive Card JSON inside &lt;code&gt;content&lt;/code&gt; which itself is an item in the &lt;code&gt;attachments&lt;/code&gt; array. Also the JSON needs to include &lt;code&gt;&amp;quot;type&amp;quot;: &amp;quot;message&amp;quot;&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;From this, I learned that the Flow is expecting the actual Adaptive Card JSON to be inside &lt;code&gt;content&lt;/code&gt; which itself is an item in the &lt;code&gt;attachments&lt;/code&gt; array. Also the JSON needs to include &lt;code&gt;&amp;quot;type&amp;quot;: &amp;quot;message&amp;quot;&lt;/code&gt; and &lt;code&gt;attachments&lt;/code&gt; needs to other properties before &lt;code&gt;content&lt;/code&gt; too.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
@@ -314,7 +314,8 @@
 		data-flex-basis=&#34;236px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;p&gt;When I use the same code example from above to send the POST request, the Flow doesn&amp;rsquo;t fail anymore and the card is posted in Teams.&lt;/p&gt;
+&lt;p&gt;Note that my custom Flow doesn&amp;rsquo;t include an &lt;strong&gt;Apply to each&lt;/strong&gt; action and thus, it&amp;rsquo;s not possible to send multiple Adaptive Cards at once. While this would be possible when you&amp;rsquo;re using the default Flow, I don&amp;rsquo;t really see why I&amp;rsquo;d need that.&lt;/p&gt;
+&lt;p&gt;When I use the same code example from above, which only includes the Adaptive Card JSON to send the POST request, the Flow doesn&amp;rsquo;t fail anymore and the card is posted in Teams.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-9.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
@@ -343,10 +344,10 @@
 	
 &gt;&lt;/p&gt;
 &lt;h2 id=&#34;advanced-scenarios&#34;&gt;Advanced Scenarios&lt;/h2&gt;
-&lt;p&gt;Now that we have a working Flow, let&amp;rsquo;s look at some other cool stuff we can do now.&lt;/p&gt;
-&lt;h3 id=&#34;add-a-password-to-the-headers&#34;&gt;Add a Password to The Headers&lt;/h3&gt;
+&lt;p&gt;Now that we have a working Flow, let&amp;rsquo;s look at some other cool stuff we can do now&amp;hellip;&lt;/p&gt;
+&lt;h3 id=&#34;password-protect-the-flow&#34;&gt;Password Protect The Flow&lt;/h3&gt;
 &lt;p&gt;Office 365 Webhooks in Teams didn&amp;rsquo;t support any kind of authentication. The only security measure we had was keeping the webhook URI a secret. With Power Automate Flows, you can select between different options for &lt;strong&gt;Who can trigger the flow?&lt;/strong&gt;. Valid choices are &lt;strong&gt;Any user in my tenant&lt;/strong&gt;, &lt;strong&gt;Specific users in my tenant&lt;/strong&gt; or &lt;strong&gt;Anyone&lt;/strong&gt;. At this point, I haven&amp;rsquo;t actually figured out how user authentication would work.&lt;/p&gt;
-&lt;p&gt;Anyway, I already mentioned that my goal for this migration is to make as little changes as possible to my scripts. Therefore I&amp;rsquo;m sticking with anyone can trigger the Flow. However, that doesn&amp;rsquo;t mean that I can&amp;rsquo;t add at least some security to this.&lt;/p&gt;
+&lt;p&gt;Anyway, I already mentioned that my goal for this migration is to make as little changes as possible to my scripts. Therefore I&amp;rsquo;m sticking with anyone can trigger the Flow. By the way, this is also what&amp;rsquo;s used as the default value when you add a new Flow through the Workflows app in Teams as shown in &lt;a class=&#34;link&#34; href=&#34;#set-up-a-power-automate-workflows-connector&#34; &gt;chapter 3&lt;/a&gt; of this article. However, that doesn&amp;rsquo;t mean that I can&amp;rsquo;t add at least some security to this.&lt;/p&gt;
 &lt;p&gt;By using a trigger condition, we can limit who can trigger the Flow as well. To do this, click on the three dots on the trigger and then select &lt;strong&gt;Settings&lt;/strong&gt;. Then scroll to the bottom, enable trigger conditions and past the following code:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;@equals(triggerOutputs()?[&#39;headers&#39;][&#39;TriggerSecret&#39;], &#39;OnlyICanTriggerThisFlow&#39;)&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Then click &lt;strong&gt;Done&lt;/strong&gt;. The value I set for the trigger secret now essentially becomes the password required to trigger this Flow now. Of course, you can change it to whatever you like.&lt;/p&gt;
@@ -500,10 +501,10 @@
 &lt;p&gt;Pretty cool, right?&lt;/p&gt;
 &lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
 &lt;p&gt;Over all, I really like this change. The biggest advantage to me is that we&amp;rsquo;ll finally be able to fully utilize the huge potential of Adaptive Cards and there&amp;rsquo;s no trial and error involved anymore to find out which card elements are supported and which are not.&lt;/p&gt;
-&lt;p&gt;Finding out which Teams are using Office 365 Connectors/incoming webhooks should be easy enough using Tony&amp;rsquo;s script. Approaching all the users and letting them know that their integration will break unless they take action will be the painful part of this migration. But in my opinion this also presents itself as an opportunity to get a hold of which of your end users are making use of sending data to Teams channels and offer them to set up service accounts for them instead.&lt;/p&gt;
-&lt;p&gt;However, this doesn&amp;rsquo;t mean that there won&amp;rsquo;t be users which will set up their own Workflows in Teams. With incoming webhooks, Admins had the possibility to block the use of the app through Teams app permission policies. If you want to block users from using the Workflows app, that&amp;rsquo;s still possible through the same policy but that would also mean that you&amp;rsquo;re blocking them from using the Workflows app entirely, which might be suboptimal in many scenarios.&lt;/p&gt;
-&lt;p&gt;To end this post on a positive note, I&amp;rsquo;d like to mention that I believe that this change will make a lot of sense in the future. Power Automate is a very well established platform and has seen some great improvements over the last years. This gives us a much better supported and very promising foundation to build awesome notification and user input processes powered by Adaptive Cards.&lt;/p&gt;
-&lt;p&gt;Oh, and I also really like the fact that the Teams webhook trigger doesn&amp;rsquo;t require a Power Automate Premium license.&lt;/p&gt;
+&lt;p&gt;Finding out which Teams are using Office 365 Connectors/incoming webhooks should be easy enough using Tony&amp;rsquo;s script. Approaching all the users and letting them know that their integration will break unless they take action will be the painful part of this migration. But in my opinion this also presents itself as an opportunity to get a hold on which of your end users are making use of sending data to Teams channels and offer them to set up service accounts for them.&lt;/p&gt;
+&lt;p&gt;However, this doesn&amp;rsquo;t mean that there won&amp;rsquo;t be users which will set up or keep setting up their own Workflows in Teams. With incoming webhooks, Admins had the possibility to block the use of the app through Teams app permission policies. If you want to block users from using the Workflows app, that&amp;rsquo;s still possible through the same policy but that would also mean that you&amp;rsquo;re blocking them from using the Workflows app entirely, which might be suboptimal in many scenarios.&lt;/p&gt;
+&lt;p&gt;To end this post on a positive note, I&amp;rsquo;d like to mention that I believe that this change will make a lot of sense in the future. Power Automate is a very well established platform and has seen some great improvements and adoption over the last years. This gives us a much better supported and a very promising foundation to build awesome notification and user input processes powered by Power Automate and Adaptive Cards.&lt;/p&gt;
+&lt;p&gt;Oh, and I also really like the fact that unlike the &lt;strong&gt;HTTP&lt;/strong&gt; trigger, the Teams webhook trigger doesn&amp;rsquo;t require a Power Automate Premium license.&lt;/p&gt;
 </description>
         </item>
         <item>
