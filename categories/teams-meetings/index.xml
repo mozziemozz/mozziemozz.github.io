@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Teams Meetings on HEUSSER.PRO</title>
+        <link>https://heusser.pro/categories/teams-meetings/</link>
+        <description>Recent content in Teams Meetings on HEUSSER.PRO</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 05 Oct 2024 09:38:20 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/teams-meetings/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Get Microsoft Teams Meeting Attendance Report Through Graph API</title>
+        <link>https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/</link>
+        <pubDate>Sat, 05 Oct 2024 09:38:20 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/</guid>
+        <description>&lt;p&gt;Over a year ago I was asked if it&amp;rsquo;s possible to retrieve a Teams meeting attendance report if the organizer of the meeting isn&amp;rsquo;t available to get the report themselves. At the time, I created a quick and dirty script to get what was urgently needed but today I put it all in a nice and ready to use example.&lt;/p&gt;
+&lt;p&gt;Of course an organizer being out of office isn&amp;rsquo;t the only scenario why you&amp;rsquo;d need this. Another popular use case I can think of is to create an automation to automatically archive attendance reports for recurrent meetings.&lt;/p&gt;
+&lt;p&gt;First, let&amp;rsquo;s look at how an end user would access and view an attendance report.&lt;/p&gt;
+&lt;h2 id=&#34;tl-dr---i-know-what-im-doing-just-give-me-the-script-alreadyhttpsgithubcommozziemozzteamsphoneautomationblobmainscriptsmicrosoftgraphteamsgetteamsattendancereportasappps1&#34;&gt;TL; DR - &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/Teams/GetTeamsAttendanceReportAsApp.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;I know what I&amp;rsquo;m doing, just give me the script already!&lt;/a&gt;
+&lt;/h2&gt;&lt;h2 id=&#34;view-meeting-attendance-report-as-organizer&#34;&gt;View Meeting Attendance Report as Organizer
+&lt;/h2&gt;&lt;p&gt;Only meeting organizers have access to meeting attendance reports. To view an attendance report, organizers can simply open the meeting chat. Teams will automatically post the attendance report after a meeting has ended.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image.png&#34;
+	width=&#34;1997&#34;
+	height=&#34;1139&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image_hu1552455212699239515.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image_hu8773902193427679136.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Organizer View&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;175&#34;
+		data-flex-basis=&#34;420px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-1.png&#34;
+	width=&#34;1997&#34;
+	height=&#34;1139&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-1_hu1583085536681224228.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-1_hu11509484084775432042.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Attendee View&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;175&#34;
+		data-flex-basis=&#34;420px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Note that the attendance report is only shown in chat for the meeting organizers. Attendees can&amp;rsquo;t view see it. That&amp;rsquo;s also why we&amp;rsquo;re looking into how to get it through the Graph API today. Organizers also see a tab called &lt;strong&gt;Attendance&lt;/strong&gt;. This is where they can view the report directly in Teams.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-2.png&#34;
+	width=&#34;1997&#34;
+	height=&#34;1139&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-2_hu8091262977592003972.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-2_hu15730264878872807062.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Attendance Tab&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;175&#34;
+		data-flex-basis=&#34;420px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s also possible to download a CSV but it&amp;rsquo;s not very well structured which makes it kind of hard to further process the data.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3.png&#34;
+	width=&#34;1420&#34;
+	height=&#34;556&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3_hu16710570901127823256.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3_hu15978250730855183848.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;CSV Export&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;255&#34;
+		data-flex-basis=&#34;612px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s switch gears and make some graph requests.&lt;/p&gt;
+&lt;h2 id=&#34;get-meeting-attendance-report-through-graph-powershell&#34;&gt;Get Meeting Attendance Report Through Graph PowerShell
+&lt;/h2&gt;&lt;p&gt;Since we&amp;rsquo;re accessing data without a signed in user, we need an Entra ID application with appropriate application permissions.&lt;/p&gt;
+&lt;h3 id=&#34;create-a-new-entra-id-app-registration&#34;&gt;Create a new Entra ID App Registration.
+&lt;/h3&gt;&lt;p&gt;Note: You&amp;rsquo;ll need Global Admin access to grant the consent for your organization.&lt;/p&gt;
+&lt;p&gt;Go to the &lt;a class=&#34;link&#34; href=&#34;https://entra.microsoft.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Entra ID Portal&lt;/a&gt; and click on &lt;strong&gt;App registrations&lt;/strong&gt; under &lt;strong&gt;Applications&lt;/strong&gt; in the left navigation menu.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-4.png&#34;
+	width=&#34;395&#34;
+	height=&#34;849&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-4_hu780708199451891756.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-4_hu11862707405248585532.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;App registrations&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;46&#34;
+		data-flex-basis=&#34;111px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Then click &lt;strong&gt;+ New registration&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-5.png&#34;
+	width=&#34;1224&#34;
+	height=&#34;190&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-5_hu4846960727775724153.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-5_hu7599571461887634653.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;New registration&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;644&#34;
+		data-flex-basis=&#34;1546px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Give your app registration a name and keep &lt;strong&gt;Accounts in this organizational directory only (&amp;ldquo;Org Name&amp;rdquo; only - Single tenant)&lt;/strong&gt;. Under &lt;strong&gt;Redirect URI (optional)&lt;/strong&gt; select &lt;strong&gt;Public client/native (mobile &amp;amp; desktop)&lt;/strong&gt; and enter &lt;code&gt;http://localhost&lt;/code&gt; as redirect URI.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-6.png&#34;
+	width=&#34;1316&#34;
+	height=&#34;1142&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-6_hu12465281065790982111.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-6_hu4453546652840979674.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;App registration properties&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;115&#34;
+		data-flex-basis=&#34;276px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Click &lt;strong&gt;Register&lt;/strong&gt; to create the app registration.&lt;/p&gt;
+&lt;p&gt;Copy the &lt;strong&gt;Application (client) ID&lt;/strong&gt; and the &lt;strong&gt;Directory (tenant ID)&lt;/strong&gt;. You&amp;rsquo;ll need this later.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-7.png&#34;
+	width=&#34;2028&#34;
+	height=&#34;1054&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-7_hu10129649792073719027.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-7_hu1235730354562445183.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Copy Ids&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;192&#34;
+		data-flex-basis=&#34;461px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;add-permissions&#34;&gt;Add Permissions
+&lt;/h4&gt;&lt;p&gt;Navigate to &lt;strong&gt;API permissions&lt;/strong&gt; in the left navigation pane and click &lt;strong&gt;+ Add a permission&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-8.png&#34;
+	width=&#34;2083&#34;
+	height=&#34;1042&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-8_hu521781235381147073.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-8_hu14269633879254870612.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;API permissions&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;199&#34;
+		data-flex-basis=&#34;479px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-9.png&#34;
+	width=&#34;2016&#34;
+	height=&#34;1151&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-9_hu8902343436525598569.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-9_hu9649089576575954515.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Select Microsoft Graph&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;175&#34;
+		data-flex-basis=&#34;420px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-10.png&#34;
+	width=&#34;2107&#34;
+	height=&#34;1146&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-10_hu11761829843499643703.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-10_hu15731486774672074566.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Select Application permissions&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;183&#34;
+		data-flex-basis=&#34;441px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Search for &lt;code&gt;OnlineMeeting&lt;/code&gt; and expand the menus to select &lt;strong&gt;OnlineMeetingArtifact.Read.All&lt;/strong&gt; and &lt;strong&gt;OnlineMeetings.Read.All&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-11.png&#34;
+	width=&#34;2079&#34;
+	height=&#34;1217&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-11_hu1029123301090444454.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-11_hu2300880679545297295.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Select permissions&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;170&#34;
+		data-flex-basis=&#34;409px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Click &lt;strong&gt;Add permissions&lt;/strong&gt; and then click &lt;strong&gt;Grant admin consent for &amp;ldquo;Org Name&amp;rdquo;&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-12.png&#34;
+	width=&#34;2090&#34;
+	height=&#34;1090&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-12_hu9770591544558224282.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-12_hu12476901468595379424.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Grant Consent&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;191&#34;
+		data-flex-basis=&#34;460px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-13.png&#34;
+	width=&#34;1139&#34;
+	height=&#34;199&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-13_hu13338972452853469957.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-13_hu7775883993190971278.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Click Yes&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;572&#34;
+		data-flex-basis=&#34;1373px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;add-a-client-secret&#34;&gt;Add a Client Secret
+&lt;/h4&gt;&lt;p&gt;Navigate to &lt;strong&gt;Certificates &amp;amp; secrets&lt;/strong&gt; in the left navigation pane. Under &lt;strong&gt;Client secrets (0)&lt;/strong&gt; click &lt;strong&gt;+ New client secret&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-14.png&#34;
+	width=&#34;1928&#34;
+	height=&#34;1032&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-14_hu2293436619516980334.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-14_hu15147962235929871884.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Client secrets&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;186&#34;
+		data-flex-basis=&#34;448px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Give your secret a name and select after how many months it will expire.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-15.png&#34;
+	width=&#34;2102&#34;
+	height=&#34;1207&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-15_hu7152857960571106176.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-15_hu11978512614301172097.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Add a client secret&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;174&#34;
+		data-flex-basis=&#34;417px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Copy the secret from the portal. It will only be shown once and you&amp;rsquo;ll need it later.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-16.png&#34;
+	width=&#34;1928&#34;
+	height=&#34;1037&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-16_hu17047297231994617398.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-16_hu15416110635376457349.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Copy secret&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;185&#34;
+		data-flex-basis=&#34;446px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The configuration of the app registration is now complete.&lt;/p&gt;
+&lt;h3 id=&#34;run-the-script-to-get-an-attendance-report&#34;&gt;Run the Script to get an Attendance Report
+&lt;/h3&gt;&lt;p&gt;The script can be found in my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/Teams/GetTeamsAttendanceReportAsApp.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Teams Phone Automation Repo&lt;/a&gt; on GitHub. If you want to make use of the secret encryption feature, you&amp;rsquo;ll need to clone the entire repo because of the dependencies of other files in the repo.&lt;/p&gt;
+&lt;p&gt;To be able to retrieve an attendance report from Microsoft Graph, we need a meeting id. Unfortunately, this is not your typical GUID you could easily find in TAC. But we can, however find it easy enough by passing a &lt;strong&gt;Join meeting ID&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-25.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-25_hu2986311443911423294.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-25_hu10765265585117709368.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Meeting Id example&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Luckily, anyone that was invited to the meeting in question can view the Meeting ID and send it to you. Alternatively, the meeting invite could also be forwarded to you. The meeting Id is located below the join link.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-17.png&#34;
+	width=&#34;1997&#34;
+	height=&#34;1139&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-17_hu7194430074090526351.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-17_hu462441630379005235.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Meeting ID in meeting invite body&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;175&#34;
+		data-flex-basis=&#34;420px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Once you have this ID, you&amp;rsquo;re ready to get the attendance report through PowerShell.&lt;/p&gt;
+&lt;h4 id=&#34;teams-application-access-policy&#34;&gt;Teams Application Access Policy
+&lt;/h4&gt;&lt;p&gt;The Graph permissions alone are not enough to access the attendance report. We also need to create a new Teams Application Access Policy which includes the app id of the newly created Entra ID app and grant it to the meeting organizer. This is how you can do it in PowerShell.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;# Create a new Teams Application Access Policy&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;New-CsApplicationAccessPolicy&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Identity&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$applicationAccessPolicyName&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-AppIds&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$AppId&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Description&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;Access Meeting Data as Entra ID app on behalf of user&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/teams/new-csapplicationaccesspolicy?view=teams-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;New-CsApplicationAccessPolicy&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;# Assign a Teams Application Access Policy to a user&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Grant-CsApplicationAccessPolicy&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Identity&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$UserId&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-PolicyName&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$applicationAccessPolicyName&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/teams/grant-csapplicationaccesspolicy?view=teams-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Grant-CsApplicationAccessPolicy&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;But the script does all of this automatically for you.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-19.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-19_hu10719152679535455178.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-19_hu10282738222892772325.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Script output&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-20.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-20_hu6521691855553458921.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-20_hu18425668790374788519.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;PowerShell output&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h5 id=&#34;unassign-teams-application-access-policy&#34;&gt;Unassign Teams Application Access Policy
+&lt;/h5&gt;&lt;p&gt;If you only want to get an attendance report once and need to remove the application access to another user&amp;rsquo;s meeting details, you can unassign the policy again by using this code.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Grant-CsApplicationAccessPolicy&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Identity&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$UserId&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-PolicyName&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;script-prompts&#34;&gt;Script Prompts
+&lt;/h4&gt;&lt;p&gt;When the script runs for the first time it will ask you for your app secret. Paste it into the terminal. This will save your secret in an encrypted format. Only the signed in user (in Windows) can decrypt it and it can only be decrypted on the same machine on which it was encrypted. You&amp;rsquo;ll also be asked to sign into Teams PowerShell as well.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-18.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-18_hu4595984946679195562.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-18_hu5454475057403891671.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Paste secret&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-21.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-21_hu13533273712239525489.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-21_hu16211369304511111756.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Sign into Teams&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;results&#34;&gt;Results
+&lt;/h4&gt;&lt;p&gt;Once the Application Access Policy already exists and was already granted to the organizer, the console output looks much less cluttered. The report will be saved to the current directory and it&amp;rsquo;s filename will include the subject of the meeting.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-22.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-22_hu14123386588595758467.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-22_hu14242258358872799878.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Script output&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If there are multiple attendance reports for a meeting, like when a meeting already ended and someone joined again after that or when it&amp;rsquo;s a recurring meeting, all reports will be combined into a single CSV. The CSV does include the report id in the last column.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s compare the CSV that was downloaded from the Teams client versus the one from my script.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3.png&#34;
+	width=&#34;1420&#34;
+	height=&#34;556&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3_hu16710570901127823256.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3_hu15978250730855183848.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;CSV Export from Teams&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;255&#34;
+		data-flex-basis=&#34;612px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-23.png&#34;
+	width=&#34;1424&#34;
+	height=&#34;150&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-23_hu14338726933806513635.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-23_hu1892343337874356130.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;CSV Export from Script&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;949&#34;
+		data-flex-basis=&#34;2278px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;As you can see, the output from my script gives you a nicely structured CSV which lists 1 participant per row so you can easily import it into other systems without manually changing the structure of the file. Because of that, I decided to create separate files for meeting/attendance summaries.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-24.png&#34;
+	width=&#34;1513&#34;
+	height=&#34;60&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-24_hu4679063954046974286.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-24_hu15266802166026083483.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Meeting Summary from Script&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;2521&#34;
+		data-flex-basis=&#34;6052px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;summary&#34;&gt;Summary
+&lt;/h2&gt;&lt;p&gt;I personally believe that it&amp;rsquo;s very easy for organizers to access the reports themselves in Teams but having the possibility to get them as an admin via PowerShell as well is certainly a welcome addition to my script toolbox. This will be especially useful in case you&amp;rsquo;re asked to export attendance reports on a regular basis. While the fact that you need to know the unique meeting id before you can get an attendance report makes it a bit harder to truly automate this or you may have to chase other attendees for it, if you weren&amp;rsquo;t invited to the meeting yourself but overall, the join meeting Id should be easy enough to retrieve.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

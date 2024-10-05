@@ -13,8 +13,8 @@
         
         <guid>https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/</guid>
         <description>&lt;p&gt;There was an issue with my code in this article. The solution described in this article assumes that your call queue overflow and timeout actions already forward to an external PSTN number. If it was set to any other option like voicemail or disconnect, the runbook failed. I’ve updated the &lt;strong&gt;Runbook&lt;/strong&gt; code sample on GitHub accordingly.&lt;/p&gt;
-&lt;h4 id=&#34;original-article&#34;&gt;Original Article&lt;/h4&gt;
-&lt;p&gt;A while ago I published &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851&#34; &gt;this&lt;/a&gt; article which explains how we can build a self-service solution for changing the configurations of Auto Attendants and Call Queues using Azure Automation Tools. The main reason behind this is so that we don’t have to grant admin privileges to users which would like to manage Queues and Attendants.&lt;/p&gt;
+&lt;h4 id=&#34;original-article&#34;&gt;Original Article
+&lt;/h4&gt;&lt;p&gt;A while ago I published &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851&#34; &gt;this&lt;/a&gt; article which explains how we can build a self-service solution for changing the configurations of Auto Attendants and Call Queues using Azure Automation Tools. The main reason behind this is so that we don’t have to grant admin privileges to users which would like to manage Queues and Attendants.&lt;/p&gt;
 &lt;p&gt;In my last post, I provided an example how an Auto Attendant can be manually closed or opened. Today I’m going to show you an example of how we can let users change some settings on Call Queues.&lt;/p&gt;
 &lt;p&gt;I’ve written the code for the following changes:&lt;/p&gt;
 &lt;ul&gt;
@@ -25,18 +25,18 @@
 &lt;p&gt;Immediate forwarding is configured through an overflow Threshold of 0 and not a Timeout of 0. This is because, typically, Overflow Threshold is less used than timeout. I always recommend using Overflow Threshold 0 when you want to do an immediate forwarding. Unlike Timeout 0, the call is forwarded directly, without the Queue answering the call first when using Overflow. You can read more about that &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6&#34; &gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;If the immediate forwarding is disabled again, the value of the Overflow Threshold will be set to 50 again. This is the default value which is configured for new Call Queues. Of course, you change that in the Runbook code.&lt;/p&gt;
 &lt;p&gt;This is what the Message Card looks like when it’s sent by the Azure Function.&lt;/p&gt;
-&lt;h3 id=&#34;lets-buildit&#34;&gt;Let’s Build It&lt;/h3&gt;
-&lt;p&gt;To build this on your own, please refer to my first article since the configuration steps are the same. You just need to replace the code of the Azure Functions and Runbooks from the Gists below.&lt;/p&gt;
-&lt;h4 id=&#34;runbook-code&#34;&gt;Runbook Code&lt;/h4&gt;
-&lt;p&gt;Insert the Webhook URL of your Teams Channel on line 7 and make sure that you’ve created the Automation Credentials as described in the article linked at the beginning of this post.&lt;/p&gt;
+&lt;h3 id=&#34;lets-buildit&#34;&gt;Let’s Build It
+&lt;/h3&gt;&lt;p&gt;To build this on your own, please refer to my first article since the configuration steps are the same. You just need to replace the code of the Azure Functions and Runbooks from the Gists below.&lt;/p&gt;
+&lt;h4 id=&#34;runbook-code&#34;&gt;Runbook Code
+&lt;/h4&gt;&lt;p&gt;Insert the Webhook URL of your Teams Channel on line 7 and make sure that you’ve created the Automation Credentials as described in the article linked at the beginning of this post.&lt;/p&gt;
 &lt;script src=&#34;https://gist.github.com/mozziemozz/30c4ff283d8736f3b1b47acd81d40b95.js&#34;&gt;&lt;/script&gt;
 
-&lt;h4 id=&#34;refresh-card-functioncode&#34;&gt;Refresh Card Function Code&lt;/h4&gt;
-&lt;p&gt;Insert the URL of your Azure Runbook Webhook trigger on line 11.&lt;/p&gt;
+&lt;h4 id=&#34;refresh-card-functioncode&#34;&gt;Refresh Card Function Code
+&lt;/h4&gt;&lt;p&gt;Insert the URL of your Azure Runbook Webhook trigger on line 11.&lt;/p&gt;
 &lt;script src=&#34;https://gist.github.com/mozziemozz/7928bf7f6dabcbf0c5283566511488e5.js&#34;&gt;&lt;/script&gt;
 
-&lt;h4 id=&#34;request-card-functioncode&#34;&gt;Request Card Function Code&lt;/h4&gt;
-&lt;p&gt;To get a drop-down list with all your queues, we need to create one first.&lt;/p&gt;
+&lt;h4 id=&#34;request-card-functioncode&#34;&gt;Request Card Function Code
+&lt;/h4&gt;&lt;p&gt;To get a drop-down list with all your queues, we need to create one first.&lt;/p&gt;
 &lt;p&gt;You can use the following code to create a list, which we’ll insert in our Function code later.&lt;/p&gt;
 &lt;script src=&#34;https://gist.github.com/mozziemozz/767ebef524b966842b67436cc2ba9a0a.js&#34;&gt;&lt;/script&gt;
 
@@ -48,7 +48,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1DHb1Es27FcAN3yemT5wQ.png&#34;
 	width=&#34;1124&#34;
 	height=&#34;292&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1DHb1Es27FcAN3yemT5wQ_hud1a8715ca2528dda6973d061dd8cd353_75748_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1DHb1Es27FcAN3yemT5wQ_hud1a8715ca2528dda6973d061dd8cd353_75748_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1DHb1Es27FcAN3yemT5wQ_hu4010058252657163386.png 480w, https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1DHb1Es27FcAN3yemT5wQ_hu13690025378348908854.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	

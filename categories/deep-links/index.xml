@@ -16,10 +16,10 @@
 &lt;p&gt;I still got plenty of topics to blog about in my backlog but what I like most is when I discover something new and get so hyped out about it that I can’t just not blog about it right away.&lt;/p&gt;
 &lt;p&gt;Thanks to my awesome Discord community (join &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/discord.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt;) which is full of enthusiastic Teams Phone admins like myself, it was brought to my attention that Microsoft is making some changes to how normalization rules in Teams dial plans are applied.&lt;/p&gt;
-&lt;h4 id=&#34;tldr&#34;&gt;TLDR;&lt;/h4&gt;
-&lt;p&gt;I’ve created an app which allows you to call any phone number which has been copied to the clipboard simply by clicking an app on the taskbar or by pressing a hotkey. Skip to the bottom of this post if you’re only interested in the app.&lt;/p&gt;
-&lt;h3 id=&#34;what-are-dial-plans-and-normalization-rules&#34;&gt;What are Dial Plans and Normalization Rules?&lt;/h3&gt;
-&lt;p&gt;Normalization rules are regular expressions which change certain phone numbers before they’re dialed in Teams. An easy example is e.g. that any Swiss phone number which is entered in the national format (with a leading &lt;code&gt;0&lt;/code&gt;) is converted to &lt;a class=&#34;link&#34; href=&#34;https://en.wikipedia.org/wiki/E.164&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h4 id=&#34;tldr&#34;&gt;TLDR;
+&lt;/h4&gt;&lt;p&gt;I’ve created an app which allows you to call any phone number which has been copied to the clipboard simply by clicking an app on the taskbar or by pressing a hotkey. Skip to the bottom of this post if you’re only interested in the app.&lt;/p&gt;
+&lt;h3 id=&#34;what-are-dial-plans-and-normalization-rules&#34;&gt;What are Dial Plans and Normalization Rules?
+&lt;/h3&gt;&lt;p&gt;Normalization rules are regular expressions which change certain phone numbers before they’re dialed in Teams. An easy example is e.g. that any Swiss phone number which is entered in the national format (with a leading &lt;code&gt;0&lt;/code&gt;) is converted to &lt;a class=&#34;link&#34; href=&#34;https://en.wikipedia.org/wiki/E.164&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;&lt;strong&gt;&lt;em&gt;E.164&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;E.g. &lt;code&gt;044 123 45 67&lt;/code&gt; is changed to &lt;code&gt;+41441234567&lt;/code&gt; before it’s dialed.&lt;/p&gt;
 &lt;p&gt;This rule is actually part of the system dial plans which are already included in Teams. Admins can create their own dial plans by creating so called &lt;strong&gt;Tenant Dial Plans&lt;/strong&gt;.&lt;/p&gt;
@@ -28,7 +28,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18JxlggrooV95RMwJMIRvA.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;870&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18JxlggrooV95RMwJMIRvA_hue4de0b8f2b34af5767e39cae768b389f_823623_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18JxlggrooV95RMwJMIRvA_hue4de0b8f2b34af5767e39cae768b389f_823623_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18JxlggrooV95RMwJMIRvA_hu16618417987915928392.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18JxlggrooV95RMwJMIRvA_hu537395810636340776.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -37,8 +37,8 @@
 		data-flex-basis=&#34;478px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;tenant-dialplans&#34;&gt;Tenant Dial Plans&lt;/h4&gt;
-&lt;p&gt;With tenant dial plans, it’s possible to create much more complex rules such as &lt;a class=&#34;link&#34; href=&#34;https://ucken.blogspot.com/2016/03/trunk-prefixes-in-skype4b.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h4 id=&#34;tenant-dialplans&#34;&gt;Tenant Dial Plans
+&lt;/h4&gt;&lt;p&gt;With tenant dial plans, it’s possible to create much more complex rules such as &lt;a class=&#34;link&#34; href=&#34;https://ucken.blogspot.com/2016/03/trunk-prefixes-in-skype4b.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;this&lt;/a&gt; one which contains a monster regular expression created by no other than Ken Lasko (&lt;a class=&#34;link&#34; href=&#34;https://www.ucdialplans.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;UCDialPlans.com — Dial Plan Tools&lt;/a&gt;).&lt;/p&gt;
 &lt;p&gt;I don’t know why there are still people on this planet who think it’s a good idea to list a phone number in a format in which it &lt;strong&gt;&lt;em&gt;simply does not exist&lt;/em&gt;&lt;/strong&gt;. &lt;code&gt;+41 (0) 44 123 45 67&lt;/code&gt; or &lt;code&gt;+41 0 44 123 45 67&lt;/code&gt; are not valid phone numbers. That’s effectively the same as if I told people that my email address is &lt;code&gt;mozzie(0)@heusser.pro&lt;/code&gt; when in fact it’s &lt;code&gt;mozzie@heusser.pro&lt;/code&gt; . It’s either &lt;code&gt;+41 44 123 45 67&lt;/code&gt; (when calling internationally) or &lt;code&gt;044 123 45 67&lt;/code&gt; (when calling from the same country).&lt;/p&gt;
@@ -47,7 +47,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/14YWX8uJZeF4KVKsxtPQE3A.png&#34;
 	width=&#34;2136&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/14YWX8uJZeF4KVKsxtPQE3A_hu5806c1102942d747a553c73e23f94089_745613_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/14YWX8uJZeF4KVKsxtPQE3A_hu5806c1102942d747a553c73e23f94089_745613_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/14YWX8uJZeF4KVKsxtPQE3A_hu4870468583577533314.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/14YWX8uJZeF4KVKsxtPQE3A_hu8973792552583418931.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -74,7 +74,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1wyBIMDRn3qkDKckT1EsU0Q.png&#34;
 	width=&#34;759&#34;
 	height=&#34;499&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1wyBIMDRn3qkDKckT1EsU0Q_hu9b3499ea3905bb5166fbe05e742ff9bf_314425_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1wyBIMDRn3qkDKckT1EsU0Q_hu9b3499ea3905bb5166fbe05e742ff9bf_314425_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1wyBIMDRn3qkDKckT1EsU0Q_hu3950902284976973763.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1wyBIMDRn3qkDKckT1EsU0Q_hu2447904915572846078.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -89,13 +89,13 @@
 &lt;p&gt;Updated November 2, 2023: Based on customer feedback we will not be moving forward with this change at this time. You can safely disregard this message. Thank you for your feedback.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;&lt;strong&gt;/Update&lt;/strong&gt;&lt;/p&gt;
-&lt;h3 id=&#34;testing-with-powershell&#34;&gt;Testing with PowerShell&lt;/h3&gt;
-&lt;p&gt;I’ve noticed that something was not right, when the PowerShell commands to test dialed numbers against a tenant dial plan stopped matching numbers which start with a plus.&lt;/p&gt;
+&lt;h3 id=&#34;testing-with-powershell&#34;&gt;Testing with PowerShell
+&lt;/h3&gt;&lt;p&gt;I’ve noticed that something was not right, when the PowerShell commands to test dialed numbers against a tenant dial plan stopped matching numbers which start with a plus.&lt;/p&gt;
 &lt;p&gt;I have a tenant dial plan in Teams which contains Ken Lasko’s awesome normalization rule.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WteEwba1CLM2fqkpj4joYg.png&#34;
 	width=&#34;1885&#34;
 	height=&#34;481&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WteEwba1CLM2fqkpj4joYg_hu8449a14af48aa3ceb841b76f018616b9_75151_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WteEwba1CLM2fqkpj4joYg_hu8449a14af48aa3ceb841b76f018616b9_75151_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WteEwba1CLM2fqkpj4joYg_hu7438856367206962741.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WteEwba1CLM2fqkpj4joYg_hu7179766099757031952.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -110,7 +110,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1uvHzgIINJYK9QYvItJig.png&#34;
 	width=&#34;2122&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1uvHzgIINJYK9QYvItJig_hue2cb3169f3873c87e1b687d3d8180dcb_874220_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1uvHzgIINJYK9QYvItJig_hue2cb3169f3873c87e1b687d3d8180dcb_874220_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1uvHzgIINJYK9QYvItJig_hu11542885825580949277.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1uvHzgIINJYK9QYvItJig_hu17264244380051966102.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -124,7 +124,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1OSqAxfdvyF5gUfUXDihhdQ.png&#34;
 	width=&#34;1224&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1OSqAxfdvyF5gUfUXDihhdQ_hue2048e428df3dfc0b8bdf0656da7159e_80332_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1OSqAxfdvyF5gUfUXDihhdQ_hue2048e428df3dfc0b8bdf0656da7159e_80332_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1OSqAxfdvyF5gUfUXDihhdQ_hu8582880170286507972.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1OSqAxfdvyF5gUfUXDihhdQ_hu587326241673741966.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -133,12 +133,12 @@
 		data-flex-basis=&#34;246px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;what-about-the-teamsclient&#34;&gt;What about the Teams Client?&lt;/h4&gt;
-&lt;p&gt;Interesting enough, the Teams client still seems to match the rule from the tenant dial plan.&lt;/p&gt;
+&lt;h4 id=&#34;what-about-the-teamsclient&#34;&gt;What about the Teams Client?
+&lt;/h4&gt;&lt;p&gt;Interesting enough, the Teams client still seems to match the rule from the tenant dial plan.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1M60DOscRIwosemXqbylQbQ.png&#34;
 	width=&#34;2135&#34;
 	height=&#34;1422&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1M60DOscRIwosemXqbylQbQ_hu19b43908cab1a0d03d946077c6863f35_160961_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1M60DOscRIwosemXqbylQbQ_hu19b43908cab1a0d03d946077c6863f35_160961_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1M60DOscRIwosemXqbylQbQ_hu15169629982353702460.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1M60DOscRIwosemXqbylQbQ_hu943598237417766368.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -148,13 +148,13 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;However, I suspect it’s only a matter of time before this stops working too.&lt;/p&gt;
-&lt;h4 id=&#34;starting-calls-fromoutlook&#34;&gt;Starting Calls from Outlook&lt;/h4&gt;
-&lt;p&gt;If Teams is registered as the chat app for Microsoft 365 Apps (such as Outlook) we can call numbers which are stored on Outlook contacts.&lt;/p&gt;
+&lt;h4 id=&#34;starting-calls-fromoutlook&#34;&gt;Starting Calls from Outlook
+&lt;/h4&gt;&lt;p&gt;If Teams is registered as the chat app for Microsoft 365 Apps (such as Outlook) we can call numbers which are stored on Outlook contacts.&lt;/p&gt;
 &lt;p&gt;The problem with this is that classic Outlook does not apply any normalization rules either. The number is called as it’s stored on the contact.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WFO6dkLuWfJOYCPJliJlcw.png&#34;
 	width=&#34;943&#34;
 	height=&#34;497&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WFO6dkLuWfJOYCPJliJlcw_hu74881908b72e001b1ffc37dd00b44329_44422_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WFO6dkLuWfJOYCPJliJlcw_hu74881908b72e001b1ffc37dd00b44329_44422_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WFO6dkLuWfJOYCPJliJlcw_hu940140342948553287.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WFO6dkLuWfJOYCPJliJlcw_hu10172987722437095535.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -167,7 +167,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18VYzjecFvrfoqqiYl4Fuog.png&#34;
 	width=&#34;1451&#34;
 	height=&#34;996&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18VYzjecFvrfoqqiYl4Fuog_huaf5e274138f0ef671264de17ceac51eb_45797_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18VYzjecFvrfoqqiYl4Fuog_huaf5e274138f0ef671264de17ceac51eb_45797_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18VYzjecFvrfoqqiYl4Fuog_hu924623879592393414.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18VYzjecFvrfoqqiYl4Fuog_hu4094099531166156121.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -181,7 +181,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1Z5Jm7DSGlTyJLl3YYr8ww.png&#34;
 	width=&#34;883&#34;
 	height=&#34;232&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1Z5Jm7DSGlTyJLl3YYr8ww_huf4e1f8f56efd714d79e6ace1155c7f8b_16261_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1Z5Jm7DSGlTyJLl3YYr8ww_huf4e1f8f56efd714d79e6ace1155c7f8b_16261_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1Z5Jm7DSGlTyJLl3YYr8ww_hu18421600524471544576.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1Z5Jm7DSGlTyJLl3YYr8ww_hu14601388736829127922.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -194,7 +194,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1q1b8uLbj997HaUMbFxMVg.png&#34;
 	width=&#34;1211&#34;
 	height=&#34;322&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1q1b8uLbj997HaUMbFxMVg_hub05fc11c31048437bc666e38546fc052_59042_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1q1b8uLbj997HaUMbFxMVg_hub05fc11c31048437bc666e38546fc052_59042_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1q1b8uLbj997HaUMbFxMVg_hu4239369479790171046.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1q1b8uLbj997HaUMbFxMVg_hu2190939571283803161.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -204,8 +204,8 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;Time to look for alternatives.&lt;/p&gt;
-&lt;h3 id=&#34;alternative-solutions&#34;&gt;Alternative Solutions&lt;/h3&gt;
-&lt;p&gt;Dialing phone numbers from other apps and links or even through a hotkey is not an uncommon ask from users.&lt;/p&gt;
+&lt;h3 id=&#34;alternative-solutions&#34;&gt;Alternative Solutions
+&lt;/h3&gt;&lt;p&gt;Dialing phone numbers from other apps and links or even through a hotkey is not an uncommon ask from users.&lt;/p&gt;
 &lt;p&gt;If you’ve received this request before, you’ve probably stumbled upon this free app called &lt;a class=&#34;link&#34; href=&#34;http://www.lyncwizard.com/products.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;&lt;strong&gt;Teams Wizard&lt;/strong&gt;&lt;/a&gt;. This will allow you to start Teams PSTN calls by selecting a phone number and pressing the configured hotkey.&lt;/p&gt;
 &lt;p&gt;In Teams Wizard’s settings, there’s a setting called &lt;strong&gt;Enable normalization of phone numbers&lt;/strong&gt; (Normalisierung der Telefonnummern aktivieren).&lt;/p&gt;
@@ -213,7 +213,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/16e4K0bnpbbbU5jRv1aWYA.png&#34;
 	width=&#34;1321&#34;
 	height=&#34;495&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/16e4K0bnpbbbU5jRv1aWYA_hu71d9d16211561959248643d0029ce493_105238_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/16e4K0bnpbbbU5jRv1aWYA_hu71d9d16211561959248643d0029ce493_105238_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/16e4K0bnpbbbU5jRv1aWYA_hu15113911710170237257.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/16e4K0bnpbbbU5jRv1aWYA_hu13991591303370978827.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -226,7 +226,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1oqAqO3GVoYrPRFPJJVYw.png&#34;
 	width=&#34;877&#34;
 	height=&#34;231&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1oqAqO3GVoYrPRFPJJVYw_hu881aba82e18622567db091c9f6358048_17177_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1oqAqO3GVoYrPRFPJJVYw_hu881aba82e18622567db091c9f6358048_17177_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1oqAqO3GVoYrPRFPJJVYw_hu15675406897216155642.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1oqAqO3GVoYrPRFPJJVYw_hu2679713769734696109.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -244,7 +244,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1PPyoBA3xszRe0nDk5cNOHQ.png&#34;
 	width=&#34;1335&#34;
 	height=&#34;405&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1PPyoBA3xszRe0nDk5cNOHQ_hu6142a933fd8b4c92769cbc11b18136a3_44500_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1PPyoBA3xszRe0nDk5cNOHQ_hu6142a933fd8b4c92769cbc11b18136a3_44500_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1PPyoBA3xszRe0nDk5cNOHQ_hu9375130616971329795.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1PPyoBA3xszRe0nDk5cNOHQ_hu13560821534156530450.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -256,7 +256,7 @@
 &lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/10qv6ML4d6FBZkV9LCg4Yxg.png&#34;
 	width=&#34;986&#34;
 	height=&#34;462&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/10qv6ML4d6FBZkV9LCg4Yxg_hu0b087bff1a6494367710845816fc2942_43929_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/10qv6ML4d6FBZkV9LCg4Yxg_hu0b087bff1a6494367710845816fc2942_43929_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/10qv6ML4d6FBZkV9LCg4Yxg_hu13583813766256756216.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/10qv6ML4d6FBZkV9LCg4Yxg_hu8044574385820671056.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -269,7 +269,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1vSbtxT9dKxd0bCYVaEzlw.png&#34;
 	width=&#34;1182&#34;
 	height=&#34;742&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1vSbtxT9dKxd0bCYVaEzlw_hu9e1c6006965e066c14b898ba559876bd_57723_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1vSbtxT9dKxd0bCYVaEzlw_hu9e1c6006965e066c14b898ba559876bd_57723_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1vSbtxT9dKxd0bCYVaEzlw_hu13262424395177609497.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1vSbtxT9dKxd0bCYVaEzlw_hu1983903617108625690.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -278,14 +278,14 @@
 		data-flex-basis=&#34;382px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h3 id=&#34;i-proudly-present-teams-clipboard-dialer&#34;&gt;I Proudly Present: Teams Clipboard Dialer&lt;/h3&gt;
-&lt;p&gt;I don’t know how to write and compile a proper app, but I like to think that I do know my way around PowerShell. And I think I’ve come up with a very neat solution here.&lt;/p&gt;
+&lt;h3 id=&#34;i-proudly-present-teams-clipboard-dialer&#34;&gt;I Proudly Present: Teams Clipboard Dialer
+&lt;/h3&gt;&lt;p&gt;I don’t know how to write and compile a proper app, but I like to think that I do know my way around PowerShell. And I think I’ve come up with a very neat solution here.&lt;/p&gt;
 &lt;p&gt;The &lt;strong&gt;Teams Clipboard Dialer&lt;/strong&gt; consists of a PowerShell script and a Desktop shortcut which calls that script. The script reads phone numbers from the clipboard, normalizes the number, and then passes it to Teams to start the call.&lt;/p&gt;
 &lt;p&gt;All you have to do to start a call is to copy a phone number and either click the icon on the taskbar or press the configured hotkey.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1KtHkD1MmZaahl5R81h7W5Q.png&#34;
 	width=&#34;1181&#34;
 	height=&#34;71&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1KtHkD1MmZaahl5R81h7W5Q_hucf8f6818dab62dffd373b4a98872df76_55789_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1KtHkD1MmZaahl5R81h7W5Q_hucf8f6818dab62dffd373b4a98872df76_55789_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1KtHkD1MmZaahl5R81h7W5Q_hu5746531129793719001.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1KtHkD1MmZaahl5R81h7W5Q_hu6244623901809244993.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -298,7 +298,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1rxi8ME2LgGTx4g9ioQdSKg.png&#34;
 	width=&#34;1110&#34;
 	height=&#34;251&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1rxi8ME2LgGTx4g9ioQdSKg_huc83179eb723359ed1c3de1e367188a61_228686_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1rxi8ME2LgGTx4g9ioQdSKg_huc83179eb723359ed1c3de1e367188a61_228686_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1rxi8ME2LgGTx4g9ioQdSKg_hu12121726415082694675.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1rxi8ME2LgGTx4g9ioQdSKg_hu10393339265646809521.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -311,7 +311,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1NlTAypYtlbm83Q6xFjlKg.png&#34;
 	width=&#34;2141&#34;
 	height=&#34;1383&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1NlTAypYtlbm83Q6xFjlKg_huabd2f6d21721ccef66dfb3e825cb1570_218040_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1NlTAypYtlbm83Q6xFjlKg_huabd2f6d21721ccef66dfb3e825cb1570_218040_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1NlTAypYtlbm83Q6xFjlKg_hu9570566376323108525.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1NlTAypYtlbm83Q6xFjlKg_hu5357565374514703382.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -324,7 +324,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1z4gcS6aqm4MUiWPbGm6Dg.png&#34;
 	width=&#34;882&#34;
 	height=&#34;231&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1z4gcS6aqm4MUiWPbGm6Dg_hu17e256268d26b48e864bd0e74479a43b_12004_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1z4gcS6aqm4MUiWPbGm6Dg_hu17e256268d26b48e864bd0e74479a43b_12004_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1z4gcS6aqm4MUiWPbGm6Dg_hu13837010205607254331.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1z4gcS6aqm4MUiWPbGm6Dg_hu1237629762717302104.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -338,12 +338,12 @@
 Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://teams.microsoft.com/l/call/0/0?users=4:$phoneNumber%22&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://teams.microsoft.com/l/call/0/0?users=4:$phoneNumber&#34;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;I’ve only tested the Teams Clipboard Dialer on Windows 11 and Teams 2.1.&lt;/strong&gt;&lt;/p&gt;
-&lt;h4 id=&#34;setup&#34;&gt;Setup&lt;/h4&gt;
-&lt;p&gt;I also created an install script which copies the script to &lt;code&gt;$env:APPDATA\OneDrive\TeamsClipboardDialer&lt;/code&gt; and creates a shortcut in &lt;code&gt;$env:OneDrive\Desktop&lt;/code&gt; . Unfortunately, I didn’t find a way to automatically pin the app to the taskbar. When you run the script, you’ll see a pop up message which will pause the script and give you time to pin the app manually to the taskbar.&lt;/p&gt;
+&lt;h4 id=&#34;setup&#34;&gt;Setup
+&lt;/h4&gt;&lt;p&gt;I also created an install script which copies the script to &lt;code&gt;$env:APPDATA\OneDrive\TeamsClipboardDialer&lt;/code&gt; and creates a shortcut in &lt;code&gt;$env:OneDrive\Desktop&lt;/code&gt; . Unfortunately, I didn’t find a way to automatically pin the app to the taskbar. When you run the script, you’ll see a pop up message which will pause the script and give you time to pin the app manually to the taskbar.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/078v39dCn4iWwIiR6.png&#34;
 	width=&#34;1749&#34;
 	height=&#34;739&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/078v39dCn4iWwIiR6_hudaa9661d447b5461eb843726e80585a0_548084_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/078v39dCn4iWwIiR6_hudaa9661d447b5461eb843726e80585a0_548084_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/078v39dCn4iWwIiR6_hu17061015298272705383.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/078v39dCn4iWwIiR6_hu16504388404033325141.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -359,13 +359,13 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
     &gt;here&lt;/a&gt;. Basically, it removes any special characters like whitespaces, brackets, hyphens, dots etc. from copied phone numbers and then also applies Ken Lasko’s rule to get rid of those damn illegal zeros. You can read more about it in detail &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/TeamsClipboardDialer/ReadMe.md#normalization-rule-behavior&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;By applying the normalization rules outside of Outlook and Teams, we get more control over it since we can do whatever we want. I guess if Microsoft won’t let us match numbers starting with &lt;code&gt;+&lt;/code&gt; any longer, we have to do it ourselves. Compared to the Teams Wizard, my solution gives us way more flexibility and visibility in terms of how numbers are normalized before they’re dialed.&lt;/p&gt;
-&lt;h3 id=&#34;hold-on-i-am-not-doneyet&#34;&gt;Hold on… I Am Not Done Yet!&lt;/h3&gt;
-&lt;p&gt;When I realized that I was on to something, I just couldn’t let it go. &lt;strong&gt;&lt;em&gt;I replicated the whole functionality in an iOS shortcut&lt;/em&gt;&lt;/strong&gt;. I don’t know why but every time an Android Fanboy asks me why I prefer the iPhone over Android I forget to mention Shortcuts. &lt;strong&gt;&lt;em&gt;It’s literally the most underrated feature of iOS.&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id=&#34;hold-on-i-am-not-doneyet&#34;&gt;Hold on… I Am Not Done Yet!
+&lt;/h3&gt;&lt;p&gt;When I realized that I was on to something, I just couldn’t let it go. &lt;strong&gt;&lt;em&gt;I replicated the whole functionality in an iOS shortcut&lt;/em&gt;&lt;/strong&gt;. I don’t know why but every time an Android Fanboy asks me why I prefer the iPhone over Android I forget to mention Shortcuts. &lt;strong&gt;&lt;em&gt;It’s literally the most underrated feature of iOS.&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The shortcut uses the exact same regular expressions as the PowerShell script to normalize the numbers. (Yes, that’s possible in Shortcuts.) It also gets the phone number from the clipboard and will display the same hints if there’s no phone number stored in the clipboard.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1ZvBMJVHFO1jdr8Bl5rESrg.png&#34;
 	width=&#34;2279&#34;
 	height=&#34;890&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1ZvBMJVHFO1jdr8Bl5rESrg_hu257a4cc28321710dba9b35d80b3bcbd3_827070_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1ZvBMJVHFO1jdr8Bl5rESrg_hu257a4cc28321710dba9b35d80b3bcbd3_827070_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1ZvBMJVHFO1jdr8Bl5rESrg_hu15725920068979816919.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1ZvBMJVHFO1jdr8Bl5rESrg_hu18278185387661075770.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -378,7 +378,7 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/13qugvQ8xQsLHYZKjNKAbZQ.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;725&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/13qugvQ8xQsLHYZKjNKAbZQ_hu0f65417d07c71a5b5a861fdccb00ea77_316029_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/13qugvQ8xQsLHYZKjNKAbZQ_hu0f65417d07c71a5b5a861fdccb00ea77_316029_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/13qugvQ8xQsLHYZKjNKAbZQ_hu10342781017595616400.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/13qugvQ8xQsLHYZKjNKAbZQ_hu13110588079809064043.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -387,16 +387,16 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 		data-flex-basis=&#34;372px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;get-theshortcut&#34;&gt;Get the Shortcut&lt;/h4&gt;
-&lt;p&gt;You can download and import the Shortcut via &lt;a class=&#34;link&#34; href=&#34;https://www.icloud.com/shortcuts/45b99b70ef0f40adab6726e220cf4e7b&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h4 id=&#34;get-theshortcut&#34;&gt;Get the Shortcut
+&lt;/h4&gt;&lt;p&gt;You can download and import the Shortcut via &lt;a class=&#34;link&#34; href=&#34;https://www.icloud.com/shortcuts/45b99b70ef0f40adab6726e220cf4e7b&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;iCould&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;I’ve tested the shortcut on an iPad and an iPhone both running iOS/iPad OS 17.0.3. When you run it for the first time, you will need to confirm a couple of privacy prompts and allow it to run all the actions without asking again. After that, you’re good to go.&lt;/p&gt;
-&lt;h4 id=&#34;showtime&#34;&gt;Showtime&lt;/h4&gt;
-&lt;p&gt;This animated gif demonstrates how it works on iOS. The number has already been copied to the clipboard before the shortcut was executed.&lt;/p&gt;
+&lt;h4 id=&#34;showtime&#34;&gt;Showtime
+&lt;/h4&gt;&lt;p&gt;This animated gif demonstrates how it works on iOS. The number has already been copied to the clipboard before the shortcut was executed.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1sCzx0j6auIV4gBlO343cQ.gif&#34;
 	width=&#34;886&#34;
 	height=&#34;1920&#34;
-	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1sCzx0j6auIV4gBlO343cQ_hu09e55dee48d2dce00624399b6a86ff8f_7320335_480x0_resize_box_1.gif 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1sCzx0j6auIV4gBlO343cQ_hu09e55dee48d2dce00624399b6a86ff8f_7320335_1024x0_resize_box_1.gif 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1sCzx0j6auIV4gBlO343cQ_hu10691038760383244091.gif 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1sCzx0j6auIV4gBlO343cQ_hu4070719078360449086.gif 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -405,8 +405,8 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 		data-flex-basis=&#34;110px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h3 id=&#34;summary&#34;&gt;Summary&lt;/h3&gt;
-&lt;p&gt;When I first read the MC post about normalization rules no longer matching numbers starting with a &lt;code&gt;+&lt;/code&gt; I panicked a little. But now that I’ve done the research and came to the conclusion that having an app which normalizes and calls numbers from the clipboard, is actually a very nice and versatile solution and I’m very much relieved. And having the same functionality on iOS is an awesome bonus.&lt;/p&gt;
+&lt;h3 id=&#34;summary&#34;&gt;Summary
+&lt;/h3&gt;&lt;p&gt;When I first read the MC post about normalization rules no longer matching numbers starting with a &lt;code&gt;+&lt;/code&gt; I panicked a little. But now that I’ve done the research and came to the conclusion that having an app which normalizes and calls numbers from the clipboard, is actually a very nice and versatile solution and I’m very much relieved. And having the same functionality on iOS is an awesome bonus.&lt;/p&gt;
 &lt;p&gt;I hope you like what I’ve done and that you can make use of it as well. As always, all the code for the Teams Clipboard Dialer is provided free of charge. If you would still like to support my work, feel free to buy me a coffee over at &lt;a class=&#34;link&#34; href=&#34;https://github.com/sponsors/mozziemozz?frequency=one-time&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;GitHub Sponsors&lt;/a&gt;.&lt;/p&gt;
 </description>
@@ -426,8 +426,8 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;li&gt;A Teams App&lt;/li&gt;
 &lt;li&gt;Any kind of web server to host one or multiple html files&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h4 id=&#34;create-and-host-the-htmlfiles&#34;&gt;Create and host the html file(s)&lt;/h4&gt;
-&lt;p&gt;Let’s start with the web server. This can be any kind of platform or service that can host and serve a html file publicly. Tech Peanuts uses an Azure storage account in their tutorial. It makes total sense since it’s amazingly easy to create and configure a storage account from within VS Code. You can refer to their article to learn how to upload files to Azure Storage directly from VS Code.&lt;/p&gt;
+&lt;h4 id=&#34;create-and-host-the-htmlfiles&#34;&gt;Create and host the html file(s)
+&lt;/h4&gt;&lt;p&gt;Let’s start with the web server. This can be any kind of platform or service that can host and serve a html file publicly. Tech Peanuts uses an Azure storage account in their tutorial. It makes total sense since it’s amazingly easy to create and configure a storage account from within VS Code. You can refer to their article to learn how to upload files to Azure Storage directly from VS Code.&lt;/p&gt;
 &lt;p&gt;Here’s the html code we need to create a calling deep link. Just replace the phone number after &lt;code&gt;4:%2b&lt;/code&gt; with your phone number. &lt;code&gt;%2b&lt;/code&gt; is a &lt;code&gt;+&lt;/code&gt; sign in URL encoded format.&lt;/p&gt;
 &lt;script src=&#34;https://gist.github.com/mozziemozz/e1b387e07589c7f0fc486a14b2570604.js&#34;&gt;&lt;/script&gt;
 
@@ -435,14 +435,14 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;If you want this to work in the new Teams client as well, use the following link format:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;https://teams.microsoft.com/l/call/0/0?users=4:0041123456789&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Then upload the file to your web server of choice. If you have multiple locations with different emergency numbers, you can create multiple html files with different names and numbers. You can still upload them to the same location as the first file. There’s no need to create a separate storage account or web app for each html file/number.&lt;/p&gt;
-&lt;h4 id=&#34;create-the-teamsapp&#34;&gt;Create the Teams App&lt;/h4&gt;
-&lt;p&gt;Next, go to &lt;a class=&#34;link&#34; href=&#34;https://dev.teams.microsoft.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h4 id=&#34;create-the-teamsapp&#34;&gt;Create the Teams App
+&lt;/h4&gt;&lt;p&gt;Next, go to &lt;a class=&#34;link&#34; href=&#34;https://dev.teams.microsoft.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://dev.teams.microsoft.com&lt;/a&gt; and sign in with a Teams admin account.&lt;/p&gt;
 &lt;p&gt;Go to &lt;strong&gt;Apps&lt;/strong&gt; and click &lt;strong&gt;+ New app&lt;/strong&gt; and give your app a name.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1T1jm9F4WsGlBZC8i4blxvA.png&#34;
 	width=&#34;882&#34;
 	height=&#34;305&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1T1jm9F4WsGlBZC8i4blxvA_hu584e6f8782752b67c93e41d86f714caf_14137_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1T1jm9F4WsGlBZC8i4blxvA_hu584e6f8782752b67c93e41d86f714caf_14137_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1T1jm9F4WsGlBZC8i4blxvA_hu11789020853176736568.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1T1jm9F4WsGlBZC8i4blxvA_hu8972897116156548730.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -455,7 +455,7 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/16ZZdpshqTSEsTAWd4pB7g.png&#34;
 	width=&#34;1308&#34;
 	height=&#34;1452&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/16ZZdpshqTSEsTAWd4pB7g_huabb39e3d94990d19c5ad2df460e2ec13_150109_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/16ZZdpshqTSEsTAWd4pB7g_huabb39e3d94990d19c5ad2df460e2ec13_150109_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/16ZZdpshqTSEsTAWd4pB7g_hu5893550846938556681.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/16ZZdpshqTSEsTAWd4pB7g_hu14925142084208369769.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -468,7 +468,7 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1lfTXEyWS0I7tBpbJ3kMSRQ.png&#34;
 	width=&#34;863&#34;
 	height=&#34;883&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1lfTXEyWS0I7tBpbJ3kMSRQ_hudaa083e32aa7f2b6b70b7c26ef9ef9d6_65364_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1lfTXEyWS0I7tBpbJ3kMSRQ_hudaa083e32aa7f2b6b70b7c26ef9ef9d6_65364_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1lfTXEyWS0I7tBpbJ3kMSRQ_hu11561264302143991247.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1lfTXEyWS0I7tBpbJ3kMSRQ_hu17772287774462005278.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -481,7 +481,7 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1y6twx4IlKDCiKBsF0athug.png&#34;
 	width=&#34;1655&#34;
 	height=&#34;412&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1y6twx4IlKDCiKBsF0athug_huefc4d63d436b20a913ee76688f89178c_52285_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1y6twx4IlKDCiKBsF0athug_huefc4d63d436b20a913ee76688f89178c_52285_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1y6twx4IlKDCiKBsF0athug_hu17661092906365605265.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1y6twx4IlKDCiKBsF0athug_hu6394300497751482186.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -495,7 +495,7 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1NHO9Br7TMFi6ElrQP1Q.png&#34;
 	width=&#34;865&#34;
 	height=&#34;581&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1NHO9Br7TMFi6ElrQP1Q_hu26a51dbcd2137248a37e7d1aa7f1d7a9_53548_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1NHO9Br7TMFi6ElrQP1Q_hu26a51dbcd2137248a37e7d1aa7f1d7a9_53548_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1NHO9Br7TMFi6ElrQP1Q_hu12029844455100949330.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1NHO9Br7TMFi6ElrQP1Q_hu16110502634329584933.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -506,12 +506,12 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &gt;&lt;/p&gt;
 &lt;p&gt;In Teams, go to &lt;strong&gt;Apps&lt;/strong&gt;, &lt;strong&gt;Manage your apps&lt;/strong&gt; and then select &lt;strong&gt;Upload an app&lt;/strong&gt; to upload your app.&lt;/p&gt;
 &lt;p&gt;Note: Your admin must allow sideloading apps for this.&lt;/p&gt;
-&lt;h4 id=&#34;see-it-inaction&#34;&gt;See it in Action&lt;/h4&gt;
-&lt;p&gt;Now you have an app in the siderail which can start a call. The only thing that’s left to do is to publish the app in your tenant.&lt;/p&gt;
+&lt;h4 id=&#34;see-it-inaction&#34;&gt;See it in Action
+&lt;/h4&gt;&lt;p&gt;Now you have an app in the siderail which can start a call. The only thing that’s left to do is to publish the app in your tenant.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1FfN90woT9tQGuHUS0DYJZQ.png&#34;
 	width=&#34;2325&#34;
 	height=&#34;1370&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1FfN90woT9tQGuHUS0DYJZQ_hu74fadd3c6594c85fd73fee68132e8133_88419_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1FfN90woT9tQGuHUS0DYJZQ_hu74fadd3c6594c85fd73fee68132e8133_88419_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1FfN90woT9tQGuHUS0DYJZQ_hu13500464953612064462.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1FfN90woT9tQGuHUS0DYJZQ_hu10205571845755029831.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -523,8 +523,8 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;If you’ve never published an app in Teams before, I suggest starting with &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-US/microsoftteams/manage-apps?WT.mc_id=TeamsAdminCenterCSH&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;this&lt;/a&gt; Microsoft Learn article. If you only have one location, it will be fairly easy to add the app just to the global app setup policy.&lt;/p&gt;
 &lt;p&gt;If you have multiple offices in different locations or countries, it will be a little more complex. You will need to create a separate app for each number and then also create and assign different Teams app setup policies to the users based on their location. Each policy will then pin a different app where each app will ultimately link to a different html file (containing a different phone number) on your web server.&lt;/p&gt;
-&lt;h4 id=&#34;summary&#34;&gt;Summary&lt;/h4&gt;
-&lt;p&gt;I think it’s really cool that we can leverage Teams deep links to pin different actions in Teams to the side rail instead of just normal apps. I really hope that Microsoft will fix the bug where the leading plus is not recognized in deep links. It not only looks bad, but it also causes calls to file.&lt;/p&gt;
+&lt;h4 id=&#34;summary&#34;&gt;Summary
+&lt;/h4&gt;&lt;p&gt;I think it’s really cool that we can leverage Teams deep links to pin different actions in Teams to the side rail instead of just normal apps. I really hope that Microsoft will fix the bug where the leading plus is not recognized in deep links. It not only looks bad, but it also causes calls to file.&lt;/p&gt;
 &lt;p&gt;While pinning emergency numbers might be the most obvious use case, you could use this for any number. I could also see some companies wanting to pin their IT service desk hotline to the side rail for example.&lt;/p&gt;
 &lt;p&gt;One last thing I want to mention is to keep in mind that the phone number you put in the html file can theoretically be viewed/obtained by anybody with internet access. Of course, you must know the URL to access it but that probably won’t protect it from web scrapers or other data gathering tools. However, since your company’s main number is probably listed on your home page anyway, I don’t see too big of a risk here.&lt;/p&gt;
 &lt;p&gt;If you do think it’s a risk, &lt;a class=&#34;link&#34; href=&#34;https://www.linkedin.com/in/anthony-drozdek-9a3a188/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -545,7 +545,7 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1tg14cxCdjlonXkMgRPiUJg.png&#34;
 	width=&#34;1227&#34;
 	height=&#34;152&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1tg14cxCdjlonXkMgRPiUJg_hu975d832f8d478ca680987674cf0a4019_8811_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1tg14cxCdjlonXkMgRPiUJg_hu975d832f8d478ca680987674cf0a4019_8811_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1tg14cxCdjlonXkMgRPiUJg_hu14437231759176176982.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1tg14cxCdjlonXkMgRPiUJg_hu11174074311918998385.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -558,7 +558,7 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1C6dCc5y1jWlQtTgdyD6fIQ.png&#34;
 	width=&#34;1190&#34;
 	height=&#34;258&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1C6dCc5y1jWlQtTgdyD6fIQ_hu369a11f0fc983ca92a4d6a77aee7c188_20447_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1C6dCc5y1jWlQtTgdyD6fIQ_hu369a11f0fc983ca92a4d6a77aee7c188_20447_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1C6dCc5y1jWlQtTgdyD6fIQ_hu4978360523962273181.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1C6dCc5y1jWlQtTgdyD6fIQ_hu8315937992463865787.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -570,8 +570,8 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;So, what can you do if you want your users to find Call Queues and Auto Attendants in Teams, if they’re not part of the queue or don’t get calls from an Auto Attendant?&lt;/p&gt;
 &lt;p&gt;Certainly, adding all users to a queue or configuring an Auto Attendant a hundred times over and making actual calls to its number so that the user receives a call from the attendant is no option.&lt;/p&gt;
 &lt;p&gt;Let’s explore other options.&lt;/p&gt;
-&lt;h4 id=&#34;deep-links--user-self-service&#34;&gt;Deep Links / User Self-Service&lt;/h4&gt;
-&lt;p&gt;I’ve blogged about &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd&#34; &gt;deep links&lt;/a&gt; in Teams before. If we create a deep link to call a resource account’s user principal name, the resource account will somehow magically be added to the user’s Teams contacts, once the user clicks on the link. This user will then be able to find this Auto Attendant or Call Queue from search.&lt;/p&gt;
+&lt;h4 id=&#34;deep-links--user-self-service&#34;&gt;Deep Links / User Self-Service
+&lt;/h4&gt;&lt;p&gt;I’ve blogged about &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd&#34; &gt;deep links&lt;/a&gt; in Teams before. If we create a deep link to call a resource account’s user principal name, the resource account will somehow magically be added to the user’s Teams contacts, once the user clicks on the link. This user will then be able to find this Auto Attendant or Call Queue from search.&lt;/p&gt;
 &lt;p&gt;Let’s call this a self-service approach. We as admins will provide our users a list with deep links and the users choose themselves, which accounts they want to add.&lt;/p&gt;
 &lt;p&gt;A deep link will look like this:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;https://teams.microsoft.com/l/call/0/0?users=ra_aa_example@mozzism.onmicrosoft.com
@@ -580,7 +580,7 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1rbe0FSPUNi533rul0Kxg.png&#34;
 	width=&#34;766&#34;
 	height=&#34;245&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1rbe0FSPUNi533rul0Kxg_hu97a6a18a85095a2388cc48e928af8f77_21751_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1rbe0FSPUNi533rul0Kxg_hu97a6a18a85095a2388cc48e928af8f77_21751_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1rbe0FSPUNi533rul0Kxg_hu3316523803561364377.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1rbe0FSPUNi533rul0Kxg_hu7525775336615953877.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -593,7 +593,7 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Jc77DF5dftfPiJZdcrbNg.png&#34;
 	width=&#34;891&#34;
 	height=&#34;230&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Jc77DF5dftfPiJZdcrbNg_hu150b34301f461618a48d41569bdca2be_13604_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Jc77DF5dftfPiJZdcrbNg_hu150b34301f461618a48d41569bdca2be_13604_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Jc77DF5dftfPiJZdcrbNg_hu11373595790547908476.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Jc77DF5dftfPiJZdcrbNg_hu3581808810723974548.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -607,7 +607,7 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/17ormYlPnrP6skX1LiImA.png&#34;
 	width=&#34;540&#34;
 	height=&#34;674&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/17ormYlPnrP6skX1LiImA_hua0593742b7f04a816f34bbc74647348d_33514_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/17ormYlPnrP6skX1LiImA_hua0593742b7f04a816f34bbc74647348d_33514_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/17ormYlPnrP6skX1LiImA_hu4123186348420681452.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/17ormYlPnrP6skX1LiImA_hu6776090529755090140.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -619,7 +619,7 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MTkOifCqgHWKRSmU9ZudVg.png&#34;
 	width=&#34;678&#34;
 	height=&#34;413&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MTkOifCqgHWKRSmU9ZudVg_hu712cb4b150218a378fb9d4e15d0e5440_40326_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MTkOifCqgHWKRSmU9ZudVg_hu712cb4b150218a378fb9d4e15d0e5440_40326_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MTkOifCqgHWKRSmU9ZudVg_hu4557616402886855011.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MTkOifCqgHWKRSmU9ZudVg_hu12133494059475949672.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -636,7 +636,7 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MrRVxccFvYQn9p3B3OPuzQ.png&#34;
 	width=&#34;1404&#34;
 	height=&#34;942&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MrRVxccFvYQn9p3B3OPuzQ_hu99c9c4d6fcb78fc6c922e1b171fa2de9_282790_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MrRVxccFvYQn9p3B3OPuzQ_hu99c9c4d6fcb78fc6c922e1b171fa2de9_282790_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MrRVxccFvYQn9p3B3OPuzQ_hu2002095523606246124.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MrRVxccFvYQn9p3B3OPuzQ_hu7183566897489535557.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -649,7 +649,7 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1ezGtnmlIwS6F2EdhN2RmVA.png&#34;
 	width=&#34;2130&#34;
 	height=&#34;1236&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1ezGtnmlIwS6F2EdhN2RmVA_hud4edd79298f211d8264b853f7a1dcb8a_714006_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1ezGtnmlIwS6F2EdhN2RmVA_hud4edd79298f211d8264b853f7a1dcb8a_714006_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1ezGtnmlIwS6F2EdhN2RmVA_hu10933760025642905812.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1ezGtnmlIwS6F2EdhN2RmVA_hu10471300132546590124.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -659,8 +659,8 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;That’s one way to do it. But what if you want to go the extra mile for your users and automatically make all your Attendants and Queues available for all your users?&lt;/p&gt;
-&lt;h4 id=&#34;the-powershell-way--going-the-extramile&#34;&gt;The PowerShell Way / Going the Extra Mile&lt;/h4&gt;
-&lt;p&gt;Although it’s possible to do this at scale, this method does come with a caveat. We’ll see what that is later. Instead of launching a deep link to a call, we’re going to create a chat between the user and the resource account. But how can we create a chat with the resource account, if we can’t search for it in the first place?&lt;/p&gt;
+&lt;h4 id=&#34;the-powershell-way--going-the-extramile&#34;&gt;The PowerShell Way / Going the Extra Mile
+&lt;/h4&gt;&lt;p&gt;Although it’s possible to do this at scale, this method does come with a caveat. We’ll see what that is later. Instead of launching a deep link to a call, we’re going to create a chat between the user and the resource account. But how can we create a chat with the resource account, if we can’t search for it in the first place?&lt;/p&gt;
 &lt;p&gt;I have found that it’s possible to use Microsoft Graph to create a chat between a user and a resource account.&lt;/p&gt;
 &lt;p&gt;Here’s an example script. Use it at your own risk. As I already stated in &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6&#34; &gt;this article&lt;/a&gt;, the function to authenticate against MS Graph is baes on the work of &lt;a class=&#34;link&#34; href=&#34;https://twitter.com/AlexAsplund&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Alex Asplund&lt;/a&gt; from &lt;a class=&#34;link&#34; href=&#34;https://adamtheautomator.com/powershell-graph-api/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -673,7 +673,7 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1eRdP6AZLSl6vyCJXJRiicQ.png&#34;
 	width=&#34;1232&#34;
 	height=&#34;157&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1eRdP6AZLSl6vyCJXJRiicQ_huabe2899f02da42e9cb8bc754e799aa0c_8207_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1eRdP6AZLSl6vyCJXJRiicQ_huabe2899f02da42e9cb8bc754e799aa0c_8207_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1eRdP6AZLSl6vyCJXJRiicQ_hu8425082174513145961.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1eRdP6AZLSl6vyCJXJRiicQ_hu18196109449743519408.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -686,7 +686,7 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Yu9h1Z97KR8zknhzVdXCEg.png&#34;
 	width=&#34;644&#34;
 	height=&#34;816&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Yu9h1Z97KR8zknhzVdXCEg_hu780b53f9338d25047ca2d91be91554ff_73194_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Yu9h1Z97KR8zknhzVdXCEg_hu780b53f9338d25047ca2d91be91554ff_73194_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Yu9h1Z97KR8zknhzVdXCEg_hu448696478015984145.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Yu9h1Z97KR8zknhzVdXCEg_hu12085572968717311813.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -699,7 +699,7 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/10jKaL3o2x7v1HXY0rVOPBA.png&#34;
 	width=&#34;1126&#34;
 	height=&#34;327&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/10jKaL3o2x7v1HXY0rVOPBA_hu0317a9147e0feb6cf7dfd371ba1ee24d_22244_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/10jKaL3o2x7v1HXY0rVOPBA_hu0317a9147e0feb6cf7dfd371ba1ee24d_22244_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/10jKaL3o2x7v1HXY0rVOPBA_hu14199143020605339815.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/10jKaL3o2x7v1HXY0rVOPBA_hu5578371883648170040.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -712,7 +712,7 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Tgx0nPdJDN76Z4w2ymwqQ.png&#34;
 	width=&#34;1238&#34;
 	height=&#34;273&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Tgx0nPdJDN76Z4w2ymwqQ_hu60996a1a8f633bf417c026c41bc7f540_21430_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Tgx0nPdJDN76Z4w2ymwqQ_hu60996a1a8f633bf417c026c41bc7f540_21430_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Tgx0nPdJDN76Z4w2ymwqQ_hu3087662420570539259.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Tgx0nPdJDN76Z4w2ymwqQ_hu9947624487043068140.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -725,7 +725,7 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1z3kdGAc4NyA27AMG2X8FUg.png&#34;
 	width=&#34;526&#34;
 	height=&#34;652&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1z3kdGAc4NyA27AMG2X8FUg_hu30f3e0279e6b37fe9d08438f9b570ef0_64076_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1z3kdGAc4NyA27AMG2X8FUg_hu30f3e0279e6b37fe9d08438f9b570ef0_64076_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1z3kdGAc4NyA27AMG2X8FUg_hu17430453791695090129.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1z3kdGAc4NyA27AMG2X8FUg_hu3691192838411361080.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -749,8 +749,8 @@ Start-Process ms-teams &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://t
 tel:&lt;phone number&gt;&lt;/p&gt;
 &lt;p&gt;If you haven’t already configured a default App for calling on Windows, you’ll be prompted to choose an app for calling links.&lt;/p&gt;
 &lt;p&gt;And that’s it. Next time you click on a phone number link, your PC will automatically use Teams to make the call.&lt;/p&gt;
-&lt;h4 id=&#34;using-deep-links-on-mobilephones&#34;&gt;Using Deep Links on Mobile Phones&lt;/h4&gt;
-&lt;p&gt;Mobile operating systems are a different story. Because they are very restricted in terms of customization, clicking on a callto: or tel: link will most likely start a call using your mobile number/network — which makes total sense.&lt;/p&gt;
+&lt;h4 id=&#34;using-deep-links-on-mobilephones&#34;&gt;Using Deep Links on Mobile Phones
+&lt;/h4&gt;&lt;p&gt;Mobile operating systems are a different story. Because they are very restricted in terms of customization, clicking on a callto: or tel: link will most likely start a call using your mobile number/network — which makes total sense.&lt;/p&gt;
 &lt;p&gt;But what if you have a business application or an internal website and would like your users to initiate calls using their business number configured in Microsoft Teams instead of their mobile number?&lt;/p&gt;
 &lt;p&gt;It’s definitely possible but it requires a bit of work. To be specific, to achieve this, we need a specific deep link. But what are deep links?&lt;/p&gt;
 &lt;p&gt;Basically, they are just links followed by some application specific stuff which will not only open the App but also start an action inside said App. For example, we can use a deep link to open a specific channel or even a tab inside a channel in Teams.&lt;/p&gt;
@@ -767,15 +767,15 @@ tel:&lt;phone number&gt;&lt;/p&gt;
     &gt;Call Speaking Clock via Teams&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;This will start a call to a &lt;a class=&#34;link&#34; href=&#34;https://telephonesuk.org.uk/speaking-clock/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;UK Speaking Clock&lt;/a&gt;. If you’re already using Teams Telephony you can try this by yourself. This link works on desktop and mobile devices. (Beware of the costs though! According to the site linked above, calls to this number cost 13p (Pence) per minute. If you’re calling from outside the UK, the cost may vary.) If you want to test this with a local number instead, just copy the URL and change the phone number.&lt;/p&gt;
-&lt;h4 id=&#34;example-gifs&#34;&gt;Example Gifs&lt;/h4&gt;
-&lt;p&gt;To finish off, here are some Gifs of how it looks on an iPhone and an Android device.&lt;/p&gt;
+&lt;h4 id=&#34;example-gifs&#34;&gt;Example Gifs
+&lt;/h4&gt;&lt;p&gt;To finish off, here are some Gifs of how it looks on an iPhone and an Android device.&lt;/p&gt;
 &lt;p&gt;Clicking a Teams calling deep link from within the app on Android.&lt;/p&gt;
 &lt;p&gt;Clicking a Teams calling deep link from within the app on iOS.&lt;/p&gt;
 &lt;p&gt;Clicking a Teams calling deep link from another App/Website on Android (works on iOS too.)&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd/1ZNgQP7PbMMRQnBjFgvrw.gif&#34;
 	width=&#34;720&#34;
 	height=&#34;1600&#34;
-	srcset=&#34;https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd/1ZNgQP7PbMMRQnBjFgvrw_hub70d9c4db9bb6296dbcc43cf5c7bcd69_4223795_480x0_resize_box_1.gif 480w, https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd/1ZNgQP7PbMMRQnBjFgvrw_hub70d9c4db9bb6296dbcc43cf5c7bcd69_4223795_1024x0_resize_box_1.gif 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd/1ZNgQP7PbMMRQnBjFgvrw_hu13128758664217189572.gif 480w, https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd/1ZNgQP7PbMMRQnBjFgvrw_hu16905444667080451501.gif 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -784,8 +784,8 @@ tel:&lt;phone number&gt;&lt;/p&gt;
 		data-flex-basis=&#34;108px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;update&#34;&gt;Update&lt;/h4&gt;
-&lt;p&gt;When launching a deep link starting with https:// as demonstrated above, it will always open your default browser, before the Teams App is launched. Unless, you’re clicking the deep link from within Teams as shown in the first two Gifs.&lt;/p&gt;
+&lt;h4 id=&#34;update&#34;&gt;Update
+&lt;/h4&gt;&lt;p&gt;When launching a deep link starting with https:// as demonstrated above, it will always open your default browser, before the Teams App is launched. Unless, you’re clicking the deep link from within Teams as shown in the first two Gifs.&lt;/p&gt;
 &lt;p&gt;Twitter User &lt;a class=&#34;link&#34; href=&#34;https://twitter.com/pilzi&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;pilzi&lt;/a&gt; was kind enough to share some additional info. By adding the prefix msteams:// in front of the URL, we can open calling deep links directly in the Teams App without opening the browser first. It seems like the msteams:// URI scheme doesn’t like + signs though. We need to write the plus sign as “%2b” for it to work.&lt;/p&gt;
 &lt;p&gt;msteams://teams.microsoft.com/l/call/0/0?users=4:%2b448719762819&lt;/p&gt;

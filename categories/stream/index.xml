@@ -14,12 +14,12 @@
         <guid>https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/</guid>
         <description>&lt;img src="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/cover.png" alt="Featured image of post Teams Shared Voicemail for Basic Call Flows" /&gt;&lt;p&gt;Not too long ago I wrote &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc&#34; &gt;this&lt;/a&gt; blog post about the ultimate Teams shared voicemail solution. This solution assumed a full blown call flow with on-call coverage and an advanced notification mechanism. Today I&amp;rsquo;m going to show you a simplified but yet optimized version of my Power Automate Flow. While the previous solution works without any issues, it&amp;rsquo;s not really scalable. If you have a lot of queues, you probably don&amp;rsquo;t want to create a dedicated shared mailbox for every queue that needs shared voicemail access via Teams and Adaptive Cards. That just adds unnecessary management overhead to your Teams phone environment.&lt;/p&gt;
 &lt;p&gt;I&amp;rsquo;ve got some good news for you. I found a way to do it all without the need of shared mailbox. The flow is now directly triggered by a new email to the Microsoft 365 Group instead of a new email to the shared mailbox. Furthermore, all other mail related actions in the flow have been updated to use the &lt;strong&gt;Office 365 Groups Mail&lt;/strong&gt; connector as well.&lt;/p&gt;
-&lt;h2 id=&#34;call-flow-diagram&#34;&gt;Call Flow Diagram&lt;/h2&gt;
-&lt;p&gt;Let&amp;rsquo;s look at the scenario first. This time around, it&amp;rsquo;s a very simple call flow which consists of an auto attendant, a call queue and a Microsoft 365 Group as shared voicemail target.&lt;/p&gt;
+&lt;h2 id=&#34;call-flow-diagram&#34;&gt;Call Flow Diagram
+&lt;/h2&gt;&lt;p&gt;Let&amp;rsquo;s look at the scenario first. This time around, it&amp;rsquo;s a very simple call flow which consists of an auto attendant, a call queue and a Microsoft 365 Group as shared voicemail target.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow.png&#34;
 	width=&#34;7840&#34;
 	height=&#34;7820&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu4ce757c515f026b609b1e8b10bca0970_1141893_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu4ce757c515f026b609b1e8b10bca0970_1141893_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu7272508111248889636.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu2016930160223947453.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -28,12 +28,12 @@
 		data-flex-basis=&#34;240px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;flow-trigger&#34;&gt;Flow Trigger&lt;/h2&gt;
-&lt;p&gt;The flow is now triggered by &lt;strong&gt;When a new email arrives to a group&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;flow-trigger&#34;&gt;Flow Trigger
+&lt;/h2&gt;&lt;p&gt;The flow is now triggered by &lt;strong&gt;When a new email arrives to a group&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39.png&#34;
 	width=&#34;920&#34;
 	height=&#34;172&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu367e51beddae693299327d98b155357f_12057_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu367e51beddae693299327d98b155357f_12057_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu6276923195173620822.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu9769458055859161011.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -42,13 +42,13 @@
 		data-flex-basis=&#34;1283px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;flow-actions&#34;&gt;Flow Actions&lt;/h2&gt;
-&lt;p&gt;Using the Office 365 Groups Mail connector is not as straight forward as retrieving an email from a shared mailbox or a normal user mailbox. There are conversations, threads and thread posts. Everything must be queried in the correct order to receive all the data that&amp;rsquo;s needed.&lt;/p&gt;
+&lt;h2 id=&#34;flow-actions&#34;&gt;Flow Actions
+&lt;/h2&gt;&lt;p&gt;Using the Office 365 Groups Mail connector is not as straight forward as retrieving an email from a shared mailbox or a normal user mailbox. There are conversations, threads and thread posts. Everything must be queried in the correct order to receive all the data that&amp;rsquo;s needed.&lt;/p&gt;
 &lt;p&gt;This is how it&amp;rsquo;s done.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39.png&#34;
 	width=&#34;1104&#34;
 	height=&#34;1365&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hud53d04c7af0039e973b7dcc356d83575_58726_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hud53d04c7af0039e973b7dcc356d83575_58726_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hu3691167799431175005.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hu12860602678462286633.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -61,7 +61,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53.png&#34;
 	width=&#34;1944&#34;
 	height=&#34;1585&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu005aea943fe5f8514d7a1cc3c7386ff1_140058_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu005aea943fe5f8514d7a1cc3c7386ff1_140058_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu4052034907694077373.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu15607944988022955664.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -70,12 +70,12 @@
 		data-flex-basis=&#34;294px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;result-in-teams&#34;&gt;Result in Teams&lt;/h2&gt;
-&lt;p&gt;This is how the notification looks like for end users in Teams. In case the audio player on the card is not working for whatever reason, I&amp;rsquo;ve also included an additional button called &lt;strong&gt;Open MP3&lt;/strong&gt; which will open the audio file in Microsoft Stream when it&amp;rsquo;s clicked.&lt;/p&gt;
+&lt;h2 id=&#34;result-in-teams&#34;&gt;Result in Teams
+&lt;/h2&gt;&lt;p&gt;This is how the notification looks like for end users in Teams. In case the audio player on the card is not working for whatever reason, I&amp;rsquo;ve also included an additional button called &lt;strong&gt;Open MP3&lt;/strong&gt; which will open the audio file in Microsoft Stream when it&amp;rsquo;s clicked.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17.png&#34;
 	width=&#34;2241&#34;
 	height=&#34;932&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu3b8f530f42425b83cc01a19c36f6ee4f_152399_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu3b8f530f42425b83cc01a19c36f6ee4f_152399_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu18345731162980052300.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu8683442676467481998.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -84,10 +84,10 @@
 		data-flex-basis=&#34;577px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;final-notes&#34;&gt;Final Notes&lt;/h2&gt;
-&lt;p&gt;If you have an on-call option in your call flow but you still want to take advantage of the simplified trigger without the shared mailbox, you can just import both flows into your Power Automate Environment and build a new flow from scratch which combines the best of both worlds. The Microsoft Edge split screen feature and Power Automate&amp;rsquo;s copy/paste feature are a great help for that.&lt;/p&gt;
-&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
-&lt;p&gt;The initial scenario which included the on-call notification mechanism was designed for a very specific use case. This iteration of my Teams Shared Voicemail solution should fit a lot more customer scenarios. It&amp;rsquo;s easier to understand and implement and also has less moving parts. Feel free to download the basic version of my flow from &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/raw/main/Scripts/PowerAutomate/Flows/TeamsSharedVoicemailBasicV3%28M365GroupInbox%29_GitHub.zip&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h2 id=&#34;final-notes&#34;&gt;Final Notes
+&lt;/h2&gt;&lt;p&gt;If you have an on-call option in your call flow but you still want to take advantage of the simplified trigger without the shared mailbox, you can just import both flows into your Power Automate Environment and build a new flow from scratch which combines the best of both worlds. The Microsoft Edge split screen feature and Power Automate&amp;rsquo;s copy/paste feature are a great help for that.&lt;/p&gt;
+&lt;h2 id=&#34;summary&#34;&gt;Summary
+&lt;/h2&gt;&lt;p&gt;The initial scenario which included the on-call notification mechanism was designed for a very specific use case. This iteration of my Teams Shared Voicemail solution should fit a lot more customer scenarios. It&amp;rsquo;s easier to understand and implement and also has less moving parts. Feel free to download the basic version of my flow from &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/raw/main/Scripts/PowerAutomate/Flows/TeamsSharedVoicemailBasicV3%28M365GroupInbox%29_GitHub.zip&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt; and give it a try. Just make sure to replace anything that&amp;rsquo;s specific to my lab tenant with your actual values.&lt;/p&gt;
 &lt;p&gt;If you need help importing the flow, please read this section in the &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/#the-flow&#34; &gt;initial article&lt;/a&gt; first.&lt;/p&gt;
 &lt;p&gt;If this blog provides additional value to you or your company, I want you to know that you can always show your support by donating on my &lt;a class=&#34;link&#34; href=&#34;https://github.com/sponsors/mozziemozz?frequency=one-time&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -104,12 +104,12 @@
 &lt;p&gt;About a year ago, I also &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1&#34; &gt;wrote&lt;/a&gt; about shared voicemail now supporting not just Microsoft 365 groups but also distribution lists and mail enabled security groups. While it’s great to have more options, that doesn’t solve the issue at its core.&lt;/p&gt;
 &lt;p&gt;My main complaint about shared voicemail in Teams is that it’s hard to keep an overview over which voicemails have already been processed (as in the person who left the message has been called back). You either train people to regularly check their Microsoft 365 group inboxes or you enable &lt;a class=&#34;link&#34; href=&#34;https://support.microsoft.com/en-us/office/follow-a-group-in-outlook-e147fc19-f548-4cd2-834f-80c6235b7c36#:~:text=Follow%20a%20group%3A%201%20In%20Outlook%20for%20Windows%2C,list%2C%20select%20Not%20following%20%3E%20Follow%20in%20Inbox.&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;follow in inbox&lt;/a&gt; for all the group&amp;rsquo;s members. Follow in inbox will make sure that no voicemail/email gets lost, but it also means that more communication is required within a team to make sure that the caller is not called back multiple times or not at all (because everybody believes that someone else will call back). My Power Automate Flow solves this issue by delivering the voicemails directly into a Teams channel.&lt;/p&gt;
-&lt;h4 id=&#34;call-flowdiagram&#34;&gt;Call Flow Diagram&lt;/h4&gt;
-&lt;p&gt;This is the example scenario. A relatively simple call flow with an auto attendant which routes calls to a call queue during business hours and redirects to a second auto attendant after hours. The second auto attendant offers callers a choice to either leave a message or get connected to the on-call service.&lt;/p&gt;
+&lt;h4 id=&#34;call-flowdiagram&#34;&gt;Call Flow Diagram
+&lt;/h4&gt;&lt;p&gt;This is the example scenario. A relatively simple call flow with an auto attendant which routes calls to a call queue during business hours and redirects to a second auto attendant after hours. The second auto attendant offers callers a choice to either leave a message or get connected to the on-call service.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw.png&#34;
 	width=&#34;7840&#34;
 	height=&#34;5630&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hub51c37fddac4d66ae71ee6ba470a9ab4_1128090_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hub51c37fddac4d66ae71ee6ba470a9ab4_1128090_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hu12855296586873793472.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hu5436304556483671852.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -123,7 +123,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w.png&#34;
 	width=&#34;2033&#34;
 	height=&#34;543&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hub2accd97faa544aa26b80d232385f9ec_114964_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hub2accd97faa544aa26b80d232385f9ec_114964_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hu10242821503798733846.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hu14495164218824647678.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -132,21 +132,21 @@
 		data-flex-basis=&#34;898px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;shared-voicemail&#34;&gt;Shared Voicemail&lt;/h4&gt;
-&lt;p&gt;As you can see in the diagram, in every case where a call cannot be answered, it goes to the same shared voicemail group. This Microsoft 365 group is the same group that’s linked to the Team which also hosts the two voice enabled channels which are linked to the call queues.&lt;/p&gt;
+&lt;h4 id=&#34;shared-voicemail&#34;&gt;Shared Voicemail
+&lt;/h4&gt;&lt;p&gt;As you can see in the diagram, in every case where a call cannot be answered, it goes to the same shared voicemail group. This Microsoft 365 group is the same group that’s linked to the Team which also hosts the two voice enabled channels which are linked to the call queues.&lt;/p&gt;
 &lt;p&gt;Instead of relying on people either checking the group mailbox for new voicemail messages or subscribing to the group mailbox, we’re going to build a Power Automate flow to deliver voicemail messages directly into a Teams channel.&lt;/p&gt;
 &lt;p&gt;The first thing we need to do is to create or define a shared mailbox so we can subscribe it to new messages of the M365 group. The flow will only process emails which have attachments, and the attachments name must end with &lt;code&gt;.mp3&lt;/code&gt; . But I still strongly recommend to create a dedicated shared mailbox which will only receive emails from the M365 group. To keep things clean, I would also deter from sending any kind of other emails to the M365 group. If you also use a dedicated Team for your call queues, that shouldn’t be an issue.&lt;/p&gt;
 &lt;p&gt;Once the shared mailbox is created, we need to give the user which will own the Flow full access to it.&lt;/p&gt;
 &lt;p&gt;You will need the PowerShell module &lt;code&gt;ExchangeOnlineManagement&lt;/code&gt; and need to run &lt;code&gt;Connect-ExchangeOnline&lt;/code&gt; before you can run these commands.&lt;/p&gt;
-&lt;h3 id=&#34;create-shared-mailbox&#34;&gt;Create shared mailbox&lt;/h3&gt;
-&lt;p&gt;New-Mailbox -Shared -Name &amp;ldquo;PS Test EV Enabled SharedVoicemail&amp;rdquo; -DisplayName &amp;ldquo;PS Test EV Enabled SharedVoicemail&amp;rdquo; -Alias &amp;ldquo;PSTestEVEnabledSharedVoicemail&amp;rdquo;&lt;/p&gt;
+&lt;h3 id=&#34;create-shared-mailbox&#34;&gt;Create shared mailbox
+&lt;/h3&gt;&lt;p&gt;New-Mailbox -Shared -Name &amp;ldquo;PS Test EV Enabled SharedVoicemail&amp;rdquo; -DisplayName &amp;ldquo;PS Test EV Enabled SharedVoicemail&amp;rdquo; -Alias &amp;ldquo;PSTestEVEnabledSharedVoicemail&amp;rdquo;&lt;/p&gt;
 &lt;p&gt;Start-Sleep -Seconds 30&lt;/p&gt;
-&lt;h4 id=&#34;grant-full-mailbox-access-to-the-flow-owner&#34;&gt;Grant full mailbox access to the flow owner&lt;/h4&gt;
-&lt;p&gt;Add-MailboxPermission -Identity &amp;ldquo;PSTestEVEnabledSharedVoicemail&amp;rdquo; -User &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;mailto:mozzie@mozzism.ch&#34; &gt;mozzie@mozzism.ch&lt;/a&gt;&amp;rdquo; -AccessRights FullAccess -InheritanceType All&lt;/p&gt;
-&lt;h4 id=&#34;subscribing-the-shared-mailbox-to-the-m365-groupinbox&#34;&gt;Subscribing the Shared Mailbox to the M365 Group Inbox&lt;/h4&gt;
-&lt;p&gt;Next, we add the newly created shared mailbox as a member of the group and then also subscribe it to the group’s inbox.&lt;/p&gt;
-&lt;h4 id=&#34;add-the-shared-mailbox-as-a-member-to-the-m365-group&#34;&gt;Add the shared mailbox as a member to the M365 group&lt;/h4&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;h4 id=&#34;grant-full-mailbox-access-to-the-flow-owner&#34;&gt;Grant full mailbox access to the flow owner
+&lt;/h4&gt;&lt;p&gt;Add-MailboxPermission -Identity &amp;ldquo;PSTestEVEnabledSharedVoicemail&amp;rdquo; -User &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;mailto:mozzie@mozzism.ch&#34; &gt;mozzie@mozzism.ch&lt;/a&gt;&amp;rdquo; -AccessRights FullAccess -InheritanceType All&lt;/p&gt;
+&lt;h4 id=&#34;subscribing-the-shared-mailbox-to-the-m365-groupinbox&#34;&gt;Subscribing the Shared Mailbox to the M365 Group Inbox
+&lt;/h4&gt;&lt;p&gt;Next, we add the newly created shared mailbox as a member of the group and then also subscribe it to the group’s inbox.&lt;/p&gt;
+&lt;h4 id=&#34;add-the-shared-mailbox-as-a-member-to-the-m365-group&#34;&gt;Add the shared mailbox as a member to the M365 group
+&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
@@ -154,8 +154,8 @@
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Add-UnifiedGroupLinks&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Identity&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$groupId&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-LinkType&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Members&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Links&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;PSTestEVEnabledSharedVoicemail&amp;#34;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h4 id=&#34;subscribe-the-shared-mailbox-to-the-m365-groups-emails-enable-follow-in-inbox&#34;&gt;Subscribe the shared mailbox to the M365 group&amp;rsquo;s emails (enable follow in inbox)&lt;/h4&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;/div&gt;&lt;h4 id=&#34;subscribe-the-shared-mailbox-to-the-m365-groups-emails-enable-follow-in-inbox&#34;&gt;Subscribe the shared mailbox to the M365 group&amp;rsquo;s emails (enable follow in inbox)
+&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
@@ -170,12 +170,12 @@
 PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The idea here is that only the shared mailbox gets new voicemails in its mailbox. None of the users should get the voicemails in their personal inbox because they receive them in Teams. This allows for much better and efficient collaboration.&lt;/p&gt;
-&lt;h3 id=&#34;the-result&#34;&gt;The Result&lt;/h3&gt;
-&lt;p&gt;This is the Team I created for this call flow. Channels 1 and 2 are linked to the queues which receive calls. 3 and 4 are the ones which receive the voicemails. As explained earlier in this article, the flow can easily determine at which stage in the call flow (during business hours or on-call/after hours) a voicemail was left. That’s why we have two separate voicemail channels.&lt;/p&gt;
+&lt;h3 id=&#34;the-result&#34;&gt;The Result
+&lt;/h3&gt;&lt;p&gt;This is the Team I created for this call flow. Channels 1 and 2 are linked to the queues which receive calls. 3 and 4 are the ones which receive the voicemails. As explained earlier in this article, the flow can easily determine at which stage in the call flow (during business hours or on-call/after hours) a voicemail was left. That’s why we have two separate voicemail channels.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw.png&#34;
 	width=&#34;1054&#34;
 	height=&#34;489&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu03e8e85a0279064c555aa036bed51fbc_47388_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu03e8e85a0279064c555aa036bed51fbc_47388_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu8526223670376369789.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu923701379336760308.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -184,14 +184,14 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 		data-flex-basis=&#34;517px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;voicemail-during-businesshours&#34;&gt;Voicemail During Business Hours&lt;/h4&gt;
-&lt;p&gt;Adaptive Cards in Teams now support &lt;a class=&#34;link&#34; href=&#34;https://adaptivecards.io/explorer/Media.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h4 id=&#34;voicemail-during-businesshours&#34;&gt;Voicemail During Business Hours
+&lt;/h4&gt;&lt;p&gt;Adaptive Cards in Teams now support &lt;a class=&#34;link&#34; href=&#34;https://adaptivecards.io/explorer/Media.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;media&lt;/a&gt;. This means that we can now embed an audio file which is stored on SharePoint directly on an adaptive card and we’ll get a neat little Stream powered media player inside Teams.&lt;/p&gt;
 &lt;p&gt;The card will include the number or the email address of the user who left the voicemail.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g.png&#34;
 	width=&#34;1382&#34;
 	height=&#34;763&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu128c27797fb9abe086ef1be2c69fc748_46867_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu128c27797fb9abe086ef1be2c69fc748_46867_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu2728496663489879185.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu5761825704734345070.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -203,7 +203,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ.png&#34;
 	width=&#34;1384&#34;
 	height=&#34;760&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu489d7a49f052cf05cbfb03818a9ed870_60400_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu489d7a49f052cf05cbfb03818a9ed870_60400_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu1933363755079576700.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu13564362274648033296.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -216,7 +216,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA.png&#34;
 	width=&#34;885&#34;
 	height=&#34;232&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_huff66e7d56f2120b1171ff0b279285ab7_13593_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_huff66e7d56f2120b1171ff0b279285ab7_13593_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_hu2874519935006339848.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_hu7741457662367446754.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -228,7 +228,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug.png&#34;
 	width=&#34;882&#34;
 	height=&#34;230&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu90fab92a818862ed1f38f205f02dcbf9_12818_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu90fab92a818862ed1f38f205f02dcbf9_12818_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu352885753578483131.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu8273292575465076490.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -237,12 +237,12 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 		data-flex-basis=&#34;920px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;updated-adaptivecards&#34;&gt;Updated Adaptive Cards&lt;/h4&gt;
-&lt;p&gt;Once a team member has called back, a card can be marked as completed. This will update the card so that all other team members can see that there’s no action left to take. It’s even possible to see who has marked a card as completed.&lt;/p&gt;
+&lt;h4 id=&#34;updated-adaptivecards&#34;&gt;Updated Adaptive Cards
+&lt;/h4&gt;&lt;p&gt;Once a team member has called back, a card can be marked as completed. This will update the card so that all other team members can see that there’s no action left to take. It’s even possible to see who has marked a card as completed.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ.png&#34;
 	width=&#34;1384&#34;
 	height=&#34;481&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hudd471d9d131421b1519ace31e7d96644_45397_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hudd471d9d131421b1519ace31e7d96644_45397_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hu1422730863264469117.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hu2161688040932036547.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -255,7 +255,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA.png&#34;
 	width=&#34;1379&#34;
 	height=&#34;1003&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu9503a85d6c7ad66f281518c6528d3ba4_70672_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu9503a85d6c7ad66f281518c6528d3ba4_70672_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu12012160211085122908.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu4945891878961499679.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -268,7 +268,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA.png&#34;
 	width=&#34;1468&#34;
 	height=&#34;422&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu9888d416a96be9b9444d00ca58db242b_76420_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu9888d416a96be9b9444d00ca58db242b_76420_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu10524768591447971398.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu2149592211078648373.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -281,7 +281,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q.png&#34;
 	width=&#34;1385&#34;
 	height=&#34;539&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu891bef65bd4399010a3f431602dd39bb_65801_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu891bef65bd4399010a3f431602dd39bb_65801_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu15458806330991475184.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu6948695240082654987.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -293,13 +293,13 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;Less or equal 1 hour = 😊&lt;br&gt;
 Less or equal 2 hours = 😐&lt;br&gt;
 More than 2 hours = 😞&lt;/p&gt;
-&lt;h4 id=&#34;voicemail-during-after-hours-oncall&#34;&gt;Voicemail During After Hours (On Call)&lt;/h4&gt;
-&lt;p&gt;Voicemails which were left outside business hours will go into the &lt;strong&gt;Voicemail On Call&lt;/strong&gt; channel. When a voicemail is left during on-call hours, it means that the people who are on-call missed a call and should call back as soon as possible. Thus, we want to have an appropriate alerting system in place.&lt;/p&gt;
+&lt;h4 id=&#34;voicemail-during-after-hours-oncall&#34;&gt;Voicemail During After Hours (On Call)
+&lt;/h4&gt;&lt;p&gt;Voicemails which were left outside business hours will go into the &lt;strong&gt;Voicemail On Call&lt;/strong&gt; channel. When a voicemail is left during on-call hours, it means that the people who are on-call missed a call and should call back as soon as possible. Thus, we want to have an appropriate alerting system in place.&lt;/p&gt;
 &lt;p&gt;I’m using a shift which is linked to my Call Queue Team which defines which user is on call on which days.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig.png&#34;
 	width=&#34;2149&#34;
 	height=&#34;961&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu81caf29e270769ad0ae1725e95e2d7c1_155795_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu81caf29e270769ad0ae1725e95e2d7c1_155795_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu10642960343245584212.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu15002541618406063103.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -314,7 +314,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw.png&#34;
 	width=&#34;1554&#34;
 	height=&#34;740&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu7c5fb594d0fef575d4af2f7664aa5119_85443_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu7c5fb594d0fef575d4af2f7664aa5119_85443_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu5463160827794298530.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu4029770359386110174.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -328,7 +328,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ.png&#34;
 	width=&#34;1025&#34;
 	height=&#34;1195&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu440c3d682923c7604abe0226905b939c_103768_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu440c3d682923c7604abe0226905b939c_103768_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu5937485943100323066.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu15200492561129714022.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -341,7 +341,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw.png&#34;
 	width=&#34;1388&#34;
 	height=&#34;846&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu7a15a5f21384fdbbcf31cbce5a794ec1_65048_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu7a15a5f21384fdbbcf31cbce5a794ec1_65048_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu14014501432488919598.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu7289622198699713943.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -354,7 +354,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A.png&#34;
 	width=&#34;2284&#34;
 	height=&#34;961&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_huad6447e4e7469028add8e455b0179a59_175595_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_huad6447e4e7469028add8e455b0179a59_175595_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_hu11908678012870351812.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_hu1712600209183588314.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -363,8 +363,8 @@ More than 2 hours = 😞&lt;/p&gt;
 		data-flex-basis=&#34;570px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h3 id=&#34;the-flow&#34;&gt;The Flow&lt;/h3&gt;
-&lt;p&gt;The flow has become quite large and Power Automate keeps reminding me that it contains too many actions to use the new AI-powered designer. 🙃&lt;/p&gt;
+&lt;h3 id=&#34;the-flow&#34;&gt;The Flow
+&lt;/h3&gt;&lt;p&gt;The flow has become quite large and Power Automate keeps reminding me that it contains too many actions to use the new AI-powered designer. 🙃&lt;/p&gt;
 &lt;p&gt;To make it easier for you, I exported the flow and made it available for download &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/TeamsSharedVoicemailv2.4_GitHub.zip&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt;. To import it, go to &lt;a class=&#34;link&#34; href=&#34;https://make.powerautomate.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://make.powerautomate.com&lt;/a&gt; and select &lt;strong&gt;Import&lt;/strong&gt; and then &lt;strong&gt;Import Package (Legacy)&lt;/strong&gt;.&lt;/p&gt;
@@ -372,7 +372,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g.png&#34;
 	width=&#34;2095&#34;
 	height=&#34;1392&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hub242c7eef37ffca22e805feb54dbd0a5_153189_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hub242c7eef37ffca22e805feb54dbd0a5_153189_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hu16515656192914363879.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hu9617947552083075885.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -385,7 +385,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw.png&#34;
 	width=&#34;915&#34;
 	height=&#34;351&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu560a007e81d62e243b1cc24398544016_26860_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu560a007e81d62e243b1cc24398544016_26860_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu1657808557811107612.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu11851405960407821866.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -397,7 +397,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ.png&#34;
 	width=&#34;1933&#34;
 	height=&#34;907&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hub6d9f6c013fa88e1797d310684edf394_87742_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hub6d9f6c013fa88e1797d310684edf394_87742_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hu3119412816953799147.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hu1742214663190435552.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -409,7 +409,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw.png&#34;
 	width=&#34;913&#34;
 	height=&#34;349&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hubd526de79c74c52267a103cc948dafe4_27574_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hubd526de79c74c52267a103cc948dafe4_27574_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hu5307429991215446537.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hu15168558474484845638.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -421,7 +421,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ.png&#34;
 	width=&#34;914&#34;
 	height=&#34;1033&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_huc1bbd4a350ae6ca3d8c2a16e4c80544d_70713_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_huc1bbd4a350ae6ca3d8c2a16e4c80544d_70713_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_hu5465998868029572349.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_hu3064536430309956232.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -433,7 +433,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw.png&#34;
 	width=&#34;916&#34;
 	height=&#34;218&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu0eaa929ea623051b298cffec53bbea94_13495_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu0eaa929ea623051b298cffec53bbea94_13495_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu14997008649639381127.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu12034864242468898112.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -443,14 +443,14 @@ More than 2 hours = 😞&lt;/p&gt;
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;You get the gist. At least you won’t have to create all the actions manually.&lt;/p&gt;
-&lt;h3 id=&#34;summary&#34;&gt;Summary&lt;/h3&gt;
-&lt;p&gt;Even though it took me days to finally get this right, I had so much fun building this. Besides that, I also learned a lot of new stuff about Power Automate. In fact, this was the very first parallel branch I ever built. It’s awesome that Adaptive Card in Teams now support media. I think this is a really great example of how powerful Adaptive Cards can be. They not only look beautiful, but they also provide a fantastic user experience since users will be able to interact with them directly in Teams.&lt;/p&gt;
+&lt;h3 id=&#34;summary&#34;&gt;Summary
+&lt;/h3&gt;&lt;p&gt;Even though it took me days to finally get this right, I had so much fun building this. Besides that, I also learned a lot of new stuff about Power Automate. In fact, this was the very first parallel branch I ever built. It’s awesome that Adaptive Card in Teams now support media. I think this is a really great example of how powerful Adaptive Cards can be. They not only look beautiful, but they also provide a fantastic user experience since users will be able to interact with them directly in Teams.&lt;/p&gt;
 &lt;p&gt;I’d be lying if I said that I wasn’t a little proud of the flow and process I built. The only thing I’m still missing with this solution is to be able to create Teams deep links which also specify which outbound caller id should be used when a call back link is clicked. Wouldn’t it just be great if we could say that users should always use the queue’s/attendant’s phone number when they call somebody back from a voicemail card?&lt;/p&gt;
 &lt;p&gt;What’s funny is that the Teams mobile apps actually prompt users which have multiple calling line identities assigned to select an identity before the call is made.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu54d39ee13adae9bbf7742cb6c673b386_144656_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu54d39ee13adae9bbf7742cb6c673b386_144656_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu11109037850452349308.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu17447961148085830847.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	

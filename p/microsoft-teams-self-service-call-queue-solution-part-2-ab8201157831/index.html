@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Update 31.10.2022'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Update 31.10.2022">
 <title>Microsoft Teams Self-Service Call Queue Solution (Part 2)</title>
 
 <link rel='canonical' href='https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/'>
 
-<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Microsoft Teams Self-Service Call Queue Solution (Part 2)'>
-<meta property='og:description' content='Update 31.10.2022'>
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Microsoft Teams Self-Service Call Queue Solution (Part 2)">
+<meta property='og:description' content="Update 31.10.2022">
 <meta property='og:url' content='https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/'>
 <meta property='og:site_name' content='HEUSSER.PRO'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2022-09-03T13:21:48&#43;00:00'/><meta property='article:modified_time' content='2022-09-03T13:21:48&#43;00:00'/>
@@ -66,7 +66,7 @@
                     
                     
                         
-                        <img src="/img/avatar_hud7e6b3cccc21b12ddf35b72eb655064d_860969_300x0_resize_q75_box.jpg" width="300"
+                        <img src="/img/avatar_hu2751114550893713361.jpg" width="300"
                             height="300" class="site-logo" loading="lazy" alt="Avatar">
                     
                 
@@ -82,7 +82,7 @@
             <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
             <h2 class="site-description">Martin Heusser | M365 Apps &amp; Services MVP</h2>
         </div>
-    </header><ol class="social-menu">
+    </header><ol class="menu-social">
             
                 <li>
                     <a 
@@ -229,12 +229,12 @@
             </a>
         </li>
         
+        <li class="menu-bottom-section">
+            <ol class="menu">
 
-        <div class="menu-bottom-section">
-            
-            
-                <li id="dark-mode-toggle">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <circle cx="8" cy="12" r="2" />
   <rect x="2" y="6" width="20" height="12" rx="6" />
@@ -242,7 +242,7 @@
 
 
 
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <circle cx="16" cy="12" r="2" />
   <rect x="2" y="6" width="20" height="12" rx="6" />
@@ -250,10 +250,11 @@
 
 
 
-                    <span>Dark Mode</span>
-                </li>
-            
-        </div>
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
     </ol>
 </aside>
 
@@ -395,8 +396,8 @@
     
     
     <p>There was an issue with my code in this article. The solution described in this article assumes that your call queue overflow and timeout actions already forward to an external PSTN number. If it was set to any other option like voicemail or disconnect, the runbook failed. I’ve updated the <strong>Runbook</strong> code sample on GitHub accordingly.</p>
-<h4 id="original-article">Original Article</h4>
-<p>A while ago I published <a class="link" href="/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851" >this</a> article which explains how we can build a self-service solution for changing the configurations of Auto Attendants and Call Queues using Azure Automation Tools. The main reason behind this is so that we don’t have to grant admin privileges to users which would like to manage Queues and Attendants.</p>
+<h4 id="original-article">Original Article
+</h4><p>A while ago I published <a class="link" href="/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851" >this</a> article which explains how we can build a self-service solution for changing the configurations of Auto Attendants and Call Queues using Azure Automation Tools. The main reason behind this is so that we don’t have to grant admin privileges to users which would like to manage Queues and Attendants.</p>
 <p>In my last post, I provided an example how an Auto Attendant can be manually closed or opened. Today I’m going to show you an example of how we can let users change some settings on Call Queues.</p>
 <p>I’ve written the code for the following changes:</p>
 <ul>
@@ -407,18 +408,18 @@
 <p>Immediate forwarding is configured through an overflow Threshold of 0 and not a Timeout of 0. This is because, typically, Overflow Threshold is less used than timeout. I always recommend using Overflow Threshold 0 when you want to do an immediate forwarding. Unlike Timeout 0, the call is forwarded directly, without the Queue answering the call first when using Overflow. You can read more about that <a class="link" href="/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6" >here</a>.</p>
 <p>If the immediate forwarding is disabled again, the value of the Overflow Threshold will be set to 50 again. This is the default value which is configured for new Call Queues. Of course, you change that in the Runbook code.</p>
 <p>This is what the Message Card looks like when it’s sent by the Azure Function.</p>
-<h3 id="lets-buildit">Let’s Build It</h3>
-<p>To build this on your own, please refer to my first article since the configuration steps are the same. You just need to replace the code of the Azure Functions and Runbooks from the Gists below.</p>
-<h4 id="runbook-code">Runbook Code</h4>
-<p>Insert the Webhook URL of your Teams Channel on line 7 and make sure that you’ve created the Automation Credentials as described in the article linked at the beginning of this post.</p>
+<h3 id="lets-buildit">Let’s Build It
+</h3><p>To build this on your own, please refer to my first article since the configuration steps are the same. You just need to replace the code of the Azure Functions and Runbooks from the Gists below.</p>
+<h4 id="runbook-code">Runbook Code
+</h4><p>Insert the Webhook URL of your Teams Channel on line 7 and make sure that you’ve created the Automation Credentials as described in the article linked at the beginning of this post.</p>
 <script src="https://gist.github.com/mozziemozz/30c4ff283d8736f3b1b47acd81d40b95.js"></script>
 
-<h4 id="refresh-card-functioncode">Refresh Card Function Code</h4>
-<p>Insert the URL of your Azure Runbook Webhook trigger on line 11.</p>
+<h4 id="refresh-card-functioncode">Refresh Card Function Code
+</h4><p>Insert the URL of your Azure Runbook Webhook trigger on line 11.</p>
 <script src="https://gist.github.com/mozziemozz/7928bf7f6dabcbf0c5283566511488e5.js"></script>
 
-<h4 id="request-card-functioncode">Request Card Function Code</h4>
-<p>To get a drop-down list with all your queues, we need to create one first.</p>
+<h4 id="request-card-functioncode">Request Card Function Code
+</h4><p>To get a drop-down list with all your queues, we need to create one first.</p>
 <p>You can use the following code to create a list, which we’ll insert in our Function code later.</p>
 <script src="https://gist.github.com/mozziemozz/767ebef524b966842b67436cc2ba9a0a.js"></script>
 
@@ -430,7 +431,7 @@
 <p><img src="/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1DHb1Es27FcAN3yemT5wQ.png"
 	width="1124"
 	height="292"
-	srcset="/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1DHb1Es27FcAN3yemT5wQ_hud1a8715ca2528dda6973d061dd8cd353_75748_480x0_resize_box_3.png 480w, /p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1DHb1Es27FcAN3yemT5wQ_hud1a8715ca2528dda6973d061dd8cd353_75748_1024x0_resize_box_3.png 1024w"
+	srcset="/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1DHb1Es27FcAN3yemT5wQ_hu4010058252657163386.png 480w, /p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1DHb1Es27FcAN3yemT5wQ_hu13690025378348908854.png 1024w"
 	loading="lazy"
 	
 	
@@ -609,7 +610,7 @@
         
             Hosted on GitHub Pages <br/>
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.27.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 

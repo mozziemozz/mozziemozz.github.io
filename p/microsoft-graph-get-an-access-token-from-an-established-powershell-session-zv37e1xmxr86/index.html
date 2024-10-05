@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Have you ever wanted to inspect an access token used in a PowerShell session you established using Connect-MgGraph? If so, this blog post is for you.'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Have you ever wanted to inspect an access token used in a PowerShell session you established using Connect-MgGraph? If so, this blog post is for you.">
 <title>Microsoft Graph: Get an Access Token from a PowerShell Session</title>
 
 <link rel='canonical' href='https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/'>
 
-<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Microsoft Graph: Get an Access Token from a PowerShell Session'>
-<meta property='og:description' content='Have you ever wanted to inspect an access token used in a PowerShell session you established using Connect-MgGraph? If so, this blog post is for you.'>
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Microsoft Graph: Get an Access Token from a PowerShell Session">
+<meta property='og:description' content="Have you ever wanted to inspect an access token used in a PowerShell session you established using Connect-MgGraph? If so, this blog post is for you.">
 <meta property='og:url' content='https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/'>
 <meta property='og:site_name' content='HEUSSER.PRO'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-06-05T19:24:44&#43;00:00'/><meta property='article:modified_time' content='2024-06-05T19:24:44&#43;00:00'/>
@@ -66,7 +66,7 @@
                     
                     
                         
-                        <img src="/img/avatar_hud7e6b3cccc21b12ddf35b72eb655064d_860969_300x0_resize_q75_box.jpg" width="300"
+                        <img src="/img/avatar_hu2751114550893713361.jpg" width="300"
                             height="300" class="site-logo" loading="lazy" alt="Avatar">
                     
                 
@@ -82,7 +82,7 @@
             <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
             <h2 class="site-description">Martin Heusser | M365 Apps &amp; Services MVP</h2>
         </div>
-    </header><ol class="social-menu">
+    </header><ol class="menu-social">
             
                 <li>
                     <a 
@@ -229,12 +229,12 @@
             </a>
         </li>
         
+        <li class="menu-bottom-section">
+            <ol class="menu">
 
-        <div class="menu-bottom-section">
-            
-            
-                <li id="dark-mode-toggle">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <circle cx="8" cy="12" r="2" />
   <rect x="2" y="6" width="20" height="12" rx="6" />
@@ -242,7 +242,7 @@
 
 
 
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <circle cx="16" cy="12" r="2" />
   <rect x="2" y="6" width="20" height="12" rx="6" />
@@ -250,10 +250,11 @@
 
 
 
-                    <span>Dark Mode</span>
-                </li>
-            
-        </div>
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
     </ol>
 </aside>
 
@@ -386,12 +387,12 @@
 <p>This is how Microsoft describes the <code>Invoke-MgGraphRequest</code> Cmdlet on Microsoft Learn:</p>
 <p><em>Invoke-MgGraphRequest issues REST API requests to the Graph API. It works for any Graph API if you know the REST URI, method, and optional body parameter. This command is especially useful for accessing APIs for which there isn&rsquo;t an equivalent cmdlet yet.</em></p>
 <p>Note that there is also an alias called <code>Invoke-GraphRequest</code> for this Cmdlet. A perfect example of where you would need <code>Invoke-MgGraphRequest</code> is uploading a small file to SharePoint. I recently published a script example making use of this method <a class="link" href="/p/powershell-script-example-upload-small-files-via-microsoft-graph-z45tbunyoa85" >here</a>.</p>
-<h2 id="what-is-mgcontext">What is MgContext?</h2>
-<p>By running <code>Get-MgContext</code> you can get some information about the current session. Unfortunately, this doesn&rsquo;t reveal any kind of tokens used for requests to the Graph API. Then again, this is most likely by design, because tokens should always be handled with care.</p>
+<h2 id="what-is-mgcontext">What is MgContext?
+</h2><p>By running <code>Get-MgContext</code> you can get some information about the current session. Unfortunately, this doesn&rsquo;t reveal any kind of tokens used for requests to the Graph API. Then again, this is most likely by design, because tokens should always be handled with care.</p>
 <p><img src="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image.png"
 	width="1734"
 	height="957"
-	srcset="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image_hu754d71b654ea23e9f5c87bfe16932a68_1172389_480x0_resize_box_3.png 480w, /p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image_hu754d71b654ea23e9f5c87bfe16932a68_1172389_1024x0_resize_box_3.png 1024w"
+	srcset="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image_hu1777627438205628802.png 480w, /p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image_hu12573788224600004584.png 1024w"
 	loading="lazy"
 	
 		alt="Output of Get-MgContext"
@@ -402,8 +403,8 @@
 		data-flex-basis="434px"
 	
 ></p>
-<h2 id="what-if-you-need-a-token-anyway">What if you need a token anyway?</h2>
-<p>One option is to provide a client Id and a client secret and make a request to <strong><a class="link" href="https://login.microsoftonline.com/%7bYour"  target="_blank" rel="noopener"
+<h2 id="what-if-you-need-a-token-anyway">What if you need a token anyway?
+</h2><p>One option is to provide a client Id and a client secret and make a request to <strong><a class="link" href="https://login.microsoftonline.com/%7bYour"  target="_blank" rel="noopener"
     >https://login.microsoftonline.com/{Your</a> Tenant Name}/oauth2/v2.0/token</strong>. If I want to do that, I always come back to this blog post on <a class="link" href="https://adamtheautomator.com/powershell-graph-api/"  target="_blank" rel="noopener"
     >adamtheautomator.com</a>. But when I do that, I also want to call the REST API directly for all requests that the script I&rsquo;m working on is doing. In my case, I <strong>want</strong> to use the SDK and only <strong>need</strong> to call the API directly for one specific request.</p>
 <p>I recently was working on something where neither the <code>Get-Mg*</code> nor the <code>Invoke-MgGraphRequest</code> were working. I wanted to fetch a profile picture of an Entra ID user but wanted to keep the image in memory and not save it to disk. Both the Cmdlets, <code>Get-MgUserPhotoContent</code> and <code>Invoke-MgGraphRequest</code> expected a value for an output file though. I know I could have just used a temporary file but if I had given up this easily, I wouldn&rsquo;t have discovered how to get an access token from a Microsoft Graph PowerShell session.</p>
@@ -420,7 +421,7 @@
 </div><p><img src="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1.png"
 	width="1734"
 	height="957"
-	srcset="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1_hu1f3a68c31f9f6d09b32402eaf728180d_992335_480x0_resize_box_3.png 480w, /p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1_hu1f3a68c31f9f6d09b32402eaf728180d_992335_1024x0_resize_box_3.png 1024w"
+	srcset="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1_hu13642348863189440727.png 480w, /p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1_hu5546492978601582535.png 1024w"
 	loading="lazy"
 	
 		alt="Graph access token retrieved using Invoke-MgGraphRequest"
@@ -435,7 +436,7 @@
 <p><img src="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2.png"
 	width="1734"
 	height="957"
-	srcset="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2_hu481e61ac623856a0fe9b6eff6bbbfa8f_621204_480x0_resize_box_3.png 480w, /p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2_hu481e61ac623856a0fe9b6eff6bbbfa8f_621204_1024x0_resize_box_3.png 1024w"
+	srcset="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2_hu9034352776124099030.png 480w, /p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2_hu9384339407822246476.png 1024w"
 	loading="lazy"
 	
 		alt="The access token is now stored in a variable"
@@ -465,8 +466,8 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>This allowed me to retrieve the profile photo as a byte array without saving it to disk first.</p>
-<h2 id="summary">Summary</h2>
-<p>This is a very niche use case but I&rsquo;m glad that I discovered how to get an access token from an already authenticated Microsoft Graph PowerShell session. I&rsquo;m sure that this will come in handy again some day and I hope that it will come in handy for you some day as well. I also published the entire example script including helpful comments in one of my GitHub <a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/Authentication/Get-AccessTokenFromEstablishedMgSession.ps1"  target="_blank" rel="noopener"
+<h2 id="summary">Summary
+</h2><p>This is a very niche use case but I&rsquo;m glad that I discovered how to get an access token from an already authenticated Microsoft Graph PowerShell session. I&rsquo;m sure that this will come in handy again some day and I hope that it will come in handy for you some day as well. I also published the entire example script including helpful comments in one of my GitHub <a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/Authentication/Get-AccessTokenFromEstablishedMgSession.ps1"  target="_blank" rel="noopener"
     >repositories</a>.</p>
 
 </section>
@@ -530,6 +531,19 @@
             
                 
 <article class="">
+    <a href="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Get Microsoft Teams Meeting Attendance Report Through Graph API</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
     <a href="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/">
         
         
@@ -549,19 +563,6 @@
 
         <div class="article-details">
             <h2 class="article-title">PowerShell Script Example: Upload Small Files to SharePoint via Microsoft Graph</h2>
-        </div>
-    </a>
-</article>
-
-            
-                
-<article class="">
-    <a href="/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/">
-        
-        
-
-        <div class="article-details">
-            <h2 class="article-title">Translate Microsoft 365 License GUIDs to Product Names in PowerShell</h2>
         </div>
     </a>
 </article>
@@ -631,7 +632,7 @@
         
             Hosted on GitHub Pages <br/>
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.27.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 

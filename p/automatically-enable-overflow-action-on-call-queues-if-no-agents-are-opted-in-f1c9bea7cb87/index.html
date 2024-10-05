@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='One of the biggest pain points of Microsoft Teams Call Queues is that a configured time out is always honored, even if no agents are…'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="One of the biggest pain points of Microsoft Teams Call Queues is that a configured time out is always honored, even if no agents are…">
 <title>Automatically Enable Overflow Action on Call Queues if No Agents are Opted In</title>
 
 <link rel='canonical' href='https://heusser.pro/p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/'>
 
-<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Automatically Enable Overflow Action on Call Queues if No Agents are Opted In'>
-<meta property='og:description' content='One of the biggest pain points of Microsoft Teams Call Queues is that a configured time out is always honored, even if no agents are…'>
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Automatically Enable Overflow Action on Call Queues if No Agents are Opted In">
+<meta property='og:description' content="One of the biggest pain points of Microsoft Teams Call Queues is that a configured time out is always honored, even if no agents are…">
 <meta property='og:url' content='https://heusser.pro/p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/'>
 <meta property='og:site_name' content='HEUSSER.PRO'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2022-09-04T16:07:25&#43;00:00'/><meta property='article:modified_time' content='2022-09-04T16:07:25&#43;00:00'/>
@@ -66,7 +66,7 @@
                     
                     
                         
-                        <img src="/img/avatar_hud7e6b3cccc21b12ddf35b72eb655064d_860969_300x0_resize_q75_box.jpg" width="300"
+                        <img src="/img/avatar_hu2751114550893713361.jpg" width="300"
                             height="300" class="site-logo" loading="lazy" alt="Avatar">
                     
                 
@@ -82,7 +82,7 @@
             <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
             <h2 class="site-description">Martin Heusser | M365 Apps &amp; Services MVP</h2>
         </div>
-    </header><ol class="social-menu">
+    </header><ol class="menu-social">
             
                 <li>
                     <a 
@@ -229,12 +229,12 @@
             </a>
         </li>
         
+        <li class="menu-bottom-section">
+            <ol class="menu">
 
-        <div class="menu-bottom-section">
-            
-            
-                <li id="dark-mode-toggle">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <circle cx="8" cy="12" r="2" />
   <rect x="2" y="6" width="20" height="12" rx="6" />
@@ -242,7 +242,7 @@
 
 
 
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <circle cx="16" cy="12" r="2" />
   <rect x="2" y="6" width="20" height="12" rx="6" />
@@ -250,10 +250,11 @@
 
 
 
-                    <span>Dark Mode</span>
-                </li>
-            
-        </div>
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
     </ol>
 </aside>
 
@@ -393,8 +394,8 @@
 <p>If there’s at least one agent who’s opted in, it will check if the overflow threshold is still zero. If that’s the case, the script will update the overflow threshold to any value you set in the script.</p>
 <p>This means that every time the script detects a Queue where no agents are opted in, the configured overflow action will be active immediately. As soon as the script sees that agents are available again, the immediate overflow action is disabled again.</p>
 <p>I’ve also added a simple alerting mechanism using Teams incoming webhooks. Messages will only be sent when something was changed.</p>
-<h4 id="azure-runbook-codeexample">Azure Runbook Code Example</h4>
-<p>Here’s the example code. Please keep in mind that this is in fact only an example. All the Message Cards go into the same Teams Channel because there’s no link between a Queue and a Channel which it might be associated with (e.g., a Voice Enabled Channel). I’m also using the same <code>$defaultOverFlowThreshold</code> for all Call Queues.</p>
+<h4 id="azure-runbook-codeexample">Azure Runbook Code Example
+</h4><p>Here’s the example code. Please keep in mind that this is in fact only an example. All the Message Cards go into the same Teams Channel because there’s no link between a Queue and a Channel which it might be associated with (e.g., a Voice Enabled Channel). I’m also using the same <code>$defaultOverFlowThreshold</code> for all Call Queues.</p>
 <p>If you’re not familiar with Azure Runbooks, Automation Credentials and Teams Webhooks, please refer to <a class="link" href="/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851" >this article</a>. The steps to create these things are the same.</p>
 <p>Insert your webhook URL on line 3 and make sure that the name of the Automation Credentials matches yours on line 5.</p>
 <script src="https://gist.github.com/mozziemozz/a5f7245d99e0752410f8d67cc9a63344.js"></script>
@@ -405,7 +406,7 @@
 <p><img src="/p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/1FPVs3DbJVXhXhMR1mS5Tw.png"
 	width="1422"
 	height="285"
-	srcset="/p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/1FPVs3DbJVXhXhMR1mS5Tw_hud506e0bc9094da07d629b8c005e7d39e_29120_480x0_resize_box_3.png 480w, /p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/1FPVs3DbJVXhXhMR1mS5Tw_hud506e0bc9094da07d629b8c005e7d39e_29120_1024x0_resize_box_3.png 1024w"
+	srcset="/p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/1FPVs3DbJVXhXhMR1mS5Tw_hu5869243131641688800.png 480w, /p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/1FPVs3DbJVXhXhMR1mS5Tw_hu14652432475669185589.png 1024w"
 	loading="lazy"
 	
 	
@@ -418,7 +419,7 @@
 <p><img src="/p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/1j3DMLkjJkMSam186QP6pWQ.png"
 	width="1496"
 	height="147"
-	srcset="/p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/1j3DMLkjJkMSam186QP6pWQ_hu13c5e8790efbd3db8c3514a11940143a_15499_480x0_resize_box_3.png 480w, /p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/1j3DMLkjJkMSam186QP6pWQ_hu13c5e8790efbd3db8c3514a11940143a_15499_1024x0_resize_box_3.png 1024w"
+	srcset="/p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/1j3DMLkjJkMSam186QP6pWQ_hu8690756960641033982.png 480w, /p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87/1j3DMLkjJkMSam186QP6pWQ_hu13062287718435634665.png 1024w"
 	loading="lazy"
 	
 	
@@ -595,7 +596,7 @@
         
             Hosted on GitHub Pages <br/>
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.27.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 

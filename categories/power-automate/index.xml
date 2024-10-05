@@ -6,32 +6,32 @@
         <description>Recent content in Power Automate on HEUSSER.PRO</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Thu, 29 Aug 2024 19:08:52 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/power-automate/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 01 Oct 2024 19:08:52 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/power-automate/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Migrate Teams Incoming Webhooks to Workflows (Power Automate)</title>
         <link>https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/</link>
-        <pubDate>Thu, 29 Aug 2024 19:08:52 +0000</pubDate>
+        <pubDate>Tue, 01 Oct 2024 19:08:52 +0000</pubDate>
         
         <guid>https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/</guid>
         <description>&lt;p&gt;At the beginning of July 2024 Microsoft announced that they will retire Office 365 Connectors in Teams. This was published in the Message Center with post ID &lt;strong&gt;MC808160&lt;/strong&gt;. Initially, Microsoft communicated a rather short deadline but then decided to extend it by quite some time. Users will still be able to add new connectors until December 31st 2024 before they will be retired in December 2025. Microsoft also published this information &lt;a class=&#34;link&#34; href=&#34;https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id=&#34;how-to-find-out-who-set-up-connectors-in-my-organization&#34;&gt;How To Find Out Who Set Up Connectors In My Organization?&lt;/h2&gt;
-&lt;p&gt;The biggest challenge will be finding out which Teams in your organization are currently using Office 365 Connectors in Teams. Luckily, Tony Redmond has created a much appreciated &lt;a class=&#34;link&#34; href=&#34;https://office365itpros.com/2024/07/10/teams-office-connectors/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h2 id=&#34;how-to-find-out-who-set-up-connectors-in-my-organization&#34;&gt;How To Find Out Who Set Up Connectors In My Organization?
+&lt;/h2&gt;&lt;p&gt;The biggest challenge will be finding out which Teams in your organization are currently using Office 365 Connectors in Teams. Luckily, Tony Redmond has created a much appreciated &lt;a class=&#34;link&#34; href=&#34;https://office365itpros.com/2024/07/10/teams-office-connectors/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;script&lt;/a&gt; to scan your tenant for any Teams that are using connectors. I quickly tested this script and can confirm that it lists all the incoming webhooks configured in my lab tenant.&lt;/p&gt;
 &lt;p&gt;Now that we know which Teams are utilizing incoming webhooks, the natural next step is to contact the owners of the affected Teams and help them transitioning their apps to sending data to Power Automate instead. But first we need to make sure that we know how to set up notifications via Power Automate.&lt;/p&gt;
-&lt;h2 id=&#34;pros-and-cons-about-this-change&#34;&gt;Pros And Cons About This Change&lt;/h2&gt;
-&lt;p&gt;The only connector I ever used was the incoming webhook. I mainly used them to send &lt;a class=&#34;link&#34; href=&#34;https://adaptivecards.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h2 id=&#34;pros-and-cons-about-this-change&#34;&gt;Pros And Cons About This Change
+&lt;/h2&gt;&lt;p&gt;The only connector I ever used was the incoming webhook. I mainly used them to send &lt;a class=&#34;link&#34; href=&#34;https://adaptivecards.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Adaptive Cards&lt;/a&gt; to Teams channels and I blogged about different use cases &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/&#34; &gt;here&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/&#34; &gt;here&lt;/a&gt;. That&amp;rsquo;s why this blog post will also be focusing on sending Adaptive Cards through Power Automate and not Office 365 Connectors in general.&lt;/p&gt;
 &lt;p&gt;These examples mostly used the schema for &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/outlook/actionable-messages/message-card-reference&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Legacy Actionable Message Cards&lt;/a&gt; and not true Adaptive Cards. While I was able to introduce some Adaptive Card features into the Message Card payloads, it was never really clear to me which features are supported and which aren&amp;rsquo;t. This required a lot of trial and error. Now that we&amp;rsquo;re transitioning to Power Automate, we can fully utilize all the Adaptive Card features which are supported in Teams. More importantly, we can finally relay on the information that&amp;rsquo;s published on the &lt;a class=&#34;link&#34; href=&#34;https://adaptivecards.io/explorer/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Adaptive Card Schema Explorer&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;The downside is that you might have to spend more money on additional licenses for Power Automate service accounts. If you&amp;rsquo;re not using service accounts to send Adaptive Cards to Teams, you&amp;rsquo;ll face the risk that some notifications will stop working when the person who set up a Flow leaves the company. On the plus side, using Power Automate will also give you more flexibility and also more security. (More on that later.)&lt;/p&gt;
-&lt;h2 id=&#34;set-up-a-power-automate-workflows-connector&#34;&gt;Set Up a Power Automate (Workflows) Connector&lt;/h2&gt;
-&lt;p&gt;Let&amp;rsquo;s take a look at how you can set up a Power Automate Flow to replicate the functionality of an incoming webhook directly in Teams.&lt;/p&gt;
+&lt;h2 id=&#34;set-up-a-power-automate-workflows-connector&#34;&gt;Set Up a Power Automate (Workflows) Connector
+&lt;/h2&gt;&lt;p&gt;Let&amp;rsquo;s take a look at how you can set up a Power Automate Flow to replicate the functionality of an incoming webhook directly in Teams.&lt;/p&gt;
 &lt;p&gt;Select the channel where you want to receive the notification and click on the &lt;strong&gt;3 dots&lt;/strong&gt;. Then click on &lt;strong&gt;Workflows&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image_hu3fb6cb1ee069631de21f28e6235eecd7_183291_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image_hu3fb6cb1ee069631de21f28e6235eecd7_183291_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image_hu17067836575163035893.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image_hu3705164775016160227.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Open the Workflows app&#34;
@@ -46,7 +46,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-1.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-1_hue792df4de31073521a928352d455e6aa_146427_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-1_hue792df4de31073521a928352d455e6aa_146427_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-1_hu13098306370784340601.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-1_hu8472554707977568149.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Select the template: Post to a channel when a webhook request is received &#34;
@@ -61,7 +61,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-2.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-2_hu4919f252f96b1d8a0dd4fb55f648bfcf_145859_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-2_hu4919f252f96b1d8a0dd4fb55f648bfcf_145859_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-2_hu1011982923621769736.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-2_hu3264230650608358657.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Set up connections&#34;
@@ -74,7 +74,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-3.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-3_huca67d0eea78bebe1d259ac1a4d6ac31a_124529_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-3_huca67d0eea78bebe1d259ac1a4d6ac31a_124529_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-3_hu13421259205306972981.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-3_hu10885815418521128326.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Confirm the Team and the channel&#34;
@@ -89,7 +89,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-4.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-4_hu4919f252f96b1d8a0dd4fb55f648bfcf_218383_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-4_hu4919f252f96b1d8a0dd4fb55f648bfcf_218383_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-4_hu12102872041567899063.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-4_hu1035464252065735674.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Copy the trigger URL&#34;
@@ -152,7 +152,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5_hub73575a9a0a88ffc322fbc180fc7a1df_224864_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5_hub73575a9a0a88ffc322fbc180fc7a1df_224864_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5_hu12049619759637336247.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5_hu16688186486983862571.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Flow failure info&#34;
@@ -165,7 +165,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-6.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-6_hu14f05ee05276174f88cb05fb55bdccdc_234459_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-6_hu14f05ee05276174f88cb05fb55bdccdc_234459_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-6_hu16082627391339738973.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-6_hu12978097451286139877.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Error details&#34;
@@ -181,7 +181,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-7.png&#34;
 	width=&#34;926&#34;
 	height=&#34;1074&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-7_huc77d7a81d20c8ab8f8394a63ec73251f_169638_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-7_huc77d7a81d20c8ab8f8394a63ec73251f_169638_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-7_hu9042932370275368541.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-7_hu8841001552661673965.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Trigger output&#34;
@@ -196,7 +196,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19_hucec72868a518da22de833eeafc174ae4_132808_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19_hucec72868a518da22de833eeafc174ae4_132808_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19_hu8406155332374909504.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19_hu3255301243670892880.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Flow created by Teams&#34;
@@ -266,7 +266,7 @@
 &lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17_hu3950e0ee8735047fa286af9bb2b9204a_233474_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17_hu3950e0ee8735047fa286af9bb2b9204a_233474_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17_hu13903871934690470927.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17_hu14214375774914690352.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;It works!&#34;
@@ -281,7 +281,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18.png&#34;
 	width=&#34;915&#34;
 	height=&#34;1315&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18_hufca17898f0de8536f4dd2b8f517259f4_187894_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18_hufca17898f0de8536f4dd2b8f517259f4_187894_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18_hu15871628569325334570.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18_hu9565231287786797527.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Trigger Outputs when the Adaptive Card is inside the attachments/content&#34;
@@ -294,8 +294,8 @@
 &gt;&lt;/p&gt;
 &lt;p&gt;Before I found this information, I long tinkered with the Flow itself and made it accept a payload which only includes an Adaptive Card. I basically made this just a few days after the change was announced but I only had time to write about it and figured out how to successfully use the default Flow (Thanks to Tony&amp;rsquo;s post) today.&lt;/p&gt;
 &lt;p&gt;Since I&amp;rsquo;ve been using my Flow for months now and it&amp;rsquo;s working great, I see no harm in showing you an alternative way which will accept a payload which &lt;strong&gt;only&lt;/strong&gt; includes an Adaptive Card, just like incoming webhooks did.&lt;/p&gt;
-&lt;h2 id=&#34;set-up-a-flow-from-scratch&#34;&gt;Set Up a Flow From Scratch&lt;/h2&gt;
-&lt;p&gt;My goal is to minimize the changes I have to do to my scripts and only swap the old webhook Uri for the new Power Automate trigger Uri and update the payload to use the official Adaptive Card schema. By using this method, I don&amp;rsquo;t need to bother about changing the structure of the JSON payload as well.&lt;/p&gt;
+&lt;h2 id=&#34;set-up-a-flow-from-scratch&#34;&gt;Set Up a Flow From Scratch
+&lt;/h2&gt;&lt;p&gt;My goal is to minimize the changes I have to do to my scripts and only swap the old webhook Uri for the new Power Automate trigger Uri and update the payload to use the official Adaptive Card schema. By using this method, I don&amp;rsquo;t need to bother about changing the structure of the JSON payload as well.&lt;/p&gt;
 &lt;p&gt;When the Flow is set up through Teams, it&amp;rsquo;s set up in the environment of the user which created it. This is not what I wanted anyway. I want this to run under a service account. So let&amp;rsquo;s take a look on how to build a working Flow from scratch.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Step 1:&lt;/strong&gt; Start by creating a new Flow and search for &lt;strong&gt;Microsoft Teams Webhook&lt;/strong&gt; for the trigger. Select the only option which is called &lt;strong&gt;When a Teams webhook request is received&lt;/strong&gt;. Make sure that the option &lt;strong&gt;Who can trigger the flow?&lt;/strong&gt; is set to &lt;strong&gt;Anyone&lt;/strong&gt;. (Why this trigger still used the old Teams logo is beyond me&amp;hellip;)&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Step 2:&lt;/strong&gt; Then add a &lt;strong&gt;Compose&lt;/strong&gt; action and add the &lt;strong&gt;Body&lt;/strong&gt; as Inputs from the dynamic content selection. (Note: Select the one with a capital &lt;strong&gt;B&lt;/strong&gt;.)&lt;/p&gt;
@@ -303,7 +303,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-8.png&#34;
 	width=&#34;931&#34;
 	height=&#34;945&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-8_hu2a2c67401a0ec40cb404431912692a48_52347_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-8_hu2a2c67401a0ec40cb404431912692a48_52347_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-8_hu10208623305089933618.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-8_hu6363880623582734220.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;That&amp;rsquo;s the entire flow.&#34;
@@ -319,7 +319,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-9.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-9_huad1ef2d5f74d038192e7d102e3aef399_136222_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-9_huad1ef2d5f74d038192e7d102e3aef399_136222_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-9_hu2288167009019981301.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-9_hu15456474603554545078.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Hello World!&#34;
@@ -332,7 +332,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-10.png&#34;
 	width=&#34;1174&#34;
 	height=&#34;524&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-10_hu9d7af770a96824feb10b16acc4e17862_47167_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-10_hu9d7af770a96824feb10b16acc4e17862_47167_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-10_hu12651012709381117620.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-10_hu4099230719778945892.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Success!&#34;
@@ -343,10 +343,10 @@
 		data-flex-basis=&#34;537px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;advanced-scenarios&#34;&gt;Advanced Scenarios&lt;/h2&gt;
-&lt;p&gt;Now that we have a working Flow, let&amp;rsquo;s look at some other cool stuff we can do now&amp;hellip;&lt;/p&gt;
-&lt;h3 id=&#34;password-protect-the-flow&#34;&gt;Password Protect The Flow&lt;/h3&gt;
-&lt;p&gt;Office 365 Webhooks in Teams didn&amp;rsquo;t support any kind of authentication. The only security measure we had was keeping the webhook URI a secret. With Power Automate Flows, you can select between different options for &lt;strong&gt;Who can trigger the flow?&lt;/strong&gt;. Valid choices are &lt;strong&gt;Any user in my tenant&lt;/strong&gt;, &lt;strong&gt;Specific users in my tenant&lt;/strong&gt; or &lt;strong&gt;Anyone&lt;/strong&gt;. At this point, I haven&amp;rsquo;t actually figured out how user authentication would work.&lt;/p&gt;
+&lt;h2 id=&#34;advanced-scenarios&#34;&gt;Advanced Scenarios
+&lt;/h2&gt;&lt;p&gt;Now that we have a working Flow, let&amp;rsquo;s look at some other cool stuff we can do now&amp;hellip;&lt;/p&gt;
+&lt;h3 id=&#34;password-protect-the-flow&#34;&gt;Password Protect The Flow
+&lt;/h3&gt;&lt;p&gt;Office 365 Webhooks in Teams didn&amp;rsquo;t support any kind of authentication. The only security measure we had was keeping the webhook URI a secret. With Power Automate Flows, you can select between different options for &lt;strong&gt;Who can trigger the flow?&lt;/strong&gt;. Valid choices are &lt;strong&gt;Any user in my tenant&lt;/strong&gt;, &lt;strong&gt;Specific users in my tenant&lt;/strong&gt; or &lt;strong&gt;Anyone&lt;/strong&gt;. At this point, I haven&amp;rsquo;t actually figured out how user authentication would work.&lt;/p&gt;
 &lt;p&gt;Anyway, I already mentioned that my goal for this migration is to make as little changes as possible to my scripts. Therefore I&amp;rsquo;m sticking with anyone can trigger the Flow. By the way, this is also what&amp;rsquo;s used as the default value when you add a new Flow through the Workflows app in Teams as shown in &lt;a class=&#34;link&#34; href=&#34;#set-up-a-power-automate-workflows-connector&#34; &gt;chapter 3&lt;/a&gt; of this article. However, that doesn&amp;rsquo;t mean that I can&amp;rsquo;t add at least some security to this.&lt;/p&gt;
 &lt;p&gt;By using a trigger condition, we can limit who can trigger the Flow as well. To do this, click on the three dots on the trigger and then select &lt;strong&gt;Settings&lt;/strong&gt;. Then scroll to the bottom, enable trigger conditions and past the following code:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;@equals(triggerOutputs()?[&#39;headers&#39;][&#39;TriggerSecret&#39;], &#39;OnlyICanTriggerThisFlow&#39;)&lt;/code&gt;&lt;/p&gt;
@@ -354,7 +354,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-11.png&#34;
 	width=&#34;1365&#34;
 	height=&#34;522&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-11_huee1408da13fc17eddd3fc335b0624007_59922_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-11_huee1408da13fc17eddd3fc335b0624007_59922_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-11_hu14330245624591067472.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-11_hu3553075836722479647.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Trigger Settings&#34;
@@ -367,7 +367,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-12.png&#34;
 	width=&#34;924&#34;
 	height=&#34;1393&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-12_hubab79313ea68a4b4dad5cffa0e8d91ca_108067_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-12_hubab79313ea68a4b4dad5cffa0e8d91ca_108067_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-12_hu3326022890127933909.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-12_hu15343184824364638248.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Trigger Condition&#34;
@@ -434,8 +434,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;If the &lt;strong&gt;TriggerSecret&lt;/strong&gt; is missing from the header or if it&amp;rsquo;s value is wrong, the Flow won&amp;rsquo;t trigger at all. This means that you won&amp;rsquo;t even see a failed Flow action if the trigger URI is called with a wrong password.&lt;/p&gt;
-&lt;h3 id=&#34;use-the-same-flow-for-multiple-channels&#34;&gt;Use The Same Flow For Multiple Channels&lt;/h3&gt;
-&lt;p&gt;Another cool thing about the move to Power Automate is that we can use the same Flow and the same trigger URI to send notifications to different channels. You don&amp;rsquo;t necessarily need to create a Flow for each channel like it was the case with incoming webhooks.&lt;/p&gt;
+&lt;h3 id=&#34;use-the-same-flow-for-multiple-channels&#34;&gt;Use The Same Flow For Multiple Channels
+&lt;/h3&gt;&lt;p&gt;Another cool thing about the move to Power Automate is that we can use the same Flow and the same trigger URI to send notifications to different channels. You don&amp;rsquo;t necessarily need to create a Flow for each channel like it was the case with incoming webhooks.&lt;/p&gt;
 &lt;p&gt;The principle here is the same as with the trigger secret, we just add information about the target channel to the request headers:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -456,7 +456,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-13.png&#34;
 	width=&#34;952&#34;
 	height=&#34;192&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-13_huc65994b488f4d3c253f5f0b1a56e6545_10513_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-13_huc65994b488f4d3c253f5f0b1a56e6545_10513_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-13_hu12159826009661972305.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-13_hu11322132518590545155.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Expression to extract headers from trigger outputs&#34;
@@ -471,7 +471,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-14.png&#34;
 	width=&#34;1939&#34;
 	height=&#34;1377&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-14_huee03996cc3a9932aff446acc3605e411_74416_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-14_huee03996cc3a9932aff446acc3605e411_74416_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-14_hu7720957949630575163.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-14_hu11037026963041257743.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Switch statement to target different channels based on header value&#34;
@@ -482,12 +482,12 @@
 		data-flex-basis=&#34;337px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h3 id=&#34;result&#34;&gt;Result&lt;/h3&gt;
-&lt;p&gt;Even though, I was using the same Flow, with the same trigger URI, this message was now received in the &lt;strong&gt;Notifications - M365&lt;/strong&gt; channel and not in &lt;strong&gt;Notifications - Azure&lt;/strong&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;result&#34;&gt;Result
+&lt;/h3&gt;&lt;p&gt;Even though, I was using the same Flow, with the same trigger URI, this message was now received in the &lt;strong&gt;Notifications - M365&lt;/strong&gt; channel and not in &lt;strong&gt;Notifications - Azure&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-15.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-15_hu095eac925cf76e9d97b5d45b9437b812_133474_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-15_hu095eac925cf76e9d97b5d45b9437b812_133474_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-15_hu6249113140633450532.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-15_hu6183188826370830636.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Adaptive Card in different channel&#34;
@@ -499,8 +499,8 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;Pretty cool, right?&lt;/p&gt;
-&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
-&lt;p&gt;Over all, I really like this change. The biggest advantage to me is that we&amp;rsquo;ll finally be able to fully utilize the huge potential of Adaptive Cards and there&amp;rsquo;s no trial and error involved anymore to find out which card elements are supported and which are not.&lt;/p&gt;
+&lt;h2 id=&#34;summary&#34;&gt;Summary
+&lt;/h2&gt;&lt;p&gt;Over all, I really like this change. The biggest advantage to me is that we&amp;rsquo;ll finally be able to fully utilize the huge potential of Adaptive Cards and there&amp;rsquo;s no trial and error involved anymore to find out which card elements are supported and which are not.&lt;/p&gt;
 &lt;p&gt;Finding out which Teams are using Office 365 Connectors/incoming webhooks should be easy enough using Tony&amp;rsquo;s script. Approaching all the users and letting them know that their integration will break unless they take action will be the painful part of this migration. But in my opinion this also presents itself as an opportunity to get a hold on which of your end users are making use of sending data to Teams channels and offer them to set up service accounts for them.&lt;/p&gt;
 &lt;p&gt;However, this doesn&amp;rsquo;t mean that there won&amp;rsquo;t be users which will set up or keep setting up their own Workflows in Teams. With incoming webhooks, Admins had the possibility to block the use of the app through Teams app permission policies. If you want to block users from using the Workflows app, that&amp;rsquo;s still possible through the same policy but that would also mean that you&amp;rsquo;re blocking them from using the Workflows app entirely, which might be suboptimal in many scenarios.&lt;/p&gt;
 &lt;p&gt;To end this post on a positive note, I&amp;rsquo;d like to mention that I believe that this change will make a lot of sense in the future. Power Automate is a very well established platform and has seen some great improvements and adoption over the last years. This gives us a much better supported and a very promising foundation to build awesome notification and user input processes powered by Power Automate and Adaptive Cards.&lt;/p&gt;
@@ -514,12 +514,12 @@
         
         <guid>https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/</guid>
         <description>&lt;p&gt;Sometimes, something simple as writing a filter query to search for Entra ID users which have a specific phone number can take way longer than we would like. Instead of making you search through numerous Stack Overflow posts or ask ChatGPT on how to do it, I decided to write this short blog post which will give you everything you need to quickly find Entra ID users which have a specific phone number.&lt;/p&gt;
-&lt;h2 id=&#34;number-types&#34;&gt;Number Types&lt;/h2&gt;
-&lt;p&gt;The most common numbers in Entra ID are &lt;strong&gt;Mobile phone&lt;/strong&gt; and &lt;strong&gt;Business Phone&lt;/strong&gt;. While the Entra ID admin portal displays &lt;code&gt;Business phone&lt;/code&gt; in singular, the property is actually called &lt;code&gt;businessPhones&lt;/code&gt; and is a string collection.&lt;/p&gt;
+&lt;h2 id=&#34;number-types&#34;&gt;Number Types
+&lt;/h2&gt;&lt;p&gt;The most common numbers in Entra ID are &lt;strong&gt;Mobile phone&lt;/strong&gt; and &lt;strong&gt;Business Phone&lt;/strong&gt;. While the Entra ID admin portal displays &lt;code&gt;Business phone&lt;/code&gt; in singular, the property is actually called &lt;code&gt;businessPhones&lt;/code&gt; and is a string collection.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image.png&#34;
 	width=&#34;1793&#34;
 	height=&#34;693&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu221bd5b4269b12a931c42eb60e683664_134687_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu221bd5b4269b12a931c42eb60e683664_134687_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu2291258742031666590.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu18200194872119687648.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Phone numbers in Entra ID&#34;
@@ -530,8 +530,8 @@
 		data-flex-basis=&#34;620px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;filter-queries&#34;&gt;Filter Queries&lt;/h2&gt;
-&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#properties&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h2 id=&#34;filter-queries&#34;&gt;Filter Queries
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#properties&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;This&lt;/a&gt; page tells us which conditions are supported for which user properties. I wasn&amp;rsquo;t able to get this to work using &lt;code&gt;Get-MgUser -Filter &amp;quot;Filter Query&amp;quot;&lt;/code&gt; since an API request using an advanced filter query will require a special header. Not long ago, I wrote about the &lt;code&gt;Invoke-MgGraphRequest&lt;/code&gt; &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86&#34; &gt;Cmdlet&lt;/a&gt; and how that can be used to call the Graph REST API directly using the session token from &lt;code&gt;Connect-MgGraph&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;To make it work, you&amp;rsquo;ll need to create a header with &lt;strong&gt;ConsistencyLevel&lt;/strong&gt;: &lt;code&gt;eventual&lt;/code&gt; which is then added to the Graph Request.&lt;/p&gt;
 &lt;p&gt;Since this is a web request, you&amp;rsquo;ll also need to url encode the &lt;code&gt;+&lt;/code&gt; character. A simple &lt;strong&gt;replace&lt;/strong&gt; with &lt;code&gt;%2B&lt;/code&gt; will do the trick here. It&amp;rsquo;s important to note that this will only work if the phone number is stored on the Entra user exactly the same as what&amp;rsquo;s in the filter query. For example, it won&amp;rsquo;t work if the phone number is stored without spaces in Entra but you&amp;rsquo;re querying it with spaces. If your phone numbers in Entra are a mess, I recommend to take a look at &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5&#34; &gt;this&lt;/a&gt; blog post. This will show you how you can format all phone numbers in the same, and most importantly in the correct way.&lt;/p&gt;
@@ -548,8 +548,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h3 id=&#34;powershell-example&#34;&gt;PowerShell Example&lt;/h3&gt;
-&lt;p&gt;Here is an example script which contains all possible filter conditions for both mobile and business phone numbers. The important thing here is that the custom header is included and that the &lt;strong&gt;Uri&lt;/strong&gt; includes the &lt;strong&gt;Count&lt;/strong&gt; variable. Note that the &lt;code&gt;businessPhones&lt;/code&gt; property does not support the &lt;code&gt;in&lt;/code&gt; condition.&lt;/p&gt;
+&lt;/div&gt;&lt;h3 id=&#34;powershell-example&#34;&gt;PowerShell Example
+&lt;/h3&gt;&lt;p&gt;Here is an example script which contains all possible filter conditions for both mobile and business phone numbers. The important thing here is that the custom header is included and that the &lt;strong&gt;Uri&lt;/strong&gt; includes the &lt;strong&gt;Count&lt;/strong&gt; variable. Note that the &lt;code&gt;businessPhones&lt;/code&gt; property does not support the &lt;code&gt;in&lt;/code&gt; condition.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
@@ -646,12 +646,12 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$mgUserMatchesMobilePhone&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;Invoke-MgGraphRequest&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Method&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Get&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Uri&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;https://graph.microsoft.com/v1.0/users?&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;`$&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;filter=mobilePhone in [&amp;#39;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$mobileNumberUrlSafe&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#39;,&amp;#39;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$mobileNumberUrlSafe2&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#39;]&amp;amp;&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;`$&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;count=true&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-ContentType&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;application/json&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Headers&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$header&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;value&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h4 id=&#34;example-output&#34;&gt;Example Output&lt;/h4&gt;
-&lt;p&gt;What&amp;rsquo;s a little weird is that PowerShell outputs an array with name/value pairs instead of a PS custom object.&lt;/p&gt;
+&lt;/div&gt;&lt;h4 id=&#34;example-output&#34;&gt;Example Output
+&lt;/h4&gt;&lt;p&gt;What&amp;rsquo;s a little weird is that PowerShell outputs an array with name/value pairs instead of a PS custom object.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1.png&#34;
 	width=&#34;1644&#34;
 	height=&#34;899&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hueb5231a21863bd4453ba706f74f1c47e_1102062_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hueb5231a21863bd4453ba706f74f1c47e_1102062_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hu10126803005311397619.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hu13422273645719726784.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Output from Invoke-MgGraphRequest&#34;
@@ -666,7 +666,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4.png&#34;
 	width=&#34;1644&#34;
 	height=&#34;262&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu70f2a1ded8f51c6e3e908386c91482b2_303137_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu70f2a1ded8f51c6e3e908386c91482b2_303137_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu10390745089598602075.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu17704760490908083956.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Format-Table does not work with specific properties&#34;
@@ -690,7 +690,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3.png&#34;
 	width=&#34;1644&#34;
 	height=&#34;899&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu08af9aeaa01698a49ff71fd97429eb7d_1184796_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu08af9aeaa01698a49ff71fd97429eb7d_1184796_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu5228443779759100930.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu1660153902600262052.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;There are no name/value pairs anymore.&#34;
@@ -702,12 +702,12 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;Now you can work with the &lt;code&gt;$mgUserMatchesMobilePhone&lt;/code&gt;and &lt;code&gt;$mgUserMatchesBusinessPhone&lt;/code&gt; as expected and do anything you want with them.&lt;/p&gt;
-&lt;h3 id=&#34;bonus-tip-power-automate&#34;&gt;Bonus Tip (Power Automate)&lt;/h3&gt;
-&lt;p&gt;The standard action &lt;strong&gt;Search for users (V2)&lt;/strong&gt; from the &lt;strong&gt;Office 365 Users&lt;/strong&gt; connector doesn&amp;rsquo;t support to filter for phone numbers of any type.&lt;/p&gt;
+&lt;h3 id=&#34;bonus-tip-power-automate&#34;&gt;Bonus Tip (Power Automate)
+&lt;/h3&gt;&lt;p&gt;The standard action &lt;strong&gt;Search for users (V2)&lt;/strong&gt; from the &lt;strong&gt;Office 365 Users&lt;/strong&gt; connector doesn&amp;rsquo;t support to filter for phone numbers of any type.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2.png&#34;
 	width=&#34;1507&#34;
 	height=&#34;262&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu8fe2b873d91223cd6efe29a596cdb26d_21976_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu8fe2b873d91223cd6efe29a596cdb26d_21976_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu17228196303366751409.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu3954587770765512058.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Supported filters for Office 365 Users&#34;
@@ -723,7 +723,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5.png&#34;
 	width=&#34;938&#34;
 	height=&#34;1296&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_huc85c688f683dabe0d55b1dc50c3a2715_86670_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_huc85c688f683dabe0d55b1dc50c3a2715_86670_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_hu9415391741213701859.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_hu2191900681216763414.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Power Automate Flow to filter for users by phone number&#34;
@@ -752,12 +752,12 @@
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;outputs(&amp;#39;Send_an_HTTP_request&amp;#39;)?[&amp;#39;body&amp;#39;]?[&amp;#39;value&amp;#39;][0][&amp;#39;displayName&amp;#39;]
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h4 id=&#34;example-output-1&#34;&gt;Example Output&lt;/h4&gt;
-&lt;p&gt;If there is a user match for the phone number, Graph will return a nice Json response to Power Automate.&lt;/p&gt;
+&lt;/div&gt;&lt;h4 id=&#34;example-output-1&#34;&gt;Example Output
+&lt;/h4&gt;&lt;p&gt;If there is a user match for the phone number, Graph will return a nice Json response to Power Automate.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6.png&#34;
 	width=&#34;960&#34;
 	height=&#34;1138&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu35494fb6171d17df94b862267ce52501_82901_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu35494fb6171d17df94b862267ce52501_82901_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu7402497629987320838.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu1972615602850717830.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Output from Microsoft Graph within Power Automate&#34;
@@ -768,8 +768,8 @@
 		data-flex-basis=&#34;202px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;summary--download&#34;&gt;Summary &amp;amp; Download&lt;/h2&gt;
-&lt;p&gt;I hope that these examples help you with whatever you&amp;rsquo;re trying to achieve. I&amp;rsquo;m certainly going to use this blog post as a cheat sheet for myself in the future. You can also download the entire script from my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/EntraID/FilterGraphUsersByPhoneNumber.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h2 id=&#34;summary--download&#34;&gt;Summary &amp;amp; Download
+&lt;/h2&gt;&lt;p&gt;I hope that these examples help you with whatever you&amp;rsquo;re trying to achieve. I&amp;rsquo;m certainly going to use this blog post as a cheat sheet for myself in the future. You can also download the entire script from my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/EntraID/FilterGraphUsersByPhoneNumber.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;GitHub&lt;/a&gt; profile.&lt;/p&gt;
 </description>
         </item>
@@ -780,8 +780,8 @@
         
         <guid>https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/</guid>
         <description>&lt;p&gt;&lt;strong&gt;Update 29.09.2024&lt;/strong&gt; This post features a proof of concept and was an experimental project leveraging not supported ways of achieving what was presented. It looks like Microsoft has made changes to the &lt;strong&gt;Send an HTTP request to SharePoint&lt;/strong&gt; and tightened the security around it. Some of the actions outlined in this blog post are no longer possible and now throw an &lt;strong&gt;Unauthorized&lt;/strong&gt; error. While it was nice to be able to do these things, I fully believe that Microsoft is doing the right thing by adding more security to their services. If you want to be able to opt in/out another user on their behalf, I recommend to use the now available &lt;strong&gt;Queues&lt;/strong&gt; app in Teams.&lt;/p&gt;
-&lt;h2 id=&#34;history-lesson&#34;&gt;History Lesson&lt;/h2&gt;
-&lt;p&gt;Up until now, it hasn&amp;rsquo;t been possible for a queue manager to opt in or opt out other agents on their behalf. Opting in or out of a queue was always an action that had to be done by agents themselves. This changes with the &lt;strong&gt;Queues&lt;/strong&gt; app which is currently still in private preview. If you&amp;rsquo;re reading this blog, I doubt that this is the first time that you&amp;rsquo;re hearing of this but nevertheless, I&amp;rsquo;m still going to add a couple of links to this blog post.&lt;/p&gt;
+&lt;h2 id=&#34;history-lesson&#34;&gt;History Lesson
+&lt;/h2&gt;&lt;p&gt;Up until now, it hasn&amp;rsquo;t been possible for a queue manager to opt in or opt out other agents on their behalf. Opting in or out of a queue was always an action that had to be done by agents themselves. This changes with the &lt;strong&gt;Queues&lt;/strong&gt; app which is currently still in private preview. If you&amp;rsquo;re reading this blog, I doubt that this is the first time that you&amp;rsquo;re hearing of this but nevertheless, I&amp;rsquo;m still going to add a couple of links to this blog post.&lt;/p&gt;
 &lt;p&gt;You can read the official announcement of the Queues app &lt;a class=&#34;link&#34; href=&#34;https://techcommunity.microsoft.com/t5/microsoft-teams-blog/introducing-the-queues-app-enabling-customer-engagement-in/ba-p/4095971&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt; and you&amp;rsquo;ll find the official support article &lt;a class=&#34;link&#34; href=&#34;https://support.microsoft.com/en-us/office/use-the-queues-app-for-microsoft-teams-370ad83e-c2c1-4a9f-8a59-16c98be102e9&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt;. On &lt;a class=&#34;link&#34; href=&#34;https://regale.cloud/Microsoft/viewer/2963/queues-app/index.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -789,8 +789,8 @@
 &lt;p&gt;While this will finally make it possible to change the opt in status on someone else&amp;rsquo;s behalf, it comes at a price. The Queues app will be part of Teams Premium and thus increase your monthly license costs. At this point, I don&amp;rsquo;t think it&amp;rsquo;s confirmed if only a supervisor can have a Teams Premium license and still be able to change the opt in status of others, or if all the members of a queue will require a Teams Premium license. My best guess is that every member of the queue will require an additional license but please don&amp;rsquo;t take my word for it.&lt;/p&gt;
 &lt;p&gt;Since this was one of the most requested features of Teams Phone customers, I already experimented with creating something that would allow somebody to change an agent&amp;rsquo;s opt in statuses remotely in the past. I blogged about this &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/opt-in-or-opt-out-teams-call-queue-agents-remotely-59fe6147f50d&#34; &gt;here&lt;/a&gt;. I don&amp;rsquo;t think that this method still works today but it did work at the time. However, this never made it past a proof of concept because it required the username, password and potentially an MFA secret for the user account for which the opt in status needed to be changed.&lt;/p&gt;
 &lt;p&gt;Today, I&amp;rsquo;m presenting a different solution. It&amp;rsquo;s still very much a proof of concept and not very scalable but at least it doesn&amp;rsquo;t need user credentials anymore. But most importantly, it doesn&amp;rsquo;t need any additional licenses.&lt;/p&gt;
-&lt;h2 id=&#34;inspiration-from-the-community&#34;&gt;Inspiration from the Community&lt;/h2&gt;
-&lt;p&gt;I initially got the idea from fellow MVP &lt;a class=&#34;link&#34; href=&#34;https://www.loryanstrant.com/2023/06/05/automatically-change-your-microsoft-teams-working-location-with-home-assistant/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h2 id=&#34;inspiration-from-the-community&#34;&gt;Inspiration from the Community
+&lt;/h2&gt;&lt;p&gt;I initially got the idea from fellow MVP &lt;a class=&#34;link&#34; href=&#34;https://www.loryanstrant.com/2023/06/05/automatically-change-your-microsoft-teams-working-location-with-home-assistant/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Loryan Strant&lt;/a&gt;. In this blog post, he explains how you can leverage the &lt;strong&gt;Send an HTTP request to SharePoint&lt;/strong&gt; in Power Automate to make web requests to other end points. In his case, he&amp;rsquo;s targeting the endpoint which is used to update a user&amp;rsquo;s work location. Unknowingly at that time, I worked on &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d&#34; &gt;my own way&lt;/a&gt; of programmatically setting my work location using PowerShell and AADInternals. I&amp;rsquo;ll soon be writing something new about this too but today&amp;rsquo;s issue is all about call queues and changing opt in statuses.&lt;/p&gt;
 &lt;p&gt;My next step was to look at the browser dev tools in Edge to see if anything had changed in how the Teams web client handles an opt in change. I already used this method in my first proof of concept over two years ago and I learned how you can effectively use the browser dev tools to see what&amp;rsquo;s going on under the hood from Alexander Holmeset in &lt;a class=&#34;link&#34; href=&#34;https://alexholmeset.blog/2021/02/28/teams-network-planner-automated/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;this&lt;/a&gt; blog post. On that note I want to point out that I&amp;rsquo;ll forever be grateful for that post. Acquiring this skill has helped me achieve something so many times already!&lt;/p&gt;
@@ -815,12 +815,12 @@
 &lt;/div&gt;&lt;p&gt;I have no idea what &lt;strong&gt;DLX&lt;/strong&gt; stands for. The only thing I could find was &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/openspecs/office_protocols/ms-dlx/fa0e41cd-2b34-4081-b3cf-59ecdad7a5da&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;this&lt;/a&gt; reference.&lt;/p&gt;
 &lt;p&gt;The challenge with these web requests is that you still need to provide a valid access token in the authorization header. In PowerShell, there&amp;rsquo;s no way around user credentials to obtain a token. This is different in Power Automate though.&lt;/p&gt;
-&lt;h2 id=&#34;setting-up-the-prerequisites&#34;&gt;Setting up the Prerequisites&lt;/h2&gt;
-&lt;p&gt;Before we build the Flow, we&amp;rsquo;ll need something to trigger it. The best and easiest thing I could think of was to create a SharePoint list and add it as a tab to the Teams channel that&amp;rsquo;s linked to the call queue. If you don&amp;rsquo;t already know how to do that, follow the steps below.&lt;/p&gt;
+&lt;h2 id=&#34;setting-up-the-prerequisites&#34;&gt;Setting up the Prerequisites
+&lt;/h2&gt;&lt;p&gt;Before we build the Flow, we&amp;rsquo;ll need something to trigger it. The best and easiest thing I could think of was to create a SharePoint list and add it as a tab to the Teams channel that&amp;rsquo;s linked to the call queue. If you don&amp;rsquo;t already know how to do that, follow the steps below.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1_hu705d3dd1f94a6b3b904e76444a3d0637_148619_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1_hu705d3dd1f94a6b3b904e76444a3d0637_148619_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1_hu11913583426385938427.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1_hu9304733878779632263.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click the &amp;#43; to add a tab.&#34;
@@ -833,7 +833,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2_hu1253170ae1e6d8d32cc7dd91d61f7b33_159304_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2_hu1253170ae1e6d8d32cc7dd91d61f7b33_159304_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2_hu530063749930359838.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2_hu15157909680239559655.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Search for &amp;lsquo;Lists&amp;rsquo; and click on it.&#34;
@@ -846,7 +846,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3_hu1981b327dab3269273baf078857540e5_139248_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3_hu1981b327dab3269273baf078857540e5_139248_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3_hu7937741121339155755.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3_hu17538482900093854851.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click Save.&#34;
@@ -859,7 +859,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4_hufc846614001176d240a692d25adaf975_133450_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4_hufc846614001176d240a692d25adaf975_133450_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4_hu2377144743537114884.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4_hu4314821337011684003.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Select Create a list.&#34;
@@ -872,7 +872,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5_huacaf45050b991d31068ac87efc4bd7c2_859731_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5_huacaf45050b991d31068ac87efc4bd7c2_859731_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5_hu5463564391803077305.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5_hu6123452386488159593.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click on Blank list.&#34;
@@ -885,7 +885,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6_huec9ccb95cb6ab597156bec78ae69cb98_149835_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6_huec9ccb95cb6ab597156bec78ae69cb98_149835_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6_hu17252448217805581256.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6_hu4365632963787324501.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Give your list a name and select a color and an icon. Then click create.&#34;
@@ -900,7 +900,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8_hu23f739f1510daf28fe5989a42a18975a_157919_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8_hu23f739f1510daf28fe5989a42a18975a_157919_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8_hu129451366560112092.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8_hu245937803451660543.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Select Person and click Next.&#34;
@@ -913,7 +913,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7_huab70de38417ae9161f2732f264c35229_149436_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7_huab70de38417ae9161f2732f264c35229_149436_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7_hu6970902461574767365.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7_hu1498024393115296102.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Enter &amp;lsquo;Agent&amp;rsquo; as column name and toggle Show profile photos to Yes.&#34;
@@ -926,7 +926,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9_hu23f739f1510daf28fe5989a42a18975a_151690_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9_hu23f739f1510daf28fe5989a42a18975a_151690_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9_hu8043155632980410742.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9_hu8963576290552745298.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Add another column and choose Yes/No as type.&#34;
@@ -939,7 +939,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10_hu4d934adf18ece1692cdb8db8d877ac44_161516_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10_hu4d934adf18ece1692cdb8db8d877ac44_161516_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10_hu962999845287303447.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10_hu1603584529402314834.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Name it &amp;lsquo;Opt In&amp;rsquo; and click Save.&#34;
@@ -952,7 +952,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11_hu4d934adf18ece1692cdb8db8d877ac44_164504_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11_hu4d934adf18ece1692cdb8db8d877ac44_164504_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11_hu16542849257511873056.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11_hu16932690610536722226.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Add another Yes/No column called &amp;lsquo;Updated by Power Automate&amp;rsquo; and set the default value to No.&#34;
@@ -967,7 +967,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12_hu9f879f0ffa03899bc8792f08bfb01a90_166451_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12_hu9f879f0ffa03899bc8792f08bfb01a90_166451_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12_hu9770511780570287800.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12_hu9399227338352732912.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click on the column, then select Column settings, Show/hide columns.&#34;
@@ -980,7 +980,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13_hubf67ffab44e23f844473ef5753689496_183451_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13_hubf67ffab44e23f844473ef5753689496_183451_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13_hu4303637038459811682.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13_hu6139821486824365882.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Uncheck Title and click Apply.&#34;
@@ -995,7 +995,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14_hu472be461d9195151156240ff3dcbd634_123994_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14_hu472be461d9195151156240ff3dcbd634_123994_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14_hu12602022400071259707.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14_hu18177151818299355995.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Add all call queue agents to the Agent column.&#34;
@@ -1010,7 +1010,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1216&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18_hu4965c34d251136e0aedc58cd0c328ee9_132892_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18_hu4965c34d251136e0aedc58cd0c328ee9_132892_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18_hu11655581890386546295.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18_hu5477638153986702771.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Tip: You can reorder tabs by dragging. I&amp;rsquo;ve put my List tab next to the Calls tab.&#34;
@@ -1021,16 +1021,16 @@
 		data-flex-basis=&#34;416px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;the-power-of-power-automate&#34;&gt;The Power of Power Automate&lt;/h2&gt;
-&lt;p&gt;In Power Automate, Flows are able to leverage connections for which Power Automate will automatically obtain a token for the user that&amp;rsquo;s running the Flow. While you can&amp;rsquo;t view the token, you can certainly use it to make web requests. The principle is quite simple. Each user needs to set up a Power Automate Flow which will update their opt in status when the Flow is triggered.&lt;/p&gt;
+&lt;h2 id=&#34;the-power-of-power-automate&#34;&gt;The Power of Power Automate
+&lt;/h2&gt;&lt;p&gt;In Power Automate, Flows are able to leverage connections for which Power Automate will automatically obtain a token for the user that&amp;rsquo;s running the Flow. While you can&amp;rsquo;t view the token, you can certainly use it to make web requests. The principle is quite simple. Each user needs to set up a Power Automate Flow which will update their opt in status when the Flow is triggered.&lt;/p&gt;
 &lt;p&gt;The downside is that a Flow needs to be set up for each user and for each call queue where you want to leverage this custom solution. So, if a user is part of multiple queues, there also need to be multiple Flows per user. To be fair, I did say that this is a PoC at the beginning.&lt;/p&gt;
 &lt;p&gt;The good thing about this is that I&amp;rsquo;ve built the Flow in a way, in which it will work for any user. A queue supervisor or an IT admin can just create Flow and then share it with all the agents. Each of the agents can then access the Flow using their own account and save a copy of the Flow to their own Flows. If they&amp;rsquo;ve never worked with Power Automate before, they might need help doing that but sharing and saving a copy is still the quickest way to set it all up.&lt;/p&gt;
-&lt;h3 id=&#34;flow-for-each-agent&#34;&gt;Flow For Each Agent&lt;/h3&gt;
-&lt;p&gt;Let&amp;rsquo;s look at the first Flow. I&amp;rsquo;ll call this the &lt;strong&gt;User-Flow&lt;/strong&gt; from now on.&lt;/p&gt;
+&lt;h3 id=&#34;flow-for-each-agent&#34;&gt;Flow For Each Agent
+&lt;/h3&gt;&lt;p&gt;Let&amp;rsquo;s look at the first Flow. I&amp;rsquo;ll call this the &lt;strong&gt;User-Flow&lt;/strong&gt; from now on.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image.png&#34;
 	width=&#34;2064&#34;
 	height=&#34;1823&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image_hua6ee506cbc2419494ce0f0d532dea99d_118762_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image_hua6ee506cbc2419494ce0f0d532dea99d_118762_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image_hu9639506191421241325.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image_hu17382347141440935731.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;This is the Power Automate Flow in all it&amp;rsquo;s glory.&#34;
@@ -1042,12 +1042,12 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;The Flow will trigger any time the SharePoint list which is now a tab in Teams is updated.&lt;/p&gt;
-&lt;h4 id=&#34;import-the-flow-package&#34;&gt;Import the Flow Package&lt;/h4&gt;
-&lt;p&gt;Start by downloading the Flow from &lt;a class=&#34;link&#34; href=&#34;#download-flow-packages&#34; &gt;here&lt;/a&gt; and then import it in Power Automate with a user that is part of the call queue, for which you want to add the functionality.&lt;/p&gt;
+&lt;h4 id=&#34;import-the-flow-package&#34;&gt;Import the Flow Package
+&lt;/h4&gt;&lt;p&gt;Start by downloading the Flow from &lt;a class=&#34;link&#34; href=&#34;#download-flow-packages&#34; &gt;here&lt;/a&gt; and then import it in Power Automate with a user that is part of the call queue, for which you want to add the functionality.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21.png&#34;
 	width=&#34;876&#34;
 	height=&#34;242&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21_hu962d5e19297e6d6930aa4bca62cb9ac3_24104_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21_hu962d5e19297e6d6930aa4bca62cb9ac3_24104_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21_hu17969875031334252726.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21_hu7863184465684036780.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click on Import Package (Legacy).&#34;
@@ -1061,7 +1061,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22.png&#34;
 	width=&#34;2233&#34;
 	height=&#34;431&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22_hu0893b0183081de56a0d93eebea21c7db_58125_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22_hu0893b0183081de56a0d93eebea21c7db_58125_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22_hu9378649849066676247.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22_hu5514892286775171662.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Next, select and upload the Zip file.&#34;
@@ -1075,7 +1075,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23.png&#34;
 	width=&#34;1847&#34;
 	height=&#34;1147&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23_hu8d935318f03b9143db17882353e5d7e9_106175_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23_hu8d935318f03b9143db17882353e5d7e9_106175_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23_hu17564494902182706656.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23_hu4258437063927111829.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click the first Wrench Icon to update the name of the Flow.&#34;
@@ -1089,7 +1089,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24.png&#34;
 	width=&#34;1895&#34;
 	height=&#34;1326&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24_hud97c690956c2dd92220355f92bd41ce7_160167_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24_hud97c690956c2dd92220355f92bd41ce7_160167_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24_hu4213196471572211845.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24_hu15721084507449836354.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click the Wrench Icon for both connections and choose an existing connection or set up a new one.&#34;
@@ -1103,7 +1103,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25.png&#34;
 	width=&#34;1856&#34;
 	height=&#34;1326&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25_hu58b25bebb3809deda371a4fe62d382ca_119335_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25_hu58b25bebb3809deda371a4fe62d382ca_119335_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25_hu5151078014175545705.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25_hu4840205175460810919.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Finally, click Import.&#34;
@@ -1118,7 +1118,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26.png&#34;
 	width=&#34;1439&#34;
 	height=&#34;515&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26_hu18bb5e1c7156c13d48546c066a298e42_75124_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26_hu18bb5e1c7156c13d48546c066a298e42_75124_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26_hu18259315964895338768.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26_hu7481541286255530911.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click Trun on&#34;
@@ -1133,7 +1133,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15.png&#34;
 	width=&#34;933&#34;
 	height=&#34;330&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15_hu8f6849b48dae2ab7886792ce8704706e_23895_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15_hu8f6849b48dae2ab7886792ce8704706e_23895_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15_hu1602228107939671958.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15_hu18399674530512702439.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Set the Flow trigger to your Site and List.&#34;
@@ -1148,7 +1148,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16.png&#34;
 	width=&#34;937&#34;
 	height=&#34;298&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16_hu2f2caad5241154c735a1113e351a4495_16328_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16_hu2f2caad5241154c735a1113e351a4495_16328_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16_hu17774634404559597013.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16_hu4017430030039818292.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Set the call queue Id&#34;
@@ -1160,13 +1160,13 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;These are the only two things you need to adjust. Because the Flow uses the action &lt;strong&gt;Get my profile (V2)&lt;/strong&gt; you don&amp;rsquo;t need to set anything that&amp;rsquo;s user specific. That action will always get the details of the user that is running the Flow.&lt;/p&gt;
-&lt;h4 id=&#34;share-the-flow-with-all-the-other-agents&#34;&gt;Share the Flow with all the other Agents&lt;/h4&gt;
-&lt;p&gt;Now that you have the Flow imported to your account, share it with all agents of the call queue.&lt;/p&gt;
+&lt;h4 id=&#34;share-the-flow-with-all-the-other-agents&#34;&gt;Share the Flow with all the other Agents
+&lt;/h4&gt;&lt;p&gt;Now that you have the Flow imported to your account, share it with all agents of the call queue.&lt;/p&gt;
 &lt;p&gt;Go back to &lt;strong&gt;My flows&lt;/strong&gt; and select the Flow again to share it with your team.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27.png&#34;
 	width=&#34;1440&#34;
 	height=&#34;422&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27_hu7fa896e8737707abd7bc43eaefce1b60_60538_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27_hu7fa896e8737707abd7bc43eaefce1b60_60538_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27_hu8528806638046816043.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27_hu1128282297428298293.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;From there, click Share.&#34;
@@ -1180,7 +1180,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28.png&#34;
 	width=&#34;1716&#34;
 	height=&#34;470&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28_huafa7453bc481c1dc50907b9694463b07_72474_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28_huafa7453bc481c1dc50907b9694463b07_72474_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28_hu5086464589580250981.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28_hu7595605989610089656.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Search for another call queue agent and select them from the drop-down menu.&#34;
@@ -1194,7 +1194,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29.png&#34;
 	width=&#34;1039&#34;
 	height=&#34;734&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29_hu5418d2bb3bc7d2bea736732f88cd74bf_83748_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29_hu5418d2bb3bc7d2bea736732f88cd74bf_83748_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29_hu167498132066773330.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29_hu3234347335798673121.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Confirm by clicking Ok.&#34;
@@ -1210,7 +1210,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30.png&#34;
 	width=&#34;1403&#34;
 	height=&#34;955&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30_hud85e770d6a9681de46a3ed65fa1fed3d_89488_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30_hud85e770d6a9681de46a3ed65fa1fed3d_89488_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30_hu4561416554919895521.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30_hu5466886728487689714.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Instruct them to click the three dots and select Save as.&#34;
@@ -1224,7 +1224,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31.png&#34;
 	width=&#34;1030&#34;
 	height=&#34;472&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31_hu3503ffc67329ae9e6469c6c87f117f7f_26625_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31_hu3503ffc67329ae9e6469c6c87f117f7f_26625_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31_hu2857392925328974134.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31_hu17070033798895599830.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Instruct them to create the connections by clicking Continue.&#34;
@@ -1238,7 +1238,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32.png&#34;
 	width=&#34;1038&#34;
 	height=&#34;420&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32_huf04498416c4c212182fcd07016b94c8b_45683_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32_huf04498416c4c212182fcd07016b94c8b_45683_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32_hu5182470505484744005.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32_hu3043512181455849335.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;They can rename the Flow before saving.&#34;
@@ -1252,7 +1252,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33.png&#34;
 	width=&#34;1057&#34;
 	height=&#34;947&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33_hue187d858fb1d43531950e4490d61070e_67598_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33_hue187d858fb1d43531950e4490d61070e_67598_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33_hu17293382911932268230.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33_hu9749183023347001063.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Finally, they&amp;rsquo;ll need to go to My flows again and turn on the copied Flow using the menu behind the three dots.&#34;
@@ -1264,12 +1264,12 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;Repeat these steps for all the other call queue agents. Each agent needs to have this Flow in their own Power Automate environment since the Flow will need to run with their credentials to be able to change their opt in status.&lt;/p&gt;
-&lt;h3 id=&#34;flow-to-keep-the-list-in-sync&#34;&gt;Flow to keep the List in Sync&lt;/h3&gt;
-&lt;p&gt;Obviously the agents will still be able to change their opt in status on their own using their Teams clients. In that case, we want to keep the SharePoint list updated as well and reflect changes to opt in status made outside of the list. For this, I&amp;rsquo;ve created another Flow. I&amp;rsquo;ll call that one the &lt;strong&gt;Sync-Flow&lt;/strong&gt;. This Flow will update the list for all agents and it will need to be created only once. In my Lab, I&amp;rsquo;ve configured this Flow with a recurring trigger every 15 minutes.&lt;/p&gt;
+&lt;h3 id=&#34;flow-to-keep-the-list-in-sync&#34;&gt;Flow to keep the List in Sync
+&lt;/h3&gt;&lt;p&gt;Obviously the agents will still be able to change their opt in status on their own using their Teams clients. In that case, we want to keep the SharePoint list updated as well and reflect changes to opt in status made outside of the list. For this, I&amp;rsquo;ve created another Flow. I&amp;rsquo;ll call that one the &lt;strong&gt;Sync-Flow&lt;/strong&gt;. This Flow will update the list for all agents and it will need to be created only once. In my Lab, I&amp;rsquo;ve configured this Flow with a recurring trigger every 15 minutes.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17.png&#34;
 	width=&#34;1428&#34;
 	height=&#34;1835&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17_hu7822eedc376cdddd5f0d997034945251_84170_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17_hu7822eedc376cdddd5f0d997034945251_84170_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17_hu18094835676414418205.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17_hu11659137885635116474.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Flow to update the List if CQ Agents opt in/out via Teams clients.&#34;
@@ -1285,7 +1285,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1216&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19_hu13dde0b83477463bacfbed9010e265f4_119473_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19_hu13dde0b83477463bacfbed9010e265f4_119473_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19_hu1896115540196913194.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19_hu11852883048610094001.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;The List tab after it&amp;rsquo;s been updated by Power Automate.&#34;
@@ -1310,7 +1310,7 @@
 &lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20.png&#34;
 	width=&#34;917&#34;
 	height=&#34;1395&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20_hua3fab719cdf0b59eb124952147058e88_113321_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20_hua3fab719cdf0b59eb124952147058e88_113321_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20_hu5708539168798782398.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20_hu437063029256463986.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;The trigger condition will prevent infinite trigger loops.&#34;
@@ -1322,13 +1322,13 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;It&amp;rsquo;s important to note that when you or somebody else wants to change the opt in status of an agent again from the list, the &lt;strong&gt;Updated by Power Automate&lt;/strong&gt; checkbox must be unchecked again. Otherwise the User-Flows won&amp;rsquo;t run and the opt in status won&amp;rsquo;t be changed.&lt;/p&gt;
-&lt;h4 id=&#34;import-the-flow-package-1&#34;&gt;Import the Flow Package&lt;/h4&gt;
-&lt;p&gt;You can download this Flow from &lt;a class=&#34;link&#34; href=&#34;#download-flow-packages&#34; &gt;here&lt;/a&gt;. Use the same process to import the Flow package as you already did with the User-Flow and don&amp;rsquo;t forget to turn it as well on once you&amp;rsquo;re done. In this Flow, you will need to do the following adjustments.&lt;/p&gt;
+&lt;h4 id=&#34;import-the-flow-package-1&#34;&gt;Import the Flow Package
+&lt;/h4&gt;&lt;p&gt;You can download this Flow from &lt;a class=&#34;link&#34; href=&#34;#download-flow-packages&#34; &gt;here&lt;/a&gt;. Use the same process to import the Flow package as you already did with the User-Flow and don&amp;rsquo;t forget to turn it as well on once you&amp;rsquo;re done. In this Flow, you will need to do the following adjustments.&lt;/p&gt;
 &lt;p&gt;Replace the value of the &lt;strong&gt;CallQueueId&lt;/strong&gt; variable with your call queue Id.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35.png&#34;
 	width=&#34;923&#34;
 	height=&#34;410&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35_hu1e4d1ce95122be4f96ee08eac420c8e0_23942_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35_hu1e4d1ce95122be4f96ee08eac420c8e0_23942_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35_hu2117963138089312102.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35_hu8761090421070259272.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Set the CallQueueId variable.&#34;
@@ -1343,7 +1343,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36.png&#34;
 	width=&#34;939&#34;
 	height=&#34;446&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36_hu711920aa01d34bc8ccf9581338979efc_29013_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36_hu711920aa01d34bc8ccf9581338979efc_29013_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36_hu8017697667298753491.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36_hu10571986564566521542.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Replace Site Address and List Name.&#34;
@@ -1358,7 +1358,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37.png&#34;
 	width=&#34;969&#34;
 	height=&#34;717&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37_hu660262918bbce269d293b222aec9bd83_34854_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37_hu660262918bbce269d293b222aec9bd83_34854_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37_hu17667313924104665433.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37_hu8836776512602459146.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Replace Site Address and List Name.&#34;
@@ -1370,12 +1370,12 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;That&amp;rsquo;s it for the set up part. Let&amp;rsquo;s take a look at the user experience!&lt;/p&gt;
-&lt;h2 id=&#34;user-experience&#34;&gt;User Experience&lt;/h2&gt;
-&lt;p&gt;Here you can see how it works. Anyone that has access to the list, can simply edit the list and change the opt in status of another colleague.&lt;/p&gt;
+&lt;h2 id=&#34;user-experience&#34;&gt;User Experience
+&lt;/h2&gt;&lt;p&gt;Here you can see how it works. Anyone that has access to the list, can simply edit the list and change the opt in status of another colleague.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/TeamsCQOptIn.gif&#34;
 	width=&#34;1195&#34;
 	height=&#34;672&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/TeamsCQOptIn_huc59211e8f7e1e5c1d08e18b8085cfb7f_759523_480x0_resize_box_1.gif 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/TeamsCQOptIn_huc59211e8f7e1e5c1d08e18b8085cfb7f_759523_1024x0_resize_box_1.gif 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/TeamsCQOptIn_hu9871273669532964979.gif 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/TeamsCQOptIn_hu332530050797161910.gif 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Note: The Flow was in test mode to speed up the demo. In real life, it will usually take a few minutes to change an opt in status.&#34;
@@ -1390,7 +1390,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34.png&#34;
 	width=&#34;1488&#34;
 	height=&#34;1090&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34_hu05285cc3066715cc19a9df546850a5bf_140226_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34_hu05285cc3066715cc19a9df546850a5bf_140226_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34_hu860538479537783540.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34_hu15071899178839810327.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;The default polling interval is 5 minutes.&#34;
@@ -1401,13 +1401,13 @@
 		data-flex-basis=&#34;327px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;additional-benefits&#34;&gt;Additional Benefits&lt;/h2&gt;
-&lt;p&gt;As you may know, the &lt;strong&gt;Calls&lt;/strong&gt; tab in channels is not supported on the Teams mobile app. The call queue agents and their opt in status can only be viewed in the Teams desktop or web client. At this point I want to clarify again, that mobile clients can still receive calls from a call queue, even when the call queue is linked to a voice enabled channel. It&amp;rsquo;s only the view/tab that&amp;rsquo;s not supported on Teams mobile apps.&lt;/p&gt;
+&lt;h2 id=&#34;additional-benefits&#34;&gt;Additional Benefits
+&lt;/h2&gt;&lt;p&gt;As you may know, the &lt;strong&gt;Calls&lt;/strong&gt; tab in channels is not supported on the Teams mobile app. The call queue agents and their opt in status can only be viewed in the Teams desktop or web client. At this point I want to clarify again, that mobile clients can still receive calls from a call queue, even when the call queue is linked to a voice enabled channel. It&amp;rsquo;s only the view/tab that&amp;rsquo;s not supported on Teams mobile apps.&lt;/p&gt;
 &lt;p&gt;But since this solution uses a SharePoint list, it will actually give you the ability to view and change the opt in status of other agents from a mobile device too. This can be done by either opening the list tab in Teams mobile or by accessing the list directly in the Lists mobile app.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS_huec20a803642c2679aa37025ba2a31364_121062_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS_huec20a803642c2679aa37025ba2a31364_121062_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS_hu11523580541972779827.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS_hu1652069061924224646.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;List tab in Teams mobile.&#34;
@@ -1420,7 +1420,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS_hu8028d64d3a7364db64b08f35efe98733_136987_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS_hu8028d64d3a7364db64b08f35efe98733_136987_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS_hu18018118354172697295.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS_hu2060395788159105390.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Editing a list item in Teams mobile.&#34;
@@ -1433,7 +1433,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS_hu9635423d25551d7e97b961a20c4d5b90_230407_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS_hu9635423d25551d7e97b961a20c4d5b90_230407_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS_hu18422803775100028305.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS_hu12898352815111235887.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Toggle switches in Lists app.&#34;
@@ -1445,11 +1445,11 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;The list app will even give you toggle switches which not only looks better but is also easier to edit compared to the experience within the Teams mobile app.&lt;/p&gt;
-&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
-&lt;p&gt;While Teams Premium provides a lot of benefits over the Standard license, the additional $10 per user per month can make quite the difference in your monthly license cost. I fully understand the price tag since Teams Premium also includes AI generated notes which use a lot of computing resources and thus cost Microsoft more money to run their services in the backend.&lt;/p&gt;
+&lt;h2 id=&#34;summary&#34;&gt;Summary
+&lt;/h2&gt;&lt;p&gt;While Teams Premium provides a lot of benefits over the Standard license, the additional $10 per user per month can make quite the difference in your monthly license cost. I fully understand the price tag since Teams Premium also includes AI generated notes which use a lot of computing resources and thus cost Microsoft more money to run their services in the backend.&lt;/p&gt;
 &lt;p&gt;However, if you&amp;rsquo;re only looking for a way to opt in/out other call queue agents on their behalf and don&amp;rsquo;t want to spend another $10 PUPM, I think this solution can be a suitable workaround. Especially for small companies which don&amp;rsquo;t have a lot of call queues with a lot of agents. Of course there is some work to be done by admins and the end users (agents) but it should be manageable for small teams. And let&amp;rsquo;s not forget the fact this will even allow you to change the opt in status for other agents on mobile platforms too!&lt;/p&gt;
-&lt;h3 id=&#34;download-flow-packages&#34;&gt;Download Flow Packages&lt;/h3&gt;
-&lt;p&gt;You can download both Flow packages for free from &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/UpdateCallQueueOptInStatus_20240614215253.zip&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h3 id=&#34;download-flow-packages&#34;&gt;Download Flow Packages
+&lt;/h3&gt;&lt;p&gt;You can download both Flow packages for free from &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/UpdateCallQueueOptInStatus_20240614215253.zip&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/SyncOptInStatustoList_20240614215356.zip&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt;. If you like what I&amp;rsquo;ve presented in this blog post and if it will save you the money you would have otherwise spent on Teams Premium licenses, you can still choose to support me by &lt;a class=&#34;link&#34; href=&#34;https://buymeacoffee.com/martin.heusser&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;buying me a coffee&lt;/a&gt; or by sponsoring me on &lt;a class=&#34;link&#34; href=&#34;https://github.com/sponsors/mozziemozz?frequency=one-time&amp;amp;sponsor=mozziemozz&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -1464,12 +1464,12 @@
         <guid>https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/</guid>
         <description>&lt;img src="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/cover.png" alt="Featured image of post Teams Shared Voicemail for Basic Call Flows" /&gt;&lt;p&gt;Not too long ago I wrote &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc&#34; &gt;this&lt;/a&gt; blog post about the ultimate Teams shared voicemail solution. This solution assumed a full blown call flow with on-call coverage and an advanced notification mechanism. Today I&amp;rsquo;m going to show you a simplified but yet optimized version of my Power Automate Flow. While the previous solution works without any issues, it&amp;rsquo;s not really scalable. If you have a lot of queues, you probably don&amp;rsquo;t want to create a dedicated shared mailbox for every queue that needs shared voicemail access via Teams and Adaptive Cards. That just adds unnecessary management overhead to your Teams phone environment.&lt;/p&gt;
 &lt;p&gt;I&amp;rsquo;ve got some good news for you. I found a way to do it all without the need of shared mailbox. The flow is now directly triggered by a new email to the Microsoft 365 Group instead of a new email to the shared mailbox. Furthermore, all other mail related actions in the flow have been updated to use the &lt;strong&gt;Office 365 Groups Mail&lt;/strong&gt; connector as well.&lt;/p&gt;
-&lt;h2 id=&#34;call-flow-diagram&#34;&gt;Call Flow Diagram&lt;/h2&gt;
-&lt;p&gt;Let&amp;rsquo;s look at the scenario first. This time around, it&amp;rsquo;s a very simple call flow which consists of an auto attendant, a call queue and a Microsoft 365 Group as shared voicemail target.&lt;/p&gt;
+&lt;h2 id=&#34;call-flow-diagram&#34;&gt;Call Flow Diagram
+&lt;/h2&gt;&lt;p&gt;Let&amp;rsquo;s look at the scenario first. This time around, it&amp;rsquo;s a very simple call flow which consists of an auto attendant, a call queue and a Microsoft 365 Group as shared voicemail target.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow.png&#34;
 	width=&#34;7840&#34;
 	height=&#34;7820&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu4ce757c515f026b609b1e8b10bca0970_1141893_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu4ce757c515f026b609b1e8b10bca0970_1141893_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu7272508111248889636.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu2016930160223947453.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1478,12 +1478,12 @@
 		data-flex-basis=&#34;240px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;flow-trigger&#34;&gt;Flow Trigger&lt;/h2&gt;
-&lt;p&gt;The flow is now triggered by &lt;strong&gt;When a new email arrives to a group&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;flow-trigger&#34;&gt;Flow Trigger
+&lt;/h2&gt;&lt;p&gt;The flow is now triggered by &lt;strong&gt;When a new email arrives to a group&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39.png&#34;
 	width=&#34;920&#34;
 	height=&#34;172&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu367e51beddae693299327d98b155357f_12057_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu367e51beddae693299327d98b155357f_12057_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu6276923195173620822.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu9769458055859161011.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1492,13 +1492,13 @@
 		data-flex-basis=&#34;1283px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;flow-actions&#34;&gt;Flow Actions&lt;/h2&gt;
-&lt;p&gt;Using the Office 365 Groups Mail connector is not as straight forward as retrieving an email from a shared mailbox or a normal user mailbox. There are conversations, threads and thread posts. Everything must be queried in the correct order to receive all the data that&amp;rsquo;s needed.&lt;/p&gt;
+&lt;h2 id=&#34;flow-actions&#34;&gt;Flow Actions
+&lt;/h2&gt;&lt;p&gt;Using the Office 365 Groups Mail connector is not as straight forward as retrieving an email from a shared mailbox or a normal user mailbox. There are conversations, threads and thread posts. Everything must be queried in the correct order to receive all the data that&amp;rsquo;s needed.&lt;/p&gt;
 &lt;p&gt;This is how it&amp;rsquo;s done.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39.png&#34;
 	width=&#34;1104&#34;
 	height=&#34;1365&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hud53d04c7af0039e973b7dcc356d83575_58726_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hud53d04c7af0039e973b7dcc356d83575_58726_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hu3691167799431175005.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hu12860602678462286633.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1511,7 +1511,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53.png&#34;
 	width=&#34;1944&#34;
 	height=&#34;1585&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu005aea943fe5f8514d7a1cc3c7386ff1_140058_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu005aea943fe5f8514d7a1cc3c7386ff1_140058_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu4052034907694077373.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu15607944988022955664.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1520,12 +1520,12 @@
 		data-flex-basis=&#34;294px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;result-in-teams&#34;&gt;Result in Teams&lt;/h2&gt;
-&lt;p&gt;This is how the notification looks like for end users in Teams. In case the audio player on the card is not working for whatever reason, I&amp;rsquo;ve also included an additional button called &lt;strong&gt;Open MP3&lt;/strong&gt; which will open the audio file in Microsoft Stream when it&amp;rsquo;s clicked.&lt;/p&gt;
+&lt;h2 id=&#34;result-in-teams&#34;&gt;Result in Teams
+&lt;/h2&gt;&lt;p&gt;This is how the notification looks like for end users in Teams. In case the audio player on the card is not working for whatever reason, I&amp;rsquo;ve also included an additional button called &lt;strong&gt;Open MP3&lt;/strong&gt; which will open the audio file in Microsoft Stream when it&amp;rsquo;s clicked.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17.png&#34;
 	width=&#34;2241&#34;
 	height=&#34;932&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu3b8f530f42425b83cc01a19c36f6ee4f_152399_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu3b8f530f42425b83cc01a19c36f6ee4f_152399_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu18345731162980052300.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu8683442676467481998.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1534,10 +1534,10 @@
 		data-flex-basis=&#34;577px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;final-notes&#34;&gt;Final Notes&lt;/h2&gt;
-&lt;p&gt;If you have an on-call option in your call flow but you still want to take advantage of the simplified trigger without the shared mailbox, you can just import both flows into your Power Automate Environment and build a new flow from scratch which combines the best of both worlds. The Microsoft Edge split screen feature and Power Automate&amp;rsquo;s copy/paste feature are a great help for that.&lt;/p&gt;
-&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
-&lt;p&gt;The initial scenario which included the on-call notification mechanism was designed for a very specific use case. This iteration of my Teams Shared Voicemail solution should fit a lot more customer scenarios. It&amp;rsquo;s easier to understand and implement and also has less moving parts. Feel free to download the basic version of my flow from &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/raw/main/Scripts/PowerAutomate/Flows/TeamsSharedVoicemailBasicV3%28M365GroupInbox%29_GitHub.zip&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h2 id=&#34;final-notes&#34;&gt;Final Notes
+&lt;/h2&gt;&lt;p&gt;If you have an on-call option in your call flow but you still want to take advantage of the simplified trigger without the shared mailbox, you can just import both flows into your Power Automate Environment and build a new flow from scratch which combines the best of both worlds. The Microsoft Edge split screen feature and Power Automate&amp;rsquo;s copy/paste feature are a great help for that.&lt;/p&gt;
+&lt;h2 id=&#34;summary&#34;&gt;Summary
+&lt;/h2&gt;&lt;p&gt;The initial scenario which included the on-call notification mechanism was designed for a very specific use case. This iteration of my Teams Shared Voicemail solution should fit a lot more customer scenarios. It&amp;rsquo;s easier to understand and implement and also has less moving parts. Feel free to download the basic version of my flow from &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/raw/main/Scripts/PowerAutomate/Flows/TeamsSharedVoicemailBasicV3%28M365GroupInbox%29_GitHub.zip&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt; and give it a try. Just make sure to replace anything that&amp;rsquo;s specific to my lab tenant with your actual values.&lt;/p&gt;
 &lt;p&gt;If you need help importing the flow, please read this section in the &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/#the-flow&#34; &gt;initial article&lt;/a&gt; first.&lt;/p&gt;
 &lt;p&gt;If this blog provides additional value to you or your company, I want you to know that you can always show your support by donating on my &lt;a class=&#34;link&#34; href=&#34;https://github.com/sponsors/mozziemozz?frequency=one-time&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -1554,12 +1554,12 @@
 &lt;p&gt;About a year ago, I also &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1&#34; &gt;wrote&lt;/a&gt; about shared voicemail now supporting not just Microsoft 365 groups but also distribution lists and mail enabled security groups. While it’s great to have more options, that doesn’t solve the issue at its core.&lt;/p&gt;
 &lt;p&gt;My main complaint about shared voicemail in Teams is that it’s hard to keep an overview over which voicemails have already been processed (as in the person who left the message has been called back). You either train people to regularly check their Microsoft 365 group inboxes or you enable &lt;a class=&#34;link&#34; href=&#34;https://support.microsoft.com/en-us/office/follow-a-group-in-outlook-e147fc19-f548-4cd2-834f-80c6235b7c36#:~:text=Follow%20a%20group%3A%201%20In%20Outlook%20for%20Windows%2C,list%2C%20select%20Not%20following%20%3E%20Follow%20in%20Inbox.&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;follow in inbox&lt;/a&gt; for all the group&amp;rsquo;s members. Follow in inbox will make sure that no voicemail/email gets lost, but it also means that more communication is required within a team to make sure that the caller is not called back multiple times or not at all (because everybody believes that someone else will call back). My Power Automate Flow solves this issue by delivering the voicemails directly into a Teams channel.&lt;/p&gt;
-&lt;h4 id=&#34;call-flowdiagram&#34;&gt;Call Flow Diagram&lt;/h4&gt;
-&lt;p&gt;This is the example scenario. A relatively simple call flow with an auto attendant which routes calls to a call queue during business hours and redirects to a second auto attendant after hours. The second auto attendant offers callers a choice to either leave a message or get connected to the on-call service.&lt;/p&gt;
+&lt;h4 id=&#34;call-flowdiagram&#34;&gt;Call Flow Diagram
+&lt;/h4&gt;&lt;p&gt;This is the example scenario. A relatively simple call flow with an auto attendant which routes calls to a call queue during business hours and redirects to a second auto attendant after hours. The second auto attendant offers callers a choice to either leave a message or get connected to the on-call service.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw.png&#34;
 	width=&#34;7840&#34;
 	height=&#34;5630&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hub51c37fddac4d66ae71ee6ba470a9ab4_1128090_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hub51c37fddac4d66ae71ee6ba470a9ab4_1128090_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hu12855296586873793472.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hu5436304556483671852.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1573,7 +1573,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w.png&#34;
 	width=&#34;2033&#34;
 	height=&#34;543&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hub2accd97faa544aa26b80d232385f9ec_114964_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hub2accd97faa544aa26b80d232385f9ec_114964_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hu10242821503798733846.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hu14495164218824647678.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1582,21 +1582,21 @@
 		data-flex-basis=&#34;898px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;shared-voicemail&#34;&gt;Shared Voicemail&lt;/h4&gt;
-&lt;p&gt;As you can see in the diagram, in every case where a call cannot be answered, it goes to the same shared voicemail group. This Microsoft 365 group is the same group that’s linked to the Team which also hosts the two voice enabled channels which are linked to the call queues.&lt;/p&gt;
+&lt;h4 id=&#34;shared-voicemail&#34;&gt;Shared Voicemail
+&lt;/h4&gt;&lt;p&gt;As you can see in the diagram, in every case where a call cannot be answered, it goes to the same shared voicemail group. This Microsoft 365 group is the same group that’s linked to the Team which also hosts the two voice enabled channels which are linked to the call queues.&lt;/p&gt;
 &lt;p&gt;Instead of relying on people either checking the group mailbox for new voicemail messages or subscribing to the group mailbox, we’re going to build a Power Automate flow to deliver voicemail messages directly into a Teams channel.&lt;/p&gt;
 &lt;p&gt;The first thing we need to do is to create or define a shared mailbox so we can subscribe it to new messages of the M365 group. The flow will only process emails which have attachments, and the attachments name must end with &lt;code&gt;.mp3&lt;/code&gt; . But I still strongly recommend to create a dedicated shared mailbox which will only receive emails from the M365 group. To keep things clean, I would also deter from sending any kind of other emails to the M365 group. If you also use a dedicated Team for your call queues, that shouldn’t be an issue.&lt;/p&gt;
 &lt;p&gt;Once the shared mailbox is created, we need to give the user which will own the Flow full access to it.&lt;/p&gt;
 &lt;p&gt;You will need the PowerShell module &lt;code&gt;ExchangeOnlineManagement&lt;/code&gt; and need to run &lt;code&gt;Connect-ExchangeOnline&lt;/code&gt; before you can run these commands.&lt;/p&gt;
-&lt;h3 id=&#34;create-shared-mailbox&#34;&gt;Create shared mailbox&lt;/h3&gt;
-&lt;p&gt;New-Mailbox -Shared -Name &amp;ldquo;PS Test EV Enabled SharedVoicemail&amp;rdquo; -DisplayName &amp;ldquo;PS Test EV Enabled SharedVoicemail&amp;rdquo; -Alias &amp;ldquo;PSTestEVEnabledSharedVoicemail&amp;rdquo;&lt;/p&gt;
+&lt;h3 id=&#34;create-shared-mailbox&#34;&gt;Create shared mailbox
+&lt;/h3&gt;&lt;p&gt;New-Mailbox -Shared -Name &amp;ldquo;PS Test EV Enabled SharedVoicemail&amp;rdquo; -DisplayName &amp;ldquo;PS Test EV Enabled SharedVoicemail&amp;rdquo; -Alias &amp;ldquo;PSTestEVEnabledSharedVoicemail&amp;rdquo;&lt;/p&gt;
 &lt;p&gt;Start-Sleep -Seconds 30&lt;/p&gt;
-&lt;h4 id=&#34;grant-full-mailbox-access-to-the-flow-owner&#34;&gt;Grant full mailbox access to the flow owner&lt;/h4&gt;
-&lt;p&gt;Add-MailboxPermission -Identity &amp;ldquo;PSTestEVEnabledSharedVoicemail&amp;rdquo; -User &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;mailto:mozzie@mozzism.ch&#34; &gt;mozzie@mozzism.ch&lt;/a&gt;&amp;rdquo; -AccessRights FullAccess -InheritanceType All&lt;/p&gt;
-&lt;h4 id=&#34;subscribing-the-shared-mailbox-to-the-m365-groupinbox&#34;&gt;Subscribing the Shared Mailbox to the M365 Group Inbox&lt;/h4&gt;
-&lt;p&gt;Next, we add the newly created shared mailbox as a member of the group and then also subscribe it to the group’s inbox.&lt;/p&gt;
-&lt;h4 id=&#34;add-the-shared-mailbox-as-a-member-to-the-m365-group&#34;&gt;Add the shared mailbox as a member to the M365 group&lt;/h4&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;h4 id=&#34;grant-full-mailbox-access-to-the-flow-owner&#34;&gt;Grant full mailbox access to the flow owner
+&lt;/h4&gt;&lt;p&gt;Add-MailboxPermission -Identity &amp;ldquo;PSTestEVEnabledSharedVoicemail&amp;rdquo; -User &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;mailto:mozzie@mozzism.ch&#34; &gt;mozzie@mozzism.ch&lt;/a&gt;&amp;rdquo; -AccessRights FullAccess -InheritanceType All&lt;/p&gt;
+&lt;h4 id=&#34;subscribing-the-shared-mailbox-to-the-m365-groupinbox&#34;&gt;Subscribing the Shared Mailbox to the M365 Group Inbox
+&lt;/h4&gt;&lt;p&gt;Next, we add the newly created shared mailbox as a member of the group and then also subscribe it to the group’s inbox.&lt;/p&gt;
+&lt;h4 id=&#34;add-the-shared-mailbox-as-a-member-to-the-m365-group&#34;&gt;Add the shared mailbox as a member to the M365 group
+&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
@@ -1604,8 +1604,8 @@
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Add-UnifiedGroupLinks&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Identity&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$groupId&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-LinkType&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Members&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Links&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;PSTestEVEnabledSharedVoicemail&amp;#34;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h4 id=&#34;subscribe-the-shared-mailbox-to-the-m365-groups-emails-enable-follow-in-inbox&#34;&gt;Subscribe the shared mailbox to the M365 group&amp;rsquo;s emails (enable follow in inbox)&lt;/h4&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;/div&gt;&lt;h4 id=&#34;subscribe-the-shared-mailbox-to-the-m365-groups-emails-enable-follow-in-inbox&#34;&gt;Subscribe the shared mailbox to the M365 group&amp;rsquo;s emails (enable follow in inbox)
+&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
@@ -1620,12 +1620,12 @@
 PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The idea here is that only the shared mailbox gets new voicemails in its mailbox. None of the users should get the voicemails in their personal inbox because they receive them in Teams. This allows for much better and efficient collaboration.&lt;/p&gt;
-&lt;h3 id=&#34;the-result&#34;&gt;The Result&lt;/h3&gt;
-&lt;p&gt;This is the Team I created for this call flow. Channels 1 and 2 are linked to the queues which receive calls. 3 and 4 are the ones which receive the voicemails. As explained earlier in this article, the flow can easily determine at which stage in the call flow (during business hours or on-call/after hours) a voicemail was left. That’s why we have two separate voicemail channels.&lt;/p&gt;
+&lt;h3 id=&#34;the-result&#34;&gt;The Result
+&lt;/h3&gt;&lt;p&gt;This is the Team I created for this call flow. Channels 1 and 2 are linked to the queues which receive calls. 3 and 4 are the ones which receive the voicemails. As explained earlier in this article, the flow can easily determine at which stage in the call flow (during business hours or on-call/after hours) a voicemail was left. That’s why we have two separate voicemail channels.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw.png&#34;
 	width=&#34;1054&#34;
 	height=&#34;489&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu03e8e85a0279064c555aa036bed51fbc_47388_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu03e8e85a0279064c555aa036bed51fbc_47388_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu8526223670376369789.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu923701379336760308.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1634,14 +1634,14 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 		data-flex-basis=&#34;517px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;voicemail-during-businesshours&#34;&gt;Voicemail During Business Hours&lt;/h4&gt;
-&lt;p&gt;Adaptive Cards in Teams now support &lt;a class=&#34;link&#34; href=&#34;https://adaptivecards.io/explorer/Media.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h4 id=&#34;voicemail-during-businesshours&#34;&gt;Voicemail During Business Hours
+&lt;/h4&gt;&lt;p&gt;Adaptive Cards in Teams now support &lt;a class=&#34;link&#34; href=&#34;https://adaptivecards.io/explorer/Media.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;media&lt;/a&gt;. This means that we can now embed an audio file which is stored on SharePoint directly on an adaptive card and we’ll get a neat little Stream powered media player inside Teams.&lt;/p&gt;
 &lt;p&gt;The card will include the number or the email address of the user who left the voicemail.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g.png&#34;
 	width=&#34;1382&#34;
 	height=&#34;763&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu128c27797fb9abe086ef1be2c69fc748_46867_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu128c27797fb9abe086ef1be2c69fc748_46867_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu2728496663489879185.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu5761825704734345070.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1653,7 +1653,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ.png&#34;
 	width=&#34;1384&#34;
 	height=&#34;760&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu489d7a49f052cf05cbfb03818a9ed870_60400_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu489d7a49f052cf05cbfb03818a9ed870_60400_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu1933363755079576700.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu13564362274648033296.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1666,7 +1666,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA.png&#34;
 	width=&#34;885&#34;
 	height=&#34;232&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_huff66e7d56f2120b1171ff0b279285ab7_13593_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_huff66e7d56f2120b1171ff0b279285ab7_13593_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_hu2874519935006339848.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_hu7741457662367446754.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1678,7 +1678,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug.png&#34;
 	width=&#34;882&#34;
 	height=&#34;230&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu90fab92a818862ed1f38f205f02dcbf9_12818_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu90fab92a818862ed1f38f205f02dcbf9_12818_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu352885753578483131.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu8273292575465076490.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1687,12 +1687,12 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 		data-flex-basis=&#34;920px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;updated-adaptivecards&#34;&gt;Updated Adaptive Cards&lt;/h4&gt;
-&lt;p&gt;Once a team member has called back, a card can be marked as completed. This will update the card so that all other team members can see that there’s no action left to take. It’s even possible to see who has marked a card as completed.&lt;/p&gt;
+&lt;h4 id=&#34;updated-adaptivecards&#34;&gt;Updated Adaptive Cards
+&lt;/h4&gt;&lt;p&gt;Once a team member has called back, a card can be marked as completed. This will update the card so that all other team members can see that there’s no action left to take. It’s even possible to see who has marked a card as completed.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ.png&#34;
 	width=&#34;1384&#34;
 	height=&#34;481&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hudd471d9d131421b1519ace31e7d96644_45397_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hudd471d9d131421b1519ace31e7d96644_45397_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hu1422730863264469117.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hu2161688040932036547.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1705,7 +1705,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA.png&#34;
 	width=&#34;1379&#34;
 	height=&#34;1003&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu9503a85d6c7ad66f281518c6528d3ba4_70672_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu9503a85d6c7ad66f281518c6528d3ba4_70672_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu12012160211085122908.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu4945891878961499679.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1718,7 +1718,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA.png&#34;
 	width=&#34;1468&#34;
 	height=&#34;422&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu9888d416a96be9b9444d00ca58db242b_76420_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu9888d416a96be9b9444d00ca58db242b_76420_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu10524768591447971398.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu2149592211078648373.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1731,7 +1731,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q.png&#34;
 	width=&#34;1385&#34;
 	height=&#34;539&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu891bef65bd4399010a3f431602dd39bb_65801_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu891bef65bd4399010a3f431602dd39bb_65801_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu15458806330991475184.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu6948695240082654987.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1743,13 +1743,13 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;Less or equal 1 hour = 😊&lt;br&gt;
 Less or equal 2 hours = 😐&lt;br&gt;
 More than 2 hours = 😞&lt;/p&gt;
-&lt;h4 id=&#34;voicemail-during-after-hours-oncall&#34;&gt;Voicemail During After Hours (On Call)&lt;/h4&gt;
-&lt;p&gt;Voicemails which were left outside business hours will go into the &lt;strong&gt;Voicemail On Call&lt;/strong&gt; channel. When a voicemail is left during on-call hours, it means that the people who are on-call missed a call and should call back as soon as possible. Thus, we want to have an appropriate alerting system in place.&lt;/p&gt;
+&lt;h4 id=&#34;voicemail-during-after-hours-oncall&#34;&gt;Voicemail During After Hours (On Call)
+&lt;/h4&gt;&lt;p&gt;Voicemails which were left outside business hours will go into the &lt;strong&gt;Voicemail On Call&lt;/strong&gt; channel. When a voicemail is left during on-call hours, it means that the people who are on-call missed a call and should call back as soon as possible. Thus, we want to have an appropriate alerting system in place.&lt;/p&gt;
 &lt;p&gt;I’m using a shift which is linked to my Call Queue Team which defines which user is on call on which days.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig.png&#34;
 	width=&#34;2149&#34;
 	height=&#34;961&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu81caf29e270769ad0ae1725e95e2d7c1_155795_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu81caf29e270769ad0ae1725e95e2d7c1_155795_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu10642960343245584212.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu15002541618406063103.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1764,7 +1764,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw.png&#34;
 	width=&#34;1554&#34;
 	height=&#34;740&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu7c5fb594d0fef575d4af2f7664aa5119_85443_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu7c5fb594d0fef575d4af2f7664aa5119_85443_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu5463160827794298530.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu4029770359386110174.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1778,7 +1778,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ.png&#34;
 	width=&#34;1025&#34;
 	height=&#34;1195&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu440c3d682923c7604abe0226905b939c_103768_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu440c3d682923c7604abe0226905b939c_103768_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu5937485943100323066.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu15200492561129714022.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1791,7 +1791,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw.png&#34;
 	width=&#34;1388&#34;
 	height=&#34;846&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu7a15a5f21384fdbbcf31cbce5a794ec1_65048_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu7a15a5f21384fdbbcf31cbce5a794ec1_65048_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu14014501432488919598.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu7289622198699713943.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1804,7 +1804,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A.png&#34;
 	width=&#34;2284&#34;
 	height=&#34;961&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_huad6447e4e7469028add8e455b0179a59_175595_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_huad6447e4e7469028add8e455b0179a59_175595_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_hu11908678012870351812.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_hu1712600209183588314.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1813,8 +1813,8 @@ More than 2 hours = 😞&lt;/p&gt;
 		data-flex-basis=&#34;570px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h3 id=&#34;the-flow&#34;&gt;The Flow&lt;/h3&gt;
-&lt;p&gt;The flow has become quite large and Power Automate keeps reminding me that it contains too many actions to use the new AI-powered designer. 🙃&lt;/p&gt;
+&lt;h3 id=&#34;the-flow&#34;&gt;The Flow
+&lt;/h3&gt;&lt;p&gt;The flow has become quite large and Power Automate keeps reminding me that it contains too many actions to use the new AI-powered designer. 🙃&lt;/p&gt;
 &lt;p&gt;To make it easier for you, I exported the flow and made it available for download &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/TeamsSharedVoicemailv2.4_GitHub.zip&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt;. To import it, go to &lt;a class=&#34;link&#34; href=&#34;https://make.powerautomate.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://make.powerautomate.com&lt;/a&gt; and select &lt;strong&gt;Import&lt;/strong&gt; and then &lt;strong&gt;Import Package (Legacy)&lt;/strong&gt;.&lt;/p&gt;
@@ -1822,7 +1822,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g.png&#34;
 	width=&#34;2095&#34;
 	height=&#34;1392&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hub242c7eef37ffca22e805feb54dbd0a5_153189_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hub242c7eef37ffca22e805feb54dbd0a5_153189_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hu16515656192914363879.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hu9617947552083075885.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1835,7 +1835,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw.png&#34;
 	width=&#34;915&#34;
 	height=&#34;351&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu560a007e81d62e243b1cc24398544016_26860_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu560a007e81d62e243b1cc24398544016_26860_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu1657808557811107612.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu11851405960407821866.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1847,7 +1847,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ.png&#34;
 	width=&#34;1933&#34;
 	height=&#34;907&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hub6d9f6c013fa88e1797d310684edf394_87742_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hub6d9f6c013fa88e1797d310684edf394_87742_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hu3119412816953799147.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hu1742214663190435552.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1859,7 +1859,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw.png&#34;
 	width=&#34;913&#34;
 	height=&#34;349&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hubd526de79c74c52267a103cc948dafe4_27574_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hubd526de79c74c52267a103cc948dafe4_27574_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hu5307429991215446537.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hu15168558474484845638.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1871,7 +1871,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ.png&#34;
 	width=&#34;914&#34;
 	height=&#34;1033&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_huc1bbd4a350ae6ca3d8c2a16e4c80544d_70713_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_huc1bbd4a350ae6ca3d8c2a16e4c80544d_70713_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_hu5465998868029572349.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_hu3064536430309956232.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1883,7 +1883,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw.png&#34;
 	width=&#34;916&#34;
 	height=&#34;218&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu0eaa929ea623051b298cffec53bbea94_13495_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu0eaa929ea623051b298cffec53bbea94_13495_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu14997008649639381127.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu12034864242468898112.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1893,14 +1893,14 @@ More than 2 hours = 😞&lt;/p&gt;
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;You get the gist. At least you won’t have to create all the actions manually.&lt;/p&gt;
-&lt;h3 id=&#34;summary&#34;&gt;Summary&lt;/h3&gt;
-&lt;p&gt;Even though it took me days to finally get this right, I had so much fun building this. Besides that, I also learned a lot of new stuff about Power Automate. In fact, this was the very first parallel branch I ever built. It’s awesome that Adaptive Card in Teams now support media. I think this is a really great example of how powerful Adaptive Cards can be. They not only look beautiful, but they also provide a fantastic user experience since users will be able to interact with them directly in Teams.&lt;/p&gt;
+&lt;h3 id=&#34;summary&#34;&gt;Summary
+&lt;/h3&gt;&lt;p&gt;Even though it took me days to finally get this right, I had so much fun building this. Besides that, I also learned a lot of new stuff about Power Automate. In fact, this was the very first parallel branch I ever built. It’s awesome that Adaptive Card in Teams now support media. I think this is a really great example of how powerful Adaptive Cards can be. They not only look beautiful, but they also provide a fantastic user experience since users will be able to interact with them directly in Teams.&lt;/p&gt;
 &lt;p&gt;I’d be lying if I said that I wasn’t a little proud of the flow and process I built. The only thing I’m still missing with this solution is to be able to create Teams deep links which also specify which outbound caller id should be used when a call back link is clicked. Wouldn’t it just be great if we could say that users should always use the queue’s/attendant’s phone number when they call somebody back from a voicemail card?&lt;/p&gt;
 &lt;p&gt;What’s funny is that the Teams mobile apps actually prompt users which have multiple calling line identities assigned to select an identity before the call is made.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu54d39ee13adae9bbf7742cb6c673b386_144656_480x0_resize_box_3.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu54d39ee13adae9bbf7742cb6c673b386_144656_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu11109037850452349308.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu17447961148085830847.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1927,8 +1927,8 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;li&gt;A Teams App&lt;/li&gt;
 &lt;li&gt;Any kind of web server to host one or multiple html files&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h4 id=&#34;create-and-host-the-htmlfiles&#34;&gt;Create and host the html file(s)&lt;/h4&gt;
-&lt;p&gt;Let’s start with the web server. This can be any kind of platform or service that can host and serve a html file publicly. Tech Peanuts uses an Azure storage account in their tutorial. It makes total sense since it’s amazingly easy to create and configure a storage account from within VS Code. You can refer to their article to learn how to upload files to Azure Storage directly from VS Code.&lt;/p&gt;
+&lt;h4 id=&#34;create-and-host-the-htmlfiles&#34;&gt;Create and host the html file(s)
+&lt;/h4&gt;&lt;p&gt;Let’s start with the web server. This can be any kind of platform or service that can host and serve a html file publicly. Tech Peanuts uses an Azure storage account in their tutorial. It makes total sense since it’s amazingly easy to create and configure a storage account from within VS Code. You can refer to their article to learn how to upload files to Azure Storage directly from VS Code.&lt;/p&gt;
 &lt;p&gt;Here’s the html code we need to create a calling deep link. Just replace the phone number after &lt;code&gt;4:%2b&lt;/code&gt; with your phone number. &lt;code&gt;%2b&lt;/code&gt; is a &lt;code&gt;+&lt;/code&gt; sign in URL encoded format.&lt;/p&gt;
 &lt;script src=&#34;https://gist.github.com/mozziemozz/e1b387e07589c7f0fc486a14b2570604.js&#34;&gt;&lt;/script&gt;
 
@@ -1936,14 +1936,14 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;If you want this to work in the new Teams client as well, use the following link format:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;https://teams.microsoft.com/l/call/0/0?users=4:0041123456789&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Then upload the file to your web server of choice. If you have multiple locations with different emergency numbers, you can create multiple html files with different names and numbers. You can still upload them to the same location as the first file. There’s no need to create a separate storage account or web app for each html file/number.&lt;/p&gt;
-&lt;h4 id=&#34;create-the-teamsapp&#34;&gt;Create the Teams App&lt;/h4&gt;
-&lt;p&gt;Next, go to &lt;a class=&#34;link&#34; href=&#34;https://dev.teams.microsoft.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h4 id=&#34;create-the-teamsapp&#34;&gt;Create the Teams App
+&lt;/h4&gt;&lt;p&gt;Next, go to &lt;a class=&#34;link&#34; href=&#34;https://dev.teams.microsoft.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://dev.teams.microsoft.com&lt;/a&gt; and sign in with a Teams admin account.&lt;/p&gt;
 &lt;p&gt;Go to &lt;strong&gt;Apps&lt;/strong&gt; and click &lt;strong&gt;+ New app&lt;/strong&gt; and give your app a name.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1T1jm9F4WsGlBZC8i4blxvA.png&#34;
 	width=&#34;882&#34;
 	height=&#34;305&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1T1jm9F4WsGlBZC8i4blxvA_hu584e6f8782752b67c93e41d86f714caf_14137_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1T1jm9F4WsGlBZC8i4blxvA_hu584e6f8782752b67c93e41d86f714caf_14137_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1T1jm9F4WsGlBZC8i4blxvA_hu11789020853176736568.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1T1jm9F4WsGlBZC8i4blxvA_hu8972897116156548730.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1956,7 +1956,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/16ZZdpshqTSEsTAWd4pB7g.png&#34;
 	width=&#34;1308&#34;
 	height=&#34;1452&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/16ZZdpshqTSEsTAWd4pB7g_huabb39e3d94990d19c5ad2df460e2ec13_150109_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/16ZZdpshqTSEsTAWd4pB7g_huabb39e3d94990d19c5ad2df460e2ec13_150109_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/16ZZdpshqTSEsTAWd4pB7g_hu5893550846938556681.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/16ZZdpshqTSEsTAWd4pB7g_hu14925142084208369769.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1969,7 +1969,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1lfTXEyWS0I7tBpbJ3kMSRQ.png&#34;
 	width=&#34;863&#34;
 	height=&#34;883&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1lfTXEyWS0I7tBpbJ3kMSRQ_hudaa083e32aa7f2b6b70b7c26ef9ef9d6_65364_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1lfTXEyWS0I7tBpbJ3kMSRQ_hudaa083e32aa7f2b6b70b7c26ef9ef9d6_65364_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1lfTXEyWS0I7tBpbJ3kMSRQ_hu11561264302143991247.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1lfTXEyWS0I7tBpbJ3kMSRQ_hu17772287774462005278.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1982,7 +1982,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1y6twx4IlKDCiKBsF0athug.png&#34;
 	width=&#34;1655&#34;
 	height=&#34;412&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1y6twx4IlKDCiKBsF0athug_huefc4d63d436b20a913ee76688f89178c_52285_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1y6twx4IlKDCiKBsF0athug_huefc4d63d436b20a913ee76688f89178c_52285_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1y6twx4IlKDCiKBsF0athug_hu17661092906365605265.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1y6twx4IlKDCiKBsF0athug_hu6394300497751482186.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1996,7 +1996,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1NHO9Br7TMFi6ElrQP1Q.png&#34;
 	width=&#34;865&#34;
 	height=&#34;581&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1NHO9Br7TMFi6ElrQP1Q_hu26a51dbcd2137248a37e7d1aa7f1d7a9_53548_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1NHO9Br7TMFi6ElrQP1Q_hu26a51dbcd2137248a37e7d1aa7f1d7a9_53548_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1NHO9Br7TMFi6ElrQP1Q_hu12029844455100949330.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1NHO9Br7TMFi6ElrQP1Q_hu16110502634329584933.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2007,12 +2007,12 @@ More than 2 hours = 😞&lt;/p&gt;
 &gt;&lt;/p&gt;
 &lt;p&gt;In Teams, go to &lt;strong&gt;Apps&lt;/strong&gt;, &lt;strong&gt;Manage your apps&lt;/strong&gt; and then select &lt;strong&gt;Upload an app&lt;/strong&gt; to upload your app.&lt;/p&gt;
 &lt;p&gt;Note: Your admin must allow sideloading apps for this.&lt;/p&gt;
-&lt;h4 id=&#34;see-it-inaction&#34;&gt;See it in Action&lt;/h4&gt;
-&lt;p&gt;Now you have an app in the siderail which can start a call. The only thing that’s left to do is to publish the app in your tenant.&lt;/p&gt;
+&lt;h4 id=&#34;see-it-inaction&#34;&gt;See it in Action
+&lt;/h4&gt;&lt;p&gt;Now you have an app in the siderail which can start a call. The only thing that’s left to do is to publish the app in your tenant.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1FfN90woT9tQGuHUS0DYJZQ.png&#34;
 	width=&#34;2325&#34;
 	height=&#34;1370&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1FfN90woT9tQGuHUS0DYJZQ_hu74fadd3c6594c85fd73fee68132e8133_88419_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1FfN90woT9tQGuHUS0DYJZQ_hu74fadd3c6594c85fd73fee68132e8133_88419_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1FfN90woT9tQGuHUS0DYJZQ_hu13500464953612064462.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1FfN90woT9tQGuHUS0DYJZQ_hu10205571845755029831.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2024,8 +2024,8 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;If you’ve never published an app in Teams before, I suggest starting with &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-US/microsoftteams/manage-apps?WT.mc_id=TeamsAdminCenterCSH&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;this&lt;/a&gt; Microsoft Learn article. If you only have one location, it will be fairly easy to add the app just to the global app setup policy.&lt;/p&gt;
 &lt;p&gt;If you have multiple offices in different locations or countries, it will be a little more complex. You will need to create a separate app for each number and then also create and assign different Teams app setup policies to the users based on their location. Each policy will then pin a different app where each app will ultimately link to a different html file (containing a different phone number) on your web server.&lt;/p&gt;
-&lt;h4 id=&#34;summary&#34;&gt;Summary&lt;/h4&gt;
-&lt;p&gt;I think it’s really cool that we can leverage Teams deep links to pin different actions in Teams to the side rail instead of just normal apps. I really hope that Microsoft will fix the bug where the leading plus is not recognized in deep links. It not only looks bad, but it also causes calls to file.&lt;/p&gt;
+&lt;h4 id=&#34;summary&#34;&gt;Summary
+&lt;/h4&gt;&lt;p&gt;I think it’s really cool that we can leverage Teams deep links to pin different actions in Teams to the side rail instead of just normal apps. I really hope that Microsoft will fix the bug where the leading plus is not recognized in deep links. It not only looks bad, but it also causes calls to file.&lt;/p&gt;
 &lt;p&gt;While pinning emergency numbers might be the most obvious use case, you could use this for any number. I could also see some companies wanting to pin their IT service desk hotline to the side rail for example.&lt;/p&gt;
 &lt;p&gt;One last thing I want to mention is to keep in mind that the phone number you put in the html file can theoretically be viewed/obtained by anybody with internet access. Of course, you must know the URL to access it but that probably won’t protect it from web scrapers or other data gathering tools. However, since your company’s main number is probably listed on your home page anyway, I don’t see too big of a risk here.&lt;/p&gt;
 &lt;p&gt;If you do think it’s a risk, &lt;a class=&#34;link&#34; href=&#34;https://www.linkedin.com/in/anthony-drozdek-9a3a188/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -2042,14 +2042,14 @@ More than 2 hours = 😞&lt;/p&gt;
         <guid>https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/</guid>
         <description>&lt;p&gt;In this &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24&#34; &gt;article&lt;/a&gt;, I did a pretty hefty run down of all things shared voicemail in Microsoft Teams. I also teased another article about creating a Power Automate Flow to deliver shared voicemails into a Teams channel instead of receiving them just by email. …which brings us to this article.&lt;/p&gt;
 &lt;p&gt;The idea behind all that is, that shared voicemails get posted as an adaptive card in a Teams channel, rather than that a few individuals receive shared voicemails by email.&lt;/p&gt;
-&lt;h4 id=&#34;preparations&#34;&gt;Preparations&lt;/h4&gt;
-&lt;p&gt;First, we need to identify or create a Microsoft 365 Group which will be configured as shared voicemail target on an auto attendant or a call queue. Next, we’ll need to enable the follow in inbox feature for this group and add a shared mailbox of choice to this M365 Group. (If you need help with this, please check the linked article at the beginning of this story.)&lt;/p&gt;
-&lt;h4 id=&#34;building-theflow&#34;&gt;Building the Flow&lt;/h4&gt;
-&lt;p&gt;Then we can start building our flow. Choose “When a new email arrives in a shared mailbox (V2)” (Office 365 Outlook) as your trigger and select the mailbox and its folder. (If this shared mailbox also receives other messages, you might want to include a subject filter under advanced options.)&lt;/p&gt;
+&lt;h4 id=&#34;preparations&#34;&gt;Preparations
+&lt;/h4&gt;&lt;p&gt;First, we need to identify or create a Microsoft 365 Group which will be configured as shared voicemail target on an auto attendant or a call queue. Next, we’ll need to enable the follow in inbox feature for this group and add a shared mailbox of choice to this M365 Group. (If you need help with this, please check the linked article at the beginning of this story.)&lt;/p&gt;
+&lt;h4 id=&#34;building-theflow&#34;&gt;Building the Flow
+&lt;/h4&gt;&lt;p&gt;Then we can start building our flow. Choose “When a new email arrives in a shared mailbox (V2)” (Office 365 Outlook) as your trigger and select the mailbox and its folder. (If this shared mailbox also receives other messages, you might want to include a subject filter under advanced options.)&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg.png&#34;
 	width=&#34;919&#34;
 	height=&#34;295&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg_hu409f3540d947a703b368190dacb7fe9a_23574_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg_hu409f3540d947a703b368190dacb7fe9a_23574_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg_hu11498010014334603720.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg_hu17278700087240363418.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2062,7 +2062,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg.png&#34;
 	width=&#34;912&#34;
 	height=&#34;285&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg_hu3475b47a4586823618d925ceb2374395_15530_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg_hu3475b47a4586823618d925ceb2374395_15530_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg_hu12103196523936936177.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg_hu12179697413673838041.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2076,7 +2076,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA.png&#34;
 	width=&#34;916&#34;
 	height=&#34;283&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA_hud9562ee3ad69dc0130b37982103b3376_17334_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA_hud9562ee3ad69dc0130b37982103b3376_17334_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA_hu11712586045009292280.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA_hu3939707186250032632.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2090,7 +2090,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ.png&#34;
 	width=&#34;915&#34;
 	height=&#34;285&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ_hu92f45c07821d601ff59877e261f57bc5_17156_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ_hu92f45c07821d601ff59877e261f57bc5_17156_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ_hu5049373067404564692.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ_hu6497115018323546124.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2105,7 +2105,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw.png&#34;
 	width=&#34;1973&#34;
 	height=&#34;807&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw_hu0dcbc38290de2555c36a5a81fce2b9c1_51294_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw_hu0dcbc38290de2555c36a5a81fce2b9c1_51294_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw_hu6899760532551412851.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw_hu5755714650185974796.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2118,7 +2118,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q.png&#34;
 	width=&#34;972&#34;
 	height=&#34;962&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q_hu1155102bdde9f8fe27e6415dd023cf2e_76458_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q_hu1155102bdde9f8fe27e6415dd023cf2e_76458_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q_hu216914765717667602.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q_hu3197001903234287653.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2131,7 +2131,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg.png&#34;
 	width=&#34;832&#34;
 	height=&#34;1790&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg_hu45cdd06c4cc5270853ae9aa36a697389_79437_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg_hu45cdd06c4cc5270853ae9aa36a697389_79437_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg_hu4294098630919036970.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg_hu17421349481040579635.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2184,13 +2184,13 @@ More than 2 hours = 😞&lt;/p&gt;
 }&lt;br&gt;
 ]&lt;br&gt;
 }&lt;/p&gt;
-&lt;h3 id=&#34;the-result&#34;&gt;The Result&lt;/h3&gt;
-&lt;p&gt;Let’s see how this looks from a user&amp;rsquo;s perspective. Whenever a new shared voicemail is received in the shared mailbox, the Flow will be triggered and sends an adaptive card into the channel.&lt;/p&gt;
+&lt;h3 id=&#34;the-result&#34;&gt;The Result
+&lt;/h3&gt;&lt;p&gt;Let’s see how this looks from a user&amp;rsquo;s perspective. Whenever a new shared voicemail is received in the shared mailbox, the Flow will be triggered and sends an adaptive card into the channel.&lt;/p&gt;
 &lt;p&gt;All Team members will know that a new voicemail has been received and they can listen to it by clicking the button.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag.png&#34;
 	width=&#34;1233&#34;
 	height=&#34;396&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag_hu92d694298aa98f66dc5fbdb422498c24_45451_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag_hu92d694298aa98f66dc5fbdb422498c24_45451_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag_hu166847154440334082.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag_hu6514374341251866140.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2203,7 +2203,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg.png&#34;
 	width=&#34;1896&#34;
 	height=&#34;1020&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg_hu2b10560ffd24d4b9ccf76ba494e87b7d_98636_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg_hu2b10560ffd24d4b9ccf76ba494e87b7d_98636_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg_hu10646922207206201746.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg_hu13223624521137667189.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2216,7 +2216,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg.png&#34;
 	width=&#34;1240&#34;
 	height=&#34;241&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg_hu2f8694cf3c1d121cac14232dca481842_25875_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg_hu2f8694cf3c1d121cac14232dca481842_25875_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg_hu4380780706159104824.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg_hu4071443795981480362.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2229,7 +2229,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA.png&#34;
 	width=&#34;889&#34;
 	height=&#34;228&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA_hue63fc8f17736c54f8460ec2bec3fd16a_14672_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA_hue63fc8f17736c54f8460ec2bec3fd16a_14672_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA_hu7866697553645383011.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA_hu15134611314274284034.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2242,7 +2242,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA.png&#34;
 	width=&#34;1228&#34;
 	height=&#34;289&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA_huee3b0db9f1ea264c6759d8791300809e_35831_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA_huee3b0db9f1ea264c6759d8791300809e_35831_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA_hu6639743601489609687.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA_hu11633006669754039099.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	

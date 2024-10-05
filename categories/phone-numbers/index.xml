@@ -13,12 +13,12 @@
         
         <guid>https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/</guid>
         <description>&lt;p&gt;Sometimes, something simple as writing a filter query to search for Entra ID users which have a specific phone number can take way longer than we would like. Instead of making you search through numerous Stack Overflow posts or ask ChatGPT on how to do it, I decided to write this short blog post which will give you everything you need to quickly find Entra ID users which have a specific phone number.&lt;/p&gt;
-&lt;h2 id=&#34;number-types&#34;&gt;Number Types&lt;/h2&gt;
-&lt;p&gt;The most common numbers in Entra ID are &lt;strong&gt;Mobile phone&lt;/strong&gt; and &lt;strong&gt;Business Phone&lt;/strong&gt;. While the Entra ID admin portal displays &lt;code&gt;Business phone&lt;/code&gt; in singular, the property is actually called &lt;code&gt;businessPhones&lt;/code&gt; and is a string collection.&lt;/p&gt;
+&lt;h2 id=&#34;number-types&#34;&gt;Number Types
+&lt;/h2&gt;&lt;p&gt;The most common numbers in Entra ID are &lt;strong&gt;Mobile phone&lt;/strong&gt; and &lt;strong&gt;Business Phone&lt;/strong&gt;. While the Entra ID admin portal displays &lt;code&gt;Business phone&lt;/code&gt; in singular, the property is actually called &lt;code&gt;businessPhones&lt;/code&gt; and is a string collection.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image.png&#34;
 	width=&#34;1793&#34;
 	height=&#34;693&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu221bd5b4269b12a931c42eb60e683664_134687_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu221bd5b4269b12a931c42eb60e683664_134687_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu2291258742031666590.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu18200194872119687648.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Phone numbers in Entra ID&#34;
@@ -29,8 +29,8 @@
 		data-flex-basis=&#34;620px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;filter-queries&#34;&gt;Filter Queries&lt;/h2&gt;
-&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#properties&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h2 id=&#34;filter-queries&#34;&gt;Filter Queries
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#properties&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;This&lt;/a&gt; page tells us which conditions are supported for which user properties. I wasn&amp;rsquo;t able to get this to work using &lt;code&gt;Get-MgUser -Filter &amp;quot;Filter Query&amp;quot;&lt;/code&gt; since an API request using an advanced filter query will require a special header. Not long ago, I wrote about the &lt;code&gt;Invoke-MgGraphRequest&lt;/code&gt; &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86&#34; &gt;Cmdlet&lt;/a&gt; and how that can be used to call the Graph REST API directly using the session token from &lt;code&gt;Connect-MgGraph&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;To make it work, you&amp;rsquo;ll need to create a header with &lt;strong&gt;ConsistencyLevel&lt;/strong&gt;: &lt;code&gt;eventual&lt;/code&gt; which is then added to the Graph Request.&lt;/p&gt;
 &lt;p&gt;Since this is a web request, you&amp;rsquo;ll also need to url encode the &lt;code&gt;+&lt;/code&gt; character. A simple &lt;strong&gt;replace&lt;/strong&gt; with &lt;code&gt;%2B&lt;/code&gt; will do the trick here. It&amp;rsquo;s important to note that this will only work if the phone number is stored on the Entra user exactly the same as what&amp;rsquo;s in the filter query. For example, it won&amp;rsquo;t work if the phone number is stored without spaces in Entra but you&amp;rsquo;re querying it with spaces. If your phone numbers in Entra are a mess, I recommend to take a look at &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5&#34; &gt;this&lt;/a&gt; blog post. This will show you how you can format all phone numbers in the same, and most importantly in the correct way.&lt;/p&gt;
@@ -47,8 +47,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h3 id=&#34;powershell-example&#34;&gt;PowerShell Example&lt;/h3&gt;
-&lt;p&gt;Here is an example script which contains all possible filter conditions for both mobile and business phone numbers. The important thing here is that the custom header is included and that the &lt;strong&gt;Uri&lt;/strong&gt; includes the &lt;strong&gt;Count&lt;/strong&gt; variable. Note that the &lt;code&gt;businessPhones&lt;/code&gt; property does not support the &lt;code&gt;in&lt;/code&gt; condition.&lt;/p&gt;
+&lt;/div&gt;&lt;h3 id=&#34;powershell-example&#34;&gt;PowerShell Example
+&lt;/h3&gt;&lt;p&gt;Here is an example script which contains all possible filter conditions for both mobile and business phone numbers. The important thing here is that the custom header is included and that the &lt;strong&gt;Uri&lt;/strong&gt; includes the &lt;strong&gt;Count&lt;/strong&gt; variable. Note that the &lt;code&gt;businessPhones&lt;/code&gt; property does not support the &lt;code&gt;in&lt;/code&gt; condition.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
@@ -145,12 +145,12 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$mgUserMatchesMobilePhone&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;Invoke-MgGraphRequest&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Method&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Get&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Uri&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;https://graph.microsoft.com/v1.0/users?&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;`$&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;filter=mobilePhone in [&amp;#39;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$mobileNumberUrlSafe&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#39;,&amp;#39;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$mobileNumberUrlSafe2&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#39;]&amp;amp;&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;`$&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;count=true&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-ContentType&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;application/json&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Headers&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$header&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;value&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h4 id=&#34;example-output&#34;&gt;Example Output&lt;/h4&gt;
-&lt;p&gt;What&amp;rsquo;s a little weird is that PowerShell outputs an array with name/value pairs instead of a PS custom object.&lt;/p&gt;
+&lt;/div&gt;&lt;h4 id=&#34;example-output&#34;&gt;Example Output
+&lt;/h4&gt;&lt;p&gt;What&amp;rsquo;s a little weird is that PowerShell outputs an array with name/value pairs instead of a PS custom object.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1.png&#34;
 	width=&#34;1644&#34;
 	height=&#34;899&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hueb5231a21863bd4453ba706f74f1c47e_1102062_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hueb5231a21863bd4453ba706f74f1c47e_1102062_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hu10126803005311397619.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hu13422273645719726784.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Output from Invoke-MgGraphRequest&#34;
@@ -165,7 +165,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4.png&#34;
 	width=&#34;1644&#34;
 	height=&#34;262&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu70f2a1ded8f51c6e3e908386c91482b2_303137_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu70f2a1ded8f51c6e3e908386c91482b2_303137_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu10390745089598602075.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu17704760490908083956.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Format-Table does not work with specific properties&#34;
@@ -189,7 +189,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3.png&#34;
 	width=&#34;1644&#34;
 	height=&#34;899&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu08af9aeaa01698a49ff71fd97429eb7d_1184796_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu08af9aeaa01698a49ff71fd97429eb7d_1184796_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu5228443779759100930.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu1660153902600262052.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;There are no name/value pairs anymore.&#34;
@@ -201,12 +201,12 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;Now you can work with the &lt;code&gt;$mgUserMatchesMobilePhone&lt;/code&gt;and &lt;code&gt;$mgUserMatchesBusinessPhone&lt;/code&gt; as expected and do anything you want with them.&lt;/p&gt;
-&lt;h3 id=&#34;bonus-tip-power-automate&#34;&gt;Bonus Tip (Power Automate)&lt;/h3&gt;
-&lt;p&gt;The standard action &lt;strong&gt;Search for users (V2)&lt;/strong&gt; from the &lt;strong&gt;Office 365 Users&lt;/strong&gt; connector doesn&amp;rsquo;t support to filter for phone numbers of any type.&lt;/p&gt;
+&lt;h3 id=&#34;bonus-tip-power-automate&#34;&gt;Bonus Tip (Power Automate)
+&lt;/h3&gt;&lt;p&gt;The standard action &lt;strong&gt;Search for users (V2)&lt;/strong&gt; from the &lt;strong&gt;Office 365 Users&lt;/strong&gt; connector doesn&amp;rsquo;t support to filter for phone numbers of any type.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2.png&#34;
 	width=&#34;1507&#34;
 	height=&#34;262&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu8fe2b873d91223cd6efe29a596cdb26d_21976_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu8fe2b873d91223cd6efe29a596cdb26d_21976_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu17228196303366751409.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu3954587770765512058.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Supported filters for Office 365 Users&#34;
@@ -222,7 +222,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5.png&#34;
 	width=&#34;938&#34;
 	height=&#34;1296&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_huc85c688f683dabe0d55b1dc50c3a2715_86670_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_huc85c688f683dabe0d55b1dc50c3a2715_86670_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_hu9415391741213701859.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_hu2191900681216763414.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Power Automate Flow to filter for users by phone number&#34;
@@ -251,12 +251,12 @@
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;outputs(&amp;#39;Send_an_HTTP_request&amp;#39;)?[&amp;#39;body&amp;#39;]?[&amp;#39;value&amp;#39;][0][&amp;#39;displayName&amp;#39;]
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h4 id=&#34;example-output-1&#34;&gt;Example Output&lt;/h4&gt;
-&lt;p&gt;If there is a user match for the phone number, Graph will return a nice Json response to Power Automate.&lt;/p&gt;
+&lt;/div&gt;&lt;h4 id=&#34;example-output-1&#34;&gt;Example Output
+&lt;/h4&gt;&lt;p&gt;If there is a user match for the phone number, Graph will return a nice Json response to Power Automate.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6.png&#34;
 	width=&#34;960&#34;
 	height=&#34;1138&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu35494fb6171d17df94b862267ce52501_82901_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu35494fb6171d17df94b862267ce52501_82901_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu7402497629987320838.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu1972615602850717830.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Output from Microsoft Graph within Power Automate&#34;
@@ -267,8 +267,8 @@
 		data-flex-basis=&#34;202px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;summary--download&#34;&gt;Summary &amp;amp; Download&lt;/h2&gt;
-&lt;p&gt;I hope that these examples help you with whatever you&amp;rsquo;re trying to achieve. I&amp;rsquo;m certainly going to use this blog post as a cheat sheet for myself in the future. You can also download the entire script from my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/EntraID/FilterGraphUsersByPhoneNumber.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h2 id=&#34;summary--download&#34;&gt;Summary &amp;amp; Download
+&lt;/h2&gt;&lt;p&gt;I hope that these examples help you with whatever you&amp;rsquo;re trying to achieve. I&amp;rsquo;m certainly going to use this blog post as a cheat sheet for myself in the future. You can also download the entire script from my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/EntraID/FilterGraphUsersByPhoneNumber.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;GitHub&lt;/a&gt; profile.&lt;/p&gt;
 </description>
         </item>
@@ -282,7 +282,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-45-03-19-45-27.png&#34;
 	width=&#34;1239&#34;
 	height=&#34;173&#34;
-	srcset=&#34;https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-45-03-19-45-27_hu9598837a3343c9b4b5c9a9bd0fb6bfd1_20290_480x0_resize_box_3.png 480w, https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-45-03-19-45-27_hu9598837a3343c9b4b5c9a9bd0fb6bfd1_20290_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-45-03-19-45-27_hu10933979503881269630.png 480w, https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-45-03-19-45-27_hu15950973082205361318.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Usages of numbers can only be changed during the initial creation of the port request.&#34;
@@ -297,7 +297,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-47-03-19-47-17.png&#34;
 	width=&#34;2046&#34;
 	height=&#34;666&#34;
-	srcset=&#34;https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-47-03-19-47-17_huba2e3f4c8deac5b4ac7c56c17755df3b_79156_480x0_resize_box_3.png 480w, https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-47-03-19-47-17_huba2e3f4c8deac5b4ac7c56c17755df3b_79156_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-47-03-19-47-17_hu17909012146000278803.png 480w, https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-47-03-19-47-17_hu971434045182284991.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;User = Subscriber / Conference, Voice app = Service&#34;
@@ -308,12 +308,12 @@
 		data-flex-basis=&#34;737px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;workaround&#34;&gt;Workaround&lt;/h2&gt;
-&lt;p&gt;When a number gets created as a Subscriber number, you won&amp;rsquo;t be able to assign it to an auto attendant or a call queue. But you can still create the resource account that&amp;rsquo;s linked to the voice app in advance. All you need to do to ensure that the voice app is reachable via it&amp;rsquo;s phone number is to create a temporary routing rule. To do so, navigate to &lt;strong&gt;Voice\Phone numbers&lt;/strong&gt; in TAC and switch to &lt;strong&gt;Routing rules&lt;/strong&gt;. Click &lt;strong&gt;+ Add&lt;/strong&gt; to create a new rule. Give the rule a name and fill out the description. Then choose &lt;code&gt;Single number&lt;/code&gt; and enter your number. Under &lt;strong&gt;Routing options&lt;/strong&gt; choose &lt;code&gt;Voice application&lt;/code&gt; and select your auto attendant or call queue from the list. If you already have other rules, set the &lt;code&gt;Evaluation order&lt;/code&gt; to a value that&amp;rsquo;s not already in use. If you don&amp;rsquo;t already have other rules with a lower evaluation order and which use regular expressions which could also match your number, it doesn&amp;rsquo;t really matter what you set this value to.&lt;/p&gt;
+&lt;h2 id=&#34;workaround&#34;&gt;Workaround
+&lt;/h2&gt;&lt;p&gt;When a number gets created as a Subscriber number, you won&amp;rsquo;t be able to assign it to an auto attendant or a call queue. But you can still create the resource account that&amp;rsquo;s linked to the voice app in advance. All you need to do to ensure that the voice app is reachable via it&amp;rsquo;s phone number is to create a temporary routing rule. To do so, navigate to &lt;strong&gt;Voice\Phone numbers&lt;/strong&gt; in TAC and switch to &lt;strong&gt;Routing rules&lt;/strong&gt;. Click &lt;strong&gt;+ Add&lt;/strong&gt; to create a new rule. Give the rule a name and fill out the description. Then choose &lt;code&gt;Single number&lt;/code&gt; and enter your number. Under &lt;strong&gt;Routing options&lt;/strong&gt; choose &lt;code&gt;Voice application&lt;/code&gt; and select your auto attendant or call queue from the list. If you already have other rules, set the &lt;code&gt;Evaluation order&lt;/code&gt; to a value that&amp;rsquo;s not already in use. If you don&amp;rsquo;t already have other rules with a lower evaluation order and which use regular expressions which could also match your number, it doesn&amp;rsquo;t really matter what you set this value to.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-56-03-19-56-02.png&#34;
 	width=&#34;541&#34;
 	height=&#34;1302&#34;
-	srcset=&#34;https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-56-03-19-56-02_huac60bebe093b01ae5f780463ff94ae66_51814_480x0_resize_box_3.png 480w, https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-56-03-19-56-02_huac60bebe093b01ae5f780463ff94ae66_51814_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-56-03-19-56-02_hu16104924918478629305.png 480w, https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-56-03-19-56-02_hu11422670054943700760.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Unassigned routing rule for the number that was accidentally left on User instead of Voice app.&#34;
@@ -329,10 +329,10 @@
 &lt;p&gt;&lt;strong&gt;In any case, I recommend to change the usage and assign the number to a resource account as quickly as possible. Using a routing rule is only a temporary workaround.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Once the numbers have been ported, you can go to &lt;code&gt;Voice\Phone numbers&lt;/code&gt; in TAC again and search for the number in question. Sometimes you can change the usage directly from TAC. If you don&amp;rsquo;t see that option, create a new support request at the PSTN service desk. They&amp;rsquo;re usually quite fast and will change the usage within a couple of hours after creating the request.&lt;/p&gt;
 &lt;p&gt;When you receive confirmation from Microsoft that the usage has been changed, you can assign the number to the resource account of the voice app directly and delete the routing rule. As soon as the number is assigned to the resource account, the unassigned routing rule will not match anymore. This little workaround will allow you to keep the downtime to a minimum. In fact, you won&amp;rsquo;t have any downtime except the time it takes your old carrier to switch the routing to Microsoft.&lt;/p&gt;
-&lt;h2 id=&#34;caveats&#34;&gt;Caveats&lt;/h2&gt;
-&lt;p&gt;The only caveat you have to consider is when you want to use that number as an outgoing caller ID. Since you can&amp;rsquo;t assign it to a resource account before the usage was switched to Service, you won&amp;rsquo;t be able to configure it as caller ID for call queues or to a Caller ID policy. If you can live with the fact that you can&amp;rsquo;t use the number as outgoing caller ID for a couple of hours, there&amp;rsquo;s really no reason to panic and cancel the port request because you forgot to change the usage of some numbers.&lt;/p&gt;
-&lt;h2 id=&#34;closing-words&#34;&gt;Closing Words&lt;/h2&gt;
-&lt;p&gt;To me that was a gentle reminder that mistakes can happen to all of us. But as always, I tried to keep a clear head and look for a solution and most importantly share it with the awesome Teams community so all of you can take advantage of this knowledge as well.&lt;/p&gt;
+&lt;h2 id=&#34;caveats&#34;&gt;Caveats
+&lt;/h2&gt;&lt;p&gt;The only caveat you have to consider is when you want to use that number as an outgoing caller ID. Since you can&amp;rsquo;t assign it to a resource account before the usage was switched to Service, you won&amp;rsquo;t be able to configure it as caller ID for call queues or to a Caller ID policy. If you can live with the fact that you can&amp;rsquo;t use the number as outgoing caller ID for a couple of hours, there&amp;rsquo;s really no reason to panic and cancel the port request because you forgot to change the usage of some numbers.&lt;/p&gt;
+&lt;h2 id=&#34;closing-words&#34;&gt;Closing Words
+&lt;/h2&gt;&lt;p&gt;To me that was a gentle reminder that mistakes can happen to all of us. But as always, I tried to keep a clear head and look for a solution and most importantly share it with the awesome Teams community so all of you can take advantage of this knowledge as well.&lt;/p&gt;
 </description>
         </item>
         <item>
@@ -346,7 +346,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1VrXnQeg6wj3KJYetSCXQ.png&#34;
 	width=&#34;1080&#34;
 	height=&#34;1080&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1VrXnQeg6wj3KJYetSCXQ_huc0d9c5cf9dedbc609c0fbf71a4b58757_789207_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1VrXnQeg6wj3KJYetSCXQ_huc0d9c5cf9dedbc609c0fbf71a4b58757_789207_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1VrXnQeg6wj3KJYetSCXQ_hu15391435472830586831.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1VrXnQeg6wj3KJYetSCXQ_hu2910287685222638508.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -355,15 +355,15 @@
 		data-flex-basis=&#34;240px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h3 id=&#34;new-features-and-improvements&#34;&gt;New Features and Improvements&lt;/h3&gt;
-&lt;h4 id=&#34;localized--formatted-phonenumbers&#34;&gt;Localized / Formatted Phone Numbers&lt;/h4&gt;
-&lt;p&gt;As you may know by now, I consider myself a data driven guy. What I really dig about Teams phone is the fact that every number is a full E.164 number in every case. This kind of absoluteness provides great safety because each number is unique. Just as with user principal names or GUIDs, there’s no funny business going on.&lt;/p&gt;
+&lt;h3 id=&#34;new-features-and-improvements&#34;&gt;New Features and Improvements
+&lt;/h3&gt;&lt;h4 id=&#34;localized--formatted-phonenumbers&#34;&gt;Localized / Formatted Phone Numbers
+&lt;/h4&gt;&lt;p&gt;As you may know by now, I consider myself a data driven guy. What I really dig about Teams phone is the fact that every number is a full E.164 number in every case. This kind of absoluteness provides great safety because each number is unique. Just as with user principal names or GUIDs, there’s no funny business going on.&lt;/p&gt;
 &lt;p&gt;That safety comes at the cost of readability though. If you’ve seen &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5&#34; &gt;this&lt;/a&gt; article before, then you already know that I came up with a solution to format phone numbers in their local format using Python.&lt;/p&gt;
 &lt;p&gt;The runbook logic powering the list can now also leverage Python to store the formatted phone number in an additional column. This way you always have both, the E.164 number and a prettified version of it readily available.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1eH5p9VVDZ9zlnSfb0G9A.png&#34;
 	width=&#34;999&#34;
 	height=&#34;488&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1eH5p9VVDZ9zlnSfb0G9A_hu42235a58e1dd034ca470785fda8c220c_47341_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1eH5p9VVDZ9zlnSfb0G9A_hu42235a58e1dd034ca470785fda8c220c_47341_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1eH5p9VVDZ9zlnSfb0G9A_hu6944497114070764761.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1eH5p9VVDZ9zlnSfb0G9A_hu5717480910457783310.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -376,7 +376,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1eq5k3nw1Nd6nFTUTjoxFQ.png&#34;
 	width=&#34;1670&#34;
 	height=&#34;123&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1eq5k3nw1Nd6nFTUTjoxFQ_hudbe32b784da69251888450272772f1e4_20012_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1eq5k3nw1Nd6nFTUTjoxFQ_hudbe32b784da69251888450272772f1e4_20012_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1eq5k3nw1Nd6nFTUTjoxFQ_hu8095567165187883605.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1eq5k3nw1Nd6nFTUTjoxFQ_hu10053253125639431864.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -385,13 +385,13 @@
 		data-flex-basis=&#34;3258px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;write-back-teams-phone-number-to-entraid&#34;&gt;Write back Teams Phone Number to Entra ID&lt;/h4&gt;
-&lt;p&gt;When you view a user’s profile card in Teams, Outlook or anywhere else in Microsoft 365, it doesn’t display the phone number which is actually configured as &lt;strong&gt;LineURI&lt;/strong&gt; in Teams. Instead, the information is taken from Entra ID. I’ve created a variable inside the runbook which controls if the &lt;strong&gt;BusinessPhones&lt;/strong&gt; property of Entra ID users should be set to the assigned &lt;strong&gt;LineUri&lt;/strong&gt; in Teams. I’ll explain how to turn this &lt;strong&gt;on&lt;/strong&gt; or &lt;strong&gt;off&lt;/strong&gt; later in this article.&lt;/p&gt;
+&lt;h4 id=&#34;write-back-teams-phone-number-to-entraid&#34;&gt;Write back Teams Phone Number to Entra ID
+&lt;/h4&gt;&lt;p&gt;When you view a user’s profile card in Teams, Outlook or anywhere else in Microsoft 365, it doesn’t display the phone number which is actually configured as &lt;strong&gt;LineURI&lt;/strong&gt; in Teams. Instead, the information is taken from Entra ID. I’ve created a variable inside the runbook which controls if the &lt;strong&gt;BusinessPhones&lt;/strong&gt; property of Entra ID users should be set to the assigned &lt;strong&gt;LineUri&lt;/strong&gt; in Teams. I’ll explain how to turn this &lt;strong&gt;on&lt;/strong&gt; or &lt;strong&gt;off&lt;/strong&gt; later in this article.&lt;/p&gt;
 &lt;p&gt;With the current permissions/scopes assigned to the Entra ID App registration, this only works for users which don’t have any administrator roles assigned in Entra ID. If a user has an admin role, you’ll get an error.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1raGaYRAkmtuYw6eis0Y9A.png&#34;
 	width=&#34;1677&#34;
 	height=&#34;150&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1raGaYRAkmtuYw6eis0Y9A_hu4ee283a7d27f68232dc11e2ea9f82521_30963_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1raGaYRAkmtuYw6eis0Y9A_hu4ee283a7d27f68232dc11e2ea9f82521_30963_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1raGaYRAkmtuYw6eis0Y9A_hu14765399417767820350.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1raGaYRAkmtuYw6eis0Y9A_hu4177961942947920340.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -400,12 +400,12 @@
 		data-flex-basis=&#34;2683px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;previous-usercolumn&#34;&gt;Previous User Column&lt;/h4&gt;
-&lt;p&gt;I’ve added a new column which shows the UPN of the previous user/owner of a number after it has been removed. This is achieved by an update I made to the Power Automate Flow. Note that the flow will now also retain the value of the &lt;strong&gt;Comment&lt;/strong&gt; column.&lt;/p&gt;
+&lt;h4 id=&#34;previous-usercolumn&#34;&gt;Previous User Column
+&lt;/h4&gt;&lt;p&gt;I’ve added a new column which shows the UPN of the previous user/owner of a number after it has been removed. This is achieved by an update I made to the Power Automate Flow. Note that the flow will now also retain the value of the &lt;strong&gt;Comment&lt;/strong&gt; column.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1BEWqNsDCKrY0BOBbMc9tkg.png&#34;
 	width=&#34;1455&#34;
 	height=&#34;255&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1BEWqNsDCKrY0BOBbMc9tkg_hu3cee777f6ca1e8c45bda74cfbf1d0c11_37168_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1BEWqNsDCKrY0BOBbMc9tkg_hu3cee777f6ca1e8c45bda74cfbf1d0c11_37168_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1BEWqNsDCKrY0BOBbMc9tkg_hu13043195248097712316.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1BEWqNsDCKrY0BOBbMc9tkg_hu13545381555857351609.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -415,12 +415,12 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;The reason for this column is that you have a better overview over who has previously used a number. I’m sure you don’t want to assign the previous CEO’s number to a new intern.&lt;/p&gt;
-&lt;h4 id=&#34;unassigned-routingrules&#34;&gt;Unassigned Routing Rules&lt;/h4&gt;
-&lt;p&gt;When people leave, we sometimes want to forward their unassigned number to another person in the company or to the main number. This is done by routing rules. But do we typically remember or even know that such rules have been created in the past…? Now we do!&lt;/p&gt;
+&lt;h4 id=&#34;unassigned-routingrules&#34;&gt;Unassigned Routing Rules
+&lt;/h4&gt;&lt;p&gt;When people leave, we sometimes want to forward their unassigned number to another person in the company or to the main number. This is done by routing rules. But do we typically remember or even know that such rules have been created in the past…? Now we do!&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1mazY1aTB8fOWSqHcKsnSrA.png&#34;
 	width=&#34;2160&#34;
 	height=&#34;518&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1mazY1aTB8fOWSqHcKsnSrA_huda9df33cef89150ed611d8a108404816_83332_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1mazY1aTB8fOWSqHcKsnSrA_huda9df33cef89150ed611d8a108404816_83332_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1mazY1aTB8fOWSqHcKsnSrA_hu7246049596727152656.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1mazY1aTB8fOWSqHcKsnSrA_hu13123059525016007060.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -434,7 +434,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1nLAAAS1BoTH5RfGGN788Q.png&#34;
 	width=&#34;1767&#34;
 	height=&#34;615&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1nLAAAS1BoTH5RfGGN788Q_hu8a120bfeef507982d22c89e85154a3c9_72236_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1nLAAAS1BoTH5RfGGN788Q_hu8a120bfeef507982d22c89e85154a3c9_72236_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1nLAAAS1BoTH5RfGGN788Q_hu4555310027703925916.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1nLAAAS1BoTH5RfGGN788Q_hu17744803437016946657.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -443,15 +443,15 @@
 		data-flex-basis=&#34;689px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;improved-number-assignment-capabilities&#34;&gt;Improved Number Assignment Capabilities&lt;/h4&gt;
-&lt;p&gt;I’ve also made some improvements to assigning numbers. If a number has a status of &lt;strong&gt;Reserved (Routing Rule)&lt;/strong&gt; or &lt;strong&gt;Assignment Error&lt;/strong&gt;, the script will try to assign the number as well. In the case of an assignment error, the script will try to assign the number again with each new job. This is helpful in scenarios where e.g. a license hasn’t been assigned yet.&lt;/p&gt;
+&lt;h4 id=&#34;improved-number-assignment-capabilities&#34;&gt;Improved Number Assignment Capabilities
+&lt;/h4&gt;&lt;p&gt;I’ve also made some improvements to assigning numbers. If a number has a status of &lt;strong&gt;Reserved (Routing Rule)&lt;/strong&gt; or &lt;strong&gt;Assignment Error&lt;/strong&gt;, the script will try to assign the number as well. In the case of an assignment error, the script will try to assign the number again with each new job. This is helpful in scenarios where e.g. a license hasn’t been assigned yet.&lt;/p&gt;
 &lt;p&gt;Furthermore, you can now also reserve a number and enter the user’s UPN in the &lt;strong&gt;User Principal Name&lt;/strong&gt; column. This is great if the account does not exist yet (so you can’t fill in the &lt;strong&gt;User Profile&lt;/strong&gt;) but you already know the UPN of a soon to be created user. All of these changes make it easier for you to plan ahead and have the runbook take care of everything automatically, once a user has been created and licensed.&lt;/p&gt;
-&lt;h4 id=&#34;operator-column&#34;&gt;Operator Column&lt;/h4&gt;
-&lt;p&gt;Last but not least, the list now also displays the name of the &lt;strong&gt;Operator&lt;/strong&gt;. This works for all types, including &lt;strong&gt;Direct Routing&lt;/strong&gt;. You will have to manually list the operator name for each Direct Routing number in your source CSV though.&lt;/p&gt;
+&lt;h4 id=&#34;operator-column&#34;&gt;Operator Column
+&lt;/h4&gt;&lt;p&gt;Last but not least, the list now also displays the name of the &lt;strong&gt;Operator&lt;/strong&gt;. This works for all types, including &lt;strong&gt;Direct Routing&lt;/strong&gt;. You will have to manually list the operator name for each Direct Routing number in your source CSV though.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1uGIXZRh99eE0prMLPkLnA.png&#34;
 	width=&#34;1874&#34;
 	height=&#34;612&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1uGIXZRh99eE0prMLPkLnA_hufdba4cf3cc40d28557415db24f88198a_76045_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1uGIXZRh99eE0prMLPkLnA_hufdba4cf3cc40d28557415db24f88198a_76045_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1uGIXZRh99eE0prMLPkLnA_hu4272710297378170363.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1uGIXZRh99eE0prMLPkLnA_hu12574365442724670684.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -460,25 +460,25 @@
 		data-flex-basis=&#34;734px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h3 id=&#34;updating-all-the-components&#34;&gt;Updating All the Components&lt;/h3&gt;
-&lt;p&gt;I will most likely update the deployment script at some point to deploy everything from scratch including all the updates. If I can find enough time, I may also create an update script to update an existing deployment.&lt;/p&gt;
+&lt;h3 id=&#34;updating-all-the-components&#34;&gt;Updating All the Components
+&lt;/h3&gt;&lt;p&gt;I will most likely update the deployment script at some point to deploy everything from scratch including all the updates. If I can find enough time, I may also create an update script to update an existing deployment.&lt;/p&gt;
 &lt;p&gt;But today, I’ll show you how to implement all the changes manually in an existing deployment which consists of an Azure automation account, a list, a flow and your local source files.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;To do these steps, you should have followed and deployed everything as described in&lt;/strong&gt; &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf&#34; &gt;&lt;strong&gt;this&lt;/strong&gt;&lt;/a&gt; &lt;strong&gt;article and implemented all the updates described in&lt;/strong&gt; &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a&#34; &gt;&lt;strong&gt;this&lt;/strong&gt;&lt;/a&gt; &lt;strong&gt;article.&lt;/strong&gt;&lt;/p&gt;
-&lt;h4 id=&#34;add-newcolumns&#34;&gt;Add New Columns&lt;/h4&gt;
-&lt;p&gt;Add the following columns to the SharePoint list. All columns must be of type &lt;strong&gt;text&lt;/strong&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;add-newcolumns&#34;&gt;Add New Columns
+&lt;/h4&gt;&lt;p&gt;Add the following columns to the SharePoint list. All columns must be of type &lt;strong&gt;text&lt;/strong&gt;.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Comment&lt;/li&gt;
 &lt;li&gt;Previous User&lt;/li&gt;
 &lt;li&gt;Operator&lt;/li&gt;
 &lt;li&gt;Phone Number&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h4 id=&#34;add-the-phonenumbers-python-package-to-the-automation-account&#34;&gt;Add the phonenumbers Python Package to the Automation Account&lt;/h4&gt;
-&lt;p&gt;Go to &lt;a class=&#34;link&#34; href=&#34;https://pypi.org/project/phonenumbers/#files&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h4 id=&#34;add-the-phonenumbers-python-package-to-the-automation-account&#34;&gt;Add the phonenumbers Python Package to the Automation Account
+&lt;/h4&gt;&lt;p&gt;Go to &lt;a class=&#34;link&#34; href=&#34;https://pypi.org/project/phonenumbers/#files&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;this&lt;/a&gt; website and download the built distribution (*.whl) file to your PC. Then go to your automation account in Azure Portal and upload the file under &lt;strong&gt;Python packages&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1g7hFFDAp9c6HwdMFUIimw.png&#34;
 	width=&#34;1298&#34;
 	height=&#34;655&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1g7hFFDAp9c6HwdMFUIimw_hue06bb70463ddc4ae6f9c537aa9dbf888_86797_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1g7hFFDAp9c6HwdMFUIimw_hue06bb70463ddc4ae6f9c537aa9dbf888_86797_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1g7hFFDAp9c6HwdMFUIimw_hu5170572031865171409.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1g7hFFDAp9c6HwdMFUIimw_hu16503036324072639746.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -487,8 +487,8 @@
 		data-flex-basis=&#34;475px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;add-automation-variables-to-automation-account&#34;&gt;Add Automation Variables to Automation Account&lt;/h4&gt;
-&lt;p&gt;Add the following variables to your automation account. Since you’ll need to enter a value, just type a dot (“.”). Leave the integer value at 0.&lt;/p&gt;
+&lt;h4 id=&#34;add-automation-variables-to-automation-account&#34;&gt;Add Automation Variables to Automation Account
+&lt;/h4&gt;&lt;p&gt;Add the following variables to your automation account. Since you’ll need to enter a value, just type a dot (“.”). Leave the integer value at 0.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;TeamsPhoneNumberOverview_AllCsOnlineNumbers (String)&lt;/li&gt;
 &lt;li&gt;TeamsPhoneNumberOverview_PrettyNumbers (String)&lt;/li&gt;
@@ -497,7 +497,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1A6uNqGeSwBjpEuMGTuhw.png&#34;
 	width=&#34;1524&#34;
 	height=&#34;842&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1A6uNqGeSwBjpEuMGTuhw_hu4106a26f303771a5ef3b611c7a49435b_168781_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1A6uNqGeSwBjpEuMGTuhw_hu4106a26f303771a5ef3b611c7a49435b_168781_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1A6uNqGeSwBjpEuMGTuhw_hu16061923425019211980.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1A6uNqGeSwBjpEuMGTuhw_hu11841092978117113002.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -506,8 +506,8 @@
 		data-flex-basis=&#34;434px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;add-operator-info-to-your-direct-routingnumbers&#34;&gt;Add Operator info to your Direct Routing Numbers&lt;/h4&gt;
-&lt;p&gt;If you have direct routing numbers, you’ll need to update your source list. The old structure only had one column called &lt;strong&gt;PhoneNumber&lt;/strong&gt;. Now there’s &lt;strong&gt;PhoneNumber&lt;/strong&gt; and &lt;strong&gt;Operator&lt;/strong&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;add-operator-info-to-your-direct-routingnumbers&#34;&gt;Add Operator info to your Direct Routing Numbers
+&lt;/h4&gt;&lt;p&gt;If you have direct routing numbers, you’ll need to update your source list. The old structure only had one column called &lt;strong&gt;PhoneNumber&lt;/strong&gt;. Now there’s &lt;strong&gt;PhoneNumber&lt;/strong&gt; and &lt;strong&gt;Operator&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;PhoneNumber;Operator&lt;br&gt;
 4144520xxxx;Test Provider 1&lt;br&gt;
 4144512xxxx;Test Provider 2&lt;br&gt;
@@ -516,12 +516,12 @@
     &gt;this&lt;/a&gt; script to update your automation variable in Azure.&lt;/p&gt;
 &lt;p&gt;Alternatively, you can also run the below code and paste the content into your &lt;code&gt;TeamsPhoneNumberOverview_DirectRoutingNumbers&lt;/code&gt; automation variable.&lt;/p&gt;
 &lt;p&gt;&amp;ldquo;&amp;rsquo;&amp;rdquo; + (Import-Csv -Path .\Resources\DirectRoutingNumbers-V2.csv -Delimiter &amp;ldquo;;&amp;rdquo; | ConvertTo-Json | Out-String) + &amp;ldquo;&amp;rsquo;&amp;rdquo; | Set-Clipboard&lt;/p&gt;
-&lt;h4 id=&#34;create-a-pythonrunbook&#34;&gt;Create a Python Runbook&lt;/h4&gt;
-&lt;p&gt;Go to your runbooks in your automation account and click &lt;strong&gt;Create a runbook&lt;/strong&gt;. Name it &lt;code&gt;Format-TeamsPhoneNumbers&lt;/code&gt; and choose &lt;strong&gt;Python&lt;/strong&gt; as runbook type and &lt;strong&gt;3.10 (preview)&lt;/strong&gt; as runtime version.&lt;/p&gt;
+&lt;h4 id=&#34;create-a-pythonrunbook&#34;&gt;Create a Python Runbook
+&lt;/h4&gt;&lt;p&gt;Go to your runbooks in your automation account and click &lt;strong&gt;Create a runbook&lt;/strong&gt;. Name it &lt;code&gt;Format-TeamsPhoneNumbers&lt;/code&gt; and choose &lt;strong&gt;Python&lt;/strong&gt; as runbook type and &lt;strong&gt;3.10 (preview)&lt;/strong&gt; as runtime version.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1rgIq7gWJ29Wa9rBctif0A.png&#34;
 	width=&#34;1226&#34;
 	height=&#34;590&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1rgIq7gWJ29Wa9rBctif0A_hu559edfd9701f5dd23048a222db84ba32_55999_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1rgIq7gWJ29Wa9rBctif0A_hu559edfd9701f5dd23048a222db84ba32_55999_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1rgIq7gWJ29Wa9rBctif0A_hu13716036300233028768.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1rgIq7gWJ29Wa9rBctif0A_hu15762237017344053044.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -532,13 +532,13 @@
 &gt;&lt;/p&gt;
 &lt;p&gt;Grab &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Functions/Format-TeamsPhoneNumbers.py&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;this&lt;/a&gt; code and paste it into the Azure portal. Save and publish the runbook.&lt;/p&gt;
-&lt;h4 id=&#34;setup-a-managed-identity-and-permissions&#34;&gt;Setup a Managed Identity and Permissions&lt;/h4&gt;
-&lt;p&gt;Every time the main runbook runs, it will check if the total number count is still the same by comparing the current count to the count of the previous job which is stored in the &lt;strong&gt;TeamsPhoneNumberOverview_TotalNumberCount&lt;/strong&gt; variable. If the count of numbers is different compared to the previous job, the main runbook will start the python runbook. The python runbook will use the phonenumbers library to format all your phone numbers to their localized format.&lt;/p&gt;
+&lt;h4 id=&#34;setup-a-managed-identity-and-permissions&#34;&gt;Setup a Managed Identity and Permissions
+&lt;/h4&gt;&lt;p&gt;Every time the main runbook runs, it will check if the total number count is still the same by comparing the current count to the count of the previous job which is stored in the &lt;strong&gt;TeamsPhoneNumberOverview_TotalNumberCount&lt;/strong&gt; variable. If the count of numbers is different compared to the previous job, the main runbook will start the python runbook. The python runbook will use the phonenumbers library to format all your phone numbers to their localized format.&lt;/p&gt;
 &lt;p&gt;However, we must first allow the runbook to start another runbook job using a managed identity. In the automation account, go to &lt;strong&gt;Identity&lt;/strong&gt; and flip the toggle switch for &lt;strong&gt;System assigned&lt;/strong&gt; (managed identity) to &lt;strong&gt;On&lt;/strong&gt;. Then click &lt;strong&gt;Save&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1EDBRytpBpi8HYFN2kwiLdA.png&#34;
 	width=&#34;2113&#34;
 	height=&#34;500&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1EDBRytpBpi8HYFN2kwiLdA_hu911f287525f8e88922b85b984ee90234_87394_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1EDBRytpBpi8HYFN2kwiLdA_hu911f287525f8e88922b85b984ee90234_87394_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1EDBRytpBpi8HYFN2kwiLdA_hu16221363438505350303.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1EDBRytpBpi8HYFN2kwiLdA_hu3137546346537971194.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -551,7 +551,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1gnhE04XQSUDcagh8wASow.png&#34;
 	width=&#34;1256&#34;
 	height=&#34;504&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1gnhE04XQSUDcagh8wASow_huff8cd1c8e58c6033e0bf45d462c9d682_41793_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1gnhE04XQSUDcagh8wASow_huff8cd1c8e58c6033e0bf45d462c9d682_41793_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1gnhE04XQSUDcagh8wASow_hu6741445350736654184.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1gnhE04XQSUDcagh8wASow_hu1765666535982384263.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -561,13 +561,13 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;Click &lt;strong&gt;Save&lt;/strong&gt;.&lt;/p&gt;
-&lt;h4 id=&#34;update-the-mainrunbook&#34;&gt;Update the Main Runbook&lt;/h4&gt;
-&lt;p&gt;Replace the code in the &lt;strong&gt;TeamsPhoneOverview&lt;/strong&gt; runbook with &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/TeamsPhoneNumberOverview%20-V2.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h4 id=&#34;update-the-mainrunbook&#34;&gt;Update the Main Runbook
+&lt;/h4&gt;&lt;p&gt;Replace the code in the &lt;strong&gt;TeamsPhoneOverview&lt;/strong&gt; runbook with &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/TeamsPhoneNumberOverview%20-V2.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;this&lt;/a&gt; code. &lt;strong&gt;Make sure to change the&lt;/strong&gt; &lt;code&gt;**$localTestMode**&lt;/code&gt; &lt;strong&gt;variable to&lt;/strong&gt; &lt;code&gt;**$false**&lt;/code&gt; &lt;strong&gt;before you save and publish the runbook. Also update the names of your automation account and resource group on lines 95–97.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1Szx2vDwh4929HXR4DPp4MA.png&#34;
 	width=&#34;522&#34;
 	height=&#34;79&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1Szx2vDwh4929HXR4DPp4MA_hu2087dd2e0039bfaeb8935e2917623dab_11132_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1Szx2vDwh4929HXR4DPp4MA_hu2087dd2e0039bfaeb8935e2917623dab_11132_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1Szx2vDwh4929HXR4DPp4MA_hu5700670184897145383.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1Szx2vDwh4929HXR4DPp4MA_hu847545619561749350.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -580,7 +580,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1MFWbPjRVqUjXwHAw5HdDZg.png&#34;
 	width=&#34;415&#34;
 	height=&#34;20&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1MFWbPjRVqUjXwHAw5HdDZg_hu6b72af425dc2d9a6159f239c0fa33424_2603_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1MFWbPjRVqUjXwHAw5HdDZg_hu6b72af425dc2d9a6159f239c0fa33424_2603_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1MFWbPjRVqUjXwHAw5HdDZg_hu9929013984791076197.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1MFWbPjRVqUjXwHAw5HdDZg_hu5516652375618376658.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -589,12 +589,12 @@
 		data-flex-basis=&#34;4980px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;update-theflow&#34;&gt;Update the Flow&lt;/h4&gt;
-&lt;p&gt;Finally, go to your flow and make the last small changes. In here, add the values for the new columns that we created. If you need a refresher, this is the part where the flow deletes numbers which were unassigned because there’s no way to remove the user profile. We then recreate the list entry with all the information &lt;strong&gt;except&lt;/strong&gt; the &lt;strong&gt;User Profile Claims&lt;/strong&gt;. Because the user profile stays, we can use the &lt;strong&gt;User Profile Email&lt;/strong&gt; and write it to the &lt;strong&gt;Previous User&lt;/strong&gt; column. Comments in the comment field will also be added again, once a deleted entry has been recreated.&lt;/p&gt;
+&lt;h4 id=&#34;update-theflow&#34;&gt;Update the Flow
+&lt;/h4&gt;&lt;p&gt;Finally, go to your flow and make the last small changes. In here, add the values for the new columns that we created. If you need a refresher, this is the part where the flow deletes numbers which were unassigned because there’s no way to remove the user profile. We then recreate the list entry with all the information &lt;strong&gt;except&lt;/strong&gt; the &lt;strong&gt;User Profile Claims&lt;/strong&gt;. Because the user profile stays, we can use the &lt;strong&gt;User Profile Email&lt;/strong&gt; and write it to the &lt;strong&gt;Previous User&lt;/strong&gt; column. Comments in the comment field will also be added again, once a deleted entry has been recreated.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1BvLOlUfRBHAr1IFNxm7tYg.png&#34;
 	width=&#34;929&#34;
 	height=&#34;1374&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1BvLOlUfRBHAr1IFNxm7tYg_hu34a1cfd36dc5b890619cdd3ab70fcc66_111511_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1BvLOlUfRBHAr1IFNxm7tYg_hu34a1cfd36dc5b890619cdd3ab70fcc66_111511_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1BvLOlUfRBHAr1IFNxm7tYg_hu4886462214661649037.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1BvLOlUfRBHAr1IFNxm7tYg_hu6873944675599055317.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -603,8 +603,8 @@
 		data-flex-basis=&#34;162px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;update-the-flow-trigger-condition&#34;&gt;Update the Flow Trigger Condition&lt;/h4&gt;
-&lt;p&gt;The current trigger condition checks if a user’s email address is equal to the user principal name. As much as I want this to always be the case, the reality is sometimes different. Some readers have reported that their Flow gets stuck in an infinite trigger loop because of that.&lt;/p&gt;
+&lt;h4 id=&#34;update-the-flow-trigger-condition&#34;&gt;Update the Flow Trigger Condition
+&lt;/h4&gt;&lt;p&gt;The current trigger condition checks if a user’s email address is equal to the user principal name. As much as I want this to always be the case, the reality is sometimes different. Some readers have reported that their Flow gets stuck in an infinite trigger loop because of that.&lt;/p&gt;
 &lt;p&gt;I’ve slightly tweaked the trigger condition, so it doesn’t compare the email address to the UPN anymore. Instead, the UPN is extracted from the user profile using a split operation and then compared to the UPN from the list column. Here’s the &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Resources/FlowTriggerConditionRobustUpn.txt&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;updated trigger condition&lt;/a&gt;. Make sure to update it on your flow as well as it will be more robust than the old one.&lt;/p&gt;
 &lt;p&gt;@or(&lt;br&gt;
@@ -631,7 +631,7 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
         <description>&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/0rgv90To2E1EOPe.jpg&#34;
 	width=&#34;1024&#34;
 	height=&#34;1024&#34;
-	srcset=&#34;https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/0rgv90To2E1EOPe_hu39db2329fd12307d9d2a9a3dd1079567_90198_480x0_resize_q75_box.jpg 480w, https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/0rgv90To2E1EOPe_hu39db2329fd12307d9d2a9a3dd1079567_90198_1024x0_resize_q75_box.jpg 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/0rgv90To2E1EOPe_hu5571324408183254608.jpg 480w, https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/0rgv90To2E1EOPe_hu11610999194308215700.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -678,7 +678,7 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1qJTQBFoMOT8Ch8SBVGw9w.png&#34;
 	width=&#34;476&#34;
 	height=&#34;554&#34;
-	srcset=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1qJTQBFoMOT8Ch8SBVGw9w_hu394d42633891d118097386811d22e218_45292_480x0_resize_box_3.png 480w, https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1qJTQBFoMOT8Ch8SBVGw9w_hu394d42633891d118097386811d22e218_45292_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1qJTQBFoMOT8Ch8SBVGw9w_hu2137940890995738751.png 480w, https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1qJTQBFoMOT8Ch8SBVGw9w_hu11377502459298027534.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -691,7 +691,7 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1XgygFkOc2ljYRbuaPiZ3hA.png&#34;
 	width=&#34;1162&#34;
 	height=&#34;393&#34;
-	srcset=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1XgygFkOc2ljYRbuaPiZ3hA_hu6ad97763ff3793c32cd2b44fab1cd552_73124_480x0_resize_box_3.png 480w, https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1XgygFkOc2ljYRbuaPiZ3hA_hu6ad97763ff3793c32cd2b44fab1cd552_73124_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1XgygFkOc2ljYRbuaPiZ3hA_hu1206054928695464830.png 480w, https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1XgygFkOc2ljYRbuaPiZ3hA_hu8182002092684051782.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -706,7 +706,7 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1QTijGX2jlRXoWNmqhMU8jg.png&#34;
 	width=&#34;1265&#34;
 	height=&#34;139&#34;
-	srcset=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1QTijGX2jlRXoWNmqhMU8jg_hudf1b79b8c173a2b759b680fa3352de39_20580_480x0_resize_box_3.png 480w, https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1QTijGX2jlRXoWNmqhMU8jg_hudf1b79b8c173a2b759b680fa3352de39_20580_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1QTijGX2jlRXoWNmqhMU8jg_hu11242233577391350772.png 480w, https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1QTijGX2jlRXoWNmqhMU8jg_hu4292942200635913571.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -719,7 +719,7 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1G4CllxCII1RWb7GAPyBPQ.png&#34;
 	width=&#34;541&#34;
 	height=&#34;731&#34;
-	srcset=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1G4CllxCII1RWb7GAPyBPQ_hu4b6a9d97194e76b4b275eb893e8c1d2a_32999_480x0_resize_box_3.png 480w, https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1G4CllxCII1RWb7GAPyBPQ_hu4b6a9d97194e76b4b275eb893e8c1d2a_32999_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1G4CllxCII1RWb7GAPyBPQ_hu3491465845903467788.png 480w, https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1G4CllxCII1RWb7GAPyBPQ_hu7487735189703862050.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -731,10 +731,10 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;p&gt;I started to dig around in the browser dev tools to try and see if I could find these formatted numbers anywhere. Not luck. I could only ever find the raw values. I did some more research and learned that there are a couple of already existing and well-established libraries for various programming languages such as Python or Node.JS.&lt;/p&gt;
 &lt;p&gt;A few years ago, I made some attempts to learn the basics of Python but since I never really used it in real life, I kind of forgot everything. Thanks to ChatGPT I then learned that it’s actually possible to run python code inline in any PowerShell script. Good for me.&lt;/p&gt;
 &lt;p&gt;Now I have a neat little script which not only copies the LineURI of all Teams Phone users to Azure AD, but it also prettifies them in the same way as TAC and the Teams client do!&lt;/p&gt;
-&lt;h3 id=&#34;the-script&#34;&gt;The Script&lt;/h3&gt;
-&lt;p&gt;Note: The script has only been tested on Windows 11 using Python 3.11.1.&lt;/p&gt;
-&lt;h4 id=&#34;prerequisties&#34;&gt;Prerequisties&lt;/h4&gt;
-&lt;ol&gt;
+&lt;h3 id=&#34;the-script&#34;&gt;The Script
+&lt;/h3&gt;&lt;p&gt;Note: The script has only been tested on Windows 11 using Python 3.11.1.&lt;/p&gt;
+&lt;h4 id=&#34;prerequisties&#34;&gt;Prerequisties
+&lt;/h4&gt;&lt;ol&gt;
 &lt;li&gt;Install &lt;a class=&#34;link&#34; href=&#34;https://www.python.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Python&lt;/a&gt; on your machine&lt;/li&gt;
 &lt;li&gt;Run the following command to install the &lt;strong&gt;phonenumbers&lt;/strong&gt; library &lt;code&gt;python -m pip install phonenumbers&lt;/code&gt;&lt;/li&gt;
@@ -743,19 +743,19 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;code&gt;git clone [https://github.com](https://github.com)/mozziemozz/TeamsPhoneAutomation.git&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;Make sure that the &lt;strong&gt;MicrosoftTeams&lt;/strong&gt; and &lt;strong&gt;Microsoft.Graph&lt;/strong&gt; PowerShell modules are installed&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h4 id=&#34;code&#34;&gt;Code&lt;/h4&gt;
-&lt;p&gt;This is the script. It connects to Teams and Graph, gets all Teams users with a LineURI and then prettifies each LineURI before it’s set on the user’s BuinessPhones property in Azure AD.&lt;/p&gt;
+&lt;h4 id=&#34;code&#34;&gt;Code
+&lt;/h4&gt;&lt;p&gt;This is the script. It connects to Teams and Graph, gets all Teams users with a LineURI and then prettifies each LineURI before it’s set on the user’s BuinessPhones property in Azure AD.&lt;/p&gt;
 &lt;script src=&#34;https://gist.github.com/mozziemozz/c05ddbd07a9b102fbf94ef1c30bba490.js&#34;&gt;&lt;/script&gt;
 
 &lt;p&gt;If you prefer connecting via Azure AD Service Principal, there’s also a &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PhoneNumberFormatting/PrettifyPhoneNumbersServicePrincipal.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;version&lt;/a&gt; in the repo which supports that.&lt;/p&gt;
 &lt;p&gt;Keep in mind that you need to make sure that your App has all required graph scopes added and consented and that the Service Principal is also assigned the &lt;strong&gt;Skype for Business Online Administrator&lt;/strong&gt; role in Azure AD. For more information on how to set up and automated runbook, please refer to &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf&#34; &gt;this&lt;/a&gt; article.&lt;/p&gt;
-&lt;h4 id=&#34;result&#34;&gt;Result&lt;/h4&gt;
-&lt;p&gt;The output of the script will look like this.&lt;/p&gt;
+&lt;h4 id=&#34;result&#34;&gt;Result
+&lt;/h4&gt;&lt;p&gt;The output of the script will look like this.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1WoHkH5WLrR9gcBGDygeDPw.png&#34;
 	width=&#34;1498&#34;
 	height=&#34;271&#34;
-	srcset=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1WoHkH5WLrR9gcBGDygeDPw_hufb5a08a1a671283664f3702f557a1131_95794_480x0_resize_box_3.png 480w, https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1WoHkH5WLrR9gcBGDygeDPw_hufb5a08a1a671283664f3702f557a1131_95794_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1WoHkH5WLrR9gcBGDygeDPw_hu6822132118184905755.png 480w, https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1WoHkH5WLrR9gcBGDygeDPw_hu17867612075112613603.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -768,7 +768,7 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1YrjWmqbCzpnUtpqwRLjtLg.png&#34;
 	width=&#34;587&#34;
 	height=&#34;300&#34;
-	srcset=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1YrjWmqbCzpnUtpqwRLjtLg_hu2cdb800e76a3f42856f0adbbe728590b_26317_480x0_resize_box_3.png 480w, https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1YrjWmqbCzpnUtpqwRLjtLg_hu2cdb800e76a3f42856f0adbbe728590b_26317_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1YrjWmqbCzpnUtpqwRLjtLg_hu1798686117441237471.png 480w, https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1YrjWmqbCzpnUtpqwRLjtLg_hu17593340774535527704.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -796,15 +796,15 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;p&gt;The &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;repository&lt;/a&gt; has been updated and already includes the code required for number assignment. If you’ve already deployed it, just delete the resource group in Azure and re-deploy. Of course, you can also replace the existing files with the new scripts and variables by hand if you know what you’re doing. But since there’s a deployment script available, I recommend deleting and re-deploying.&lt;/p&gt;
 &lt;p&gt;Let’s check out the new features first and go over the manual changes required later.&lt;/p&gt;
-&lt;h3 id=&#34;new-features&#34;&gt;New Features&lt;/h3&gt;
-&lt;h4 id=&#34;country&#34;&gt;Country&lt;/h4&gt;
-&lt;p&gt;All Calling Plan and Operator Connect phone numbers already include a country attribute. Therefore, I decided to use the property which is already known to Teams. The &lt;strong&gt;Country&lt;/strong&gt; column now includes the two-digit ISO code instead of the country’s full name.&lt;/p&gt;
+&lt;h3 id=&#34;new-features&#34;&gt;New Features
+&lt;/h3&gt;&lt;h4 id=&#34;country&#34;&gt;Country
+&lt;/h4&gt;&lt;p&gt;All Calling Plan and Operator Connect phone numbers already include a country attribute. Therefore, I decided to use the property which is already known to Teams. The &lt;strong&gt;Country&lt;/strong&gt; column now includes the two-digit ISO code instead of the country’s full name.&lt;/p&gt;
 &lt;p&gt;For consistency, the &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Resources/CountryLookupTable.json&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;CountryLookupTable.json&lt;/a&gt; has been updated to include the ISO codes as well. Please see the &lt;strong&gt;Changes in V2&lt;/strong&gt; section of this article if the Country does not always match your direct routing numbers.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1fXx1TOgZFuZVhjx1eDjUQ.png&#34;
 	width=&#34;2262&#34;
 	height=&#34;504&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1fXx1TOgZFuZVhjx1eDjUQ_hu277fc53f1b5dc88c52a0a6e1475d8ef7_92277_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1fXx1TOgZFuZVhjx1eDjUQ_hu277fc53f1b5dc88c52a0a6e1475d8ef7_92277_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1fXx1TOgZFuZVhjx1eDjUQ_hu18095561668715858387.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1fXx1TOgZFuZVhjx1eDjUQ_hu17476794519995983039.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -813,14 +813,14 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 		data-flex-basis=&#34;1077px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;city&#34;&gt;City&lt;/h4&gt;
-&lt;p&gt;The purpose of this list is to make the management of phone numbers easier. The more information you have, the better you can filter. That’s why I added a &lt;strong&gt;City&lt;/strong&gt; column as well.&lt;/p&gt;
-&lt;h4 id=&#34;number-reservation&#34;&gt;Number Reservation&lt;/h4&gt;
-&lt;p&gt;The &lt;strong&gt;Status&lt;/strong&gt; column is now a drop-down list. Setting a number to &lt;strong&gt;Reserved&lt;/strong&gt; won’t do anything yet, except letting other people which use the list know that this number should not be assigned to any user or resource account.&lt;/p&gt;
+&lt;h4 id=&#34;city&#34;&gt;City
+&lt;/h4&gt;&lt;p&gt;The purpose of this list is to make the management of phone numbers easier. The more information you have, the better you can filter. That’s why I added a &lt;strong&gt;City&lt;/strong&gt; column as well.&lt;/p&gt;
+&lt;h4 id=&#34;number-reservation&#34;&gt;Number Reservation
+&lt;/h4&gt;&lt;p&gt;The &lt;strong&gt;Status&lt;/strong&gt; column is now a drop-down list. Setting a number to &lt;strong&gt;Reserved&lt;/strong&gt; won’t do anything yet, except letting other people which use the list know that this number should not be assigned to any user or resource account.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1hCvnQlLcivK4l6aqVptQ.png&#34;
 	width=&#34;1804&#34;
 	height=&#34;266&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1hCvnQlLcivK4l6aqVptQ_hufe5219eb62cae58c8dc8e9b2dd916ce7_39769_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1hCvnQlLcivK4l6aqVptQ_hufe5219eb62cae58c8dc8e9b2dd916ce7_39769_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1hCvnQlLcivK4l6aqVptQ_hu3950006781488042600.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1hCvnQlLcivK4l6aqVptQ_hu1535021345505014611.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -833,7 +833,7 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/19B3gsc94JUVpwVXhbEiLw.png&#34;
 	width=&#34;1186&#34;
 	height=&#34;498&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/19B3gsc94JUVpwVXhbEiLw_hu032438f3e0ac0887824dc5f4327a3d43_50249_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/19B3gsc94JUVpwVXhbEiLw_hu032438f3e0ac0887824dc5f4327a3d43_50249_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/19B3gsc94JUVpwVXhbEiLw_hu9745984112080395916.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/19B3gsc94JUVpwVXhbEiLw_hu8037434597609408185.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -843,12 +843,12 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;The runbook will not make any changes or updates to that entry until the number is assigned or the Status is changed by hand again.&lt;/p&gt;
-&lt;h4 id=&#34;assign-anumber&#34;&gt;Assign a Number&lt;/h4&gt;
-&lt;p&gt;To assign a number, simply set a number to &lt;strong&gt;Reserved&lt;/strong&gt; and choose a &lt;strong&gt;User Profile&lt;/strong&gt; from the people picker.&lt;/p&gt;
+&lt;h4 id=&#34;assign-anumber&#34;&gt;Assign a Number
+&lt;/h4&gt;&lt;p&gt;To assign a number, simply set a number to &lt;strong&gt;Reserved&lt;/strong&gt; and choose a &lt;strong&gt;User Profile&lt;/strong&gt; from the people picker.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1QNTzy43yr2pBe9Ow3xAWA.png&#34;
 	width=&#34;1067&#34;
 	height=&#34;246&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1QNTzy43yr2pBe9Ow3xAWA_hu1381dd2f30b47c40947708eb152131f1_39543_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1QNTzy43yr2pBe9Ow3xAWA_hu1381dd2f30b47c40947708eb152131f1_39543_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1QNTzy43yr2pBe9Ow3xAWA_hu10828696007464345786.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1QNTzy43yr2pBe9Ow3xAWA_hu3084779385110146671.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -861,7 +861,7 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1xrSnRsutiS2xUJ6y4U6Lw.png&#34;
 	width=&#34;1581&#34;
 	height=&#34;266&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1xrSnRsutiS2xUJ6y4U6Lw_hu1f21b268681bc3ec8c3f832f372bd1b6_41712_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1xrSnRsutiS2xUJ6y4U6Lw_hu1f21b268681bc3ec8c3f832f372bd1b6_41712_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1xrSnRsutiS2xUJ6y4U6Lw_hu4778689981290496313.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1xrSnRsutiS2xUJ6y4U6Lw_hu4877644192233988325.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -874,7 +874,7 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1z8KikMnOal4Oa2WxTYQ73A.png&#34;
 	width=&#34;1586&#34;
 	height=&#34;260&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1z8KikMnOal4Oa2WxTYQ73A_hu079a0831e70224feac5baeeba09029bc_42319_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1z8KikMnOal4Oa2WxTYQ73A_hu079a0831e70224feac5baeeba09029bc_42319_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1z8KikMnOal4Oa2WxTYQ73A_hu7055967322767454951.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1z8KikMnOal4Oa2WxTYQ73A_hu6280920259523228929.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -887,7 +887,7 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/11OI1hJz1RuwkoEm43rU0Q.png&#34;
 	width=&#34;809&#34;
 	height=&#34;107&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/11OI1hJz1RuwkoEm43rU0Q_hu55c0b352f247e7e1d31f0958a1733fb3_17395_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/11OI1hJz1RuwkoEm43rU0Q_hu55c0b352f247e7e1d31f0958a1733fb3_17395_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/11OI1hJz1RuwkoEm43rU0Q_hu5176709390360392135.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/11OI1hJz1RuwkoEm43rU0Q_hu6855803597452764775.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -901,7 +901,7 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/151zUCwelWtbrDgbnzkfNQ.png&#34;
 	width=&#34;2300&#34;
 	height=&#34;1259&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/151zUCwelWtbrDgbnzkfNQ_hu2175ea31da84d27882ad4cb34ce43864_69380_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/151zUCwelWtbrDgbnzkfNQ_hu2175ea31da84d27882ad4cb34ce43864_69380_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/151zUCwelWtbrDgbnzkfNQ_hu17297813823481506870.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/151zUCwelWtbrDgbnzkfNQ_hu16530650228554725155.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -910,12 +910,12 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 		data-flex-basis=&#34;438px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;unassign-anumber&#34;&gt;Unassign a Number&lt;/h4&gt;
-&lt;p&gt;To unassign a number, simply change the Status to &lt;strong&gt;Remove Pending&lt;/strong&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;unassign-anumber&#34;&gt;Unassign a Number
+&lt;/h4&gt;&lt;p&gt;To unassign a number, simply change the Status to &lt;strong&gt;Remove Pending&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1o5Nh9gEBN07IBhByFt8Few.png&#34;
 	width=&#34;1582&#34;
 	height=&#34;267&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1o5Nh9gEBN07IBhByFt8Few_hu1de2cfe3c198e6c9ae5bc62257969485_42807_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1o5Nh9gEBN07IBhByFt8Few_hu1de2cfe3c198e6c9ae5bc62257969485_42807_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1o5Nh9gEBN07IBhByFt8Few_hu9286108581087119320.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1o5Nh9gEBN07IBhByFt8Few_hu2035649539514763881.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -925,15 +925,15 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;The number will then be removed from the user, the next time the runbook is running.&lt;/p&gt;
-&lt;h4 id=&#34;performance-improvements&#34;&gt;Performance Improvements&lt;/h4&gt;
-&lt;p&gt;I’ve also made some changes which will improve the performance of the script dramatically. I discovered a couple of redundant Graph requests which have now been reduced to the minimum required.&lt;/p&gt;
-&lt;h3 id=&#34;changes-inv2&#34;&gt;Changes in V2&lt;/h3&gt;
-&lt;h4 id=&#34;changes-to-thelist&#34;&gt;Changes to the List&lt;/h4&gt;
-&lt;p&gt;Edit the &lt;strong&gt;Status&lt;/strong&gt; column of your list.&lt;/p&gt;
+&lt;h4 id=&#34;performance-improvements&#34;&gt;Performance Improvements
+&lt;/h4&gt;&lt;p&gt;I’ve also made some changes which will improve the performance of the script dramatically. I discovered a couple of redundant Graph requests which have now been reduced to the minimum required.&lt;/p&gt;
+&lt;h3 id=&#34;changes-inv2&#34;&gt;Changes in V2
+&lt;/h3&gt;&lt;h4 id=&#34;changes-to-thelist&#34;&gt;Changes to the List
+&lt;/h4&gt;&lt;p&gt;Edit the &lt;strong&gt;Status&lt;/strong&gt; column of your list.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1P2a8Jd5iHaAPfAvS6IglA.png&#34;
 	width=&#34;1424&#34;
 	height=&#34;518&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1P2a8Jd5iHaAPfAvS6IglA_hub94d4482e000b8f19e3bf5de88c90269_73033_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1P2a8Jd5iHaAPfAvS6IglA_hub94d4482e000b8f19e3bf5de88c90269_73033_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1P2a8Jd5iHaAPfAvS6IglA_hu12125202056538052887.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1P2a8Jd5iHaAPfAvS6IglA_hu14442988621511594313.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -946,7 +946,7 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1scOs84KlwMBYFhiCNnG3Q.png&#34;
 	width=&#34;484&#34;
 	height=&#34;836&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1scOs84KlwMBYFhiCNnG3Q_hu44e56985460b03cf5023c5769c4e9572_42739_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1scOs84KlwMBYFhiCNnG3Q_hu44e56985460b03cf5023c5769c4e9572_42739_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1scOs84KlwMBYFhiCNnG3Q_hu14030371504769031098.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1scOs84KlwMBYFhiCNnG3Q_hu8023510185257674125.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -960,7 +960,7 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1cjsXM6TTXhTYVAZGMag.png&#34;
 	width=&#34;837&#34;
 	height=&#34;636&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1cjsXM6TTXhTYVAZGMag_hu7ad1c3a37d1237d62b0bcf498ba1b9ad_46666_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1cjsXM6TTXhTYVAZGMag_hu7ad1c3a37d1237d62b0bcf498ba1b9ad_46666_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1cjsXM6TTXhTYVAZGMag_hu4454873448234977473.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1cjsXM6TTXhTYVAZGMag_hu14559344243294259727.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -973,7 +973,7 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1QXZyFo02BJglprnd8cS4og.png&#34;
 	width=&#34;479&#34;
 	height=&#34;689&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1QXZyFo02BJglprnd8cS4og_hube7dfc18e4d4d2c2120da6d8ecf7b5b7_37936_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1QXZyFo02BJglprnd8cS4og_hube7dfc18e4d4d2c2120da6d8ecf7b5b7_37936_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1QXZyFo02BJglprnd8cS4og_hu4514075467822879582.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1QXZyFo02BJglprnd8cS4og_hu13138467544254700414.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -982,9 +982,9 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 		data-flex-basis=&#34;166px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h3 id=&#34;changes-to-theflow&#34;&gt;Changes to the Flow&lt;/h3&gt;
-&lt;h4 id=&#34;update-trigger-condition&#34;&gt;Update Trigger Condition&lt;/h4&gt;
-&lt;p&gt;In your flow’s trigger condition, delete the existing condition and paste the following expression.&lt;/p&gt;
+&lt;h3 id=&#34;changes-to-theflow&#34;&gt;Changes to the Flow
+&lt;/h3&gt;&lt;h4 id=&#34;update-trigger-condition&#34;&gt;Update Trigger Condition
+&lt;/h4&gt;&lt;p&gt;In your flow’s trigger condition, delete the existing condition and paste the following expression.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Update 08.08.2023&lt;/strong&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Thanks to a community member of my Teams Phone Admin &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/discord.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -1009,7 +1009,7 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/15XzTMBRpRFoAN8QWg0wg.png&#34;
 	width=&#34;1658&#34;
 	height=&#34;257&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/15XzTMBRpRFoAN8QWg0wg_hub891bb3e042297a5e9057dc43d80ea3a_41750_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/15XzTMBRpRFoAN8QWg0wg_hub891bb3e042297a5e9057dc43d80ea3a_41750_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/15XzTMBRpRFoAN8QWg0wg_hu17581429506138853447.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/15XzTMBRpRFoAN8QWg0wg_hu13213783103957942431.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1018,13 +1018,13 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 		data-flex-basis=&#34;1548px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;add-another-condition&#34;&gt;Add Another Condition&lt;/h4&gt;
-&lt;p&gt;I don’t know why it didn’t occur to me initially but instead of using the runbook to recreate items which have been deleted by the flow, we can just use the flow to do that as well. The reason why we need to delete and re-create is because setting the User Profile to &lt;strong&gt;null&lt;/strong&gt; did not work in Power Automate.&lt;/p&gt;
+&lt;h4 id=&#34;add-another-condition&#34;&gt;Add Another Condition
+&lt;/h4&gt;&lt;p&gt;I don’t know why it didn’t occur to me initially but instead of using the runbook to recreate items which have been deleted by the flow, we can just use the flow to do that as well. The reason why we need to delete and re-create is because setting the User Profile to &lt;strong&gt;null&lt;/strong&gt; did not work in Power Automate.&lt;/p&gt;
 &lt;p&gt;In the first &lt;strong&gt;If yes&lt;/strong&gt; action, we have to add another condition which checks if the &lt;strong&gt;Status Value&lt;/strong&gt; is equal to &lt;strong&gt;Unassigned.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/11borC4Preqwfg27E0VYQA.png&#34;
 	width=&#34;926&#34;
 	height=&#34;296&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/11borC4Preqwfg27E0VYQA_hua99723b5a064cf69169f923508c3c81f_15243_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/11borC4Preqwfg27E0VYQA_hua99723b5a064cf69169f923508c3c81f_15243_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/11borC4Preqwfg27E0VYQA_hu7805835888938731663.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/11borC4Preqwfg27E0VYQA_hu12746839978264146194.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1037,7 +1037,7 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1b0l089aKSKjnKzGhs2WLw.png&#34;
 	width=&#34;1241&#34;
 	height=&#34;125&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1b0l089aKSKjnKzGhs2WLw_hu5d262466986fc735e7426eea0a462aeb_18277_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1b0l089aKSKjnKzGhs2WLw_hu5d262466986fc735e7426eea0a462aeb_18277_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1b0l089aKSKjnKzGhs2WLw_hu1036140290450343780.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1b0l089aKSKjnKzGhs2WLw_hu1163246677624753479.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1049,7 +1049,7 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/151IVw0NFOPlwJIyS5Z6A.png&#34;
 	width=&#34;918&#34;
 	height=&#34;326&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/151IVw0NFOPlwJIyS5Z6A_hu3654e03b19811c43930e5ee8438f20ef_22848_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/151IVw0NFOPlwJIyS5Z6A_hu3654e03b19811c43930e5ee8438f20ef_22848_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/151IVw0NFOPlwJIyS5Z6A_hu10257178476965244421.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/151IVw0NFOPlwJIyS5Z6A_hu9771569368903101710.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1058,12 +1058,12 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 		data-flex-basis=&#34;675px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;add-create-itemaction&#34;&gt;Add Create Item Action&lt;/h4&gt;
-&lt;p&gt;In the second &lt;strong&gt;If yes&lt;/strong&gt; action, add a &lt;strong&gt;Create item&lt;/strong&gt; action after &lt;strong&gt;Delete&lt;/strong&gt; item with the following dynamic values.&lt;/p&gt;
+&lt;h4 id=&#34;add-create-itemaction&#34;&gt;Add Create Item Action
+&lt;/h4&gt;&lt;p&gt;In the second &lt;strong&gt;If yes&lt;/strong&gt; action, add a &lt;strong&gt;Create item&lt;/strong&gt; action after &lt;strong&gt;Delete&lt;/strong&gt; item with the following dynamic values.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1KEG3uPMLbf8mXKkAHXCBw.png&#34;
 	width=&#34;964&#34;
 	height=&#34;1421&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1KEG3uPMLbf8mXKkAHXCBw_hu308457c30e9f80bd76d0e9b8303903a9_98037_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1KEG3uPMLbf8mXKkAHXCBw_hu308457c30e9f80bd76d0e9b8303903a9_98037_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1KEG3uPMLbf8mXKkAHXCBw_hu1020364719477370199.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1KEG3uPMLbf8mXKkAHXCBw_hu14687809433212571189.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1076,7 +1076,7 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1xF9V8IvU5ZFciYjH1fsqYg.png&#34;
 	width=&#34;3158&#34;
 	height=&#34;1242&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1xF9V8IvU5ZFciYjH1fsqYg_hu37ecd369f774b74588a3b93769f2bc0d_88298_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1xF9V8IvU5ZFciYjH1fsqYg_hu37ecd369f774b74588a3b93769f2bc0d_88298_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1xF9V8IvU5ZFciYjH1fsqYg_hu5567447648529120566.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1xF9V8IvU5ZFciYjH1fsqYg_hu14733048590385861530.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1085,9 +1085,9 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 		data-flex-basis=&#34;610px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h3 id=&#34;changes-to-the-countrylookuptablejson&#34;&gt;Changes to the CountryLookupTable.json&lt;/h3&gt;
-&lt;h4 id=&#34;add-more-preciseprefixes&#34;&gt;Add More Precise Prefixes&lt;/h4&gt;
-&lt;p&gt;There are some countries which use the same phone prefix. If multiple matches are found, the function always uses the last match which might be wrong in many cases. To solve this, just edit the Json file yourself.&lt;/p&gt;
+&lt;h3 id=&#34;changes-to-the-countrylookuptablejson&#34;&gt;Changes to the CountryLookupTable.json
+&lt;/h3&gt;&lt;h4 id=&#34;add-more-preciseprefixes&#34;&gt;Add More Precise Prefixes
+&lt;/h4&gt;&lt;p&gt;There are some countries which use the same phone prefix. If multiple matches are found, the function always uses the last match which might be wrong in many cases. To solve this, just edit the Json file yourself.&lt;/p&gt;
 &lt;p&gt;For example, if you have Australian &lt;strong&gt;+61&lt;/strong&gt; numbers, but don’t have any numbers from Christmas Island or Cocos Islands (which also start with +61), just delete these entries from the Json.&lt;/p&gt;
 &lt;p&gt;In case you have e.g. numbers from Canada and USA, which both start with &lt;strong&gt;+1,&lt;/strong&gt; you can also extend the prefix to include all digits which are common in all your number ranges from left to right.&lt;/p&gt;
 &lt;p&gt;Original Entry&lt;/p&gt;
@@ -1114,8 +1114,8 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &amp;ldquo;CountryName&amp;rdquo;: &amp;ldquo;United States&amp;rdquo;,&lt;br&gt;
 &amp;ldquo;Country&amp;rdquo;: &amp;ldquo;US&amp;rdquo;&lt;br&gt;
 }&lt;/p&gt;
-&lt;h4 id=&#34;add-voice-routing-policynames&#34;&gt;Add Voice Routing Policy Names&lt;/h4&gt;
-&lt;p&gt;If you want to use the list for assignment of direct routing numbers, you’ll have to add the name of your voice routing policy for each country to the &lt;strong&gt;CountryLookupTable.json&lt;/strong&gt; file.&lt;/p&gt;
+&lt;h4 id=&#34;add-voice-routing-policynames&#34;&gt;Add Voice Routing Policy Names
+&lt;/h4&gt;&lt;p&gt;If you want to use the list for assignment of direct routing numbers, you’ll have to add the name of your voice routing policy for each country to the &lt;strong&gt;CountryLookupTable.json&lt;/strong&gt; file.&lt;/p&gt;
 &lt;p&gt;{&lt;br&gt;
 &amp;ldquo;Prefix&amp;rdquo;: &amp;ldquo;+41&amp;rdquo;,&lt;br&gt;
 &amp;ldquo;CountryName&amp;rdquo;: &amp;ldquo;Switzerland&amp;rdquo;,&lt;br&gt;
@@ -1136,8 +1136,8 @@ not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br&gt;
 &amp;ldquo;Country&amp;rdquo;: &amp;ldquo;CH&amp;rdquo;,&lt;br&gt;
 &amp;ldquo;VoiceRoutingPolicy&amp;rdquo;: &amp;ldquo;Switzerland-Bern&amp;rdquo;&lt;br&gt;
 }&lt;/p&gt;
-&lt;h4 id=&#34;changes-to-teamsphonenumberoverviewps1&#34;&gt;Changes to TeamsPhoneNumberOverview.ps1&lt;/h4&gt;
-&lt;p&gt;&lt;strong&gt;Update 11.04.2023&lt;/strong&gt;&lt;/p&gt;
+&lt;h4 id=&#34;changes-to-teamsphonenumberoverviewps1&#34;&gt;Changes to TeamsPhoneNumberOverview.ps1
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;Update 11.04.2023&lt;/strong&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Sorry, I totally forgot to mention that you’ll also need to specify the name of the SharePoint User Information List in your language.&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1166,7 +1166,7 @@ Default {
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/0i9hHsRnLxMO42ePg.jpg&#34;
 	width=&#34;1024&#34;
 	height=&#34;1024&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/0i9hHsRnLxMO42ePg_huf10134041c0126d5fb940c52c6a6a43b_125034_480x0_resize_q75_box.jpg 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/0i9hHsRnLxMO42ePg_huf10134041c0126d5fb940c52c6a6a43b_125034_1024x0_resize_q75_box.jpg 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/0i9hHsRnLxMO42ePg_hu15752199443567770170.jpg 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/0i9hHsRnLxMO42ePg_hu7172263305403151568.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1186,7 +1186,7 @@ Default {
         <description>&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/0TNGGsjES22NTIbT.jpg&#34;
 	width=&#34;1024&#34;
 	height=&#34;1024&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/0TNGGsjES22NTIbT_hua9e2dc7ee20e2e1771a9d9231d6c5020_107042_480x0_resize_q75_box.jpg 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/0TNGGsjES22NTIbT_hua9e2dc7ee20e2e1771a9d9231d6c5020_107042_1024x0_resize_q75_box.jpg 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/0TNGGsjES22NTIbT_hu912541835031888826.jpg 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/0TNGGsjES22NTIbT_hu11546119818278601661.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1219,7 +1219,7 @@ Default {
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1bJzySshLFfuKEkIhfsSCQ.png&#34;
 	width=&#34;2789&#34;
 	height=&#34;1101&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1bJzySshLFfuKEkIhfsSCQ_hu6c1d86aeddff377f7bcbf523bed02252_238966_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1bJzySshLFfuKEkIhfsSCQ_hu6c1d86aeddff377f7bcbf523bed02252_238966_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1bJzySshLFfuKEkIhfsSCQ_hu5742481542322750691.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1bJzySshLFfuKEkIhfsSCQ_hu8961435426017054614.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1233,9 +1233,9 @@ Default {
 &lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;If you don’t care about the details and want to deploy straight away, you can grab the code from &lt;a class=&#34;link&#34; href=&#34;http://mozziemozz/TeamsPhoneAutomation:%20Automation%20Scripts%20for%20Microsoft%20Teams%20Phone%20%28github.com%29&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt;.&lt;/p&gt;
-&lt;h3 id=&#34;the-list&#34;&gt;The List&lt;/h3&gt;
-&lt;h4 id=&#34;the-columns&#34;&gt;The Columns&lt;/h4&gt;
-&lt;p&gt;The list can be viewed in SharePoint Online, Microsoft Lists or directly in Teams through Lists. It consists of the following columns.&lt;/p&gt;
+&lt;h3 id=&#34;the-list&#34;&gt;The List
+&lt;/h3&gt;&lt;h4 id=&#34;the-columns&#34;&gt;The Columns
+&lt;/h4&gt;&lt;p&gt;The list can be viewed in SharePoint Online, Microsoft Lists or directly in Teams through Lists. It consists of the following columns.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Title&lt;/strong&gt; = Phone Number&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Phone Extension&lt;/strong&gt; = Extension if there is one configured&lt;/li&gt;
@@ -1250,12 +1250,12 @@ Default {
 &lt;li&gt;&lt;strong&gt;Teams Admin Center&lt;/strong&gt; = Link to manage the user in TAC&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;This should cover most of the relevant information somebody might want to know about their phone numbers.&lt;/p&gt;
-&lt;h4 id=&#34;filtering&#34;&gt;Filtering&lt;/h4&gt;
-&lt;p&gt;Having all that information available allows us to easily filter numbers which meet certain criteria. In this example, I filtered the list for all unassigned numbers from the UK.&lt;/p&gt;
+&lt;h4 id=&#34;filtering&#34;&gt;Filtering
+&lt;/h4&gt;&lt;p&gt;Having all that information available allows us to easily filter numbers which meet certain criteria. In this example, I filtered the list for all unassigned numbers from the UK.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/14bBmRV7urUrZc22NiWUVDA.png&#34;
 	width=&#34;2100&#34;
 	height=&#34;272&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/14bBmRV7urUrZc22NiWUVDA_huf4872075daf114ac9a4cae11f1bc4684_48345_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/14bBmRV7urUrZc22NiWUVDA_huf4872075daf114ac9a4cae11f1bc4684_48345_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/14bBmRV7urUrZc22NiWUVDA_hu16598893907812566858.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/14bBmRV7urUrZc22NiWUVDA_hu3430178977867213363.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1269,7 +1269,7 @@ Default {
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1wZdcr9ASB2hnmRdFT5w.png&#34;
 	width=&#34;2086&#34;
 	height=&#34;269&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1wZdcr9ASB2hnmRdFT5w_hu6964069f04cc53a72d91757e4056feab_45380_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1wZdcr9ASB2hnmRdFT5w_hu6964069f04cc53a72d91757e4056feab_45380_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1wZdcr9ASB2hnmRdFT5w_hu6713032443149435000.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1wZdcr9ASB2hnmRdFT5w_hu11318618150716205332.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1282,7 +1282,7 @@ Default {
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1IUJX8fpDC3xi4wpcd5kfg.png&#34;
 	width=&#34;2280&#34;
 	height=&#34;520&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1IUJX8fpDC3xi4wpcd5kfg_hu00f9cbd8dcd2c8a7f5ad5ebb3014850e_86872_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1IUJX8fpDC3xi4wpcd5kfg_hu00f9cbd8dcd2c8a7f5ad5ebb3014850e_86872_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1IUJX8fpDC3xi4wpcd5kfg_hu5721791204430657627.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1IUJX8fpDC3xi4wpcd5kfg_hu16992599334884932003.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1292,10 +1292,10 @@ Default {
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;I learned a lot during the development of this project, and I now want to share that with you. Let’s take a look at how the SharePoint list was built and how it automatically updates itself with the help of &lt;strong&gt;Azure Automation&lt;/strong&gt;.&lt;/p&gt;
-&lt;h3 id=&#34;deployment&#34;&gt;Deployment&lt;/h3&gt;
-&lt;p&gt;There are very few manual tasks required to get this set up. I built a deployment script which will create all the required resources in Azure for you.&lt;/p&gt;
-&lt;h4 id=&#34;clone-the-githubrepo&#34;&gt;Clone The GitHub Repo&lt;/h4&gt;
-&lt;p&gt;Start by cloning or downloading the GitHub Repo.&lt;/p&gt;
+&lt;h3 id=&#34;deployment&#34;&gt;Deployment
+&lt;/h3&gt;&lt;p&gt;There are very few manual tasks required to get this set up. I built a deployment script which will create all the required resources in Azure for you.&lt;/p&gt;
+&lt;h4 id=&#34;clone-the-githubrepo&#34;&gt;Clone The GitHub Repo
+&lt;/h4&gt;&lt;p&gt;Start by cloning or downloading the GitHub Repo.&lt;/p&gt;
 &lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;mozziemozz/TeamsPhoneAutomation: Automation Scripts for Microsoft Teams Phone (github.com)&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;If you’ve never worked with GitHub before, I highly recommend trying it instead of just downloading the repository as a zip file. All you need to do is &lt;a class=&#34;link&#34; href=&#34;https://github.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -1306,7 +1306,7 @@ Default {
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Id3QSS2WJGsTfGqGPJ55Q.png&#34;
 	width=&#34;1390&#34;
 	height=&#34;588&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Id3QSS2WJGsTfGqGPJ55Q_hu03fc151a6611929b7143ada33a867127_95586_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Id3QSS2WJGsTfGqGPJ55Q_hu03fc151a6611929b7143ada33a867127_95586_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Id3QSS2WJGsTfGqGPJ55Q_hu15314634163774768637.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Id3QSS2WJGsTfGqGPJ55Q_hu11385199648139296782.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1319,7 +1319,7 @@ Default {
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1tqEoryFHlOYEPKCBQaED6Q.png&#34;
 	width=&#34;736&#34;
 	height=&#34;446&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1tqEoryFHlOYEPKCBQaED6Q_hu2d2cacbc9d052a8419ae14ae3b8f1e9b_28895_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1tqEoryFHlOYEPKCBQaED6Q_hu2d2cacbc9d052a8419ae14ae3b8f1e9b_28895_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1tqEoryFHlOYEPKCBQaED6Q_hu7452115762349764384.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1tqEoryFHlOYEPKCBQaED6Q_hu63212629804396380.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1352,8 +1352,8 @@ Default {
 └───Setup&lt;br&gt;
 Setup.ps1&lt;br&gt;
 UpdateDirectRoutingNumbers.ps1&lt;/p&gt;
-&lt;h4 id=&#34;environmentjson&#34;&gt;Environment.json&lt;/h4&gt;
-&lt;p&gt;Before we do anything, we need to define a few things and names. In &lt;code&gt;.\Resources&lt;/code&gt; open the &lt;code&gt;Environment.json&lt;/code&gt; file and fill in your own information.&lt;/p&gt;
+&lt;h4 id=&#34;environmentjson&#34;&gt;Environment.json
+&lt;/h4&gt;&lt;p&gt;Before we do anything, we need to define a few things and names. In &lt;code&gt;.\Resources&lt;/code&gt; open the &lt;code&gt;Environment.json&lt;/code&gt; file and fill in your own information.&lt;/p&gt;
 &lt;p&gt;{&lt;br&gt;
 &amp;ldquo;TenantId&amp;rdquo;: &amp;ldquo;4bffbf87-53a0-4fce-b58b-xxxxxxxxxxxx&amp;rdquo;,&lt;br&gt;
 &amp;ldquo;GroupId&amp;rdquo;: &amp;ldquo;aff7d27f-878d-422c-83bd-xxxxxxxxxxxx&amp;rdquo;,&lt;br&gt;
@@ -1371,12 +1371,12 @@ UpdateDirectRoutingNumbers.ps1&lt;/p&gt;
 &lt;p&gt;You can find a list of all available regions and their names &lt;a class=&#34;link&#34; href=&#34;https://azure.microsoft.com/en-us/explore/global-infrastructure/geographies/#geographies&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Make sure you save the file once you’ve filled in all the information.&lt;/p&gt;
-&lt;h4 id=&#34;directroutingnumberscsv&#34;&gt;DirectRoutingNumbers.csv&lt;/h4&gt;
-&lt;p&gt;Next, we need a list which contains all your direct routing numbers. This file can only contain one column called &lt;strong&gt;PhoneNumber&lt;/strong&gt;. All the numbers must be in &lt;strong&gt;E.164&lt;/strong&gt; format but without the leading &lt;code&gt;+&lt;/code&gt; . The plus sign will be added by the script later. It just makes things easier in Excel if we don’t need to bother about the plus.&lt;/p&gt;
+&lt;h4 id=&#34;directroutingnumberscsv&#34;&gt;DirectRoutingNumbers.csv
+&lt;/h4&gt;&lt;p&gt;Next, we need a list which contains all your direct routing numbers. This file can only contain one column called &lt;strong&gt;PhoneNumber&lt;/strong&gt;. All the numbers must be in &lt;strong&gt;E.164&lt;/strong&gt; format but without the leading &lt;code&gt;+&lt;/code&gt; . The plus sign will be added by the script later. It just makes things easier in Excel if we don’t need to bother about the plus.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1nnwTg3pq3UCddPisob7HqA.png&#34;
 	width=&#34;1461&#34;
 	height=&#34;969&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1nnwTg3pq3UCddPisob7HqA_hu33cb0141878143d616a7fbe15bc917c4_340963_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1nnwTg3pq3UCddPisob7HqA_hu33cb0141878143d616a7fbe15bc917c4_340963_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1nnwTg3pq3UCddPisob7HqA_hu7420336003315348163.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1nnwTg3pq3UCddPisob7HqA_hu15924371305969066333.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1386,8 +1386,8 @@ UpdateDirectRoutingNumbers.ps1&lt;/p&gt;
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;That’s it for the preparation.&lt;/p&gt;
-&lt;h4 id=&#34;deployps1&#34;&gt;Deploy.ps1&lt;/h4&gt;
-&lt;p&gt;Disclaimer: The script has been tested on a vanilla Windows 11 virtual machine where &lt;strong&gt;Windows Terminal&lt;/strong&gt; is configured as default console host and sessions start in the parent process directory. No PowerShell modules were installed before the script was first executed on this system.&lt;/p&gt;
+&lt;h4 id=&#34;deployps1&#34;&gt;Deploy.ps1
+&lt;/h4&gt;&lt;p&gt;Disclaimer: The script has been tested on a vanilla Windows 11 virtual machine where &lt;strong&gt;Windows Terminal&lt;/strong&gt; is configured as default console host and sessions start in the parent process directory. No PowerShell modules were installed before the script was first executed on this system.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;You will need an account with Global Administrator rights to successfully run this script. You also need local admin rights and need to make sure that running scripts is allowed on your machine.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;In an elevated terminal, run the following code and close the terminal session once you have done so.&lt;/p&gt;
 &lt;p&gt;Set-ExecutionPolicy Bypass&lt;/p&gt;
@@ -1395,7 +1395,7 @@ UpdateDirectRoutingNumbers.ps1&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1WKugBxPGMHPFT71q8WUN1g.png&#34;
 	width=&#34;618&#34;
 	height=&#34;582&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1WKugBxPGMHPFT71q8WUN1g_hu85d54a622ff1137685cbec9b7afbbc6c_175763_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1WKugBxPGMHPFT71q8WUN1g_hu85d54a622ff1137685cbec9b7afbbc6c_175763_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1WKugBxPGMHPFT71q8WUN1g_hu9748863606125509951.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1WKugBxPGMHPFT71q8WUN1g_hu13008471837373925715.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1405,13 +1405,13 @@ UpdateDirectRoutingNumbers.ps1&lt;/p&gt;
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;This will just call the &lt;code&gt;.\Setup\Setup.ps1&lt;/code&gt; script which is the real deal.&lt;/p&gt;
-&lt;h4 id=&#34;setupps1&#34;&gt;Setup.ps1&lt;/h4&gt;
-&lt;p&gt;After all the module and components checks have been completed or the missing components have been installed, you will be prompted to sign into the &lt;a class=&#34;link&#34; href=&#34;https://pnp.github.io/cli-microsoft365/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h4 id=&#34;setupps1&#34;&gt;Setup.ps1
+&lt;/h4&gt;&lt;p&gt;After all the module and components checks have been completed or the missing components have been installed, you will be prompted to sign into the &lt;a class=&#34;link&#34; href=&#34;https://pnp.github.io/cli-microsoft365/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;&lt;strong&gt;M365 CLI&lt;/strong&gt;&lt;/a&gt;&lt;strong&gt;.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ZuLzxPnboF940mSkOnUFqA.png&#34;
 	width=&#34;2430&#34;
 	height=&#34;1392&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ZuLzxPnboF940mSkOnUFqA_hu9d5f939f3752108568b064391ae85e0a_1624382_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ZuLzxPnboF940mSkOnUFqA_hu9d5f939f3752108568b064391ae85e0a_1624382_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ZuLzxPnboF940mSkOnUFqA_hu1738372814427355878.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ZuLzxPnboF940mSkOnUFqA_hu12566719588411974285.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1422,12 +1422,12 @@ UpdateDirectRoutingNumbers.ps1&lt;/p&gt;
 &gt;&lt;/p&gt;
 &lt;p&gt;Let me explain what’s going on in the script. Our end goal is to have a SharePoint list. Since we need a script to automatically update the list anyway, we might as well just create the list through PowerShell and Microsoft Graph instead of creating it manually.&lt;/p&gt;
 &lt;p&gt;To provision all this stuff, we need a couple of &lt;strong&gt;Az.*&lt;/strong&gt; PowerShell modules. We also need &lt;strong&gt;Node.JS&lt;/strong&gt; so we can install the &lt;strong&gt;CLI for Microsoft 365&lt;/strong&gt; through &lt;strong&gt;NPM&lt;/strong&gt; (Node Package Manager). If you miss any of the components on your machine, they will automatically be installed, if you can provide local admin rights.&lt;/p&gt;
-&lt;h4 id=&#34;azure-ad-app-registration--service-principal&#34;&gt;Azure AD App Registration &amp;amp; Service Principal&lt;/h4&gt;
-&lt;p&gt;The M365 CLI will create a new Azure AD App Registration and a Service Principal. It will also assign the Microsoft Graph permission scopes we need to create and modify SharePoint lists and manage Microsoft Teams to the Service Principal.&lt;/p&gt;
+&lt;h4 id=&#34;azure-ad-app-registration--service-principal&#34;&gt;Azure AD App Registration &amp;amp; Service Principal
+&lt;/h4&gt;&lt;p&gt;The M365 CLI will create a new Azure AD App Registration and a Service Principal. It will also assign the Microsoft Graph permission scopes we need to create and modify SharePoint lists and manage Microsoft Teams to the Service Principal.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1PKYwJDYOIAvgJi8us8uUMQ.png&#34;
 	width=&#34;1928&#34;
 	height=&#34;1395&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1PKYwJDYOIAvgJi8us8uUMQ_hu38f63293225db81d1a4929f24c0af3ed_335030_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1PKYwJDYOIAvgJi8us8uUMQ_hu38f63293225db81d1a4929f24c0af3ed_335030_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1PKYwJDYOIAvgJi8us8uUMQ_hu628719541228874123.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1PKYwJDYOIAvgJi8us8uUMQ_hu4252450136310480715.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1439,7 +1439,7 @@ UpdateDirectRoutingNumbers.ps1&lt;/p&gt;
 &lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1EvALgsWAXkRfjYM5WjZMGQ.png&#34;
 	width=&#34;2616&#34;
 	height=&#34;1297&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1EvALgsWAXkRfjYM5WjZMGQ_hucf99232732d6d3736d9a60bccbec1c37_308831_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1EvALgsWAXkRfjYM5WjZMGQ_hucf99232732d6d3736d9a60bccbec1c37_308831_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1EvALgsWAXkRfjYM5WjZMGQ_hu12551621545973388717.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1EvALgsWAXkRfjYM5WjZMGQ_hu11938362031274274548.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1452,7 +1452,7 @@ UpdateDirectRoutingNumbers.ps1&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1BFgrZUU3EnaOZDB1SutpQ.png&#34;
 	width=&#34;1303&#34;
 	height=&#34;115&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1BFgrZUU3EnaOZDB1SutpQ_hu4b2091b5524233e8888fd86d95623a01_19066_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1BFgrZUU3EnaOZDB1SutpQ_hu4b2091b5524233e8888fd86d95623a01_19066_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1BFgrZUU3EnaOZDB1SutpQ_hu12104806406663318733.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1BFgrZUU3EnaOZDB1SutpQ_hu2560773076815812756.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1465,7 +1465,7 @@ UpdateDirectRoutingNumbers.ps1&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1a2XyZpLjkpZ0HOfLCL32PA.png&#34;
 	width=&#34;1950&#34;
 	height=&#34;778&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1a2XyZpLjkpZ0HOfLCL32PA_huc24ae129d0035c25dc71a3638d86bf08_155245_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1a2XyZpLjkpZ0HOfLCL32PA_huc24ae129d0035c25dc71a3638d86bf08_155245_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1a2XyZpLjkpZ0HOfLCL32PA_hu16804943997998076463.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1a2XyZpLjkpZ0HOfLCL32PA_hu1784546163970375950.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1478,7 +1478,7 @@ UpdateDirectRoutingNumbers.ps1&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1zitK266ZKs6EST13zGeKCA.png&#34;
 	width=&#34;2207&#34;
 	height=&#34;120&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1zitK266ZKs6EST13zGeKCA_hu689d4b6b86b13e87d6d92e1a9175eb89_255664_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1zitK266ZKs6EST13zGeKCA_hu689d4b6b86b13e87d6d92e1a9175eb89_255664_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1zitK266ZKs6EST13zGeKCA_hu17009502861554730949.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1zitK266ZKs6EST13zGeKCA_hu14383668118895981549.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1491,7 +1491,7 @@ UpdateDirectRoutingNumbers.ps1&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1tWTZ8tk39JcYjIvwgY5xeA.png&#34;
 	width=&#34;1891&#34;
 	height=&#34;825&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1tWTZ8tk39JcYjIvwgY5xeA_hu73ec2c13345318505b85b61d7e67d88b_463064_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1tWTZ8tk39JcYjIvwgY5xeA_hu73ec2c13345318505b85b61d7e67d88b_463064_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1tWTZ8tk39JcYjIvwgY5xeA_hu14503050665586540485.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1tWTZ8tk39JcYjIvwgY5xeA_hu6908719458392625942.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1508,7 +1508,7 @@ UpdateDirectRoutingNumbers.ps1&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1dprD8JGRDPs2yAJnvlPlwQ.png&#34;
 	width=&#34;1927&#34;
 	height=&#34;594&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1dprD8JGRDPs2yAJnvlPlwQ_hu2f0b35b8ded8eb542d043071f1194954_112906_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1dprD8JGRDPs2yAJnvlPlwQ_hu2f0b35b8ded8eb542d043071f1194954_112906_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1dprD8JGRDPs2yAJnvlPlwQ_hu2521952375755313016.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1dprD8JGRDPs2yAJnvlPlwQ_hu2023675420590957891.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1520,12 +1520,12 @@ UpdateDirectRoutingNumbers.ps1&lt;/p&gt;
 &lt;p&gt;The role is needed for the SP to be able to manage Microsoft Teams via PowerShell. I learned this from Christian Frohn’s excellent &lt;a class=&#34;link&#34; href=&#34;https://www.christianfrohn.dk/2022/11/13/connect-to-microsoft-teams-powershell-using-azure-app-reg-service-principal/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;blog article&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;In case you’re wondering why no &lt;strong&gt;Microsoft.Graph&lt;/strong&gt; modules are required; this is because I chose to work with PowerShell native &lt;code&gt;Invoke-RestMethod&lt;/code&gt; commands instead of the &lt;code&gt;*Mg*&lt;/code&gt; Cmdlets.&lt;/p&gt;
-&lt;h4 id=&#34;provisioning-the-azure-resources&#34;&gt;Provisioning the Azure Resources&lt;/h4&gt;
-&lt;p&gt;The previous steps complete rather fast. The next steps are going to take a bit longer. First you need to sign in with an Account which has the appropriate permissions to create Azure resources within your subscription.&lt;/p&gt;
+&lt;h4 id=&#34;provisioning-the-azure-resources&#34;&gt;Provisioning the Azure Resources
+&lt;/h4&gt;&lt;p&gt;The previous steps complete rather fast. The next steps are going to take a bit longer. First you need to sign in with an Account which has the appropriate permissions to create Azure resources within your subscription.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1pOaJ1YELOvcHWdcLOuFeGQ.png&#34;
 	width=&#34;855&#34;
 	height=&#34;1173&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1pOaJ1YELOvcHWdcLOuFeGQ_hu522a1a111a141ac5a0e93866fa13e90e_155830_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1pOaJ1YELOvcHWdcLOuFeGQ_hu522a1a111a141ac5a0e93866fa13e90e_155830_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1pOaJ1YELOvcHWdcLOuFeGQ_hu12423936407407251308.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1pOaJ1YELOvcHWdcLOuFeGQ_hu2576090682287172705.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1539,7 +1539,7 @@ UpdateDirectRoutingNumbers.ps1&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ZZGYVP7g2uj2hi3O08RlzA.png&#34;
 	width=&#34;1536&#34;
 	height=&#34;469&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ZZGYVP7g2uj2hi3O08RlzA_hu9eab99cc020025baee44516293d8e261_60160_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ZZGYVP7g2uj2hi3O08RlzA_hu9eab99cc020025baee44516293d8e261_60160_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ZZGYVP7g2uj2hi3O08RlzA_hu12328998633343885440.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ZZGYVP7g2uj2hi3O08RlzA_hu9245545878436462193.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1552,7 +1552,7 @@ UpdateDirectRoutingNumbers.ps1&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1RvDl30FW8xOAHs3EUA3Q.png&#34;
 	width=&#34;1508&#34;
 	height=&#34;889&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1RvDl30FW8xOAHs3EUA3Q_hue6d32d64aeccb6f784035f3a3bc11a4f_154832_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1RvDl30FW8xOAHs3EUA3Q_hue6d32d64aeccb6f784035f3a3bc11a4f_154832_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1RvDl30FW8xOAHs3EUA3Q_hu5916587929442359445.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1RvDl30FW8xOAHs3EUA3Q_hu8654995187748697666.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1561,13 +1561,13 @@ UpdateDirectRoutingNumbers.ps1&lt;/p&gt;
 		data-flex-basis=&#34;407px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;automation-account&#34;&gt;Automation Account&lt;/h4&gt;
-&lt;p&gt;&lt;strong&gt;Modules&lt;/strong&gt;&lt;/p&gt;
+&lt;h4 id=&#34;automation-account&#34;&gt;Automation Account
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;Modules&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The &lt;strong&gt;MicrosoftTeams&lt;/strong&gt; Module is not added to Automation Accounts by default. Thus, the script needs to add it. This usually takes a couple of Minutes.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1RnQgpNQ3dOLfk0aDigurUQ.png&#34;
 	width=&#34;1032&#34;
 	height=&#34;427&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1RnQgpNQ3dOLfk0aDigurUQ_hucf39ce7e20fe6937172a74db410ebaad_447862_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1RnQgpNQ3dOLfk0aDigurUQ_hucf39ce7e20fe6937172a74db410ebaad_447862_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1RnQgpNQ3dOLfk0aDigurUQ_hu5455091922142964141.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1RnQgpNQ3dOLfk0aDigurUQ_hu3881820365725881220.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1580,7 +1580,7 @@ UpdateDirectRoutingNumbers.ps1&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1msSR1JykOc4mieC9hExE2g.png&#34;
 	width=&#34;1922&#34;
 	height=&#34;409&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1msSR1JykOc4mieC9hExE2g_hu7e54b275a95c5bdc2b90a5bad14afb65_87338_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1msSR1JykOc4mieC9hExE2g_hu7e54b275a95c5bdc2b90a5bad14afb65_87338_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1msSR1JykOc4mieC9hExE2g_hu5981936367768885265.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1msSR1JykOc4mieC9hExE2g_hu11184621637238366839.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1594,7 +1594,7 @@ UpdateDirectRoutingNumbers.ps1&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1DBUuoXrqsTiu4XcayfA.png&#34;
 	width=&#34;2456&#34;
 	height=&#34;692&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1DBUuoXrqsTiu4XcayfA_hu11b218a60d70c6f5b40bbaed46bb2490_182530_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1DBUuoXrqsTiu4XcayfA_hu11b218a60d70c6f5b40bbaed46bb2490_182530_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1DBUuoXrqsTiu4XcayfA_hu17329671445478299771.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1DBUuoXrqsTiu4XcayfA_hu14628800878936498176.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1612,7 +1612,7 @@ UpdateDirectRoutingNumbers.ps1&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cqbLWUjMSR1NhjCXqoCIg.png&#34;
 	width=&#34;1901&#34;
 	height=&#34;609&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cqbLWUjMSR1NhjCXqoCIg_hu9feaae782674d8e5dcc829bbb9850729_127527_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cqbLWUjMSR1NhjCXqoCIg_hu9feaae782674d8e5dcc829bbb9850729_127527_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cqbLWUjMSR1NhjCXqoCIg_hu17662722193105010062.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cqbLWUjMSR1NhjCXqoCIg_hu83086809004846643.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1655,7 +1655,7 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Iemob3BqBPX6OWWHvggsQ.png&#34;
 	width=&#34;2217&#34;
 	height=&#34;1137&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Iemob3BqBPX6OWWHvggsQ_hu3c746ca1b7d4e37973094d8ca1247270_137717_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Iemob3BqBPX6OWWHvggsQ_hu3c746ca1b7d4e37973094d8ca1247270_137717_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Iemob3BqBPX6OWWHvggsQ_hu16274124544714025900.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Iemob3BqBPX6OWWHvggsQ_hu16877098418643910402.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1665,13 +1665,13 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;That’s it. These are all the resources and components we need to create and update the SharePoint List.&lt;/p&gt;
-&lt;h4 id=&#34;running-therunbook&#34;&gt;Running the Runbook&lt;/h4&gt;
-&lt;p&gt;The Runbook schedule is configured in UTC. The first start time needs to be at least 5 minutes after the schedule’s creation time. To be sure, I set the schedule to run at the next full hour + 2 hours. In case this does not work for you in your local time zone, please let me know.&lt;/p&gt;
+&lt;h4 id=&#34;running-therunbook&#34;&gt;Running the Runbook
+&lt;/h4&gt;&lt;p&gt;The Runbook schedule is configured in UTC. The first start time needs to be at least 5 minutes after the schedule’s creation time. To be sure, I set the schedule to run at the next full hour + 2 hours. In case this does not work for you in your local time zone, please let me know.&lt;/p&gt;
 &lt;p&gt;This means that the SharePoint List won’t be created straight away. If you want to manually run the Runbook before the first scheduled start, just click on &lt;strong&gt;Start.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1qROsEUEs8dXdkq8CwSOaxQ.png&#34;
 	width=&#34;1597&#34;
 	height=&#34;193&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1qROsEUEs8dXdkq8CwSOaxQ_hu5b0861da822e92b7817b415d21d58970_46741_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1qROsEUEs8dXdkq8CwSOaxQ_hu5b0861da822e92b7817b415d21d58970_46741_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1qROsEUEs8dXdkq8CwSOaxQ_hu17269391770022077107.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1qROsEUEs8dXdkq8CwSOaxQ_hu5526605351195629657.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1684,7 +1684,7 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1mp22izPK5jCc85FUtfZAkQ.png&#34;
 	width=&#34;1120&#34;
 	height=&#34;188&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1mp22izPK5jCc85FUtfZAkQ_hu34a6adaeaa5adf7d0540242e1f16da62_14800_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1mp22izPK5jCc85FUtfZAkQ_hu34a6adaeaa5adf7d0540242e1f16da62_14800_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1mp22izPK5jCc85FUtfZAkQ_hu12442231711498455485.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1mp22izPK5jCc85FUtfZAkQ_hu12341956214678005585.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1697,7 +1697,7 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ER7l4q30cUIBaDndrjJfIQ.png&#34;
 	width=&#34;2846&#34;
 	height=&#34;1476&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ER7l4q30cUIBaDndrjJfIQ_huc2c54e7d35adbafa24ee768404ca6660_269588_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ER7l4q30cUIBaDndrjJfIQ_huc2c54e7d35adbafa24ee768404ca6660_269588_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ER7l4q30cUIBaDndrjJfIQ_hu485707528944246067.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ER7l4q30cUIBaDndrjJfIQ_hu10579042369273683168.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1706,15 +1706,15 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 		data-flex-basis=&#34;462px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h3 id=&#34;finishing-touches&#34;&gt;Finishing Touches&lt;/h3&gt;
-&lt;p&gt;Unfortunately, the Graph API has some limitations in terms of what types of fields can be added or updated in a list. I wanted to perfect my solution by also having a User Profile column and a link to Teams Admin Center for all assigned user numbers. These types can only be added manually.&lt;/p&gt;
+&lt;h3 id=&#34;finishing-touches&#34;&gt;Finishing Touches
+&lt;/h3&gt;&lt;p&gt;Unfortunately, the Graph API has some limitations in terms of what types of fields can be added or updated in a list. I wanted to perfect my solution by also having a User Profile column and a link to Teams Admin Center for all assigned user numbers. These types can only be added manually.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Important:&lt;/strong&gt; For this and the next part, it’s extremely important to follow my instructions very carefully. If the column names don’t match up with the Flow it will not work.&lt;/p&gt;
-&lt;h4 id=&#34;add-two-additional-columns&#34;&gt;Add Two Additional Columns&lt;/h4&gt;
-&lt;p&gt;Click on &lt;strong&gt;+ Add column&lt;/strong&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;add-two-additional-columns&#34;&gt;Add Two Additional Columns
+&lt;/h4&gt;&lt;p&gt;Click on &lt;strong&gt;+ Add column&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1KBxfdw50SMnsnhVzMCx5A.png&#34;
 	width=&#34;831&#34;
 	height=&#34;634&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1KBxfdw50SMnsnhVzMCx5A_hu67e4ae7cd1ab1fac4c8d3d0ead5acd1e_50130_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1KBxfdw50SMnsnhVzMCx5A_hu67e4ae7cd1ab1fac4c8d3d0ead5acd1e_50130_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1KBxfdw50SMnsnhVzMCx5A_hu9857927334283026096.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1KBxfdw50SMnsnhVzMCx5A_hu30338743958843881.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1727,7 +1727,7 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1nYyOkp3UFJxGdomb1w4bDg.png&#34;
 	width=&#34;477&#34;
 	height=&#34;678&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1nYyOkp3UFJxGdomb1w4bDg_hu0630eb4997ed1eb51e644f7895acbb10_37285_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1nYyOkp3UFJxGdomb1w4bDg_hu0630eb4997ed1eb51e644f7895acbb10_37285_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1nYyOkp3UFJxGdomb1w4bDg_hu16241982893996335433.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1nYyOkp3UFJxGdomb1w4bDg_hu12717941061440294803.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1740,7 +1740,7 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1zQUl6GTYbNQymUbAQ9IU1g.png&#34;
 	width=&#34;835&#34;
 	height=&#34;634&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1zQUl6GTYbNQymUbAQ9IU1g_hu4d4cee3ad18f2fa3179c2e5206c74a88_44916_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1zQUl6GTYbNQymUbAQ9IU1g_hu4d4cee3ad18f2fa3179c2e5206c74a88_44916_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1zQUl6GTYbNQymUbAQ9IU1g_hu17801596450819210556.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1zQUl6GTYbNQymUbAQ9IU1g_hu1759064315651568602.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1751,13 +1751,13 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &gt;&lt;/p&gt;
 &lt;p&gt;Name this column &lt;strong&gt;Teams Admin Center.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Now let’s create the final part of our Number Overview Solution: A Power Automate Flow.&lt;/p&gt;
-&lt;h4 id=&#34;create-theflow&#34;&gt;&lt;strong&gt;Create The Flow&lt;/strong&gt;&lt;/h4&gt;
-&lt;p&gt;Head over to &lt;a class=&#34;link&#34; href=&#34;https://make.powerautomate.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h4 id=&#34;create-theflow&#34;&gt;&lt;strong&gt;Create The Flow&lt;/strong&gt;
+&lt;/h4&gt;&lt;p&gt;Head over to &lt;a class=&#34;link&#34; href=&#34;https://make.powerautomate.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Microsoft Power Automate&lt;/a&gt; and create a new &lt;strong&gt;Automated Cloud Flow&lt;/strong&gt;. Name your flow and select &lt;strong&gt;When an item is created or modified&lt;/strong&gt; (SharePoint) as the trigger.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1eMzuzJ4sgXqtppTIWtTLbw.png&#34;
 	width=&#34;1334&#34;
 	height=&#34;841&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1eMzuzJ4sgXqtppTIWtTLbw_hu2f1b6f68c1941baa480173ad2d8d024b_143903_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1eMzuzJ4sgXqtppTIWtTLbw_hu2f1b6f68c1941baa480173ad2d8d024b_143903_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1eMzuzJ4sgXqtppTIWtTLbw_hu15434916197464126541.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1eMzuzJ4sgXqtppTIWtTLbw_hu699291084787241551.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1770,7 +1770,7 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ruBvckSCFoyJbi3abfZbCQ.png&#34;
 	width=&#34;929&#34;
 	height=&#34;320&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ruBvckSCFoyJbi3abfZbCQ_hu71fb6af0c4fbc0a094a27927540066ce_23899_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ruBvckSCFoyJbi3abfZbCQ_hu71fb6af0c4fbc0a094a27927540066ce_23899_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ruBvckSCFoyJbi3abfZbCQ_hu18311569388371213068.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ruBvckSCFoyJbi3abfZbCQ_hu14790218434502856176.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1783,7 +1783,7 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Kq7ExjGCW7nsIjO5gPMw.png&#34;
 	width=&#34;1347&#34;
 	height=&#34;742&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Kq7ExjGCW7nsIjO5gPMw_hufb5ccee705ac8597000de11bc6dbd95c_64596_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Kq7ExjGCW7nsIjO5gPMw_hufb5ccee705ac8597000de11bc6dbd95c_64596_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Kq7ExjGCW7nsIjO5gPMw_hu10425715871785456751.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Kq7ExjGCW7nsIjO5gPMw_hu9164779854127543778.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1797,7 +1797,7 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1mC9t4BUoxiJfqTSIonWsA.png&#34;
 	width=&#34;920&#34;
 	height=&#34;1358&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1mC9t4BUoxiJfqTSIonWsA_hu0674f7b235175b088d2199700ff4c031_116544_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1mC9t4BUoxiJfqTSIonWsA_hu0674f7b235175b088d2199700ff4c031_116544_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1mC9t4BUoxiJfqTSIonWsA_hu16706078266552867420.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1mC9t4BUoxiJfqTSIonWsA_hu13111066993350739067.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1811,7 +1811,7 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ynIuEDsOPU7mh4mGx7VQw.png&#34;
 	width=&#34;945&#34;
 	height=&#34;331&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ynIuEDsOPU7mh4mGx7VQw_hue4d6e1e38168e9516c64e288f32d3a20_12032_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ynIuEDsOPU7mh4mGx7VQw_hue4d6e1e38168e9516c64e288f32d3a20_12032_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ynIuEDsOPU7mh4mGx7VQw_hu10348789931865596871.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ynIuEDsOPU7mh4mGx7VQw_hu14682866226436690458.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1824,7 +1824,7 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1t4gRY6Gv6nOZqhgCQ9IF7w.png&#34;
 	width=&#34;970&#34;
 	height=&#34;609&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1t4gRY6Gv6nOZqhgCQ9IF7w_hud11b7e650618db348a01887f0da02fc7_34175_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1t4gRY6Gv6nOZqhgCQ9IF7w_hud11b7e650618db348a01887f0da02fc7_34175_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1t4gRY6Gv6nOZqhgCQ9IF7w_hu1035222855104975519.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1t4gRY6Gv6nOZqhgCQ9IF7w_hu1039739518167060785.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1845,7 +1845,7 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1KSugJSu7Fc1kD6QiBAKPg.png&#34;
 	width=&#34;1966&#34;
 	height=&#34;413&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1KSugJSu7Fc1kD6QiBAKPg_hu87b11a76274850abb9ef49bd9cd5571d_20348_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1KSugJSu7Fc1kD6QiBAKPg_hu87b11a76274850abb9ef49bd9cd5571d_20348_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1KSugJSu7Fc1kD6QiBAKPg_hu9649712969844201337.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1KSugJSu7Fc1kD6QiBAKPg_hu12475211371583300658.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1858,7 +1858,7 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1THXkqvbzDa3lKzVmDmqHww.png&#34;
 	width=&#34;967&#34;
 	height=&#34;1245&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1THXkqvbzDa3lKzVmDmqHww_hu10e17f5b8cd40cc25d34b2859cca2799_60706_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1THXkqvbzDa3lKzVmDmqHww_hu10e17f5b8cd40cc25d34b2859cca2799_60706_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1THXkqvbzDa3lKzVmDmqHww_hu9203795056667489525.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1THXkqvbzDa3lKzVmDmqHww_hu12554268123929812798.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1892,7 +1892,7 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cfiipG861HDIM3jYlRBIVA.png&#34;
 	width=&#34;964&#34;
 	height=&#34;1381&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cfiipG861HDIM3jYlRBIVA_huee58fc0d2a636fd9419588ff587f7505_83283_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cfiipG861HDIM3jYlRBIVA_huee58fc0d2a636fd9419588ff587f7505_83283_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cfiipG861HDIM3jYlRBIVA_hu6080956423227257411.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cfiipG861HDIM3jYlRBIVA_hu13849552352158918998.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1906,7 +1906,7 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/131pEBoBjwrnmLnXAWpI1fw.png&#34;
 	width=&#34;3004&#34;
 	height=&#34;1558&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/131pEBoBjwrnmLnXAWpI1fw_hu7aeeac62750bb20375af98e0e111d835_106587_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/131pEBoBjwrnmLnXAWpI1fw_hu7aeeac62750bb20375af98e0e111d835_106587_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/131pEBoBjwrnmLnXAWpI1fw_hu17737376313005440532.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/131pEBoBjwrnmLnXAWpI1fw_hu15761913774091135598.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1915,13 +1915,13 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 		data-flex-basis=&#34;462px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h3 id=&#34;force-sync-thelist&#34;&gt;Force Sync the List&lt;/h3&gt;
-&lt;p&gt;The only problem now is that it won’t be triggered unless the &lt;strong&gt;User Principal Name&lt;/strong&gt; field changes on any of the list entries. The easiest way to get these fields populated is to just delete all list entries of assigned user numbers and re-run the Runbook.&lt;/p&gt;
+&lt;h3 id=&#34;force-sync-thelist&#34;&gt;Force Sync the List
+&lt;/h3&gt;&lt;p&gt;The only problem now is that it won’t be triggered unless the &lt;strong&gt;User Principal Name&lt;/strong&gt; field changes on any of the list entries. The easiest way to get these fields populated is to just delete all list entries of assigned user numbers and re-run the Runbook.&lt;/p&gt;
 &lt;p&gt;Filter the list by &lt;strong&gt;Assigned&lt;/strong&gt; numbers and Account Type: &lt;strong&gt;User Account&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1oy8uFABozWsg4AIlK3vuaA.png&#34;
 	width=&#34;2748&#34;
 	height=&#34;410&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1oy8uFABozWsg4AIlK3vuaA_hud1c1b60302d8b734a997054638b5a68a_79803_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1oy8uFABozWsg4AIlK3vuaA_hud1c1b60302d8b734a997054638b5a68a_79803_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1oy8uFABozWsg4AIlK3vuaA_hu4197159049839845805.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1oy8uFABozWsg4AIlK3vuaA_hu5638060768312407917.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1934,7 +1934,7 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1MlCWdIO1Y8DSyWObydkRFw.png&#34;
 	width=&#34;955&#34;
 	height=&#34;530&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1MlCWdIO1Y8DSyWObydkRFw_hu641abeaa27804cb29b86fe014cbe6cf3_52230_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1MlCWdIO1Y8DSyWObydkRFw_hu641abeaa27804cb29b86fe014cbe6cf3_52230_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1MlCWdIO1Y8DSyWObydkRFw_hu12830020151933510823.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1MlCWdIO1Y8DSyWObydkRFw_hu4211334589026933002.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1948,7 +1948,7 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1f5SBjLNb00UmmWwtZCQ.png&#34;
 	width=&#34;1604&#34;
 	height=&#34;360&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1f5SBjLNb00UmmWwtZCQ_huecbb5e49e02e4589508e8f4ffbd43d68_34977_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1f5SBjLNb00UmmWwtZCQ_huecbb5e49e02e4589508e8f4ffbd43d68_34977_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1f5SBjLNb00UmmWwtZCQ_hu6824442472865550613.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1f5SBjLNb00UmmWwtZCQ_hu4407698767222602344.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1961,7 +1961,7 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Gf3bQf6h3rT6dZtQNarGw.png&#34;
 	width=&#34;2995&#34;
 	height=&#34;1322&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Gf3bQf6h3rT6dZtQNarGw_hu0d801e35b977adb82a7ffaa5f319f792_97976_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Gf3bQf6h3rT6dZtQNarGw_hu0d801e35b977adb82a7ffaa5f319f792_97976_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Gf3bQf6h3rT6dZtQNarGw_hu12771665654703405195.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Gf3bQf6h3rT6dZtQNarGw_hu17401642866898571548.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1974,7 +1974,7 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cBT73cmZmnoEZNRofNOWaQ.png&#34;
 	width=&#34;2750&#34;
 	height=&#34;393&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cBT73cmZmnoEZNRofNOWaQ_hu458daf52d3eafbd5170c374a9113cf06_103598_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cBT73cmZmnoEZNRofNOWaQ_hu458daf52d3eafbd5170c374a9113cf06_103598_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cBT73cmZmnoEZNRofNOWaQ_hu2828431880505886151.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cBT73cmZmnoEZNRofNOWaQ_hu4019540407566092040.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1983,17 +1983,17 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 		data-flex-basis=&#34;1679px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;updating-the-direct-routing-numbers-inazure&#34;&gt;Updating the Direct Routing Numbers in Azure&lt;/h4&gt;
-&lt;p&gt;Chances are that you’re going to have more/new Direct Routing numbers at some point. For that scenario, I created another script in &lt;code&gt;.\Setup\UpdateDirectRoutingNumbers.ps1&lt;/code&gt; . This script will compare the contents of the local &lt;strong&gt;DirectRoutingNumbers.csv&lt;/strong&gt; with what’s stored in the Azure Automation Variable. If the content is not the same, the script will &lt;strong&gt;overwrite&lt;/strong&gt; the content of the Automation Variable with your new local source list. This means that you will always need to include all your Direct Routing numbers in the local CSV file, not just new numbers. If you remove numbers from the local source, they will also be removed from the Automation Variable. Hopefully, you won’t have to do this too often.&lt;/p&gt;
+&lt;h4 id=&#34;updating-the-direct-routing-numbers-inazure&#34;&gt;Updating the Direct Routing Numbers in Azure
+&lt;/h4&gt;&lt;p&gt;Chances are that you’re going to have more/new Direct Routing numbers at some point. For that scenario, I created another script in &lt;code&gt;.\Setup\UpdateDirectRoutingNumbers.ps1&lt;/code&gt; . This script will compare the contents of the local &lt;strong&gt;DirectRoutingNumbers.csv&lt;/strong&gt; with what’s stored in the Azure Automation Variable. If the content is not the same, the script will &lt;strong&gt;overwrite&lt;/strong&gt; the content of the Automation Variable with your new local source list. This means that you will always need to include all your Direct Routing numbers in the local CSV file, not just new numbers. If you remove numbers from the local source, they will also be removed from the Automation Variable. Hopefully, you won’t have to do this too often.&lt;/p&gt;
 &lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Setup/UpdateDirectRoutingNumbers.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;TeamsPhoneAutomation/UpdateDirectRoutingNumbers.ps1 at main · mozziemozz/TeamsPhoneAutomation (github.com)&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h3&gt;
-&lt;p&gt;While this may be a read-only solution and it doesn’t have any management capabilities such as assigning or unassigning phone numbers, I still believe that there’s tremendous value in this. I think that this could be an interesting approach for smaller companies or non-profit organizations which might not have the cash to purchase an expensive number management solution. The costs for running a Runbook job every now and then should be fairly low. According to &lt;a class=&#34;link&#34; href=&#34;https://azure.microsoft.com/en-us/pricing/details/automation/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h3 id=&#34;conclusion&#34;&gt;Conclusion
+&lt;/h3&gt;&lt;p&gt;While this may be a read-only solution and it doesn’t have any management capabilities such as assigning or unassigning phone numbers, I still believe that there’s tremendous value in this. I think that this could be an interesting approach for smaller companies or non-profit organizations which might not have the cash to purchase an expensive number management solution. The costs for running a Runbook job every now and then should be fairly low. According to &lt;a class=&#34;link&#34; href=&#34;https://azure.microsoft.com/en-us/pricing/details/automation/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;this website&lt;/a&gt; 500 minutes of Job run time is free every month.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/109Skrvola5ZGSYdJONlA.png&#34;
 	width=&#34;1952&#34;
 	height=&#34;656&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/109Skrvola5ZGSYdJONlA_hud6241f152cc770c163679069d97c666e_88599_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/109Skrvola5ZGSYdJONlA_hud6241f152cc770c163679069d97c666e_88599_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/109Skrvola5ZGSYdJONlA_hu4601254848234421896.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/109Skrvola5ZGSYdJONlA_hu9995053639747255089.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2007,7 +2007,7 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1pmmbdHeT9HfnoslqhEkrQ.png&#34;
 	width=&#34;3454&#34;
 	height=&#34;1117&#34;
-	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1pmmbdHeT9HfnoslqhEkrQ_hu4d03e0a432415dc17142e994a94873b9_384663_480x0_resize_box_3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1pmmbdHeT9HfnoslqhEkrQ_hu4d03e0a432415dc17142e994a94873b9_384663_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1pmmbdHeT9HfnoslqhEkrQ_hu13303951713798137202.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1pmmbdHeT9HfnoslqhEkrQ_hu9841713117716791495.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2016,8 +2016,8 @@ $AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_Ap
 		data-flex-basis=&#34;742px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;final-notes&#34;&gt;Final Notes&lt;/h4&gt;
-&lt;p&gt;I invested a lot of time to perfect this project and I’m incredibly happy to be finally able to share it with the community and my readers on Medium. I tested both the deployment to Azure and the Runbook logic quite a few times so I’m fairly confident that this should work in other Tenants as well. Since I don’t have any Operator Connect numbers available, I couldn’t test that yet. If you are an Operator Connect customer and want to try this solution, feel free to let me know if it worked for you.&lt;/p&gt;
+&lt;h4 id=&#34;final-notes&#34;&gt;Final Notes
+&lt;/h4&gt;&lt;p&gt;I invested a lot of time to perfect this project and I’m incredibly happy to be finally able to share it with the community and my readers on Medium. I tested both the deployment to Azure and the Runbook logic quite a few times so I’m fairly confident that this should work in other Tenants as well. Since I don’t have any Operator Connect numbers available, I couldn’t test that yet. If you are an Operator Connect customer and want to try this solution, feel free to let me know if it worked for you.&lt;/p&gt;
 &lt;p&gt;I mainly tested populating and updating the list with about forty numbers of mixed types. I did make some quick tests (and adjustments) with a list of about 1000 Direct Routing numbers and that has worked well for me so far. If you manage a lot of phone numbers and want to try the solution yourself, I’m also happy if you can provide feedback on how it performs with even more numbers.&lt;/p&gt;
 &lt;p&gt;As always, I hope you like what I’ve been up to!&lt;/p&gt;
 </description>

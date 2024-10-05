@@ -6,19 +6,479 @@
         <description>Recent content in Microsoft Graph on HEUSSER.PRO</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Thu, 04 Jul 2024 20:20:00 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/microsoft-graph/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sat, 05 Oct 2024 09:38:20 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/microsoft-graph/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Get Microsoft Teams Meeting Attendance Report Through Graph API</title>
+        <link>https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/</link>
+        <pubDate>Sat, 05 Oct 2024 09:38:20 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/</guid>
+        <description>&lt;p&gt;Over a year ago I was asked if it&amp;rsquo;s possible to retrieve a Teams meeting attendance report if the organizer of the meeting isn&amp;rsquo;t available to get the report themselves. At the time, I created a quick and dirty script to get what was urgently needed but today I put it all in a nice and ready to use example.&lt;/p&gt;
+&lt;p&gt;Of course an organizer being out of office isn&amp;rsquo;t the only scenario why you&amp;rsquo;d need this. Another popular use case I can think of is to create an automation to automatically archive attendance reports for recurrent meetings.&lt;/p&gt;
+&lt;p&gt;First, let&amp;rsquo;s look at how an end user would access and view an attendance report.&lt;/p&gt;
+&lt;h2 id=&#34;tl-dr---i-know-what-im-doing-just-give-me-the-script-alreadyhttpsgithubcommozziemozzteamsphoneautomationblobmainscriptsmicrosoftgraphteamsgetteamsattendancereportasappps1&#34;&gt;TL; DR - &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/Teams/GetTeamsAttendanceReportAsApp.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;I know what I&amp;rsquo;m doing, just give me the script already!&lt;/a&gt;
+&lt;/h2&gt;&lt;h2 id=&#34;view-meeting-attendance-report-as-organizer&#34;&gt;View Meeting Attendance Report as Organizer
+&lt;/h2&gt;&lt;p&gt;Only meeting organizers have access to meeting attendance reports. To view an attendance report, organizers can simply open the meeting chat. Teams will automatically post the attendance report after a meeting has ended.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image.png&#34;
+	width=&#34;1997&#34;
+	height=&#34;1139&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image_hu1552455212699239515.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image_hu8773902193427679136.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Organizer View&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;175&#34;
+		data-flex-basis=&#34;420px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-1.png&#34;
+	width=&#34;1997&#34;
+	height=&#34;1139&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-1_hu1583085536681224228.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-1_hu11509484084775432042.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Attendee View&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;175&#34;
+		data-flex-basis=&#34;420px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Note that the attendance report is only shown in chat for the meeting organizers. Attendees can&amp;rsquo;t view see it. That&amp;rsquo;s also why we&amp;rsquo;re looking into how to get it through the Graph API today. Organizers also see a tab called &lt;strong&gt;Attendance&lt;/strong&gt;. This is where they can view the report directly in Teams.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-2.png&#34;
+	width=&#34;1997&#34;
+	height=&#34;1139&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-2_hu8091262977592003972.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-2_hu15730264878872807062.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Attendance Tab&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;175&#34;
+		data-flex-basis=&#34;420px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s also possible to download a CSV but it&amp;rsquo;s not very well structured which makes it kind of hard to further process the data.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3.png&#34;
+	width=&#34;1420&#34;
+	height=&#34;556&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3_hu16710570901127823256.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3_hu15978250730855183848.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;CSV Export&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;255&#34;
+		data-flex-basis=&#34;612px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s switch gears and make some graph requests.&lt;/p&gt;
+&lt;h2 id=&#34;get-meeting-attendance-report-through-graph-powershell&#34;&gt;Get Meeting Attendance Report Through Graph PowerShell
+&lt;/h2&gt;&lt;p&gt;Since we&amp;rsquo;re accessing data without a signed in user, we need an Entra ID application with appropriate application permissions.&lt;/p&gt;
+&lt;h3 id=&#34;create-a-new-entra-id-app-registration&#34;&gt;Create a new Entra ID App Registration.
+&lt;/h3&gt;&lt;p&gt;Note: You&amp;rsquo;ll need Global Admin access to grant the consent for your organization.&lt;/p&gt;
+&lt;p&gt;Go to the &lt;a class=&#34;link&#34; href=&#34;https://entra.microsoft.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Entra ID Portal&lt;/a&gt; and click on &lt;strong&gt;App registrations&lt;/strong&gt; under &lt;strong&gt;Applications&lt;/strong&gt; in the left navigation menu.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-4.png&#34;
+	width=&#34;395&#34;
+	height=&#34;849&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-4_hu780708199451891756.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-4_hu11862707405248585532.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;App registrations&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;46&#34;
+		data-flex-basis=&#34;111px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Then click &lt;strong&gt;+ New registration&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-5.png&#34;
+	width=&#34;1224&#34;
+	height=&#34;190&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-5_hu4846960727775724153.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-5_hu7599571461887634653.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;New registration&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;644&#34;
+		data-flex-basis=&#34;1546px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Give your app registration a name and keep &lt;strong&gt;Accounts in this organizational directory only (&amp;ldquo;Org Name&amp;rdquo; only - Single tenant)&lt;/strong&gt;. Under &lt;strong&gt;Redirect URI (optional)&lt;/strong&gt; select &lt;strong&gt;Public client/native (mobile &amp;amp; desktop)&lt;/strong&gt; and enter &lt;code&gt;http://localhost&lt;/code&gt; as redirect URI.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-6.png&#34;
+	width=&#34;1316&#34;
+	height=&#34;1142&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-6_hu12465281065790982111.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-6_hu4453546652840979674.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;App registration properties&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;115&#34;
+		data-flex-basis=&#34;276px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Click &lt;strong&gt;Register&lt;/strong&gt; to create the app registration.&lt;/p&gt;
+&lt;p&gt;Copy the &lt;strong&gt;Application (client) ID&lt;/strong&gt; and the &lt;strong&gt;Directory (tenant ID)&lt;/strong&gt;. You&amp;rsquo;ll need this later.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-7.png&#34;
+	width=&#34;2028&#34;
+	height=&#34;1054&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-7_hu10129649792073719027.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-7_hu1235730354562445183.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Copy Ids&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;192&#34;
+		data-flex-basis=&#34;461px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;add-permissions&#34;&gt;Add Permissions
+&lt;/h4&gt;&lt;p&gt;Navigate to &lt;strong&gt;API permissions&lt;/strong&gt; in the left navigation pane and click &lt;strong&gt;+ Add a permission&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-8.png&#34;
+	width=&#34;2083&#34;
+	height=&#34;1042&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-8_hu521781235381147073.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-8_hu14269633879254870612.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;API permissions&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;199&#34;
+		data-flex-basis=&#34;479px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-9.png&#34;
+	width=&#34;2016&#34;
+	height=&#34;1151&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-9_hu8902343436525598569.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-9_hu9649089576575954515.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Select Microsoft Graph&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;175&#34;
+		data-flex-basis=&#34;420px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-10.png&#34;
+	width=&#34;2107&#34;
+	height=&#34;1146&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-10_hu11761829843499643703.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-10_hu15731486774672074566.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Select Application permissions&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;183&#34;
+		data-flex-basis=&#34;441px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Search for &lt;code&gt;OnlineMeeting&lt;/code&gt; and expand the menus to select &lt;strong&gt;OnlineMeetingArtifact.Read.All&lt;/strong&gt; and &lt;strong&gt;OnlineMeetings.Read.All&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-11.png&#34;
+	width=&#34;2079&#34;
+	height=&#34;1217&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-11_hu1029123301090444454.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-11_hu2300880679545297295.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Select permissions&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;170&#34;
+		data-flex-basis=&#34;409px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Click &lt;strong&gt;Add permissions&lt;/strong&gt; and then click &lt;strong&gt;Grant admin consent for &amp;ldquo;Org Name&amp;rdquo;&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-12.png&#34;
+	width=&#34;2090&#34;
+	height=&#34;1090&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-12_hu9770591544558224282.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-12_hu12476901468595379424.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Grant Consent&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;191&#34;
+		data-flex-basis=&#34;460px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-13.png&#34;
+	width=&#34;1139&#34;
+	height=&#34;199&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-13_hu13338972452853469957.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-13_hu7775883993190971278.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Click Yes&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;572&#34;
+		data-flex-basis=&#34;1373px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;add-a-client-secret&#34;&gt;Add a Client Secret
+&lt;/h4&gt;&lt;p&gt;Navigate to &lt;strong&gt;Certificates &amp;amp; secrets&lt;/strong&gt; in the left navigation pane. Under &lt;strong&gt;Client secrets (0)&lt;/strong&gt; click &lt;strong&gt;+ New client secret&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-14.png&#34;
+	width=&#34;1928&#34;
+	height=&#34;1032&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-14_hu2293436619516980334.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-14_hu15147962235929871884.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Client secrets&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;186&#34;
+		data-flex-basis=&#34;448px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Give your secret a name and select after how many months it will expire.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-15.png&#34;
+	width=&#34;2102&#34;
+	height=&#34;1207&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-15_hu7152857960571106176.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-15_hu11978512614301172097.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Add a client secret&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;174&#34;
+		data-flex-basis=&#34;417px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Copy the secret from the portal. It will only be shown once and you&amp;rsquo;ll need it later.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-16.png&#34;
+	width=&#34;1928&#34;
+	height=&#34;1037&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-16_hu17047297231994617398.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-16_hu15416110635376457349.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Copy secret&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;185&#34;
+		data-flex-basis=&#34;446px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The configuration of the app registration is now complete.&lt;/p&gt;
+&lt;h3 id=&#34;run-the-script-to-get-an-attendance-report&#34;&gt;Run the Script to get an Attendance Report
+&lt;/h3&gt;&lt;p&gt;The script can be found in my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/Teams/GetTeamsAttendanceReportAsApp.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Teams Phone Automation Repo&lt;/a&gt; on GitHub. If you want to make use of the secret encryption feature, you&amp;rsquo;ll need to clone the entire repo because of the dependencies of other files in the repo.&lt;/p&gt;
+&lt;p&gt;To be able to retrieve an attendance report from Microsoft Graph, we need a meeting id. Unfortunately, this is not your typical GUID you could easily find in TAC. But we can, however find it easy enough by passing a &lt;strong&gt;Join meeting ID&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-25.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-25_hu2986311443911423294.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-25_hu10765265585117709368.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Meeting Id example&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Luckily, anyone that was invited to the meeting in question can view the Meeting ID and send it to you. Alternatively, the meeting invite could also be forwarded to you. The meeting Id is located below the join link.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-17.png&#34;
+	width=&#34;1997&#34;
+	height=&#34;1139&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-17_hu7194430074090526351.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-17_hu462441630379005235.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Meeting ID in meeting invite body&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;175&#34;
+		data-flex-basis=&#34;420px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Once you have this ID, you&amp;rsquo;re ready to get the attendance report through PowerShell.&lt;/p&gt;
+&lt;h4 id=&#34;teams-application-access-policy&#34;&gt;Teams Application Access Policy
+&lt;/h4&gt;&lt;p&gt;The Graph permissions alone are not enough to access the attendance report. We also need to create a new Teams Application Access Policy which includes the app id of the newly created Entra ID app and grant it to the meeting organizer. This is how you can do it in PowerShell.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;# Create a new Teams Application Access Policy&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;New-CsApplicationAccessPolicy&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Identity&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$applicationAccessPolicyName&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-AppIds&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$AppId&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Description&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;Access Meeting Data as Entra ID app on behalf of user&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/teams/new-csapplicationaccesspolicy?view=teams-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;New-CsApplicationAccessPolicy&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;# Assign a Teams Application Access Policy to a user&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Grant-CsApplicationAccessPolicy&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Identity&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$UserId&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-PolicyName&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$applicationAccessPolicyName&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/powershell/module/teams/grant-csapplicationaccesspolicy?view=teams-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Grant-CsApplicationAccessPolicy&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;But the script does all of this automatically for you.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-19.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-19_hu10719152679535455178.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-19_hu10282738222892772325.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Script output&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-20.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-20_hu6521691855553458921.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-20_hu18425668790374788519.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;PowerShell output&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h5 id=&#34;unassign-teams-application-access-policy&#34;&gt;Unassign Teams Application Access Policy
+&lt;/h5&gt;&lt;p&gt;If you only want to get an attendance report once and need to remove the application access to another user&amp;rsquo;s meeting details, you can unassign the policy again by using this code.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Grant-CsApplicationAccessPolicy&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Identity&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$UserId&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-PolicyName&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;script-prompts&#34;&gt;Script Prompts
+&lt;/h4&gt;&lt;p&gt;When the script runs for the first time it will ask you for your app secret. Paste it into the terminal. This will save your secret in an encrypted format. Only the signed in user (in Windows) can decrypt it and it can only be decrypted on the same machine on which it was encrypted. You&amp;rsquo;ll also be asked to sign into Teams PowerShell as well.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-18.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-18_hu4595984946679195562.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-18_hu5454475057403891671.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Paste secret&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-21.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-21_hu13533273712239525489.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-21_hu16211369304511111756.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Sign into Teams&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;results&#34;&gt;Results
+&lt;/h4&gt;&lt;p&gt;Once the Application Access Policy already exists and was already granted to the organizer, the console output looks much less cluttered. The report will be saved to the current directory and it&amp;rsquo;s filename will include the subject of the meeting.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-22.png&#34;
+	width=&#34;1734&#34;
+	height=&#34;957&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-22_hu14123386588595758467.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-22_hu14242258358872799878.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Script output&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;181&#34;
+		data-flex-basis=&#34;434px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If there are multiple attendance reports for a meeting, like when a meeting already ended and someone joined again after that or when it&amp;rsquo;s a recurring meeting, all reports will be combined into a single CSV. The CSV does include the report id in the last column.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s compare the CSV that was downloaded from the Teams client versus the one from my script.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3.png&#34;
+	width=&#34;1420&#34;
+	height=&#34;556&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3_hu16710570901127823256.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3_hu15978250730855183848.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;CSV Export from Teams&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;255&#34;
+		data-flex-basis=&#34;612px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-23.png&#34;
+	width=&#34;1424&#34;
+	height=&#34;150&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-23_hu14338726933806513635.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-23_hu1892343337874356130.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;CSV Export from Script&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;949&#34;
+		data-flex-basis=&#34;2278px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;As you can see, the output from my script gives you a nicely structured CSV which lists 1 participant per row so you can easily import it into other systems without manually changing the structure of the file. Because of that, I decided to create separate files for meeting/attendance summaries.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-24.png&#34;
+	width=&#34;1513&#34;
+	height=&#34;60&#34;
+	srcset=&#34;https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-24_hu4679063954046974286.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-24_hu15266802166026083483.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Meeting Summary from Script&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;2521&#34;
+		data-flex-basis=&#34;6052px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;summary&#34;&gt;Summary
+&lt;/h2&gt;&lt;p&gt;I personally believe that it&amp;rsquo;s very easy for organizers to access the reports themselves in Teams but having the possibility to get them as an admin via PowerShell as well is certainly a welcome addition to my script toolbox. This will be especially useful in case you&amp;rsquo;re asked to export attendance reports on a regular basis. While the fact that you need to know the unique meeting id before you can get an attendance report makes it a bit harder to truly automate this or you may have to chase other attendees for it, if you weren&amp;rsquo;t invited to the meeting yourself but overall, the join meeting Id should be easy enough to retrieve.&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Microsoft Graph: How To Filter Users by Phone Number</title>
         <link>https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/</link>
         <pubDate>Thu, 04 Jul 2024 20:20:00 +0000</pubDate>
         
         <guid>https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/</guid>
         <description>&lt;p&gt;Sometimes, something simple as writing a filter query to search for Entra ID users which have a specific phone number can take way longer than we would like. Instead of making you search through numerous Stack Overflow posts or ask ChatGPT on how to do it, I decided to write this short blog post which will give you everything you need to quickly find Entra ID users which have a specific phone number.&lt;/p&gt;
-&lt;h2 id=&#34;number-types&#34;&gt;Number Types&lt;/h2&gt;
-&lt;p&gt;The most common numbers in Entra ID are &lt;strong&gt;Mobile phone&lt;/strong&gt; and &lt;strong&gt;Business Phone&lt;/strong&gt;. While the Entra ID admin portal displays &lt;code&gt;Business phone&lt;/code&gt; in singular, the property is actually called &lt;code&gt;businessPhones&lt;/code&gt; and is a string collection.&lt;/p&gt;
+&lt;h2 id=&#34;number-types&#34;&gt;Number Types
+&lt;/h2&gt;&lt;p&gt;The most common numbers in Entra ID are &lt;strong&gt;Mobile phone&lt;/strong&gt; and &lt;strong&gt;Business Phone&lt;/strong&gt;. While the Entra ID admin portal displays &lt;code&gt;Business phone&lt;/code&gt; in singular, the property is actually called &lt;code&gt;businessPhones&lt;/code&gt; and is a string collection.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image.png&#34;
 	width=&#34;1793&#34;
 	height=&#34;693&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu221bd5b4269b12a931c42eb60e683664_134687_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu221bd5b4269b12a931c42eb60e683664_134687_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu2291258742031666590.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu18200194872119687648.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Phone numbers in Entra ID&#34;
@@ -29,8 +489,8 @@
 		data-flex-basis=&#34;620px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;filter-queries&#34;&gt;Filter Queries&lt;/h2&gt;
-&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#properties&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h2 id=&#34;filter-queries&#34;&gt;Filter Queries
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#properties&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;This&lt;/a&gt; page tells us which conditions are supported for which user properties. I wasn&amp;rsquo;t able to get this to work using &lt;code&gt;Get-MgUser -Filter &amp;quot;Filter Query&amp;quot;&lt;/code&gt; since an API request using an advanced filter query will require a special header. Not long ago, I wrote about the &lt;code&gt;Invoke-MgGraphRequest&lt;/code&gt; &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86&#34; &gt;Cmdlet&lt;/a&gt; and how that can be used to call the Graph REST API directly using the session token from &lt;code&gt;Connect-MgGraph&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;To make it work, you&amp;rsquo;ll need to create a header with &lt;strong&gt;ConsistencyLevel&lt;/strong&gt;: &lt;code&gt;eventual&lt;/code&gt; which is then added to the Graph Request.&lt;/p&gt;
 &lt;p&gt;Since this is a web request, you&amp;rsquo;ll also need to url encode the &lt;code&gt;+&lt;/code&gt; character. A simple &lt;strong&gt;replace&lt;/strong&gt; with &lt;code&gt;%2B&lt;/code&gt; will do the trick here. It&amp;rsquo;s important to note that this will only work if the phone number is stored on the Entra user exactly the same as what&amp;rsquo;s in the filter query. For example, it won&amp;rsquo;t work if the phone number is stored without spaces in Entra but you&amp;rsquo;re querying it with spaces. If your phone numbers in Entra are a mess, I recommend to take a look at &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5&#34; &gt;this&lt;/a&gt; blog post. This will show you how you can format all phone numbers in the same, and most importantly in the correct way.&lt;/p&gt;
@@ -47,8 +507,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h3 id=&#34;powershell-example&#34;&gt;PowerShell Example&lt;/h3&gt;
-&lt;p&gt;Here is an example script which contains all possible filter conditions for both mobile and business phone numbers. The important thing here is that the custom header is included and that the &lt;strong&gt;Uri&lt;/strong&gt; includes the &lt;strong&gt;Count&lt;/strong&gt; variable. Note that the &lt;code&gt;businessPhones&lt;/code&gt; property does not support the &lt;code&gt;in&lt;/code&gt; condition.&lt;/p&gt;
+&lt;/div&gt;&lt;h3 id=&#34;powershell-example&#34;&gt;PowerShell Example
+&lt;/h3&gt;&lt;p&gt;Here is an example script which contains all possible filter conditions for both mobile and business phone numbers. The important thing here is that the custom header is included and that the &lt;strong&gt;Uri&lt;/strong&gt; includes the &lt;strong&gt;Count&lt;/strong&gt; variable. Note that the &lt;code&gt;businessPhones&lt;/code&gt; property does not support the &lt;code&gt;in&lt;/code&gt; condition.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
@@ -145,12 +605,12 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$mgUserMatchesMobilePhone&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;Invoke-MgGraphRequest&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Method&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Get&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Uri&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;https://graph.microsoft.com/v1.0/users?&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;`$&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;filter=mobilePhone in [&amp;#39;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$mobileNumberUrlSafe&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#39;,&amp;#39;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$mobileNumberUrlSafe2&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#39;]&amp;amp;&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;`$&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;count=true&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-ContentType&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;application/json&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Headers&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$header&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;value&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h4 id=&#34;example-output&#34;&gt;Example Output&lt;/h4&gt;
-&lt;p&gt;What&amp;rsquo;s a little weird is that PowerShell outputs an array with name/value pairs instead of a PS custom object.&lt;/p&gt;
+&lt;/div&gt;&lt;h4 id=&#34;example-output&#34;&gt;Example Output
+&lt;/h4&gt;&lt;p&gt;What&amp;rsquo;s a little weird is that PowerShell outputs an array with name/value pairs instead of a PS custom object.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1.png&#34;
 	width=&#34;1644&#34;
 	height=&#34;899&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hueb5231a21863bd4453ba706f74f1c47e_1102062_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hueb5231a21863bd4453ba706f74f1c47e_1102062_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hu10126803005311397619.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hu13422273645719726784.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Output from Invoke-MgGraphRequest&#34;
@@ -165,7 +625,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4.png&#34;
 	width=&#34;1644&#34;
 	height=&#34;262&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu70f2a1ded8f51c6e3e908386c91482b2_303137_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu70f2a1ded8f51c6e3e908386c91482b2_303137_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu10390745089598602075.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu17704760490908083956.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Format-Table does not work with specific properties&#34;
@@ -189,7 +649,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3.png&#34;
 	width=&#34;1644&#34;
 	height=&#34;899&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu08af9aeaa01698a49ff71fd97429eb7d_1184796_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu08af9aeaa01698a49ff71fd97429eb7d_1184796_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu5228443779759100930.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu1660153902600262052.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;There are no name/value pairs anymore.&#34;
@@ -201,12 +661,12 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;Now you can work with the &lt;code&gt;$mgUserMatchesMobilePhone&lt;/code&gt;and &lt;code&gt;$mgUserMatchesBusinessPhone&lt;/code&gt; as expected and do anything you want with them.&lt;/p&gt;
-&lt;h3 id=&#34;bonus-tip-power-automate&#34;&gt;Bonus Tip (Power Automate)&lt;/h3&gt;
-&lt;p&gt;The standard action &lt;strong&gt;Search for users (V2)&lt;/strong&gt; from the &lt;strong&gt;Office 365 Users&lt;/strong&gt; connector doesn&amp;rsquo;t support to filter for phone numbers of any type.&lt;/p&gt;
+&lt;h3 id=&#34;bonus-tip-power-automate&#34;&gt;Bonus Tip (Power Automate)
+&lt;/h3&gt;&lt;p&gt;The standard action &lt;strong&gt;Search for users (V2)&lt;/strong&gt; from the &lt;strong&gt;Office 365 Users&lt;/strong&gt; connector doesn&amp;rsquo;t support to filter for phone numbers of any type.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2.png&#34;
 	width=&#34;1507&#34;
 	height=&#34;262&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu8fe2b873d91223cd6efe29a596cdb26d_21976_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu8fe2b873d91223cd6efe29a596cdb26d_21976_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu17228196303366751409.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu3954587770765512058.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Supported filters for Office 365 Users&#34;
@@ -222,7 +682,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5.png&#34;
 	width=&#34;938&#34;
 	height=&#34;1296&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_huc85c688f683dabe0d55b1dc50c3a2715_86670_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_huc85c688f683dabe0d55b1dc50c3a2715_86670_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_hu9415391741213701859.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_hu2191900681216763414.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Power Automate Flow to filter for users by phone number&#34;
@@ -251,12 +711,12 @@
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;outputs(&amp;#39;Send_an_HTTP_request&amp;#39;)?[&amp;#39;body&amp;#39;]?[&amp;#39;value&amp;#39;][0][&amp;#39;displayName&amp;#39;]
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h4 id=&#34;example-output-1&#34;&gt;Example Output&lt;/h4&gt;
-&lt;p&gt;If there is a user match for the phone number, Graph will return a nice Json response to Power Automate.&lt;/p&gt;
+&lt;/div&gt;&lt;h4 id=&#34;example-output-1&#34;&gt;Example Output
+&lt;/h4&gt;&lt;p&gt;If there is a user match for the phone number, Graph will return a nice Json response to Power Automate.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6.png&#34;
 	width=&#34;960&#34;
 	height=&#34;1138&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu35494fb6171d17df94b862267ce52501_82901_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu35494fb6171d17df94b862267ce52501_82901_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu7402497629987320838.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu1972615602850717830.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Output from Microsoft Graph within Power Automate&#34;
@@ -267,8 +727,8 @@
 		data-flex-basis=&#34;202px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;summary--download&#34;&gt;Summary &amp;amp; Download&lt;/h2&gt;
-&lt;p&gt;I hope that these examples help you with whatever you&amp;rsquo;re trying to achieve. I&amp;rsquo;m certainly going to use this blog post as a cheat sheet for myself in the future. You can also download the entire script from my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/EntraID/FilterGraphUsersByPhoneNumber.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h2 id=&#34;summary--download&#34;&gt;Summary &amp;amp; Download
+&lt;/h2&gt;&lt;p&gt;I hope that these examples help you with whatever you&amp;rsquo;re trying to achieve. I&amp;rsquo;m certainly going to use this blog post as a cheat sheet for myself in the future. You can also download the entire script from my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/EntraID/FilterGraphUsersByPhoneNumber.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;GitHub&lt;/a&gt; profile.&lt;/p&gt;
 </description>
         </item>
@@ -283,12 +743,12 @@
 &lt;p&gt;This is how Microsoft describes the &lt;code&gt;Invoke-MgGraphRequest&lt;/code&gt; Cmdlet on Microsoft Learn:&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Invoke-MgGraphRequest issues REST API requests to the Graph API. It works for any Graph API if you know the REST URI, method, and optional body parameter. This command is especially useful for accessing APIs for which there isn&amp;rsquo;t an equivalent cmdlet yet.&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;Note that there is also an alias called &lt;code&gt;Invoke-GraphRequest&lt;/code&gt; for this Cmdlet. A perfect example of where you would need &lt;code&gt;Invoke-MgGraphRequest&lt;/code&gt; is uploading a small file to SharePoint. I recently published a script example making use of this method &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/powershell-script-example-upload-small-files-via-microsoft-graph-z45tbunyoa85&#34; &gt;here&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id=&#34;what-is-mgcontext&#34;&gt;What is MgContext?&lt;/h2&gt;
-&lt;p&gt;By running &lt;code&gt;Get-MgContext&lt;/code&gt; you can get some information about the current session. Unfortunately, this doesn&amp;rsquo;t reveal any kind of tokens used for requests to the Graph API. Then again, this is most likely by design, because tokens should always be handled with care.&lt;/p&gt;
+&lt;h2 id=&#34;what-is-mgcontext&#34;&gt;What is MgContext?
+&lt;/h2&gt;&lt;p&gt;By running &lt;code&gt;Get-MgContext&lt;/code&gt; you can get some information about the current session. Unfortunately, this doesn&amp;rsquo;t reveal any kind of tokens used for requests to the Graph API. Then again, this is most likely by design, because tokens should always be handled with care.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image_hu754d71b654ea23e9f5c87bfe16932a68_1172389_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image_hu754d71b654ea23e9f5c87bfe16932a68_1172389_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image_hu1777627438205628802.png 480w, https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image_hu12573788224600004584.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Output of Get-MgContext&#34;
@@ -299,8 +759,8 @@
 		data-flex-basis=&#34;434px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;what-if-you-need-a-token-anyway&#34;&gt;What if you need a token anyway?&lt;/h2&gt;
-&lt;p&gt;One option is to provide a client Id and a client secret and make a request to &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://login.microsoftonline.com/%7bYour&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h2 id=&#34;what-if-you-need-a-token-anyway&#34;&gt;What if you need a token anyway?
+&lt;/h2&gt;&lt;p&gt;One option is to provide a client Id and a client secret and make a request to &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://login.microsoftonline.com/%7bYour&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://login.microsoftonline.com/{Your&lt;/a&gt; Tenant Name}/oauth2/v2.0/token&lt;/strong&gt;. If I want to do that, I always come back to this blog post on &lt;a class=&#34;link&#34; href=&#34;https://adamtheautomator.com/powershell-graph-api/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;adamtheautomator.com&lt;/a&gt;. But when I do that, I also want to call the REST API directly for all requests that the script I&amp;rsquo;m working on is doing. In my case, I &lt;strong&gt;want&lt;/strong&gt; to use the SDK and only &lt;strong&gt;need&lt;/strong&gt; to call the API directly for one specific request.&lt;/p&gt;
 &lt;p&gt;I recently was working on something where neither the &lt;code&gt;Get-Mg*&lt;/code&gt; nor the &lt;code&gt;Invoke-MgGraphRequest&lt;/code&gt; were working. I wanted to fetch a profile picture of an Entra ID user but wanted to keep the image in memory and not save it to disk. Both the Cmdlets, &lt;code&gt;Get-MgUserPhotoContent&lt;/code&gt; and &lt;code&gt;Invoke-MgGraphRequest&lt;/code&gt; expected a value for an output file though. I know I could have just used a temporary file but if I had given up this easily, I wouldn&amp;rsquo;t have discovered how to get an access token from a Microsoft Graph PowerShell session.&lt;/p&gt;
@@ -317,7 +777,7 @@
 &lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1_hu1f3a68c31f9f6d09b32402eaf728180d_992335_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1_hu1f3a68c31f9f6d09b32402eaf728180d_992335_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1_hu13642348863189440727.png 480w, https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1_hu5546492978601582535.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Graph access token retrieved using Invoke-MgGraphRequest&#34;
@@ -332,7 +792,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2_hu481e61ac623856a0fe9b6eff6bbbfa8f_621204_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2_hu481e61ac623856a0fe9b6eff6bbbfa8f_621204_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2_hu9034352776124099030.png 480w, https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2_hu9384339407822246476.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;The access token is now stored in a variable&#34;
@@ -362,8 +822,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;This allowed me to retrieve the profile photo as a byte array without saving it to disk first.&lt;/p&gt;
-&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
-&lt;p&gt;This is a very niche use case but I&amp;rsquo;m glad that I discovered how to get an access token from an already authenticated Microsoft Graph PowerShell session. I&amp;rsquo;m sure that this will come in handy again some day and I hope that it will come in handy for you some day as well. I also published the entire example script including helpful comments in one of my GitHub &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/Authentication/Get-AccessTokenFromEstablishedMgSession.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h2 id=&#34;summary&#34;&gt;Summary
+&lt;/h2&gt;&lt;p&gt;This is a very niche use case but I&amp;rsquo;m glad that I discovered how to get an access token from an already authenticated Microsoft Graph PowerShell session. I&amp;rsquo;m sure that this will come in handy again some day and I hope that it will come in handy for you some day as well. I also published the entire example script including helpful comments in one of my GitHub &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/Authentication/Get-AccessTokenFromEstablishedMgSession.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;repositories&lt;/a&gt;.&lt;/p&gt;
 </description>
         </item>
@@ -373,12 +833,12 @@
         <pubDate>Sat, 13 Apr 2024 11:25:07 +0000</pubDate>
         
         <guid>https://heusser.pro/p/powershell-script-example-upload-small-files-via-microsoft-graph-z45tbunyoa85/</guid>
-        <description>&lt;h2 id=&#34;lacking-documentation&#34;&gt;Lacking Documentation&lt;/h2&gt;
-&lt;p&gt;I recently wanted to upload a couple of files to SharePoint Online using Microsoft Graph. It took me a while to figure it out so I thought that sharing my working script examples will probably help other people accomplish this task faster.&lt;/p&gt;
+        <description>&lt;h2 id=&#34;lacking-documentation&#34;&gt;Lacking Documentation
+&lt;/h2&gt;&lt;p&gt;I recently wanted to upload a couple of files to SharePoint Online using Microsoft Graph. It took me a while to figure it out so I thought that sharing my working script examples will probably help other people accomplish this task faster.&lt;/p&gt;
 &lt;p&gt;The documentation for uploading files with Microsoft Graph can be found &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/graph/api/driveitem-put-content?view=graph-rest-1.0&amp;amp;tabs=http&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt;. The problem is that Microsoft Learn only lists an example for a web request and doesn&amp;rsquo;t really include any examples as to what the &lt;strong&gt;Body&lt;/strong&gt; of the request needs to contain.&lt;/p&gt;
-&lt;h3 id=&#34;example-as-of-2024-04-13&#34;&gt;Example as of 2024-04-13&lt;/h3&gt;
-&lt;p&gt;This is all we get today:&lt;/p&gt;
+&lt;h3 id=&#34;example-as-of-2024-04-13&#34;&gt;Example as of 2024-04-13
+&lt;/h3&gt;&lt;p&gt;This is all we get today:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
@@ -410,11 +870,11 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Set-MgDriveItemContent&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-DriveId&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$driveId&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-DriveItemId&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$driveItemId&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-BodyParameter&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$params&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h2 id=&#34;script-examples&#34;&gt;Script Examples&lt;/h2&gt;
-&lt;p&gt;Through trial and error, I discovered two different ways of uploading files to SharePoint Online through Microsoft Graph. One uses a simple web request using &lt;code&gt;Invoke-RestMethod&lt;/code&gt; and app authentication and the other one uses the &lt;code&gt;Invoke-GraphRequest&lt;/code&gt; Cmdlet from the &lt;code&gt;Microsoft.Graph.Authentication&lt;/code&gt; module. The second one uses delegated permissions.&lt;/p&gt;
+&lt;/div&gt;&lt;h2 id=&#34;script-examples&#34;&gt;Script Examples
+&lt;/h2&gt;&lt;p&gt;Through trial and error, I discovered two different ways of uploading files to SharePoint Online through Microsoft Graph. One uses a simple web request using &lt;code&gt;Invoke-RestMethod&lt;/code&gt; and app authentication and the other one uses the &lt;code&gt;Invoke-GraphRequest&lt;/code&gt; Cmdlet from the &lt;code&gt;Microsoft.Graph.Authentication&lt;/code&gt; module. The second one uses delegated permissions.&lt;/p&gt;
 &lt;p&gt;As it&amp;rsquo;s often the case with Graph operations, you first need to know some specific Ids before you can make your request. In this case, we need to know the Id of the &lt;strong&gt;drive&lt;/strong&gt; in SharePoint. The DriveId is the Id of the Document Library. However, to get the DriveId, we also need to know the Id of the SharePoint Site. Therefore we must first find the SiteId, and then the DriveId. Unfortunately, the examples on the Graph documentation always assume that we already know these Ids so we need to get this data on our own&amp;hellip;&lt;/p&gt;
-&lt;h3 id=&#34;example-using-delegated-auth-and-invoke-graphrequest&#34;&gt;Example Using Delegated Auth and Invoke-GraphRequest&lt;/h3&gt;
-&lt;p&gt;Let&amp;rsquo;s look at the script using the Graph PowerShell module first. The first thing you want to do is to replace &lt;code&gt;$siteName&lt;/code&gt; with the name of your destination site. When you run the script, you&amp;rsquo;ll be prompted to sign into Microsoft Graph. Make sure that you&amp;rsquo;ve previously configured and consented the delegated permissions &lt;code&gt;Sites.Read.All&lt;/code&gt; and &lt;code&gt;Files.ReadWrite.All&lt;/code&gt; to the &lt;strong&gt;Microsoft Graph Command Line Tools&lt;/strong&gt; Enterprise Application or that you&amp;rsquo;re using your own App which has at least these two permissions configured.&lt;/p&gt;
+&lt;h3 id=&#34;example-using-delegated-auth-and-invoke-graphrequest&#34;&gt;Example Using Delegated Auth and Invoke-GraphRequest
+&lt;/h3&gt;&lt;p&gt;Let&amp;rsquo;s look at the script using the Graph PowerShell module first. The first thing you want to do is to replace &lt;code&gt;$siteName&lt;/code&gt; with the name of your destination site. When you run the script, you&amp;rsquo;ll be prompted to sign into Microsoft Graph. Make sure that you&amp;rsquo;ve previously configured and consented the delegated permissions &lt;code&gt;Sites.Read.All&lt;/code&gt; and &lt;code&gt;Files.ReadWrite.All&lt;/code&gt; to the &lt;strong&gt;Microsoft Graph Command Line Tools&lt;/strong&gt; Enterprise Application or that you&amp;rsquo;re using your own App which has at least these two permissions configured.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
@@ -476,8 +936,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;This will upload files up to 250 MB to SharePoint Online. If you rather want to use application authentication and not have any dependencies on installed Graph modules, you can do the same using HTTP requests.&lt;/p&gt;
-&lt;h3 id=&#34;example-using-app-auth-and-invoke-restmethod&#34;&gt;Example Using App Auth and Invoke-RestMethod&lt;/h3&gt;
-&lt;p&gt;The required permissions stay the same as for the first example. However, in this case they need to be application permissions. This script uses an external function to acquire a token which is then used to perform the web requests to the Graph API. The easiest way is to just clone the entire &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h3 id=&#34;example-using-app-auth-and-invoke-restmethod&#34;&gt;Example Using App Auth and Invoke-RestMethod
+&lt;/h3&gt;&lt;p&gt;The required permissions stay the same as for the first example. However, in this case they need to be application permissions. This script uses an external function to acquire a token which is then used to perform the web requests to the Graph API. The easiest way is to just clone the entire &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;repository&lt;/a&gt;. This will keep the relative paths working. Alternatively, you can download the function from &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Functions/Connect-MgGraphHTTP.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt; and either copy it into the script or adjust the relative path. At this point, I&amp;rsquo;d like to thank Alex Asplund again for providing this awesome function to acquire a token for Microsoft Graph. I use &lt;a class=&#34;link&#34; href=&#34;https://adamtheautomator.com/powershell-graph-api&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;his function&lt;/a&gt; in quite a lot in my scripts.&lt;/p&gt;
@@ -551,8 +1011,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;This code will give you the exact same result as the first script does but it will only use out-of-the-box PowerShell commands and doesn&amp;rsquo;t have any dependencies on PowerShell modules.&lt;/p&gt;
-&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
-&lt;p&gt;I hope you like these two examples on how to upload small files to SharePoint Online using Microsoft Graph. I think this can be a really powerful tool, especially when you pair it with your own Entra ID App Registration/Enterprise Application. When you create your own app to connect to Microsoft Graph, you can limit the use of it to a specific subset of users, such as IT staff and the app is only allowed to read all sites and read/write all files the signed in user has access to.&lt;/p&gt;
+&lt;h2 id=&#34;summary&#34;&gt;Summary
+&lt;/h2&gt;&lt;p&gt;I hope you like these two examples on how to upload small files to SharePoint Online using Microsoft Graph. I think this can be a really powerful tool, especially when you pair it with your own Entra ID App Registration/Enterprise Application. When you create your own app to connect to Microsoft Graph, you can limit the use of it to a specific subset of users, such as IT staff and the app is only allowed to read all sites and read/write all files the signed in user has access to.&lt;/p&gt;
 &lt;p&gt;I&amp;rsquo;m thinking of scenarios where IT runs a diagnostic script or any other script that collects information on a users device and then uploads the log files/collected data directly to the specified SharePoint Site.&lt;/p&gt;
 </description>
         </item>
@@ -567,7 +1027,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/00pCCCvKg0Z8d8u1L.jpg&#34;
 	width=&#34;1024&#34;
 	height=&#34;1024&#34;
-	srcset=&#34;https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/00pCCCvKg0Z8d8u1L_hue5daad1676a4bfc1112cdf474447d42d_169032_480x0_resize_q75_box.jpg 480w, https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/00pCCCvKg0Z8d8u1L_hue5daad1676a4bfc1112cdf474447d42d_169032_1024x0_resize_q75_box.jpg 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/00pCCCvKg0Z8d8u1L_hu14239842392853945378.jpg 480w, https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/00pCCCvKg0Z8d8u1L_hu3444974774966857352.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -642,7 +1102,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1wQy6obQWLE2uVOhZjoPcw.png&#34;
 	width=&#34;1014&#34;
 	height=&#34;622&#34;
-	srcset=&#34;https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1wQy6obQWLE2uVOhZjoPcw_hu28f1369469739556c26ad4a6a459e9e6_167292_480x0_resize_box_3.png 480w, https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1wQy6obQWLE2uVOhZjoPcw_hu28f1369469739556c26ad4a6a459e9e6_167292_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1wQy6obQWLE2uVOhZjoPcw_hu16430830791072992628.png 480w, https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1wQy6obQWLE2uVOhZjoPcw_hu6359187759408324929.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -656,7 +1116,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1q9Oz2Udf4ttHNvk94SCEPQ.png&#34;
 	width=&#34;1812&#34;
 	height=&#34;799&#34;
-	srcset=&#34;https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1q9Oz2Udf4ttHNvk94SCEPQ_hu3f8cc75de4dc08d546c08d8aedc6b266_110155_480x0_resize_box_3.png 480w, https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1q9Oz2Udf4ttHNvk94SCEPQ_hu3f8cc75de4dc08d546c08d8aedc6b266_110155_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1q9Oz2Udf4ttHNvk94SCEPQ_hu860623148282973777.png 480w, https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1q9Oz2Udf4ttHNvk94SCEPQ_hu2865595274015222996.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -680,7 +1140,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1Wt4AThn1lsDlW0eFYohd9g.jpeg&#34;
 	width=&#34;2288&#34;
 	height=&#34;2037&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1Wt4AThn1lsDlW0eFYohd9g_hudbbf0a83c75b03d5ec7871acd25b2d95_287947_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1Wt4AThn1lsDlW0eFYohd9g_hudbbf0a83c75b03d5ec7871acd25b2d95_287947_1024x0_resize_q75_box.jpeg 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1Wt4AThn1lsDlW0eFYohd9g_hu8009955654019801910.jpeg 480w, https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1Wt4AThn1lsDlW0eFYohd9g_hu7754345814743299012.jpeg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -709,7 +1169,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1BcaLfQ6GqY3RFXEIseFjGQ.png&#34;
 	width=&#34;913&#34;
 	height=&#34;148&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1BcaLfQ6GqY3RFXEIseFjGQ_hu9d49e63c44685280b5b1596c7a3d854f_16077_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1BcaLfQ6GqY3RFXEIseFjGQ_hu9d49e63c44685280b5b1596c7a3d854f_16077_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1BcaLfQ6GqY3RFXEIseFjGQ_hu7642611507486505582.png 480w, https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1BcaLfQ6GqY3RFXEIseFjGQ_hu5946198199548666292.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -733,7 +1193,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1fPtkKakBcKkyHil6QVY9w.png&#34;
 	width=&#34;1057&#34;
 	height=&#34;134&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1fPtkKakBcKkyHil6QVY9w_hu2834aaacf57483c47254cd2d661eecc6_14862_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1fPtkKakBcKkyHil6QVY9w_hu2834aaacf57483c47254cd2d661eecc6_14862_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1fPtkKakBcKkyHil6QVY9w_hu8472022569413206334.png 480w, https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a/1fPtkKakBcKkyHil6QVY9w_hu3690101859394691582.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -765,7 +1225,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1tg14cxCdjlonXkMgRPiUJg.png&#34;
 	width=&#34;1227&#34;
 	height=&#34;152&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1tg14cxCdjlonXkMgRPiUJg_hu975d832f8d478ca680987674cf0a4019_8811_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1tg14cxCdjlonXkMgRPiUJg_hu975d832f8d478ca680987674cf0a4019_8811_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1tg14cxCdjlonXkMgRPiUJg_hu14437231759176176982.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1tg14cxCdjlonXkMgRPiUJg_hu11174074311918998385.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -778,7 +1238,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1C6dCc5y1jWlQtTgdyD6fIQ.png&#34;
 	width=&#34;1190&#34;
 	height=&#34;258&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1C6dCc5y1jWlQtTgdyD6fIQ_hu369a11f0fc983ca92a4d6a77aee7c188_20447_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1C6dCc5y1jWlQtTgdyD6fIQ_hu369a11f0fc983ca92a4d6a77aee7c188_20447_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1C6dCc5y1jWlQtTgdyD6fIQ_hu4978360523962273181.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1C6dCc5y1jWlQtTgdyD6fIQ_hu8315937992463865787.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -790,8 +1250,8 @@ Office 365 E1
 &lt;p&gt;So, what can you do if you want your users to find Call Queues and Auto Attendants in Teams, if they’re not part of the queue or don’t get calls from an Auto Attendant?&lt;/p&gt;
 &lt;p&gt;Certainly, adding all users to a queue or configuring an Auto Attendant a hundred times over and making actual calls to its number so that the user receives a call from the attendant is no option.&lt;/p&gt;
 &lt;p&gt;Let’s explore other options.&lt;/p&gt;
-&lt;h4 id=&#34;deep-links--user-self-service&#34;&gt;Deep Links / User Self-Service&lt;/h4&gt;
-&lt;p&gt;I’ve blogged about &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd&#34; &gt;deep links&lt;/a&gt; in Teams before. If we create a deep link to call a resource account’s user principal name, the resource account will somehow magically be added to the user’s Teams contacts, once the user clicks on the link. This user will then be able to find this Auto Attendant or Call Queue from search.&lt;/p&gt;
+&lt;h4 id=&#34;deep-links--user-self-service&#34;&gt;Deep Links / User Self-Service
+&lt;/h4&gt;&lt;p&gt;I’ve blogged about &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd&#34; &gt;deep links&lt;/a&gt; in Teams before. If we create a deep link to call a resource account’s user principal name, the resource account will somehow magically be added to the user’s Teams contacts, once the user clicks on the link. This user will then be able to find this Auto Attendant or Call Queue from search.&lt;/p&gt;
 &lt;p&gt;Let’s call this a self-service approach. We as admins will provide our users a list with deep links and the users choose themselves, which accounts they want to add.&lt;/p&gt;
 &lt;p&gt;A deep link will look like this:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;https://teams.microsoft.com/l/call/0/0?users=ra_aa_example@mozzism.onmicrosoft.com
@@ -800,7 +1260,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1rbe0FSPUNi533rul0Kxg.png&#34;
 	width=&#34;766&#34;
 	height=&#34;245&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1rbe0FSPUNi533rul0Kxg_hu97a6a18a85095a2388cc48e928af8f77_21751_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1rbe0FSPUNi533rul0Kxg_hu97a6a18a85095a2388cc48e928af8f77_21751_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1rbe0FSPUNi533rul0Kxg_hu3316523803561364377.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1rbe0FSPUNi533rul0Kxg_hu7525775336615953877.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -813,7 +1273,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Jc77DF5dftfPiJZdcrbNg.png&#34;
 	width=&#34;891&#34;
 	height=&#34;230&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Jc77DF5dftfPiJZdcrbNg_hu150b34301f461618a48d41569bdca2be_13604_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Jc77DF5dftfPiJZdcrbNg_hu150b34301f461618a48d41569bdca2be_13604_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Jc77DF5dftfPiJZdcrbNg_hu11373595790547908476.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Jc77DF5dftfPiJZdcrbNg_hu3581808810723974548.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -827,7 +1287,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/17ormYlPnrP6skX1LiImA.png&#34;
 	width=&#34;540&#34;
 	height=&#34;674&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/17ormYlPnrP6skX1LiImA_hua0593742b7f04a816f34bbc74647348d_33514_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/17ormYlPnrP6skX1LiImA_hua0593742b7f04a816f34bbc74647348d_33514_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/17ormYlPnrP6skX1LiImA_hu4123186348420681452.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/17ormYlPnrP6skX1LiImA_hu6776090529755090140.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -839,7 +1299,7 @@ Office 365 E1
 &lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MTkOifCqgHWKRSmU9ZudVg.png&#34;
 	width=&#34;678&#34;
 	height=&#34;413&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MTkOifCqgHWKRSmU9ZudVg_hu712cb4b150218a378fb9d4e15d0e5440_40326_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MTkOifCqgHWKRSmU9ZudVg_hu712cb4b150218a378fb9d4e15d0e5440_40326_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MTkOifCqgHWKRSmU9ZudVg_hu4557616402886855011.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MTkOifCqgHWKRSmU9ZudVg_hu12133494059475949672.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -856,7 +1316,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MrRVxccFvYQn9p3B3OPuzQ.png&#34;
 	width=&#34;1404&#34;
 	height=&#34;942&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MrRVxccFvYQn9p3B3OPuzQ_hu99c9c4d6fcb78fc6c922e1b171fa2de9_282790_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MrRVxccFvYQn9p3B3OPuzQ_hu99c9c4d6fcb78fc6c922e1b171fa2de9_282790_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MrRVxccFvYQn9p3B3OPuzQ_hu2002095523606246124.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1MrRVxccFvYQn9p3B3OPuzQ_hu7183566897489535557.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -869,7 +1329,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1ezGtnmlIwS6F2EdhN2RmVA.png&#34;
 	width=&#34;2130&#34;
 	height=&#34;1236&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1ezGtnmlIwS6F2EdhN2RmVA_hud4edd79298f211d8264b853f7a1dcb8a_714006_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1ezGtnmlIwS6F2EdhN2RmVA_hud4edd79298f211d8264b853f7a1dcb8a_714006_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1ezGtnmlIwS6F2EdhN2RmVA_hu10933760025642905812.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1ezGtnmlIwS6F2EdhN2RmVA_hu10471300132546590124.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -879,8 +1339,8 @@ Office 365 E1
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;That’s one way to do it. But what if you want to go the extra mile for your users and automatically make all your Attendants and Queues available for all your users?&lt;/p&gt;
-&lt;h4 id=&#34;the-powershell-way--going-the-extramile&#34;&gt;The PowerShell Way / Going the Extra Mile&lt;/h4&gt;
-&lt;p&gt;Although it’s possible to do this at scale, this method does come with a caveat. We’ll see what that is later. Instead of launching a deep link to a call, we’re going to create a chat between the user and the resource account. But how can we create a chat with the resource account, if we can’t search for it in the first place?&lt;/p&gt;
+&lt;h4 id=&#34;the-powershell-way--going-the-extramile&#34;&gt;The PowerShell Way / Going the Extra Mile
+&lt;/h4&gt;&lt;p&gt;Although it’s possible to do this at scale, this method does come with a caveat. We’ll see what that is later. Instead of launching a deep link to a call, we’re going to create a chat between the user and the resource account. But how can we create a chat with the resource account, if we can’t search for it in the first place?&lt;/p&gt;
 &lt;p&gt;I have found that it’s possible to use Microsoft Graph to create a chat between a user and a resource account.&lt;/p&gt;
 &lt;p&gt;Here’s an example script. Use it at your own risk. As I already stated in &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6&#34; &gt;this article&lt;/a&gt;, the function to authenticate against MS Graph is baes on the work of &lt;a class=&#34;link&#34; href=&#34;https://twitter.com/AlexAsplund&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Alex Asplund&lt;/a&gt; from &lt;a class=&#34;link&#34; href=&#34;https://adamtheautomator.com/powershell-graph-api/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -893,7 +1353,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1eRdP6AZLSl6vyCJXJRiicQ.png&#34;
 	width=&#34;1232&#34;
 	height=&#34;157&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1eRdP6AZLSl6vyCJXJRiicQ_huabe2899f02da42e9cb8bc754e799aa0c_8207_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1eRdP6AZLSl6vyCJXJRiicQ_huabe2899f02da42e9cb8bc754e799aa0c_8207_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1eRdP6AZLSl6vyCJXJRiicQ_hu8425082174513145961.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1eRdP6AZLSl6vyCJXJRiicQ_hu18196109449743519408.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -906,7 +1366,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Yu9h1Z97KR8zknhzVdXCEg.png&#34;
 	width=&#34;644&#34;
 	height=&#34;816&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Yu9h1Z97KR8zknhzVdXCEg_hu780b53f9338d25047ca2d91be91554ff_73194_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Yu9h1Z97KR8zknhzVdXCEg_hu780b53f9338d25047ca2d91be91554ff_73194_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Yu9h1Z97KR8zknhzVdXCEg_hu448696478015984145.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Yu9h1Z97KR8zknhzVdXCEg_hu12085572968717311813.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -919,7 +1379,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/10jKaL3o2x7v1HXY0rVOPBA.png&#34;
 	width=&#34;1126&#34;
 	height=&#34;327&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/10jKaL3o2x7v1HXY0rVOPBA_hu0317a9147e0feb6cf7dfd371ba1ee24d_22244_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/10jKaL3o2x7v1HXY0rVOPBA_hu0317a9147e0feb6cf7dfd371ba1ee24d_22244_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/10jKaL3o2x7v1HXY0rVOPBA_hu14199143020605339815.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/10jKaL3o2x7v1HXY0rVOPBA_hu5578371883648170040.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -932,7 +1392,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Tgx0nPdJDN76Z4w2ymwqQ.png&#34;
 	width=&#34;1238&#34;
 	height=&#34;273&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Tgx0nPdJDN76Z4w2ymwqQ_hu60996a1a8f633bf417c026c41bc7f540_21430_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Tgx0nPdJDN76Z4w2ymwqQ_hu60996a1a8f633bf417c026c41bc7f540_21430_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Tgx0nPdJDN76Z4w2ymwqQ_hu3087662420570539259.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1Tgx0nPdJDN76Z4w2ymwqQ_hu9947624487043068140.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -945,7 +1405,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1z3kdGAc4NyA27AMG2X8FUg.png&#34;
 	width=&#34;526&#34;
 	height=&#34;652&#34;
-	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1z3kdGAc4NyA27AMG2X8FUg_hu30f3e0279e6b37fe9d08438f9b570ef0_64076_480x0_resize_box_3.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1z3kdGAc4NyA27AMG2X8FUg_hu30f3e0279e6b37fe9d08438f9b570ef0_64076_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1z3kdGAc4NyA27AMG2X8FUg_hu17430453791695090129.png 480w, https://heusser.pro/p/why-can-only-some-users-search-auto-attendants-and-call-queues-in-teams-940402164681/1z3kdGAc4NyA27AMG2X8FUg_hu3691192838411361080.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -974,8 +1434,8 @@ Office 365 E1
 &lt;li&gt;Add the gateway, PSTN usage, voice route and voice routing policy&lt;/li&gt;
 &lt;li&gt;Remove the activation user/resource account&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h4 id=&#34;prepare-graph-powershell&#34;&gt;Prepare Graph PowerShell&lt;/h4&gt;
-&lt;p&gt;Before you can use Microsoft.Graph PowerShell you need to install the Module.&lt;/p&gt;
+&lt;h4 id=&#34;prepare-graph-powershell&#34;&gt;Prepare Graph PowerShell
+&lt;/h4&gt;&lt;p&gt;Before you can use Microsoft.Graph PowerShell you need to install the Module.&lt;/p&gt;
 &lt;p&gt;Install-Module Microsoft.Graph&lt;/p&gt;
 &lt;p&gt;This will install all Graph Modules. It’s also possible to install only select modules (e.g. &lt;code&gt;Install-Module Microsoft.Graph.Users&lt;/code&gt;) but since many modules have dependencies (e.g. Authentication etc.) it’s easier to just install all Modules from the get-go.&lt;/p&gt;
 &lt;p&gt;When you connect to Microsoft Graph PowerShell you need to provide the required scopes. For the Cmdlets shown in t his blog article you need at least the following:&lt;/p&gt;
@@ -984,7 +1444,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/1SX5hicBOkwEmlZmJp8tBw.png&#34;
 	width=&#34;541&#34;
 	height=&#34;815&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/1SX5hicBOkwEmlZmJp8tBw_hu7f5f53e697de24f1f005a0e158c9b3ae_59037_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/1SX5hicBOkwEmlZmJp8tBw_hu7f5f53e697de24f1f005a0e158c9b3ae_59037_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/1SX5hicBOkwEmlZmJp8tBw_hu5134166598030790998.png 480w, https://heusser.pro/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/1SX5hicBOkwEmlZmJp8tBw_hu15740449187831077338.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -994,19 +1454,19 @@ Office 365 E1
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;Here are the old MSOnline Cmdlets vs the new Microsoft.Graph Cmdlets for the relevant actions.&lt;/p&gt;
-&lt;h4 id=&#34;add-thedomain&#34;&gt;Add the Domain&lt;/h4&gt;
-&lt;p&gt;MSol&lt;/p&gt;
+&lt;h4 id=&#34;add-thedomain&#34;&gt;Add the Domain
+&lt;/h4&gt;&lt;p&gt;MSol&lt;/p&gt;
 &lt;p&gt;New-MsolDomain -Name &amp;ldquo;sbc001.domain.com&amp;rdquo;&lt;/p&gt;
 &lt;p&gt;Mg&lt;/p&gt;
 &lt;p&gt;New-MgDomain -BodyParameter @{Id=&amp;ldquo;sbc001domain.com&amp;rdquo;;IsDefault=&amp;ldquo;False&amp;rdquo;}&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;IsDefault&lt;/code&gt; is optional. The domain won’t be added as the new default domain, even if you don’t include this key in the hash table. You can still include it though, it might give you some sort of comfort.&lt;/p&gt;
-&lt;h4 id=&#34;get-the-verification-text&#34;&gt;Get the Verification Text&lt;/h4&gt;
-&lt;p&gt;This was the only one which was a bit tricky since the actual value is hidden in the “AdditionalProperties” property which won’t be shown in the output.&lt;/p&gt;
+&lt;h4 id=&#34;get-the-verification-text&#34;&gt;Get the Verification Text
+&lt;/h4&gt;&lt;p&gt;This was the only one which was a bit tricky since the actual value is hidden in the “AdditionalProperties” property which won’t be shown in the output.&lt;/p&gt;
 &lt;p&gt;Output:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/14I3XovOid37okdOGNmCHYw.png&#34;
 	width=&#34;1486&#34;
 	height=&#34;113&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/14I3XovOid37okdOGNmCHYw_hu337786dcb6830ecf6f4806e4e206aab0_36539_480x0_resize_box_3.png 480w, https://heusser.pro/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/14I3XovOid37okdOGNmCHYw_hu337786dcb6830ecf6f4806e4e206aab0_36539_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/14I3XovOid37okdOGNmCHYw_hu12829264456286721954.png 480w, https://heusser.pro/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/14I3XovOid37okdOGNmCHYw_hu11052731516867869521.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1022,16 +1482,16 @@ Office 365 E1
 &lt;p&gt;Msol&lt;/p&gt;
 &lt;p&gt;With Msol, the code did not include the first “MS=” why I needed to add it to the variable before getting the value. This is not the case with Graph anymore.&lt;/p&gt;
 &lt;p&gt;$MsolVerificationCode = &amp;ldquo;MS=&amp;quot;+ (Get-MsolDomainVerificationDNS -DomainName $FQDNs.Values.FQDN).Label.Split(&amp;rdquo;.&amp;quot;)[0]&lt;/p&gt;
-&lt;h4 id=&#34;verify-thedomain&#34;&gt;Verify the Domain&lt;/h4&gt;
-&lt;p&gt;If you use an Azure DNS zone you can now use Az.DNS to create a new TXT record which contains &lt;code&gt;$MgVerificationCode&lt;/code&gt; as the value.&lt;/p&gt;
+&lt;h4 id=&#34;verify-thedomain&#34;&gt;Verify the Domain
+&lt;/h4&gt;&lt;p&gt;If you use an Azure DNS zone you can now use Az.DNS to create a new TXT record which contains &lt;code&gt;$MgVerificationCode&lt;/code&gt; as the value.&lt;/p&gt;
 &lt;p&gt;New-AzDnsRecordSet -Name &amp;ldquo;sbc001&amp;rdquo; -RecordType TXT -ResourceGroupName &amp;ldquo;ResourceGroupX&amp;rdquo; -TTL 3600 -ZoneName &amp;ldquo;domain.com&amp;rdquo; -DnsRecords (New-AzDnsRecordConfig -Value $MgVerificationCode)&lt;/p&gt;
 &lt;p&gt;Once the record is created, we can confirm the domain. This usually works within seconds if you use Azure DNS.&lt;/p&gt;
 &lt;p&gt;Mg&lt;/p&gt;
 &lt;p&gt;Confirm-MgDomain -DomainId &amp;ldquo;sbc001.domain.com&amp;rdquo;&lt;/p&gt;
 &lt;p&gt;Msol&lt;/p&gt;
 &lt;p&gt;Confirm-MsolDomain -DomainName &amp;ldquo;sbc001.domain.com&amp;rdquo;&lt;/p&gt;
-&lt;h4 id=&#34;remvoe-theuser&#34;&gt;Remvoe the User&lt;/h4&gt;
-&lt;p&gt;When everything is set up, the activation user can be removed again.&lt;/p&gt;
+&lt;h4 id=&#34;remvoe-theuser&#34;&gt;Remvoe the User
+&lt;/h4&gt;&lt;p&gt;When everything is set up, the activation user can be removed again.&lt;/p&gt;
 &lt;p&gt;Mg&lt;/p&gt;
 &lt;p&gt;Remove-MgUser -UserId $UpnAA&lt;/p&gt;
 &lt;p&gt;Msol&lt;/p&gt;
@@ -1054,7 +1514,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1e3EoKpzxjpK6m0Ii7Wsw.png&#34;
 	width=&#34;750&#34;
 	height=&#34;1334&#34;
-	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1e3EoKpzxjpK6m0Ii7Wsw_hu15cb2d495087f2f1d55235b328a8221e_150793_480x0_resize_box_3.png 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1e3EoKpzxjpK6m0Ii7Wsw_hu15cb2d495087f2f1d55235b328a8221e_150793_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1e3EoKpzxjpK6m0Ii7Wsw_hu12171729047572016155.png 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1e3EoKpzxjpK6m0Ii7Wsw_hu7015333208298933330.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1068,7 +1528,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1QlYK0AE2DSj3SKPpfSJaug.jpeg&#34;
 	width=&#34;750&#34;
 	height=&#34;917&#34;
-	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1QlYK0AE2DSj3SKPpfSJaug_hued510fab658db057612eff5fa2a88521_59509_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1QlYK0AE2DSj3SKPpfSJaug_hued510fab658db057612eff5fa2a88521_59509_1024x0_resize_q75_box.jpeg 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1QlYK0AE2DSj3SKPpfSJaug_hu13687413459237782245.jpeg 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1QlYK0AE2DSj3SKPpfSJaug_hu15992508680930341184.jpeg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1083,7 +1543,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1VKksWkNAJ7ESWUEjkQWd7Q.jpeg&#34;
 	width=&#34;750&#34;
 	height=&#34;850&#34;
-	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1VKksWkNAJ7ESWUEjkQWd7Q_hu295ee41d856beca2d4778d0d41435d72_56266_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1VKksWkNAJ7ESWUEjkQWd7Q_hu295ee41d856beca2d4778d0d41435d72_56266_1024x0_resize_q75_box.jpeg 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1VKksWkNAJ7ESWUEjkQWd7Q_hu17506262826260172512.jpeg 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1VKksWkNAJ7ESWUEjkQWd7Q_hu17713299973819323471.jpeg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1097,7 +1557,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1RCYyCinwNHAg14Dd1DKWUw.jpeg&#34;
 	width=&#34;750&#34;
 	height=&#34;562&#34;
-	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1RCYyCinwNHAg14Dd1DKWUw_hud8d47da795b0e327addef39f804007f7_34068_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1RCYyCinwNHAg14Dd1DKWUw_hud8d47da795b0e327addef39f804007f7_34068_1024x0_resize_q75_box.jpeg 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1RCYyCinwNHAg14Dd1DKWUw_hu15675168226281582527.jpeg 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1RCYyCinwNHAg14Dd1DKWUw_hu6663802463553695615.jpeg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1110,7 +1570,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/12rVXLaYUXZyyNAMla6kjGA.png&#34;
 	width=&#34;750&#34;
 	height=&#34;1334&#34;
-	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/12rVXLaYUXZyyNAMla6kjGA_hu2e5576774935fc798c3461eb71d5e818_280158_480x0_resize_box_3.png 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/12rVXLaYUXZyyNAMla6kjGA_hu2e5576774935fc798c3461eb71d5e818_280158_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/12rVXLaYUXZyyNAMla6kjGA_hu4660542682179146550.png 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/12rVXLaYUXZyyNAMla6kjGA_hu4822605000075551300.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1132,12 +1592,12 @@ Office 365 E1
         <description>&lt;p&gt;Hello everybody. I try my best to blog about new and unique Microsoft Teams related stuff at least once a month. If you’re new to my stories, feel free to check out my previous articles &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p&#34; &gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Today we’re going to take a look at something very cool. A few months ago, I wrote this little code snippet which lets you change a Teams user’s presence by using PowerShell and the Microsoft Graph API. The API endpoint is documented &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/graph/api/presence-setpresence?view=graph-rest-1.0&amp;amp;tabs=http&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt;. You might be asking yourself: why would we want to do this in the first place? Teams already updates our presence if we’re in a call, a meeting or just busy because of an Outlook appointment, right?&lt;/p&gt;
-&lt;h4 id=&#34;use-cases&#34;&gt;Use Cases&lt;/h4&gt;
-&lt;p&gt;Setting the presence of a user can be very useful if for example not all your users are on Teams yet. Let’s say that we’ve still got a legacy PBX system with SIP devices registered to it, but we use Teams for internal calls. There’s no way to know that a user is already on the phone unless the user specifically updates his status to Busy or Do not disturb. A user can’t set his own status to “In a call” or “In a meeting” though.&lt;/p&gt;
+&lt;h4 id=&#34;use-cases&#34;&gt;Use Cases
+&lt;/h4&gt;&lt;p&gt;Setting the presence of a user can be very useful if for example not all your users are on Teams yet. Let’s say that we’ve still got a legacy PBX system with SIP devices registered to it, but we use Teams for internal calls. There’s no way to know that a user is already on the phone unless the user specifically updates his status to Busy or Do not disturb. A user can’t set his own status to “In a call” or “In a meeting” though.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ.png&#34;
 	width=&#34;548&#34;
 	height=&#34;680&#34;
-	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ_huce2d2f03c713521e4f452d4d43e9a1ce_48580_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ_huce2d2f03c713521e4f452d4d43e9a1ce_48580_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ_hu11218115033739558099.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ_hu6090690737509819335.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1151,19 +1611,19 @@ Office 365 E1
 &lt;p&gt;Since Microsoft has now released the &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/microsoftteams/sip-gateway-plan&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;SIP Gateway&lt;/a&gt; the need for such a solution has significantly decreased because the SIP Gateway already handles Teams presence out of the box. If you’re interested in learning more about the SIP Gateway for Teams, please check out this session from Commsverse from my colleague &lt;a class=&#34;link&#34; href=&#34;https://twitter.com/tpickhan&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Thorsten Pickhan&lt;/a&gt;.&lt;/p&gt;
-&lt;h4 id=&#34;what-about-other-usecases&#34;&gt;What about other use cases?&lt;/h4&gt;
-&lt;p&gt;I know, we all love Teams but sometimes we do need to use other calling and meeting apps such as Skype, Zoom, WhatsApp, or Discord. Don’t you just hate it that Teams doesn’t know when you’re already on a call in another app? Today, we’re going to change that!&lt;/p&gt;
-&lt;h4 id=&#34;the-power-ofsiri&#34;&gt;The Power of Siri&lt;/h4&gt;
-&lt;p&gt;If you have an iPhone or iPad you probably know about Siri Shortcuts and Automations. If you don’t know them already, I highly recommend checking them out. Shortcuts and automations are like local Power Automate Flows which are created and executed on your iOS device. Today I discovered that you can actually do http POST requests with Shortcuts. How cool is that?&lt;/p&gt;
+&lt;h4 id=&#34;what-about-other-usecases&#34;&gt;What about other use cases?
+&lt;/h4&gt;&lt;p&gt;I know, we all love Teams but sometimes we do need to use other calling and meeting apps such as Skype, Zoom, WhatsApp, or Discord. Don’t you just hate it that Teams doesn’t know when you’re already on a call in another app? Today, we’re going to change that!&lt;/p&gt;
+&lt;h4 id=&#34;the-power-ofsiri&#34;&gt;The Power of Siri
+&lt;/h4&gt;&lt;p&gt;If you have an iPhone or iPad you probably know about Siri Shortcuts and Automations. If you don’t know them already, I highly recommend checking them out. Shortcuts and automations are like local Power Automate Flows which are created and executed on your iOS device. Today I discovered that you can actually do http POST requests with Shortcuts. How cool is that?&lt;/p&gt;
 &lt;p&gt;Granted, coding or building shortcuts is quite a hassle on such a small screen but there’s an easy workaround for that. We’re just using the Shortcut to call an Azure Function and let the Function do all the work for us.&lt;/p&gt;
-&lt;h4 id=&#34;creating-an-azure-ad-app-registration&#34;&gt;Creating an Azure AD App Registration&lt;/h4&gt;
-&lt;p&gt;First, we need an Azure AD App where we can grant the required permissions to set and clear the Teams presence. There’s an exceptional tutorial &lt;a class=&#34;link&#34; href=&#34;https://adamtheautomator.com/powershell-graph-api/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h4 id=&#34;creating-an-azure-ad-app-registration&#34;&gt;Creating an Azure AD App Registration
+&lt;/h4&gt;&lt;p&gt;First, we need an Azure AD App where we can grant the required permissions to set and clear the Teams presence. There’s an exceptional tutorial &lt;a class=&#34;link&#34; href=&#34;https://adamtheautomator.com/powershell-graph-api/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt;. (I also used the example code to acquire the token from this website.)&lt;/p&gt;
 &lt;p&gt;“Presence.ReadWrite.All” is the permission we need.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA.png&#34;
 	width=&#34;851&#34;
 	height=&#34;537&#34;
-	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA_hu90c29336af7900a9bcc837fa4413389d_47241_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA_hu90c29336af7900a9bcc837fa4413389d_47241_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA_hu9674674003345069774.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA_hu5957475072309622764.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1172,17 +1632,17 @@ Office 365 E1
 		data-flex-basis=&#34;380px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;create-an-azurefunction&#34;&gt;Create an Azure Function&lt;/h4&gt;
-&lt;p&gt;Next, we create an Azure Function. If you’re not familiar with Azure Functions, please read this &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851&#34; &gt;article&lt;/a&gt;. The creating of a Function App and a Function is described under “Create the Refresh Card Function”.&lt;/p&gt;
+&lt;h4 id=&#34;create-an-azurefunction&#34;&gt;Create an Azure Function
+&lt;/h4&gt;&lt;p&gt;Next, we create an Azure Function. If you’re not familiar with Azure Functions, please read this &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851&#34; &gt;article&lt;/a&gt;. The creating of a Function App and a Function is described under “Create the Refresh Card Function”.&lt;/p&gt;
 &lt;p&gt;Copy and paste the following code into your function. Populate the variables on lines 10–14 with your tenant specific information.&lt;/p&gt;
 &lt;script src=&#34;https://gist.github.com/mozziemozz/5b08518eff2dd7c579c61cab23e25e95.js&#34;&gt;&lt;/script&gt;
 
-&lt;h4 id=&#34;create-the-sirishortcut&#34;&gt;Create the Siri Shortcut&lt;/h4&gt;
-&lt;p&gt;Now, we’ll create a new Siri Shortcut. Choose “Get contents of URL” as your first action. Now go back to your Azure Function and copy its URL.&lt;/p&gt;
+&lt;h4 id=&#34;create-the-sirishortcut&#34;&gt;Create the Siri Shortcut
+&lt;/h4&gt;&lt;p&gt;Now, we’ll create a new Siri Shortcut. Choose “Get contents of URL” as your first action. Now go back to your Azure Function and copy its URL.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g.png&#34;
 	width=&#34;1840&#34;
 	height=&#34;247&#34;
-	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g_hu0a9d03c473db92f91ef58447bb04026d_43868_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g_hu0a9d03c473db92f91ef58447bb04026d_43868_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g_hu89894468768993338.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g_hu881831560073577745.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1196,7 +1656,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1JPlHNIr6mVHsBIA1HLoOqA.jpeg&#34;
 	width=&#34;750&#34;
 	height=&#34;1334&#34;
-	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1JPlHNIr6mVHsBIA1HLoOqA_hua5b62d99282b5d18b9ce4747d29c0272_81300_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1JPlHNIr6mVHsBIA1HLoOqA_hua5b62d99282b5d18b9ce4747d29c0272_81300_1024x0_resize_q75_box.jpeg 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1JPlHNIr6mVHsBIA1HLoOqA_hu944444124410535793.jpeg 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1JPlHNIr6mVHsBIA1HLoOqA_hu4670898117950402882.jpeg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1207,14 +1667,14 @@ Office 365 E1
 &gt;&lt;/p&gt;
 &lt;p&gt;That’s it for the shortcut. You should now be able to run the shortcut. Every time you do so, your iOS device will call the Azure Function which will request a token and then set the defined user&amp;rsquo;s presence to In a Call.&lt;/p&gt;
 &lt;p&gt;By now, I hope you can understand why I didn’t bother to try and also build the authentication flow using only Shortcuts.&lt;/p&gt;
-&lt;h4 id=&#34;building-the-siri-automation&#34;&gt;Building the Siri Automation&lt;/h4&gt;
-&lt;p&gt;The last piece we need to do is to create an Automation which will trigger the Shortcut. Unfortunately, there aren’t as many triggers as I had wished but using “When an App is opened” does the trick, sort of.&lt;/p&gt;
+&lt;h4 id=&#34;building-the-siri-automation&#34;&gt;Building the Siri Automation
+&lt;/h4&gt;&lt;p&gt;The last piece we need to do is to create an Automation which will trigger the Shortcut. Unfortunately, there aren’t as many triggers as I had wished but using “When an App is opened” does the trick, sort of.&lt;/p&gt;
 &lt;p&gt;In Shortcuts, switch from My Shortcuts to Automation on the bottom. Click + to create a new Automation. You want to create a Personal Automation.&lt;/p&gt;
 &lt;p&gt;Select “App” as your trigger and then select one or multiple calling Apps.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA.png&#34;
 	width=&#34;750&#34;
 	height=&#34;1334&#34;
-	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA_hub968f2c7cf86104968b4dbe83e65d0ea_52403_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA_hub968f2c7cf86104968b4dbe83e65d0ea_52403_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA_hu13859202408301888715.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA_hu12812000511852457425.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1227,7 +1687,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA.png&#34;
 	width=&#34;750&#34;
 	height=&#34;1334&#34;
-	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA_huf2ced6342da4c84ab44a20c0be9377c1_125532_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA_huf2ced6342da4c84ab44a20c0be9377c1_125532_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA_hu10580101190404411958.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA_hu17669468194950556096.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1240,7 +1700,7 @@ Office 365 E1
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg.png&#34;
 	width=&#34;750&#34;
 	height=&#34;1334&#34;
-	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg_hu7eae1344531cb80e88c90e1ab05064f7_64626_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg_hu7eae1344531cb80e88c90e1ab05064f7_64626_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg_hu4363917554069755023.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg_hu13603258214402310243.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1259,12 +1719,12 @@ Office 365 E1
 &lt;p&gt;&amp;ldquo;@&lt;/p&gt;
 &lt;p&gt;Invoke-RestMethod -Method Post -Uri &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://graph.microsoft.com/v1.0/users/$UserId/presence/clearPresence%22&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://graph.microsoft.com/v1.0/users/$UserId/presence/clearPresence&#34;&lt;/a&gt; -Headers $Header -Body $Body -ContentType &amp;ldquo;application/json&amp;rdquo;&lt;/p&gt;
-&lt;h4 id=&#34;demo&#34;&gt;Demo&lt;/h4&gt;
-&lt;p&gt;Here you can see the Automation in Action. At first, the user’s Teams presence is “Available”. When Skype is opened, the Automation is triggered and confirmed by the user. When Teams is opened again, we can see that the status has changed from “Available” to “In a call”. Because Skype was closed/minimized when Teams was opened, the second Automation, which clears the Teams presence again is triggered and allowed to run. This resets the Teams presence to its original state. Teams is closed and opened again to force a refresh of the presence.&lt;/p&gt;
+&lt;h4 id=&#34;demo&#34;&gt;Demo
+&lt;/h4&gt;&lt;p&gt;Here you can see the Automation in Action. At first, the user’s Teams presence is “Available”. When Skype is opened, the Automation is triggered and confirmed by the user. When Teams is opened again, we can see that the status has changed from “Available” to “In a call”. Because Skype was closed/minimized when Teams was opened, the second Automation, which clears the Teams presence again is triggered and allowed to run. This resets the Teams presence to its original state. Teams is closed and opened again to force a refresh of the presence.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1WA9VV3zTsQF3ov8DnQGfog.gif&#34;
 	width=&#34;600&#34;
 	height=&#34;1067&#34;
-	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1WA9VV3zTsQF3ov8DnQGfog_hu01675812143c9f23e6321f2114a19f84_9202471_480x0_resize_box_1.gif 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1WA9VV3zTsQF3ov8DnQGfog_hu01675812143c9f23e6321f2114a19f84_9202471_1024x0_resize_box_1.gif 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1WA9VV3zTsQF3ov8DnQGfog_hu9181865392318123426.gif 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1WA9VV3zTsQF3ov8DnQGfog_hu16655390731259951277.gif 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1274,8 +1734,8 @@ Office 365 E1
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;What’s cool is that this even works when you’re getting an incoming call in an App like Skype, WhatsApp etc. When you accept the call, the App is opened and thus triggers the automation. I can’t record that on video because iOS screen recording is stopped if an incoming call gets accepted and the notification does not show up, when screen sharing through AirPlay is active.&lt;/p&gt;
-&lt;h4 id=&#34;bonus&#34;&gt;Bonus&lt;/h4&gt;
-&lt;p&gt;Because we now have Shortcuts to set our Teams presence to “In a call” or clear the presence again, we can also use Siri to execute these Shortcuts. All we have to say is Hey Siri, followed by the name of the Shortcut. E.g. “Hey Siri, Set Teams Presence” or “Hey Siri, Clear Teams Presence”.&lt;/p&gt;
+&lt;h4 id=&#34;bonus&#34;&gt;Bonus
+&lt;/h4&gt;&lt;p&gt;Because we now have Shortcuts to set our Teams presence to “In a call” or clear the presence again, we can also use Siri to execute these Shortcuts. All we have to say is Hey Siri, followed by the name of the Shortcut. E.g. “Hey Siri, Set Teams Presence” or “Hey Siri, Clear Teams Presence”.&lt;/p&gt;
 </description>
         </item>
         <item>
@@ -1292,12 +1752,12 @@ Office 365 E1
     &gt;gist&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;The code to create the interactive sign in window and to get the token is based of &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/answers/questions/491498/invoke-webrequest-to-get-access-token.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;this example&lt;/a&gt;.&lt;/p&gt;
-&lt;h4 id=&#34;disclaimer&#34;&gt;Disclaimer&lt;/h4&gt;
-&lt;p&gt;Before we get into it, I should probably add a disclaimer that this is a proof of concept, at best. You should not use it in production as it uses some bad security practices (like sharing a user&amp;rsquo;s password). For real. Don’t say I didn’t warn you.&lt;/p&gt;
-&lt;h4 id=&#34;whats-this-aboutagain&#34;&gt;What’s this about again?&lt;/h4&gt;
-&lt;p&gt;However, being able to remotely change the opt in status of call queue agents seems to be quite a big ask from several Microsoft Teams admins and customers, so I decided to publish this piece anyway.&lt;/p&gt;
-&lt;h4 id=&#34;changing-opt-in-status-as-auser&#34;&gt;Changing opt in status as a user&lt;/h4&gt;
-&lt;p&gt;Can the opt in status of a user be changed as an admin? The answer is both yes and no. You can’t do it in any delegated way if that’s what you’re asking. You will need the user’s credentials.&lt;/p&gt;
+&lt;h4 id=&#34;disclaimer&#34;&gt;Disclaimer
+&lt;/h4&gt;&lt;p&gt;Before we get into it, I should probably add a disclaimer that this is a proof of concept, at best. You should not use it in production as it uses some bad security practices (like sharing a user&amp;rsquo;s password). For real. Don’t say I didn’t warn you.&lt;/p&gt;
+&lt;h4 id=&#34;whats-this-aboutagain&#34;&gt;What’s this about again?
+&lt;/h4&gt;&lt;p&gt;However, being able to remotely change the opt in status of call queue agents seems to be quite a big ask from several Microsoft Teams admins and customers, so I decided to publish this piece anyway.&lt;/p&gt;
+&lt;h4 id=&#34;changing-opt-in-status-as-auser&#34;&gt;Changing opt in status as a user
+&lt;/h4&gt;&lt;p&gt;Can the opt in status of a user be changed as an admin? The answer is both yes and no. You can’t do it in any delegated way if that’s what you’re asking. You will need the user’s credentials.&lt;/p&gt;
 &lt;p&gt;If you’re a Teams User which is also a call queue agent, there are numerous ways to change your own opt in status for call queues. That is, if your admin allows opting out of queues of course. Let’s go through them.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;From Teams Desktop Client Settings&lt;/li&gt;
@@ -1308,8 +1768,8 @@ Office 365 E1
 &lt;li&gt;From the good old &lt;a class=&#34;link&#34; href=&#34;https://aka.ms/cqsettings&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://aka.ms/cqsettings&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h4 id=&#34;im-an-admin-why-cant-i-change-the-damn-opt-instatus&#34;&gt;I’m an Admin, why can’t I change the damn opt in status?&lt;/h4&gt;
-&lt;p&gt;From a Teams PowerShell session, we can only view the opt in status of a queue’s agents but not change it.&lt;/p&gt;
+&lt;h4 id=&#34;im-an-admin-why-cant-i-change-the-damn-opt-instatus&#34;&gt;I’m an Admin, why can’t I change the damn opt in status?
+&lt;/h4&gt;&lt;p&gt;From a Teams PowerShell session, we can only view the opt in status of a queue’s agents but not change it.&lt;/p&gt;
 &lt;p&gt;(Get-CsCallQueue -Identity xxxxxxxx-f74b-46bb-9743-xxxxxxxxxxxx).Agents&lt;/p&gt;
 &lt;p&gt;This will spit out something like this.&lt;/p&gt;
 &lt;p&gt;ObjectId                             OptIn&lt;br&gt;
@@ -1318,30 +1778,30 @@ xxxxxxxx-4d28-4246-9c08-xxxxxxxxxxxx  True&lt;br&gt;
 xxxxxxxx-8bae-419d-a4eb-xxxxxxxxxxxx  True&lt;br&gt;
 xxxxxxxx-49db-40ee-9d05-xxxxxxxxxxxx False&lt;/p&gt;
 &lt;p&gt;Every attempt to change the returned PowerShell object failed. Miserably.&lt;/p&gt;
-&lt;h3 id=&#34;how-can-we-at-least-do-it-as-the-user-but-remotely&#34;&gt;How can we at least do it as the user, but remotely?&lt;/h3&gt;
-&lt;p&gt;Similar to Alex’s approach of creating Teams Contacts from CLI we also have to acquire a user token to be able to change the opt in status of a user by CLI.&lt;/p&gt;
+&lt;h3 id=&#34;how-can-we-at-least-do-it-as-the-user-but-remotely&#34;&gt;How can we at least do it as the user, but remotely?
+&lt;/h3&gt;&lt;p&gt;Similar to Alex’s approach of creating Teams Contacts from CLI we also have to acquire a user token to be able to change the opt in status of a user by CLI.&lt;/p&gt;
 &lt;p&gt;In his scenario, he’s mainly thinking about new users or even accounts which are used to sign into common area phones which might not be MFA enabled yet. In our case this might look different because we want to be able to alter the opt in state of already working staff.&lt;/p&gt;
 &lt;p&gt;At first, I also tried to use the AAD Internals PowerShell Module to receive a user token. In this case, however, it turned out to be much more complicated. When a user opens the Calls settings page in Teams, another token is requested from a different issuing service than the one which is used to access all the other features in Teams.&lt;/p&gt;
 &lt;p&gt;After a long night of googling and binging (yes, I was this desperate) I finally was able to get a working token by modifying the example from the Docs Q&amp;amp;A which is linked in the intro of this article.&lt;/p&gt;
-&lt;h4 id=&#34;prerequisites&#34;&gt;Prerequisites&lt;/h4&gt;
-&lt;p&gt;&lt;strong&gt;Let’s get one thing straight. This approach ONLY works if you know the password of the user and / or the user agrees to share their password or even an MFA secret with you.&lt;/strong&gt;&lt;/p&gt;
+&lt;h4 id=&#34;prerequisites&#34;&gt;Prerequisites
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;Let’s get one thing straight. This approach ONLY works if you know the password of the user and / or the user agrees to share their password or even an MFA secret with you.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;I’m thinking of the following scenario: we want to be able to automatically and remotely opt in and opt out agents of call queues based on various criteria such as working schedules etc.&lt;/p&gt;
 &lt;p&gt;To have at least some kind of security, my script is encrypting the password and the MFA secret before it’s saved to the disk. Once they’re encrypted, they can only be decrypted by the same user account and the same Windows system which was used to encrypt them.&lt;/p&gt;
 &lt;p&gt;Why do we need to save the password to disk, when it’s an interactive login process anyway? Well, if you want to automate it by any means, we can use SendKeys to emulate a user&amp;rsquo;s keystrokes. To be completely honest, I only went so far because I wanted to see for myself if I can get it working…&lt;/p&gt;
-&lt;h4 id=&#34;how-the-scriptworks&#34;&gt;How the script works&lt;/h4&gt;
-&lt;p&gt;The script needs a few parameters to work. We need to provide a user principal name, a user object Id and a call queue Id.&lt;/p&gt;
+&lt;h4 id=&#34;how-the-scriptworks&#34;&gt;How the script works
+&lt;/h4&gt;&lt;p&gt;The script needs a few parameters to work. We need to provide a user principal name, a user object Id and a call queue Id.&lt;/p&gt;
 &lt;p&gt;It will then check the current directory for two or three files depending on whether the -MFA switch is used.&lt;/p&gt;
 &lt;p&gt;You will be prompted to enter the password and the MFA secret if these files do not already exist. The token will be saved to a file once you’ve successfully logged in and acquired one. If the token is expired (happens every few hours or so), you will be prompted for credentials again and the token inside the file will be replaced with the new one. Since we also saved the password to disk, you do not need to enter the password again. The script will decrypt and enter the password by emulating automated keystrokes automatically.&lt;/p&gt;
-&lt;h4 id=&#34;script-modes&#34;&gt;Script modes&lt;/h4&gt;
-&lt;p&gt;The script features a -QueryStatusOnly switch, which will only check if the user is opted in or out of a queue. This will not change anything.&lt;/p&gt;
+&lt;h4 id=&#34;script-modes&#34;&gt;Script modes
+&lt;/h4&gt;&lt;p&gt;The script features a -QueryStatusOnly switch, which will only check if the user is opted in or out of a queue. This will not change anything.&lt;/p&gt;
 &lt;p&gt;For the sake of simplicity, I’ve already stored the values of $UserId, $CallQueueId and $UserName as default values for the parameters. Of course, you can pass your own values if you call the script yourself.&lt;/p&gt;
 &lt;p&gt;In this video, you can see how the username and password are automatically entered, which will ultimately get us the token we need to call the API and query the user’s opt in status.&lt;/p&gt;
 &lt;p&gt;If we run the same thing again, we will already have a valid token.&lt;/p&gt;
 &lt;p&gt;Now let’s take a look at an MFA enabled user. For this, we use the optional -MFA switch. Besides the password, this will also prompt us for the MFA secret. The script then pulls down the PowerShell Script from GitHub and uses it’s code to do some magic and generate the TOTP from the secret.&lt;/p&gt;
-&lt;h4 id=&#34;okbut-how-do-we-opt-a-userout&#34;&gt;Ok — But how do we opt a user out!?&lt;/h4&gt;
-&lt;p&gt;Since we can already see the opt in status of members either in Voice Enabled Channels or via PowerShell this is nothing new. Let’s opt a user out already!&lt;/p&gt;
-&lt;h4 id=&#34;script&#34;&gt;Script&lt;/h4&gt;
-&lt;p&gt;Here’s the script. Please notice that sometimes, activating the AAD Login Window does not always work, so you might have to cancel and run it again. For me, it usually worked the second time I ran the script.&lt;/p&gt;
+&lt;h4 id=&#34;okbut-how-do-we-opt-a-userout&#34;&gt;Ok — But how do we opt a user out!?
+&lt;/h4&gt;&lt;p&gt;Since we can already see the opt in status of members either in Voice Enabled Channels or via PowerShell this is nothing new. Let’s opt a user out already!&lt;/p&gt;
+&lt;h4 id=&#34;script&#34;&gt;Script
+&lt;/h4&gt;&lt;p&gt;Here’s the script. Please notice that sometimes, activating the AAD Login Window does not always work, so you might have to cancel and run it again. For me, it usually worked the second time I ran the script.&lt;/p&gt;
 &lt;script src=&#34;https://gist.github.com/mozziemozz/ce70f39f720bf17632f60a3d6b1be110.js&#34;&gt;&lt;/script&gt;
 
 &lt;p&gt;Here’s an example of running the script with parameters.&lt;/p&gt;
@@ -1353,8 +1813,8 @@ xxxxxxxx-49db-40ee-9d05-xxxxxxxxxxxx False&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;.\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CallQueueOptInOptOutGist&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;ps1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-UserId&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;xxxxxxxx-8bae-419d-a4eb-xxxxxxxxxxxx&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-UserName&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;user@domain.com&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-CallQueueId&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;xxxxxxxx-f74b-46bb-9743-xxxxxxxxxxxx&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Action&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;OptOut&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h4 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h4&gt;
-&lt;p&gt;Even though this method uses some real dirty tricks it still get’s the job done. Well, kind of, at least. I really hope that Microsoft will add the functionality to allow Queue managers to remotely opt in or opt out their agents in a more practical way. It’s a real pity that not even the new &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/powershell/module/teams/set-csusercallingsettings?view=teams-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;/div&gt;&lt;h4 id=&#34;conclusion&#34;&gt;Conclusion
+&lt;/h4&gt;&lt;p&gt;Even though this method uses some real dirty tricks it still get’s the job done. Well, kind of, at least. I really hope that Microsoft will add the functionality to allow Queue managers to remotely opt in or opt out their agents in a more practical way. It’s a real pity that not even the new &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/powershell/module/teams/set-csusercallingsettings?view=teams-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Set-CsUserCallingSettings&lt;/a&gt; or the Boss/Admin feature can do this!&lt;/p&gt;
 </description>
         </item>

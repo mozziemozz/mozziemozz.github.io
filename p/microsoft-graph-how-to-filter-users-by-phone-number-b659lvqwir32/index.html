@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='This blog post contains PowerShell examples on how to filter Entra ID users by a matching mobile or business phone number.'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="This blog post contains PowerShell examples on how to filter Entra ID users by a matching mobile or business phone number.">
 <title>Microsoft Graph: How To Filter Users by Phone Number</title>
 
 <link rel='canonical' href='https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/'>
 
-<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Microsoft Graph: How To Filter Users by Phone Number'>
-<meta property='og:description' content='This blog post contains PowerShell examples on how to filter Entra ID users by a matching mobile or business phone number.'>
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Microsoft Graph: How To Filter Users by Phone Number">
+<meta property='og:description' content="This blog post contains PowerShell examples on how to filter Entra ID users by a matching mobile or business phone number.">
 <meta property='og:url' content='https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/'>
 <meta property='og:site_name' content='HEUSSER.PRO'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-07-04T20:20:00&#43;00:00'/><meta property='article:modified_time' content='2024-07-04T20:20:00&#43;00:00'/>
@@ -66,7 +66,7 @@
                     
                     
                         
-                        <img src="/img/avatar_hud7e6b3cccc21b12ddf35b72eb655064d_860969_300x0_resize_q75_box.jpg" width="300"
+                        <img src="/img/avatar_hu2751114550893713361.jpg" width="300"
                             height="300" class="site-logo" loading="lazy" alt="Avatar">
                     
                 
@@ -82,7 +82,7 @@
             <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
             <h2 class="site-description">Martin Heusser | M365 Apps &amp; Services MVP</h2>
         </div>
-    </header><ol class="social-menu">
+    </header><ol class="menu-social">
             
                 <li>
                     <a 
@@ -229,12 +229,12 @@
             </a>
         </li>
         
+        <li class="menu-bottom-section">
+            <ol class="menu">
 
-        <div class="menu-bottom-section">
-            
-            
-                <li id="dark-mode-toggle">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <circle cx="8" cy="12" r="2" />
   <rect x="2" y="6" width="20" height="12" rx="6" />
@@ -242,7 +242,7 @@
 
 
 
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <circle cx="16" cy="12" r="2" />
   <rect x="2" y="6" width="20" height="12" rx="6" />
@@ -250,10 +250,11 @@
 
 
 
-                    <span>Dark Mode</span>
-                </li>
-            
-        </div>
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
     </ol>
 </aside>
 
@@ -395,12 +396,12 @@
     
     
     <p>Sometimes, something simple as writing a filter query to search for Entra ID users which have a specific phone number can take way longer than we would like. Instead of making you search through numerous Stack Overflow posts or ask ChatGPT on how to do it, I decided to write this short blog post which will give you everything you need to quickly find Entra ID users which have a specific phone number.</p>
-<h2 id="number-types">Number Types</h2>
-<p>The most common numbers in Entra ID are <strong>Mobile phone</strong> and <strong>Business Phone</strong>. While the Entra ID admin portal displays <code>Business phone</code> in singular, the property is actually called <code>businessPhones</code> and is a string collection.</p>
+<h2 id="number-types">Number Types
+</h2><p>The most common numbers in Entra ID are <strong>Mobile phone</strong> and <strong>Business Phone</strong>. While the Entra ID admin portal displays <code>Business phone</code> in singular, the property is actually called <code>businessPhones</code> and is a string collection.</p>
 <p><img src="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image.png"
 	width="1793"
 	height="693"
-	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu221bd5b4269b12a931c42eb60e683664_134687_480x0_resize_box_3.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu221bd5b4269b12a931c42eb60e683664_134687_1024x0_resize_box_3.png 1024w"
+	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu2291258742031666590.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu18200194872119687648.png 1024w"
 	loading="lazy"
 	
 		alt="Phone numbers in Entra ID"
@@ -411,8 +412,8 @@
 		data-flex-basis="620px"
 	
 ></p>
-<h2 id="filter-queries">Filter Queries</h2>
-<p><a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#properties"  target="_blank" rel="noopener"
+<h2 id="filter-queries">Filter Queries
+</h2><p><a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#properties"  target="_blank" rel="noopener"
     >This</a> page tells us which conditions are supported for which user properties. I wasn&rsquo;t able to get this to work using <code>Get-MgUser -Filter &quot;Filter Query&quot;</code> since an API request using an advanced filter query will require a special header. Not long ago, I wrote about the <code>Invoke-MgGraphRequest</code> <a class="link" href="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86" >Cmdlet</a> and how that can be used to call the Graph REST API directly using the session token from <code>Connect-MgGraph</code>.</p>
 <p>To make it work, you&rsquo;ll need to create a header with <strong>ConsistencyLevel</strong>: <code>eventual</code> which is then added to the Graph Request.</p>
 <p>Since this is a web request, you&rsquo;ll also need to url encode the <code>+</code> character. A simple <strong>replace</strong> with <code>%2B</code> will do the trick here. It&rsquo;s important to note that this will only work if the phone number is stored on the Entra user exactly the same as what&rsquo;s in the filter query. For example, it won&rsquo;t work if the phone number is stored without spaces in Entra but you&rsquo;re querying it with spaces. If your phone numbers in Entra are a mess, I recommend to take a look at <a class="link" href="/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5" >this</a> blog post. This will show you how you can format all phone numbers in the same, and most importantly in the correct way.</p>
@@ -429,8 +430,8 @@
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h3 id="powershell-example">PowerShell Example</h3>
-<p>Here is an example script which contains all possible filter conditions for both mobile and business phone numbers. The important thing here is that the custom header is included and that the <strong>Uri</strong> includes the <strong>Count</strong> variable. Note that the <code>businessPhones</code> property does not support the <code>in</code> condition.</p>
+</div><h3 id="powershell-example">PowerShell Example
+</h3><p>Here is an example script which contains all possible filter conditions for both mobile and business phone numbers. The important thing here is that the custom header is included and that the <strong>Uri</strong> includes the <strong>Count</strong> variable. Note that the <code>businessPhones</code> property does not support the <code>in</code> condition.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -527,12 +528,12 @@
 </span></span><span class="line"><span class="cl"><span class="nv">$mgUserMatchesMobilePhone</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/users?</span><span class="se">`$</span><span class="s2">filter=mobilePhone in [&#39;</span><span class="nv">$mobileNumberUrlSafe</span><span class="s2">&#39;,&#39;</span><span class="nv">$mobileNumberUrlSafe2</span><span class="s2">&#39;]&amp;</span><span class="se">`$</span><span class="s2">count=true&#34;</span> <span class="n">-ContentType</span> <span class="s2">&#34;application/json&#34;</span> <span class="n">-Headers</span> <span class="nv">$header</span><span class="p">).</span><span class="py">value</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h4 id="example-output">Example Output</h4>
-<p>What&rsquo;s a little weird is that PowerShell outputs an array with name/value pairs instead of a PS custom object.</p>
+</div><h4 id="example-output">Example Output
+</h4><p>What&rsquo;s a little weird is that PowerShell outputs an array with name/value pairs instead of a PS custom object.</p>
 <p><img src="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1.png"
 	width="1644"
 	height="899"
-	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hueb5231a21863bd4453ba706f74f1c47e_1102062_480x0_resize_box_3.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hueb5231a21863bd4453ba706f74f1c47e_1102062_1024x0_resize_box_3.png 1024w"
+	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hu10126803005311397619.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hu13422273645719726784.png 1024w"
 	loading="lazy"
 	
 		alt="Output from Invoke-MgGraphRequest"
@@ -547,7 +548,7 @@
 <p><img src="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4.png"
 	width="1644"
 	height="262"
-	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu70f2a1ded8f51c6e3e908386c91482b2_303137_480x0_resize_box_3.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu70f2a1ded8f51c6e3e908386c91482b2_303137_1024x0_resize_box_3.png 1024w"
+	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu10390745089598602075.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu17704760490908083956.png 1024w"
 	loading="lazy"
 	
 		alt="Format-Table does not work with specific properties"
@@ -571,7 +572,7 @@
 <p><img src="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3.png"
 	width="1644"
 	height="899"
-	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu08af9aeaa01698a49ff71fd97429eb7d_1184796_480x0_resize_box_3.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu08af9aeaa01698a49ff71fd97429eb7d_1184796_1024x0_resize_box_3.png 1024w"
+	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu5228443779759100930.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu1660153902600262052.png 1024w"
 	loading="lazy"
 	
 		alt="There are no name/value pairs anymore."
@@ -583,12 +584,12 @@
 	
 ></p>
 <p>Now you can work with the <code>$mgUserMatchesMobilePhone</code>and <code>$mgUserMatchesBusinessPhone</code> as expected and do anything you want with them.</p>
-<h3 id="bonus-tip-power-automate">Bonus Tip (Power Automate)</h3>
-<p>The standard action <strong>Search for users (V2)</strong> from the <strong>Office 365 Users</strong> connector doesn&rsquo;t support to filter for phone numbers of any type.</p>
+<h3 id="bonus-tip-power-automate">Bonus Tip (Power Automate)
+</h3><p>The standard action <strong>Search for users (V2)</strong> from the <strong>Office 365 Users</strong> connector doesn&rsquo;t support to filter for phone numbers of any type.</p>
 <p><img src="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2.png"
 	width="1507"
 	height="262"
-	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu8fe2b873d91223cd6efe29a596cdb26d_21976_480x0_resize_box_3.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu8fe2b873d91223cd6efe29a596cdb26d_21976_1024x0_resize_box_3.png 1024w"
+	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu17228196303366751409.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu3954587770765512058.png 1024w"
 	loading="lazy"
 	
 		alt="Supported filters for Office 365 Users"
@@ -604,7 +605,7 @@
 <p><img src="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5.png"
 	width="938"
 	height="1296"
-	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_huc85c688f683dabe0d55b1dc50c3a2715_86670_480x0_resize_box_3.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_huc85c688f683dabe0d55b1dc50c3a2715_86670_1024x0_resize_box_3.png 1024w"
+	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_hu9415391741213701859.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_hu2191900681216763414.png 1024w"
 	loading="lazy"
 	
 		alt="Power Automate Flow to filter for users by phone number"
@@ -633,12 +634,12 @@
 <pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">outputs(&#39;Send_an_HTTP_request&#39;)?[&#39;body&#39;]?[&#39;value&#39;][0][&#39;displayName&#39;]
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h4 id="example-output-1">Example Output</h4>
-<p>If there is a user match for the phone number, Graph will return a nice Json response to Power Automate.</p>
+</div><h4 id="example-output-1">Example Output
+</h4><p>If there is a user match for the phone number, Graph will return a nice Json response to Power Automate.</p>
 <p><img src="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6.png"
 	width="960"
 	height="1138"
-	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu35494fb6171d17df94b862267ce52501_82901_480x0_resize_box_3.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu35494fb6171d17df94b862267ce52501_82901_1024x0_resize_box_3.png 1024w"
+	srcset="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu7402497629987320838.png 480w, /p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu1972615602850717830.png 1024w"
 	loading="lazy"
 	
 		alt="Output from Microsoft Graph within Power Automate"
@@ -649,8 +650,8 @@
 		data-flex-basis="202px"
 	
 ></p>
-<h2 id="summary--download">Summary &amp; Download</h2>
-<p>I hope that these examples help you with whatever you&rsquo;re trying to achieve. I&rsquo;m certainly going to use this blog post as a cheat sheet for myself in the future. You can also download the entire script from my <a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/EntraID/FilterGraphUsersByPhoneNumber.ps1"  target="_blank" rel="noopener"
+<h2 id="summary--download">Summary &amp; Download
+</h2><p>I hope that these examples help you with whatever you&rsquo;re trying to achieve. I&rsquo;m certainly going to use this blog post as a cheat sheet for myself in the future. You can also download the entire script from my <a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/EntraID/FilterGraphUsersByPhoneNumber.ps1"  target="_blank" rel="noopener"
     >GitHub</a> profile.</p>
 
 </section>
@@ -740,12 +741,12 @@
             
                 
 <article class="">
-    <a href="/p/powershell-script-example-upload-small-files-via-microsoft-graph-z45tbunyoa85/">
+    <a href="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/">
         
         
 
         <div class="article-details">
-            <h2 class="article-title">PowerShell Script Example: Upload Small Files to SharePoint via Microsoft Graph</h2>
+            <h2 class="article-title">Get Microsoft Teams Meeting Attendance Report Through Graph API</h2>
         </div>
     </a>
 </article>
@@ -815,7 +816,7 @@
         
             Hosted on GitHub Pages <br/>
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.27.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 

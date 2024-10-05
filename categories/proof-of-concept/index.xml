@@ -13,8 +13,8 @@
         
         <guid>https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/</guid>
         <description>&lt;p&gt;&lt;strong&gt;Update 29.09.2024&lt;/strong&gt; This post features a proof of concept and was an experimental project leveraging not supported ways of achieving what was presented. It looks like Microsoft has made changes to the &lt;strong&gt;Send an HTTP request to SharePoint&lt;/strong&gt; and tightened the security around it. Some of the actions outlined in this blog post are no longer possible and now throw an &lt;strong&gt;Unauthorized&lt;/strong&gt; error. While it was nice to be able to do these things, I fully believe that Microsoft is doing the right thing by adding more security to their services. If you want to be able to opt in/out another user on their behalf, I recommend to use the now available &lt;strong&gt;Queues&lt;/strong&gt; app in Teams.&lt;/p&gt;
-&lt;h2 id=&#34;history-lesson&#34;&gt;History Lesson&lt;/h2&gt;
-&lt;p&gt;Up until now, it hasn&amp;rsquo;t been possible for a queue manager to opt in or opt out other agents on their behalf. Opting in or out of a queue was always an action that had to be done by agents themselves. This changes with the &lt;strong&gt;Queues&lt;/strong&gt; app which is currently still in private preview. If you&amp;rsquo;re reading this blog, I doubt that this is the first time that you&amp;rsquo;re hearing of this but nevertheless, I&amp;rsquo;m still going to add a couple of links to this blog post.&lt;/p&gt;
+&lt;h2 id=&#34;history-lesson&#34;&gt;History Lesson
+&lt;/h2&gt;&lt;p&gt;Up until now, it hasn&amp;rsquo;t been possible for a queue manager to opt in or opt out other agents on their behalf. Opting in or out of a queue was always an action that had to be done by agents themselves. This changes with the &lt;strong&gt;Queues&lt;/strong&gt; app which is currently still in private preview. If you&amp;rsquo;re reading this blog, I doubt that this is the first time that you&amp;rsquo;re hearing of this but nevertheless, I&amp;rsquo;m still going to add a couple of links to this blog post.&lt;/p&gt;
 &lt;p&gt;You can read the official announcement of the Queues app &lt;a class=&#34;link&#34; href=&#34;https://techcommunity.microsoft.com/t5/microsoft-teams-blog/introducing-the-queues-app-enabling-customer-engagement-in/ba-p/4095971&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt; and you&amp;rsquo;ll find the official support article &lt;a class=&#34;link&#34; href=&#34;https://support.microsoft.com/en-us/office/use-the-queues-app-for-microsoft-teams-370ad83e-c2c1-4a9f-8a59-16c98be102e9&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt;. On &lt;a class=&#34;link&#34; href=&#34;https://regale.cloud/Microsoft/viewer/2963/queues-app/index.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -22,8 +22,8 @@
 &lt;p&gt;While this will finally make it possible to change the opt in status on someone else&amp;rsquo;s behalf, it comes at a price. The Queues app will be part of Teams Premium and thus increase your monthly license costs. At this point, I don&amp;rsquo;t think it&amp;rsquo;s confirmed if only a supervisor can have a Teams Premium license and still be able to change the opt in status of others, or if all the members of a queue will require a Teams Premium license. My best guess is that every member of the queue will require an additional license but please don&amp;rsquo;t take my word for it.&lt;/p&gt;
 &lt;p&gt;Since this was one of the most requested features of Teams Phone customers, I already experimented with creating something that would allow somebody to change an agent&amp;rsquo;s opt in statuses remotely in the past. I blogged about this &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/opt-in-or-opt-out-teams-call-queue-agents-remotely-59fe6147f50d&#34; &gt;here&lt;/a&gt;. I don&amp;rsquo;t think that this method still works today but it did work at the time. However, this never made it past a proof of concept because it required the username, password and potentially an MFA secret for the user account for which the opt in status needed to be changed.&lt;/p&gt;
 &lt;p&gt;Today, I&amp;rsquo;m presenting a different solution. It&amp;rsquo;s still very much a proof of concept and not very scalable but at least it doesn&amp;rsquo;t need user credentials anymore. But most importantly, it doesn&amp;rsquo;t need any additional licenses.&lt;/p&gt;
-&lt;h2 id=&#34;inspiration-from-the-community&#34;&gt;Inspiration from the Community&lt;/h2&gt;
-&lt;p&gt;I initially got the idea from fellow MVP &lt;a class=&#34;link&#34; href=&#34;https://www.loryanstrant.com/2023/06/05/automatically-change-your-microsoft-teams-working-location-with-home-assistant/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h2 id=&#34;inspiration-from-the-community&#34;&gt;Inspiration from the Community
+&lt;/h2&gt;&lt;p&gt;I initially got the idea from fellow MVP &lt;a class=&#34;link&#34; href=&#34;https://www.loryanstrant.com/2023/06/05/automatically-change-your-microsoft-teams-working-location-with-home-assistant/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Loryan Strant&lt;/a&gt;. In this blog post, he explains how you can leverage the &lt;strong&gt;Send an HTTP request to SharePoint&lt;/strong&gt; in Power Automate to make web requests to other end points. In his case, he&amp;rsquo;s targeting the endpoint which is used to update a user&amp;rsquo;s work location. Unknowingly at that time, I worked on &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d&#34; &gt;my own way&lt;/a&gt; of programmatically setting my work location using PowerShell and AADInternals. I&amp;rsquo;ll soon be writing something new about this too but today&amp;rsquo;s issue is all about call queues and changing opt in statuses.&lt;/p&gt;
 &lt;p&gt;My next step was to look at the browser dev tools in Edge to see if anything had changed in how the Teams web client handles an opt in change. I already used this method in my first proof of concept over two years ago and I learned how you can effectively use the browser dev tools to see what&amp;rsquo;s going on under the hood from Alexander Holmeset in &lt;a class=&#34;link&#34; href=&#34;https://alexholmeset.blog/2021/02/28/teams-network-planner-automated/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;this&lt;/a&gt; blog post. On that note I want to point out that I&amp;rsquo;ll forever be grateful for that post. Acquiring this skill has helped me achieve something so many times already!&lt;/p&gt;
@@ -48,12 +48,12 @@
 &lt;/div&gt;&lt;p&gt;I have no idea what &lt;strong&gt;DLX&lt;/strong&gt; stands for. The only thing I could find was &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/openspecs/office_protocols/ms-dlx/fa0e41cd-2b34-4081-b3cf-59ecdad7a5da&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;this&lt;/a&gt; reference.&lt;/p&gt;
 &lt;p&gt;The challenge with these web requests is that you still need to provide a valid access token in the authorization header. In PowerShell, there&amp;rsquo;s no way around user credentials to obtain a token. This is different in Power Automate though.&lt;/p&gt;
-&lt;h2 id=&#34;setting-up-the-prerequisites&#34;&gt;Setting up the Prerequisites&lt;/h2&gt;
-&lt;p&gt;Before we build the Flow, we&amp;rsquo;ll need something to trigger it. The best and easiest thing I could think of was to create a SharePoint list and add it as a tab to the Teams channel that&amp;rsquo;s linked to the call queue. If you don&amp;rsquo;t already know how to do that, follow the steps below.&lt;/p&gt;
+&lt;h2 id=&#34;setting-up-the-prerequisites&#34;&gt;Setting up the Prerequisites
+&lt;/h2&gt;&lt;p&gt;Before we build the Flow, we&amp;rsquo;ll need something to trigger it. The best and easiest thing I could think of was to create a SharePoint list and add it as a tab to the Teams channel that&amp;rsquo;s linked to the call queue. If you don&amp;rsquo;t already know how to do that, follow the steps below.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1_hu705d3dd1f94a6b3b904e76444a3d0637_148619_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1_hu705d3dd1f94a6b3b904e76444a3d0637_148619_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1_hu11913583426385938427.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1_hu9304733878779632263.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click the &amp;#43; to add a tab.&#34;
@@ -66,7 +66,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2_hu1253170ae1e6d8d32cc7dd91d61f7b33_159304_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2_hu1253170ae1e6d8d32cc7dd91d61f7b33_159304_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2_hu530063749930359838.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2_hu15157909680239559655.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Search for &amp;lsquo;Lists&amp;rsquo; and click on it.&#34;
@@ -79,7 +79,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3_hu1981b327dab3269273baf078857540e5_139248_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3_hu1981b327dab3269273baf078857540e5_139248_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3_hu7937741121339155755.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3_hu17538482900093854851.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click Save.&#34;
@@ -92,7 +92,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4_hufc846614001176d240a692d25adaf975_133450_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4_hufc846614001176d240a692d25adaf975_133450_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4_hu2377144743537114884.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4_hu4314821337011684003.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Select Create a list.&#34;
@@ -105,7 +105,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5_huacaf45050b991d31068ac87efc4bd7c2_859731_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5_huacaf45050b991d31068ac87efc4bd7c2_859731_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5_hu5463564391803077305.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5_hu6123452386488159593.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click on Blank list.&#34;
@@ -118,7 +118,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6_huec9ccb95cb6ab597156bec78ae69cb98_149835_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6_huec9ccb95cb6ab597156bec78ae69cb98_149835_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6_hu17252448217805581256.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6_hu4365632963787324501.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Give your list a name and select a color and an icon. Then click create.&#34;
@@ -133,7 +133,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8_hu23f739f1510daf28fe5989a42a18975a_157919_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8_hu23f739f1510daf28fe5989a42a18975a_157919_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8_hu129451366560112092.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8_hu245937803451660543.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Select Person and click Next.&#34;
@@ -146,7 +146,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7_huab70de38417ae9161f2732f264c35229_149436_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7_huab70de38417ae9161f2732f264c35229_149436_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7_hu6970902461574767365.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7_hu1498024393115296102.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Enter &amp;lsquo;Agent&amp;rsquo; as column name and toggle Show profile photos to Yes.&#34;
@@ -159,7 +159,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9_hu23f739f1510daf28fe5989a42a18975a_151690_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9_hu23f739f1510daf28fe5989a42a18975a_151690_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9_hu8043155632980410742.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9_hu8963576290552745298.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Add another column and choose Yes/No as type.&#34;
@@ -172,7 +172,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10_hu4d934adf18ece1692cdb8db8d877ac44_161516_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10_hu4d934adf18ece1692cdb8db8d877ac44_161516_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10_hu962999845287303447.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10_hu1603584529402314834.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Name it &amp;lsquo;Opt In&amp;rsquo; and click Save.&#34;
@@ -185,7 +185,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11_hu4d934adf18ece1692cdb8db8d877ac44_164504_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11_hu4d934adf18ece1692cdb8db8d877ac44_164504_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11_hu16542849257511873056.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11_hu16932690610536722226.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Add another Yes/No column called &amp;lsquo;Updated by Power Automate&amp;rsquo; and set the default value to No.&#34;
@@ -200,7 +200,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12_hu9f879f0ffa03899bc8792f08bfb01a90_166451_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12_hu9f879f0ffa03899bc8792f08bfb01a90_166451_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12_hu9770511780570287800.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12_hu9399227338352732912.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click on the column, then select Column settings, Show/hide columns.&#34;
@@ -213,7 +213,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13_hubf67ffab44e23f844473ef5753689496_183451_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13_hubf67ffab44e23f844473ef5753689496_183451_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13_hu4303637038459811682.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13_hu6139821486824365882.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Uncheck Title and click Apply.&#34;
@@ -228,7 +228,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14_hu472be461d9195151156240ff3dcbd634_123994_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14_hu472be461d9195151156240ff3dcbd634_123994_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14_hu12602022400071259707.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14_hu18177151818299355995.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Add all call queue agents to the Agent column.&#34;
@@ -243,7 +243,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1216&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18_hu4965c34d251136e0aedc58cd0c328ee9_132892_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18_hu4965c34d251136e0aedc58cd0c328ee9_132892_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18_hu11655581890386546295.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18_hu5477638153986702771.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Tip: You can reorder tabs by dragging. I&amp;rsquo;ve put my List tab next to the Calls tab.&#34;
@@ -254,16 +254,16 @@
 		data-flex-basis=&#34;416px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;the-power-of-power-automate&#34;&gt;The Power of Power Automate&lt;/h2&gt;
-&lt;p&gt;In Power Automate, Flows are able to leverage connections for which Power Automate will automatically obtain a token for the user that&amp;rsquo;s running the Flow. While you can&amp;rsquo;t view the token, you can certainly use it to make web requests. The principle is quite simple. Each user needs to set up a Power Automate Flow which will update their opt in status when the Flow is triggered.&lt;/p&gt;
+&lt;h2 id=&#34;the-power-of-power-automate&#34;&gt;The Power of Power Automate
+&lt;/h2&gt;&lt;p&gt;In Power Automate, Flows are able to leverage connections for which Power Automate will automatically obtain a token for the user that&amp;rsquo;s running the Flow. While you can&amp;rsquo;t view the token, you can certainly use it to make web requests. The principle is quite simple. Each user needs to set up a Power Automate Flow which will update their opt in status when the Flow is triggered.&lt;/p&gt;
 &lt;p&gt;The downside is that a Flow needs to be set up for each user and for each call queue where you want to leverage this custom solution. So, if a user is part of multiple queues, there also need to be multiple Flows per user. To be fair, I did say that this is a PoC at the beginning.&lt;/p&gt;
 &lt;p&gt;The good thing about this is that I&amp;rsquo;ve built the Flow in a way, in which it will work for any user. A queue supervisor or an IT admin can just create Flow and then share it with all the agents. Each of the agents can then access the Flow using their own account and save a copy of the Flow to their own Flows. If they&amp;rsquo;ve never worked with Power Automate before, they might need help doing that but sharing and saving a copy is still the quickest way to set it all up.&lt;/p&gt;
-&lt;h3 id=&#34;flow-for-each-agent&#34;&gt;Flow For Each Agent&lt;/h3&gt;
-&lt;p&gt;Let&amp;rsquo;s look at the first Flow. I&amp;rsquo;ll call this the &lt;strong&gt;User-Flow&lt;/strong&gt; from now on.&lt;/p&gt;
+&lt;h3 id=&#34;flow-for-each-agent&#34;&gt;Flow For Each Agent
+&lt;/h3&gt;&lt;p&gt;Let&amp;rsquo;s look at the first Flow. I&amp;rsquo;ll call this the &lt;strong&gt;User-Flow&lt;/strong&gt; from now on.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image.png&#34;
 	width=&#34;2064&#34;
 	height=&#34;1823&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image_hua6ee506cbc2419494ce0f0d532dea99d_118762_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image_hua6ee506cbc2419494ce0f0d532dea99d_118762_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image_hu9639506191421241325.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image_hu17382347141440935731.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;This is the Power Automate Flow in all it&amp;rsquo;s glory.&#34;
@@ -275,12 +275,12 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;The Flow will trigger any time the SharePoint list which is now a tab in Teams is updated.&lt;/p&gt;
-&lt;h4 id=&#34;import-the-flow-package&#34;&gt;Import the Flow Package&lt;/h4&gt;
-&lt;p&gt;Start by downloading the Flow from &lt;a class=&#34;link&#34; href=&#34;#download-flow-packages&#34; &gt;here&lt;/a&gt; and then import it in Power Automate with a user that is part of the call queue, for which you want to add the functionality.&lt;/p&gt;
+&lt;h4 id=&#34;import-the-flow-package&#34;&gt;Import the Flow Package
+&lt;/h4&gt;&lt;p&gt;Start by downloading the Flow from &lt;a class=&#34;link&#34; href=&#34;#download-flow-packages&#34; &gt;here&lt;/a&gt; and then import it in Power Automate with a user that is part of the call queue, for which you want to add the functionality.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21.png&#34;
 	width=&#34;876&#34;
 	height=&#34;242&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21_hu962d5e19297e6d6930aa4bca62cb9ac3_24104_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21_hu962d5e19297e6d6930aa4bca62cb9ac3_24104_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21_hu17969875031334252726.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21_hu7863184465684036780.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click on Import Package (Legacy).&#34;
@@ -294,7 +294,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22.png&#34;
 	width=&#34;2233&#34;
 	height=&#34;431&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22_hu0893b0183081de56a0d93eebea21c7db_58125_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22_hu0893b0183081de56a0d93eebea21c7db_58125_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22_hu9378649849066676247.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22_hu5514892286775171662.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Next, select and upload the Zip file.&#34;
@@ -308,7 +308,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23.png&#34;
 	width=&#34;1847&#34;
 	height=&#34;1147&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23_hu8d935318f03b9143db17882353e5d7e9_106175_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23_hu8d935318f03b9143db17882353e5d7e9_106175_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23_hu17564494902182706656.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23_hu4258437063927111829.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click the first Wrench Icon to update the name of the Flow.&#34;
@@ -322,7 +322,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24.png&#34;
 	width=&#34;1895&#34;
 	height=&#34;1326&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24_hud97c690956c2dd92220355f92bd41ce7_160167_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24_hud97c690956c2dd92220355f92bd41ce7_160167_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24_hu4213196471572211845.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24_hu15721084507449836354.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click the Wrench Icon for both connections and choose an existing connection or set up a new one.&#34;
@@ -336,7 +336,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25.png&#34;
 	width=&#34;1856&#34;
 	height=&#34;1326&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25_hu58b25bebb3809deda371a4fe62d382ca_119335_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25_hu58b25bebb3809deda371a4fe62d382ca_119335_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25_hu5151078014175545705.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25_hu4840205175460810919.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Finally, click Import.&#34;
@@ -351,7 +351,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26.png&#34;
 	width=&#34;1439&#34;
 	height=&#34;515&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26_hu18bb5e1c7156c13d48546c066a298e42_75124_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26_hu18bb5e1c7156c13d48546c066a298e42_75124_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26_hu18259315964895338768.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26_hu7481541286255530911.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click Trun on&#34;
@@ -366,7 +366,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15.png&#34;
 	width=&#34;933&#34;
 	height=&#34;330&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15_hu8f6849b48dae2ab7886792ce8704706e_23895_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15_hu8f6849b48dae2ab7886792ce8704706e_23895_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15_hu1602228107939671958.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15_hu18399674530512702439.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Set the Flow trigger to your Site and List.&#34;
@@ -381,7 +381,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16.png&#34;
 	width=&#34;937&#34;
 	height=&#34;298&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16_hu2f2caad5241154c735a1113e351a4495_16328_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16_hu2f2caad5241154c735a1113e351a4495_16328_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16_hu17774634404559597013.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16_hu4017430030039818292.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Set the call queue Id&#34;
@@ -393,13 +393,13 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;These are the only two things you need to adjust. Because the Flow uses the action &lt;strong&gt;Get my profile (V2)&lt;/strong&gt; you don&amp;rsquo;t need to set anything that&amp;rsquo;s user specific. That action will always get the details of the user that is running the Flow.&lt;/p&gt;
-&lt;h4 id=&#34;share-the-flow-with-all-the-other-agents&#34;&gt;Share the Flow with all the other Agents&lt;/h4&gt;
-&lt;p&gt;Now that you have the Flow imported to your account, share it with all agents of the call queue.&lt;/p&gt;
+&lt;h4 id=&#34;share-the-flow-with-all-the-other-agents&#34;&gt;Share the Flow with all the other Agents
+&lt;/h4&gt;&lt;p&gt;Now that you have the Flow imported to your account, share it with all agents of the call queue.&lt;/p&gt;
 &lt;p&gt;Go back to &lt;strong&gt;My flows&lt;/strong&gt; and select the Flow again to share it with your team.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27.png&#34;
 	width=&#34;1440&#34;
 	height=&#34;422&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27_hu7fa896e8737707abd7bc43eaefce1b60_60538_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27_hu7fa896e8737707abd7bc43eaefce1b60_60538_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27_hu8528806638046816043.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27_hu1128282297428298293.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;From there, click Share.&#34;
@@ -413,7 +413,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28.png&#34;
 	width=&#34;1716&#34;
 	height=&#34;470&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28_huafa7453bc481c1dc50907b9694463b07_72474_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28_huafa7453bc481c1dc50907b9694463b07_72474_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28_hu5086464589580250981.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28_hu7595605989610089656.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Search for another call queue agent and select them from the drop-down menu.&#34;
@@ -427,7 +427,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29.png&#34;
 	width=&#34;1039&#34;
 	height=&#34;734&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29_hu5418d2bb3bc7d2bea736732f88cd74bf_83748_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29_hu5418d2bb3bc7d2bea736732f88cd74bf_83748_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29_hu167498132066773330.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29_hu3234347335798673121.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Confirm by clicking Ok.&#34;
@@ -443,7 +443,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30.png&#34;
 	width=&#34;1403&#34;
 	height=&#34;955&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30_hud85e770d6a9681de46a3ed65fa1fed3d_89488_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30_hud85e770d6a9681de46a3ed65fa1fed3d_89488_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30_hu4561416554919895521.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30_hu5466886728487689714.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Instruct them to click the three dots and select Save as.&#34;
@@ -457,7 +457,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31.png&#34;
 	width=&#34;1030&#34;
 	height=&#34;472&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31_hu3503ffc67329ae9e6469c6c87f117f7f_26625_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31_hu3503ffc67329ae9e6469c6c87f117f7f_26625_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31_hu2857392925328974134.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31_hu17070033798895599830.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Instruct them to create the connections by clicking Continue.&#34;
@@ -471,7 +471,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32.png&#34;
 	width=&#34;1038&#34;
 	height=&#34;420&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32_huf04498416c4c212182fcd07016b94c8b_45683_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32_huf04498416c4c212182fcd07016b94c8b_45683_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32_hu5182470505484744005.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32_hu3043512181455849335.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;They can rename the Flow before saving.&#34;
@@ -485,7 +485,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33.png&#34;
 	width=&#34;1057&#34;
 	height=&#34;947&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33_hue187d858fb1d43531950e4490d61070e_67598_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33_hue187d858fb1d43531950e4490d61070e_67598_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33_hu17293382911932268230.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33_hu9749183023347001063.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Finally, they&amp;rsquo;ll need to go to My flows again and turn on the copied Flow using the menu behind the three dots.&#34;
@@ -497,12 +497,12 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;Repeat these steps for all the other call queue agents. Each agent needs to have this Flow in their own Power Automate environment since the Flow will need to run with their credentials to be able to change their opt in status.&lt;/p&gt;
-&lt;h3 id=&#34;flow-to-keep-the-list-in-sync&#34;&gt;Flow to keep the List in Sync&lt;/h3&gt;
-&lt;p&gt;Obviously the agents will still be able to change their opt in status on their own using their Teams clients. In that case, we want to keep the SharePoint list updated as well and reflect changes to opt in status made outside of the list. For this, I&amp;rsquo;ve created another Flow. I&amp;rsquo;ll call that one the &lt;strong&gt;Sync-Flow&lt;/strong&gt;. This Flow will update the list for all agents and it will need to be created only once. In my Lab, I&amp;rsquo;ve configured this Flow with a recurring trigger every 15 minutes.&lt;/p&gt;
+&lt;h3 id=&#34;flow-to-keep-the-list-in-sync&#34;&gt;Flow to keep the List in Sync
+&lt;/h3&gt;&lt;p&gt;Obviously the agents will still be able to change their opt in status on their own using their Teams clients. In that case, we want to keep the SharePoint list updated as well and reflect changes to opt in status made outside of the list. For this, I&amp;rsquo;ve created another Flow. I&amp;rsquo;ll call that one the &lt;strong&gt;Sync-Flow&lt;/strong&gt;. This Flow will update the list for all agents and it will need to be created only once. In my Lab, I&amp;rsquo;ve configured this Flow with a recurring trigger every 15 minutes.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17.png&#34;
 	width=&#34;1428&#34;
 	height=&#34;1835&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17_hu7822eedc376cdddd5f0d997034945251_84170_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17_hu7822eedc376cdddd5f0d997034945251_84170_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17_hu18094835676414418205.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17_hu11659137885635116474.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Flow to update the List if CQ Agents opt in/out via Teams clients.&#34;
@@ -518,7 +518,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1216&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19_hu13dde0b83477463bacfbed9010e265f4_119473_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19_hu13dde0b83477463bacfbed9010e265f4_119473_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19_hu1896115540196913194.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19_hu11852883048610094001.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;The List tab after it&amp;rsquo;s been updated by Power Automate.&#34;
@@ -543,7 +543,7 @@
 &lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20.png&#34;
 	width=&#34;917&#34;
 	height=&#34;1395&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20_hua3fab719cdf0b59eb124952147058e88_113321_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20_hua3fab719cdf0b59eb124952147058e88_113321_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20_hu5708539168798782398.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20_hu437063029256463986.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;The trigger condition will prevent infinite trigger loops.&#34;
@@ -555,13 +555,13 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;It&amp;rsquo;s important to note that when you or somebody else wants to change the opt in status of an agent again from the list, the &lt;strong&gt;Updated by Power Automate&lt;/strong&gt; checkbox must be unchecked again. Otherwise the User-Flows won&amp;rsquo;t run and the opt in status won&amp;rsquo;t be changed.&lt;/p&gt;
-&lt;h4 id=&#34;import-the-flow-package-1&#34;&gt;Import the Flow Package&lt;/h4&gt;
-&lt;p&gt;You can download this Flow from &lt;a class=&#34;link&#34; href=&#34;#download-flow-packages&#34; &gt;here&lt;/a&gt;. Use the same process to import the Flow package as you already did with the User-Flow and don&amp;rsquo;t forget to turn it as well on once you&amp;rsquo;re done. In this Flow, you will need to do the following adjustments.&lt;/p&gt;
+&lt;h4 id=&#34;import-the-flow-package-1&#34;&gt;Import the Flow Package
+&lt;/h4&gt;&lt;p&gt;You can download this Flow from &lt;a class=&#34;link&#34; href=&#34;#download-flow-packages&#34; &gt;here&lt;/a&gt;. Use the same process to import the Flow package as you already did with the User-Flow and don&amp;rsquo;t forget to turn it as well on once you&amp;rsquo;re done. In this Flow, you will need to do the following adjustments.&lt;/p&gt;
 &lt;p&gt;Replace the value of the &lt;strong&gt;CallQueueId&lt;/strong&gt; variable with your call queue Id.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35.png&#34;
 	width=&#34;923&#34;
 	height=&#34;410&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35_hu1e4d1ce95122be4f96ee08eac420c8e0_23942_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35_hu1e4d1ce95122be4f96ee08eac420c8e0_23942_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35_hu2117963138089312102.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35_hu8761090421070259272.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Set the CallQueueId variable.&#34;
@@ -576,7 +576,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36.png&#34;
 	width=&#34;939&#34;
 	height=&#34;446&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36_hu711920aa01d34bc8ccf9581338979efc_29013_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36_hu711920aa01d34bc8ccf9581338979efc_29013_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36_hu8017697667298753491.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36_hu10571986564566521542.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Replace Site Address and List Name.&#34;
@@ -591,7 +591,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37.png&#34;
 	width=&#34;969&#34;
 	height=&#34;717&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37_hu660262918bbce269d293b222aec9bd83_34854_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37_hu660262918bbce269d293b222aec9bd83_34854_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37_hu17667313924104665433.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37_hu8836776512602459146.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Replace Site Address and List Name.&#34;
@@ -603,12 +603,12 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;That&amp;rsquo;s it for the set up part. Let&amp;rsquo;s take a look at the user experience!&lt;/p&gt;
-&lt;h2 id=&#34;user-experience&#34;&gt;User Experience&lt;/h2&gt;
-&lt;p&gt;Here you can see how it works. Anyone that has access to the list, can simply edit the list and change the opt in status of another colleague.&lt;/p&gt;
+&lt;h2 id=&#34;user-experience&#34;&gt;User Experience
+&lt;/h2&gt;&lt;p&gt;Here you can see how it works. Anyone that has access to the list, can simply edit the list and change the opt in status of another colleague.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/TeamsCQOptIn.gif&#34;
 	width=&#34;1195&#34;
 	height=&#34;672&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/TeamsCQOptIn_huc59211e8f7e1e5c1d08e18b8085cfb7f_759523_480x0_resize_box_1.gif 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/TeamsCQOptIn_huc59211e8f7e1e5c1d08e18b8085cfb7f_759523_1024x0_resize_box_1.gif 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/TeamsCQOptIn_hu9871273669532964979.gif 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/TeamsCQOptIn_hu332530050797161910.gif 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Note: The Flow was in test mode to speed up the demo. In real life, it will usually take a few minutes to change an opt in status.&#34;
@@ -623,7 +623,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34.png&#34;
 	width=&#34;1488&#34;
 	height=&#34;1090&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34_hu05285cc3066715cc19a9df546850a5bf_140226_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34_hu05285cc3066715cc19a9df546850a5bf_140226_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34_hu860538479537783540.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34_hu15071899178839810327.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;The default polling interval is 5 minutes.&#34;
@@ -634,13 +634,13 @@
 		data-flex-basis=&#34;327px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;additional-benefits&#34;&gt;Additional Benefits&lt;/h2&gt;
-&lt;p&gt;As you may know, the &lt;strong&gt;Calls&lt;/strong&gt; tab in channels is not supported on the Teams mobile app. The call queue agents and their opt in status can only be viewed in the Teams desktop or web client. At this point I want to clarify again, that mobile clients can still receive calls from a call queue, even when the call queue is linked to a voice enabled channel. It&amp;rsquo;s only the view/tab that&amp;rsquo;s not supported on Teams mobile apps.&lt;/p&gt;
+&lt;h2 id=&#34;additional-benefits&#34;&gt;Additional Benefits
+&lt;/h2&gt;&lt;p&gt;As you may know, the &lt;strong&gt;Calls&lt;/strong&gt; tab in channels is not supported on the Teams mobile app. The call queue agents and their opt in status can only be viewed in the Teams desktop or web client. At this point I want to clarify again, that mobile clients can still receive calls from a call queue, even when the call queue is linked to a voice enabled channel. It&amp;rsquo;s only the view/tab that&amp;rsquo;s not supported on Teams mobile apps.&lt;/p&gt;
 &lt;p&gt;But since this solution uses a SharePoint list, it will actually give you the ability to view and change the opt in status of other agents from a mobile device too. This can be done by either opening the list tab in Teams mobile or by accessing the list directly in the Lists mobile app.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS_huec20a803642c2679aa37025ba2a31364_121062_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS_huec20a803642c2679aa37025ba2a31364_121062_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS_hu11523580541972779827.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS_hu1652069061924224646.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;List tab in Teams mobile.&#34;
@@ -653,7 +653,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS_hu8028d64d3a7364db64b08f35efe98733_136987_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS_hu8028d64d3a7364db64b08f35efe98733_136987_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS_hu18018118354172697295.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS_hu2060395788159105390.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Editing a list item in Teams mobile.&#34;
@@ -666,7 +666,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS_hu9635423d25551d7e97b961a20c4d5b90_230407_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS_hu9635423d25551d7e97b961a20c4d5b90_230407_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS_hu18422803775100028305.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS_hu12898352815111235887.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Toggle switches in Lists app.&#34;
@@ -678,11 +678,11 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;The list app will even give you toggle switches which not only looks better but is also easier to edit compared to the experience within the Teams mobile app.&lt;/p&gt;
-&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
-&lt;p&gt;While Teams Premium provides a lot of benefits over the Standard license, the additional $10 per user per month can make quite the difference in your monthly license cost. I fully understand the price tag since Teams Premium also includes AI generated notes which use a lot of computing resources and thus cost Microsoft more money to run their services in the backend.&lt;/p&gt;
+&lt;h2 id=&#34;summary&#34;&gt;Summary
+&lt;/h2&gt;&lt;p&gt;While Teams Premium provides a lot of benefits over the Standard license, the additional $10 per user per month can make quite the difference in your monthly license cost. I fully understand the price tag since Teams Premium also includes AI generated notes which use a lot of computing resources and thus cost Microsoft more money to run their services in the backend.&lt;/p&gt;
 &lt;p&gt;However, if you&amp;rsquo;re only looking for a way to opt in/out other call queue agents on their behalf and don&amp;rsquo;t want to spend another $10 PUPM, I think this solution can be a suitable workaround. Especially for small companies which don&amp;rsquo;t have a lot of call queues with a lot of agents. Of course there is some work to be done by admins and the end users (agents) but it should be manageable for small teams. And let&amp;rsquo;s not forget the fact this will even allow you to change the opt in status for other agents on mobile platforms too!&lt;/p&gt;
-&lt;h3 id=&#34;download-flow-packages&#34;&gt;Download Flow Packages&lt;/h3&gt;
-&lt;p&gt;You can download both Flow packages for free from &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/UpdateCallQueueOptInStatus_20240614215253.zip&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h3 id=&#34;download-flow-packages&#34;&gt;Download Flow Packages
+&lt;/h3&gt;&lt;p&gt;You can download both Flow packages for free from &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/UpdateCallQueueOptInStatus_20240614215253.zip&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/SyncOptInStatustoList_20240614215356.zip&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt;. If you like what I&amp;rsquo;ve presented in this blog post and if it will save you the money you would have otherwise spent on Teams Premium licenses, you can still choose to support me by &lt;a class=&#34;link&#34; href=&#34;https://buymeacoffee.com/martin.heusser&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;buying me a coffee&lt;/a&gt; or by sponsoring me on &lt;a class=&#34;link&#34; href=&#34;https://github.com/sponsors/mozziemozz?frequency=one-time&amp;amp;sponsor=mozziemozz&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -700,12 +700,12 @@
 &lt;p&gt;This is how Microsoft describes the &lt;code&gt;Invoke-MgGraphRequest&lt;/code&gt; Cmdlet on Microsoft Learn:&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Invoke-MgGraphRequest issues REST API requests to the Graph API. It works for any Graph API if you know the REST URI, method, and optional body parameter. This command is especially useful for accessing APIs for which there isn&amp;rsquo;t an equivalent cmdlet yet.&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;Note that there is also an alias called &lt;code&gt;Invoke-GraphRequest&lt;/code&gt; for this Cmdlet. A perfect example of where you would need &lt;code&gt;Invoke-MgGraphRequest&lt;/code&gt; is uploading a small file to SharePoint. I recently published a script example making use of this method &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/powershell-script-example-upload-small-files-via-microsoft-graph-z45tbunyoa85&#34; &gt;here&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id=&#34;what-is-mgcontext&#34;&gt;What is MgContext?&lt;/h2&gt;
-&lt;p&gt;By running &lt;code&gt;Get-MgContext&lt;/code&gt; you can get some information about the current session. Unfortunately, this doesn&amp;rsquo;t reveal any kind of tokens used for requests to the Graph API. Then again, this is most likely by design, because tokens should always be handled with care.&lt;/p&gt;
+&lt;h2 id=&#34;what-is-mgcontext&#34;&gt;What is MgContext?
+&lt;/h2&gt;&lt;p&gt;By running &lt;code&gt;Get-MgContext&lt;/code&gt; you can get some information about the current session. Unfortunately, this doesn&amp;rsquo;t reveal any kind of tokens used for requests to the Graph API. Then again, this is most likely by design, because tokens should always be handled with care.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image_hu754d71b654ea23e9f5c87bfe16932a68_1172389_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image_hu754d71b654ea23e9f5c87bfe16932a68_1172389_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image_hu1777627438205628802.png 480w, https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image_hu12573788224600004584.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Output of Get-MgContext&#34;
@@ -716,8 +716,8 @@
 		data-flex-basis=&#34;434px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;what-if-you-need-a-token-anyway&#34;&gt;What if you need a token anyway?&lt;/h2&gt;
-&lt;p&gt;One option is to provide a client Id and a client secret and make a request to &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://login.microsoftonline.com/%7bYour&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h2 id=&#34;what-if-you-need-a-token-anyway&#34;&gt;What if you need a token anyway?
+&lt;/h2&gt;&lt;p&gt;One option is to provide a client Id and a client secret and make a request to &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://login.microsoftonline.com/%7bYour&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://login.microsoftonline.com/{Your&lt;/a&gt; Tenant Name}/oauth2/v2.0/token&lt;/strong&gt;. If I want to do that, I always come back to this blog post on &lt;a class=&#34;link&#34; href=&#34;https://adamtheautomator.com/powershell-graph-api/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;adamtheautomator.com&lt;/a&gt;. But when I do that, I also want to call the REST API directly for all requests that the script I&amp;rsquo;m working on is doing. In my case, I &lt;strong&gt;want&lt;/strong&gt; to use the SDK and only &lt;strong&gt;need&lt;/strong&gt; to call the API directly for one specific request.&lt;/p&gt;
 &lt;p&gt;I recently was working on something where neither the &lt;code&gt;Get-Mg*&lt;/code&gt; nor the &lt;code&gt;Invoke-MgGraphRequest&lt;/code&gt; were working. I wanted to fetch a profile picture of an Entra ID user but wanted to keep the image in memory and not save it to disk. Both the Cmdlets, &lt;code&gt;Get-MgUserPhotoContent&lt;/code&gt; and &lt;code&gt;Invoke-MgGraphRequest&lt;/code&gt; expected a value for an output file though. I know I could have just used a temporary file but if I had given up this easily, I wouldn&amp;rsquo;t have discovered how to get an access token from a Microsoft Graph PowerShell session.&lt;/p&gt;
@@ -734,7 +734,7 @@
 &lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1_hu1f3a68c31f9f6d09b32402eaf728180d_992335_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1_hu1f3a68c31f9f6d09b32402eaf728180d_992335_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1_hu13642348863189440727.png 480w, https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1_hu5546492978601582535.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Graph access token retrieved using Invoke-MgGraphRequest&#34;
@@ -749,7 +749,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2_hu481e61ac623856a0fe9b6eff6bbbfa8f_621204_480x0_resize_box_3.png 480w, https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2_hu481e61ac623856a0fe9b6eff6bbbfa8f_621204_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2_hu9034352776124099030.png 480w, https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2_hu9384339407822246476.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;The access token is now stored in a variable&#34;
@@ -779,8 +779,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;This allowed me to retrieve the profile photo as a byte array without saving it to disk first.&lt;/p&gt;
-&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
-&lt;p&gt;This is a very niche use case but I&amp;rsquo;m glad that I discovered how to get an access token from an already authenticated Microsoft Graph PowerShell session. I&amp;rsquo;m sure that this will come in handy again some day and I hope that it will come in handy for you some day as well. I also published the entire example script including helpful comments in one of my GitHub &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/Authentication/Get-AccessTokenFromEstablishedMgSession.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h2 id=&#34;summary&#34;&gt;Summary
+&lt;/h2&gt;&lt;p&gt;This is a very niche use case but I&amp;rsquo;m glad that I discovered how to get an access token from an already authenticated Microsoft Graph PowerShell session. I&amp;rsquo;m sure that this will come in handy again some day and I hope that it will come in handy for you some day as well. I also published the entire example script including helpful comments in one of my GitHub &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/Authentication/Get-AccessTokenFromEstablishedMgSession.ps1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;repositories&lt;/a&gt;.&lt;/p&gt;
 </description>
         </item>
@@ -800,7 +800,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1Ylwjq2bqJUws0kO0nI6SA.png&#34;
 	width=&#34;1435&#34;
 	height=&#34;902&#34;
-	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1Ylwjq2bqJUws0kO0nI6SA_hub93a2b6111ad17327cf969152c680b31_114987_480x0_resize_box_3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1Ylwjq2bqJUws0kO0nI6SA_hub93a2b6111ad17327cf969152c680b31_114987_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1Ylwjq2bqJUws0kO0nI6SA_hu4591097655068591110.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1Ylwjq2bqJUws0kO0nI6SA_hu7557466308966757476.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -813,7 +813,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1TUd3bgXiIp7hyKQIWLDTdA.png&#34;
 	width=&#34;975&#34;
 	height=&#34;278&#34;
-	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1TUd3bgXiIp7hyKQIWLDTdA_hued347d18e67613c9cd99f725b4dc1f6d_37427_480x0_resize_box_3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1TUd3bgXiIp7hyKQIWLDTdA_hued347d18e67613c9cd99f725b4dc1f6d_37427_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1TUd3bgXiIp7hyKQIWLDTdA_hu8271768277567038136.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1TUd3bgXiIp7hyKQIWLDTdA_hu14966401493869937657.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -865,8 +865,8 @@
   &amp;quot;xms_ssm&amp;quot;: &amp;quot;1&amp;quot;  
 }.[Signature]
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h4 id=&#34;aadinternals&#34;&gt;AADInternals&lt;/h4&gt;
-&lt;p&gt;Copying the token from the browser and using it to make a web request with PowerShell is easy. The hard thing was to figure out how I can obtain that token programmatically. Luckily, there’s this awesome PowerShell module called &lt;a class=&#34;link&#34; href=&#34;https://www.powershellgallery.com/packages/AADInternals/0.9.0&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h4 id=&#34;aadinternals&#34;&gt;AADInternals
+&lt;/h4&gt;&lt;p&gt;Copying the token from the browser and using it to make a web request with PowerShell is easy. The hard thing was to figure out how I can obtain that token programmatically. Luckily, there’s this awesome PowerShell module called &lt;a class=&#34;link&#34; href=&#34;https://www.powershellgallery.com/packages/AADInternals/0.9.0&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;&lt;strong&gt;AADInternals&lt;/strong&gt;&lt;/a&gt; by one Dr. Nestori Syynimaa. This is an amazing resource to test almost anything related to Azure AD and Graph authentication.&lt;/p&gt;
 &lt;p&gt;The documentation for this module can be found &lt;a class=&#34;link&#34; href=&#34;https://aadinternals.com/aadinternals/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt;. I discovered that the following command would give me a token for Teams.&lt;/p&gt;
@@ -882,7 +882,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1dsPmfR9rFSmCsWYKlb5mA.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1dsPmfR9rFSmCsWYKlb5mA_hu57c1e88072b457ac988aef5100562695_436977_480x0_resize_box_3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1dsPmfR9rFSmCsWYKlb5mA_hu57c1e88072b457ac988aef5100562695_436977_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1dsPmfR9rFSmCsWYKlb5mA_hu7386013365485950374.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1dsPmfR9rFSmCsWYKlb5mA_hu6422413800799178519.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -929,8 +929,8 @@
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$teamsPresenceToken&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Prompt-Credentials&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-ClientId&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$ClientId&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Resource&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;https://presence.teams.microsoft.com&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Credentials&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$secureCreds&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-OTPSecretKey&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$passwordDecrypted&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h4 id=&#34;credentials&#34;&gt;Credentials&lt;/h4&gt;
-&lt;p&gt;I’ve put together a script which does everything for you. However, you must install the AADInternals module first and you also need to clone the repo from my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;/div&gt;&lt;h4 id=&#34;credentials&#34;&gt;Credentials
+&lt;/h4&gt;&lt;p&gt;I’ve put together a script which does everything for you. However, you must install the AADInternals module first and you also need to clone the repo from my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/TeamsPhoneAutomation&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;GitHub&lt;/a&gt; account since it has dependencies on other functions.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -949,7 +949,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1W628X8LBOfnUCpplMXMj4w.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1W628X8LBOfnUCpplMXMj4w_hu6c0822f1e2f18d322b0568a75b2659c8_599321_480x0_resize_box_3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1W628X8LBOfnUCpplMXMj4w_hu6c0822f1e2f18d322b0568a75b2659c8_599321_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1W628X8LBOfnUCpplMXMj4w_hu6784142161199796534.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1W628X8LBOfnUCpplMXMj4w_hu9025894745733358495.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -966,7 +966,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1xHjGlNGoWxiJ3qTkRNsxBQ.png&#34;
 	width=&#34;1758&#34;
 	height=&#34;928&#34;
-	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1xHjGlNGoWxiJ3qTkRNsxBQ_huae7558fdf5fbe404f2179b835079b366_1073714_480x0_resize_box_3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1xHjGlNGoWxiJ3qTkRNsxBQ_huae7558fdf5fbe404f2179b835079b366_1073714_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1xHjGlNGoWxiJ3qTkRNsxBQ_hu12780846507189766806.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1xHjGlNGoWxiJ3qTkRNsxBQ_hu16689364163344309186.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -976,8 +976,8 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;My Function &lt;code&gt;Get-MzzSecureCreds&lt;/code&gt; will automatically create a PS Credential Object when &lt;code&gt;-AdminUser &amp;quot;user@domain.com&amp;quot;&lt;/code&gt; is specified. The username will be set as file name, and it will also be used as the username of the credential object.&lt;/p&gt;
-&lt;h4 id=&#34;the-finalscript&#34;&gt;The Final Script&lt;/h4&gt;
-&lt;p&gt;Here’s the script to change your work location in Teams.&lt;/p&gt;
+&lt;h4 id=&#34;the-finalscript&#34;&gt;The Final Script
+&lt;/h4&gt;&lt;p&gt;Here’s the script to change your work location in Teams.&lt;/p&gt;
 &lt;script src=&#34;https://gist.github.com/mozziemozz/bd60e4c77623b516333e329660e39142.js&#34;&gt;&lt;/script&gt;
 
 &lt;p&gt;If you run it for the first time, you’ll need to provide the username and password and possibly the MFA secret of the user for which you want to change the work location.&lt;/p&gt;
@@ -987,7 +987,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1H9Jn0x3GNJ1gglcfYmRg.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1H9Jn0x3GNJ1gglcfYmRg_hu2c8b638c458bbce84759dbccf2722fbe_680907_480x0_resize_box_3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1H9Jn0x3GNJ1gglcfYmRg_hu2c8b638c458bbce84759dbccf2722fbe_680907_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1H9Jn0x3GNJ1gglcfYmRg_hu16812183759520665127.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1H9Jn0x3GNJ1gglcfYmRg_hu6289963312332804514.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1000,7 +1000,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1JCJNuJqCHz2FvGnYBkB0A.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1JCJNuJqCHz2FvGnYBkB0A_hub0be134dccfead36822ec41a8a608fbe_638777_480x0_resize_box_3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1JCJNuJqCHz2FvGnYBkB0A_hub0be134dccfead36822ec41a8a608fbe_638777_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1JCJNuJqCHz2FvGnYBkB0A_hu4852119930545912311.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1JCJNuJqCHz2FvGnYBkB0A_hu4892436543816207644.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1010,12 +1010,12 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;In case your office and your home network both use the same private address space, you can use &lt;code&gt;-IpType Public&lt;/code&gt; and specify your home/remote public IP.&lt;/p&gt;
-&lt;h4 id=&#34;the-result&#34;&gt;The Result&lt;/h4&gt;
-&lt;p&gt;The updated work location is then visible in both Teams and Outlook.&lt;/p&gt;
+&lt;h4 id=&#34;the-result&#34;&gt;The Result
+&lt;/h4&gt;&lt;p&gt;The updated work location is then visible in both Teams and Outlook.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1rgszjARcTFdFADtwPT9bUg.png&#34;
 	width=&#34;490&#34;
 	height=&#34;396&#34;
-	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1rgszjARcTFdFADtwPT9bUg_hu7f25fb382db34e38ec468b9bfb1740e6_32323_480x0_resize_box_3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1rgszjARcTFdFADtwPT9bUg_hu7f25fb382db34e38ec468b9bfb1740e6_32323_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1rgszjARcTFdFADtwPT9bUg_hu11142416415806386001.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1rgszjARcTFdFADtwPT9bUg_hu1115070523036433628.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1027,7 +1027,7 @@
 &lt;img src=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/16wcOq4ZGJ4e9Oy2J80Nyw.png&#34;
 	width=&#34;686&#34;
 	height=&#34;351&#34;
-	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/16wcOq4ZGJ4e9Oy2J80Nyw_hubd1a54d523e5c7a97cdfb2ddf825199a_16688_480x0_resize_box_3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/16wcOq4ZGJ4e9Oy2J80Nyw_hubd1a54d523e5c7a97cdfb2ddf825199a_16688_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/16wcOq4ZGJ4e9Oy2J80Nyw_hu10673979452045800835.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/16wcOq4ZGJ4e9Oy2J80Nyw_hu7713299632650815897.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1053,7 +1053,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1e3EoKpzxjpK6m0Ii7Wsw.png&#34;
 	width=&#34;750&#34;
 	height=&#34;1334&#34;
-	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1e3EoKpzxjpK6m0Ii7Wsw_hu15cb2d495087f2f1d55235b328a8221e_150793_480x0_resize_box_3.png 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1e3EoKpzxjpK6m0Ii7Wsw_hu15cb2d495087f2f1d55235b328a8221e_150793_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1e3EoKpzxjpK6m0Ii7Wsw_hu12171729047572016155.png 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1e3EoKpzxjpK6m0Ii7Wsw_hu7015333208298933330.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1067,7 +1067,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1QlYK0AE2DSj3SKPpfSJaug.jpeg&#34;
 	width=&#34;750&#34;
 	height=&#34;917&#34;
-	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1QlYK0AE2DSj3SKPpfSJaug_hued510fab658db057612eff5fa2a88521_59509_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1QlYK0AE2DSj3SKPpfSJaug_hued510fab658db057612eff5fa2a88521_59509_1024x0_resize_q75_box.jpeg 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1QlYK0AE2DSj3SKPpfSJaug_hu13687413459237782245.jpeg 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1QlYK0AE2DSj3SKPpfSJaug_hu15992508680930341184.jpeg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1082,7 +1082,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1VKksWkNAJ7ESWUEjkQWd7Q.jpeg&#34;
 	width=&#34;750&#34;
 	height=&#34;850&#34;
-	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1VKksWkNAJ7ESWUEjkQWd7Q_hu295ee41d856beca2d4778d0d41435d72_56266_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1VKksWkNAJ7ESWUEjkQWd7Q_hu295ee41d856beca2d4778d0d41435d72_56266_1024x0_resize_q75_box.jpeg 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1VKksWkNAJ7ESWUEjkQWd7Q_hu17506262826260172512.jpeg 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1VKksWkNAJ7ESWUEjkQWd7Q_hu17713299973819323471.jpeg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1096,7 +1096,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1RCYyCinwNHAg14Dd1DKWUw.jpeg&#34;
 	width=&#34;750&#34;
 	height=&#34;562&#34;
-	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1RCYyCinwNHAg14Dd1DKWUw_hud8d47da795b0e327addef39f804007f7_34068_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1RCYyCinwNHAg14Dd1DKWUw_hud8d47da795b0e327addef39f804007f7_34068_1024x0_resize_q75_box.jpeg 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1RCYyCinwNHAg14Dd1DKWUw_hu15675168226281582527.jpeg 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1RCYyCinwNHAg14Dd1DKWUw_hu6663802463553695615.jpeg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1109,7 +1109,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/12rVXLaYUXZyyNAMla6kjGA.png&#34;
 	width=&#34;750&#34;
 	height=&#34;1334&#34;
-	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/12rVXLaYUXZyyNAMla6kjGA_hu2e5576774935fc798c3461eb71d5e818_280158_480x0_resize_box_3.png 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/12rVXLaYUXZyyNAMla6kjGA_hu2e5576774935fc798c3461eb71d5e818_280158_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/12rVXLaYUXZyyNAMla6kjGA_hu4660542682179146550.png 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/12rVXLaYUXZyyNAMla6kjGA_hu4822605000075551300.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1131,12 +1131,12 @@
         <description>&lt;p&gt;Hello everybody. I try my best to blog about new and unique Microsoft Teams related stuff at least once a month. If you’re new to my stories, feel free to check out my previous articles &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p&#34; &gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Today we’re going to take a look at something very cool. A few months ago, I wrote this little code snippet which lets you change a Teams user’s presence by using PowerShell and the Microsoft Graph API. The API endpoint is documented &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/graph/api/presence-setpresence?view=graph-rest-1.0&amp;amp;tabs=http&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt;. You might be asking yourself: why would we want to do this in the first place? Teams already updates our presence if we’re in a call, a meeting or just busy because of an Outlook appointment, right?&lt;/p&gt;
-&lt;h4 id=&#34;use-cases&#34;&gt;Use Cases&lt;/h4&gt;
-&lt;p&gt;Setting the presence of a user can be very useful if for example not all your users are on Teams yet. Let’s say that we’ve still got a legacy PBX system with SIP devices registered to it, but we use Teams for internal calls. There’s no way to know that a user is already on the phone unless the user specifically updates his status to Busy or Do not disturb. A user can’t set his own status to “In a call” or “In a meeting” though.&lt;/p&gt;
+&lt;h4 id=&#34;use-cases&#34;&gt;Use Cases
+&lt;/h4&gt;&lt;p&gt;Setting the presence of a user can be very useful if for example not all your users are on Teams yet. Let’s say that we’ve still got a legacy PBX system with SIP devices registered to it, but we use Teams for internal calls. There’s no way to know that a user is already on the phone unless the user specifically updates his status to Busy or Do not disturb. A user can’t set his own status to “In a call” or “In a meeting” though.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ.png&#34;
 	width=&#34;548&#34;
 	height=&#34;680&#34;
-	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ_huce2d2f03c713521e4f452d4d43e9a1ce_48580_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ_huce2d2f03c713521e4f452d4d43e9a1ce_48580_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ_hu11218115033739558099.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ_hu6090690737509819335.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1150,19 +1150,19 @@
 &lt;p&gt;Since Microsoft has now released the &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/microsoftteams/sip-gateway-plan&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;SIP Gateway&lt;/a&gt; the need for such a solution has significantly decreased because the SIP Gateway already handles Teams presence out of the box. If you’re interested in learning more about the SIP Gateway for Teams, please check out this session from Commsverse from my colleague &lt;a class=&#34;link&#34; href=&#34;https://twitter.com/tpickhan&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Thorsten Pickhan&lt;/a&gt;.&lt;/p&gt;
-&lt;h4 id=&#34;what-about-other-usecases&#34;&gt;What about other use cases?&lt;/h4&gt;
-&lt;p&gt;I know, we all love Teams but sometimes we do need to use other calling and meeting apps such as Skype, Zoom, WhatsApp, or Discord. Don’t you just hate it that Teams doesn’t know when you’re already on a call in another app? Today, we’re going to change that!&lt;/p&gt;
-&lt;h4 id=&#34;the-power-ofsiri&#34;&gt;The Power of Siri&lt;/h4&gt;
-&lt;p&gt;If you have an iPhone or iPad you probably know about Siri Shortcuts and Automations. If you don’t know them already, I highly recommend checking them out. Shortcuts and automations are like local Power Automate Flows which are created and executed on your iOS device. Today I discovered that you can actually do http POST requests with Shortcuts. How cool is that?&lt;/p&gt;
+&lt;h4 id=&#34;what-about-other-usecases&#34;&gt;What about other use cases?
+&lt;/h4&gt;&lt;p&gt;I know, we all love Teams but sometimes we do need to use other calling and meeting apps such as Skype, Zoom, WhatsApp, or Discord. Don’t you just hate it that Teams doesn’t know when you’re already on a call in another app? Today, we’re going to change that!&lt;/p&gt;
+&lt;h4 id=&#34;the-power-ofsiri&#34;&gt;The Power of Siri
+&lt;/h4&gt;&lt;p&gt;If you have an iPhone or iPad you probably know about Siri Shortcuts and Automations. If you don’t know them already, I highly recommend checking them out. Shortcuts and automations are like local Power Automate Flows which are created and executed on your iOS device. Today I discovered that you can actually do http POST requests with Shortcuts. How cool is that?&lt;/p&gt;
 &lt;p&gt;Granted, coding or building shortcuts is quite a hassle on such a small screen but there’s an easy workaround for that. We’re just using the Shortcut to call an Azure Function and let the Function do all the work for us.&lt;/p&gt;
-&lt;h4 id=&#34;creating-an-azure-ad-app-registration&#34;&gt;Creating an Azure AD App Registration&lt;/h4&gt;
-&lt;p&gt;First, we need an Azure AD App where we can grant the required permissions to set and clear the Teams presence. There’s an exceptional tutorial &lt;a class=&#34;link&#34; href=&#34;https://adamtheautomator.com/powershell-graph-api/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h4 id=&#34;creating-an-azure-ad-app-registration&#34;&gt;Creating an Azure AD App Registration
+&lt;/h4&gt;&lt;p&gt;First, we need an Azure AD App where we can grant the required permissions to set and clear the Teams presence. There’s an exceptional tutorial &lt;a class=&#34;link&#34; href=&#34;https://adamtheautomator.com/powershell-graph-api/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt;. (I also used the example code to acquire the token from this website.)&lt;/p&gt;
 &lt;p&gt;“Presence.ReadWrite.All” is the permission we need.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA.png&#34;
 	width=&#34;851&#34;
 	height=&#34;537&#34;
-	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA_hu90c29336af7900a9bcc837fa4413389d_47241_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA_hu90c29336af7900a9bcc837fa4413389d_47241_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA_hu9674674003345069774.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA_hu5957475072309622764.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1171,17 +1171,17 @@
 		data-flex-basis=&#34;380px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;create-an-azurefunction&#34;&gt;Create an Azure Function&lt;/h4&gt;
-&lt;p&gt;Next, we create an Azure Function. If you’re not familiar with Azure Functions, please read this &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851&#34; &gt;article&lt;/a&gt;. The creating of a Function App and a Function is described under “Create the Refresh Card Function”.&lt;/p&gt;
+&lt;h4 id=&#34;create-an-azurefunction&#34;&gt;Create an Azure Function
+&lt;/h4&gt;&lt;p&gt;Next, we create an Azure Function. If you’re not familiar with Azure Functions, please read this &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851&#34; &gt;article&lt;/a&gt;. The creating of a Function App and a Function is described under “Create the Refresh Card Function”.&lt;/p&gt;
 &lt;p&gt;Copy and paste the following code into your function. Populate the variables on lines 10–14 with your tenant specific information.&lt;/p&gt;
 &lt;script src=&#34;https://gist.github.com/mozziemozz/5b08518eff2dd7c579c61cab23e25e95.js&#34;&gt;&lt;/script&gt;
 
-&lt;h4 id=&#34;create-the-sirishortcut&#34;&gt;Create the Siri Shortcut&lt;/h4&gt;
-&lt;p&gt;Now, we’ll create a new Siri Shortcut. Choose “Get contents of URL” as your first action. Now go back to your Azure Function and copy its URL.&lt;/p&gt;
+&lt;h4 id=&#34;create-the-sirishortcut&#34;&gt;Create the Siri Shortcut
+&lt;/h4&gt;&lt;p&gt;Now, we’ll create a new Siri Shortcut. Choose “Get contents of URL” as your first action. Now go back to your Azure Function and copy its URL.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g.png&#34;
 	width=&#34;1840&#34;
 	height=&#34;247&#34;
-	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g_hu0a9d03c473db92f91ef58447bb04026d_43868_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g_hu0a9d03c473db92f91ef58447bb04026d_43868_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g_hu89894468768993338.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g_hu881831560073577745.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1195,7 +1195,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1JPlHNIr6mVHsBIA1HLoOqA.jpeg&#34;
 	width=&#34;750&#34;
 	height=&#34;1334&#34;
-	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1JPlHNIr6mVHsBIA1HLoOqA_hua5b62d99282b5d18b9ce4747d29c0272_81300_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1JPlHNIr6mVHsBIA1HLoOqA_hua5b62d99282b5d18b9ce4747d29c0272_81300_1024x0_resize_q75_box.jpeg 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1JPlHNIr6mVHsBIA1HLoOqA_hu944444124410535793.jpeg 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1JPlHNIr6mVHsBIA1HLoOqA_hu4670898117950402882.jpeg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1206,14 +1206,14 @@
 &gt;&lt;/p&gt;
 &lt;p&gt;That’s it for the shortcut. You should now be able to run the shortcut. Every time you do so, your iOS device will call the Azure Function which will request a token and then set the defined user&amp;rsquo;s presence to In a Call.&lt;/p&gt;
 &lt;p&gt;By now, I hope you can understand why I didn’t bother to try and also build the authentication flow using only Shortcuts.&lt;/p&gt;
-&lt;h4 id=&#34;building-the-siri-automation&#34;&gt;Building the Siri Automation&lt;/h4&gt;
-&lt;p&gt;The last piece we need to do is to create an Automation which will trigger the Shortcut. Unfortunately, there aren’t as many triggers as I had wished but using “When an App is opened” does the trick, sort of.&lt;/p&gt;
+&lt;h4 id=&#34;building-the-siri-automation&#34;&gt;Building the Siri Automation
+&lt;/h4&gt;&lt;p&gt;The last piece we need to do is to create an Automation which will trigger the Shortcut. Unfortunately, there aren’t as many triggers as I had wished but using “When an App is opened” does the trick, sort of.&lt;/p&gt;
 &lt;p&gt;In Shortcuts, switch from My Shortcuts to Automation on the bottom. Click + to create a new Automation. You want to create a Personal Automation.&lt;/p&gt;
 &lt;p&gt;Select “App” as your trigger and then select one or multiple calling Apps.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA.png&#34;
 	width=&#34;750&#34;
 	height=&#34;1334&#34;
-	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA_hub968f2c7cf86104968b4dbe83e65d0ea_52403_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA_hub968f2c7cf86104968b4dbe83e65d0ea_52403_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA_hu13859202408301888715.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA_hu12812000511852457425.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1226,7 +1226,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA.png&#34;
 	width=&#34;750&#34;
 	height=&#34;1334&#34;
-	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA_huf2ced6342da4c84ab44a20c0be9377c1_125532_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA_huf2ced6342da4c84ab44a20c0be9377c1_125532_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA_hu10580101190404411958.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA_hu17669468194950556096.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1239,7 +1239,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg.png&#34;
 	width=&#34;750&#34;
 	height=&#34;1334&#34;
-	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg_hu7eae1344531cb80e88c90e1ab05064f7_64626_480x0_resize_box_3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg_hu7eae1344531cb80e88c90e1ab05064f7_64626_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg_hu4363917554069755023.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg_hu13603258214402310243.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1258,12 +1258,12 @@
 &lt;p&gt;&amp;ldquo;@&lt;/p&gt;
 &lt;p&gt;Invoke-RestMethod -Method Post -Uri &amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;https://graph.microsoft.com/v1.0/users/$UserId/presence/clearPresence%22&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://graph.microsoft.com/v1.0/users/$UserId/presence/clearPresence&#34;&lt;/a&gt; -Headers $Header -Body $Body -ContentType &amp;ldquo;application/json&amp;rdquo;&lt;/p&gt;
-&lt;h4 id=&#34;demo&#34;&gt;Demo&lt;/h4&gt;
-&lt;p&gt;Here you can see the Automation in Action. At first, the user’s Teams presence is “Available”. When Skype is opened, the Automation is triggered and confirmed by the user. When Teams is opened again, we can see that the status has changed from “Available” to “In a call”. Because Skype was closed/minimized when Teams was opened, the second Automation, which clears the Teams presence again is triggered and allowed to run. This resets the Teams presence to its original state. Teams is closed and opened again to force a refresh of the presence.&lt;/p&gt;
+&lt;h4 id=&#34;demo&#34;&gt;Demo
+&lt;/h4&gt;&lt;p&gt;Here you can see the Automation in Action. At first, the user’s Teams presence is “Available”. When Skype is opened, the Automation is triggered and confirmed by the user. When Teams is opened again, we can see that the status has changed from “Available” to “In a call”. Because Skype was closed/minimized when Teams was opened, the second Automation, which clears the Teams presence again is triggered and allowed to run. This resets the Teams presence to its original state. Teams is closed and opened again to force a refresh of the presence.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1WA9VV3zTsQF3ov8DnQGfog.gif&#34;
 	width=&#34;600&#34;
 	height=&#34;1067&#34;
-	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1WA9VV3zTsQF3ov8DnQGfog_hu01675812143c9f23e6321f2114a19f84_9202471_480x0_resize_box_1.gif 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1WA9VV3zTsQF3ov8DnQGfog_hu01675812143c9f23e6321f2114a19f84_9202471_1024x0_resize_box_1.gif 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1WA9VV3zTsQF3ov8DnQGfog_hu9181865392318123426.gif 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1WA9VV3zTsQF3ov8DnQGfog_hu16655390731259951277.gif 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1273,8 +1273,8 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;What’s cool is that this even works when you’re getting an incoming call in an App like Skype, WhatsApp etc. When you accept the call, the App is opened and thus triggers the automation. I can’t record that on video because iOS screen recording is stopped if an incoming call gets accepted and the notification does not show up, when screen sharing through AirPlay is active.&lt;/p&gt;
-&lt;h4 id=&#34;bonus&#34;&gt;Bonus&lt;/h4&gt;
-&lt;p&gt;Because we now have Shortcuts to set our Teams presence to “In a call” or clear the presence again, we can also use Siri to execute these Shortcuts. All we have to say is Hey Siri, followed by the name of the Shortcut. E.g. “Hey Siri, Set Teams Presence” or “Hey Siri, Clear Teams Presence”.&lt;/p&gt;
+&lt;h4 id=&#34;bonus&#34;&gt;Bonus
+&lt;/h4&gt;&lt;p&gt;Because we now have Shortcuts to set our Teams presence to “In a call” or clear the presence again, we can also use Siri to execute these Shortcuts. All we have to say is Hey Siri, followed by the name of the Shortcut. E.g. “Hey Siri, Set Teams Presence” or “Hey Siri, Clear Teams Presence”.&lt;/p&gt;
 </description>
         </item>
         <item>
@@ -1289,7 +1289,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1pP3r1oOQebJ2upO4HvWQ.png&#34;
 	width=&#34;1894&#34;
 	height=&#34;1020&#34;
-	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1pP3r1oOQebJ2upO4HvWQ_hu5469e67c8aed19f272af2f856331d7c7_200515_480x0_resize_box_3.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1pP3r1oOQebJ2upO4HvWQ_hu5469e67c8aed19f272af2f856331d7c7_200515_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1pP3r1oOQebJ2upO4HvWQ_hu15548964520562768127.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1pP3r1oOQebJ2upO4HvWQ_hu17365363427861432064.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1301,7 +1301,7 @@
 &lt;img src=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1QmgTr14RlgASVngE8T5cw.jpeg&#34;
 	width=&#34;800&#34;
 	height=&#34;480&#34;
-	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1QmgTr14RlgASVngE8T5cw_hu2d61497381ba7c1222d1f1d3c266a45f_16149_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1QmgTr14RlgASVngE8T5cw_hu2d61497381ba7c1222d1f1d3c266a45f_16149_1024x0_resize_q75_box.jpeg 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1QmgTr14RlgASVngE8T5cw_hu4619032333414567865.jpeg 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1QmgTr14RlgASVngE8T5cw_hu2871743854939130330.jpeg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1310,8 +1310,8 @@
 		data-flex-basis=&#34;400px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h3 id=&#34;original-story&#34;&gt;Original Story&lt;/h3&gt;
-&lt;p&gt;Since the second generation of &lt;a class=&#34;link&#34; href=&#34;https://www.microsoft.com/en-us/microsoft-teams/across-devices/devices/category/desk-phones-teams-displays/34&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h3 id=&#34;original-story&#34;&gt;Original Story
+&lt;/h3&gt;&lt;p&gt;Since the second generation of &lt;a class=&#34;link&#34; href=&#34;https://www.microsoft.com/en-us/microsoft-teams/across-devices/devices/category/desk-phones-teams-displays/34&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Teams certified desk phones&lt;/a&gt; have been released, many things have been improved. They’re now much faster and also got a lot of software updates. They still have one major flaw though. They’re only able to show your “native Teams contacts” instead of all contacts which are synchronized from Outlook to Teams.&lt;/p&gt;
 &lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://support.microsoft.com/en-us/office/what-s-new-in-microsoft-teams-devices-eabf4d81-acdd-4b23-afa1-9ee47bb7c5e2#ID0EBD=Desk_phones&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;This&lt;/a&gt; article states the following for a previous software update:&lt;/p&gt;
@@ -1323,7 +1323,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1w2ezI7rEfC4GDVDAttluBA.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;400&#34;
-	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1w2ezI7rEfC4GDVDAttluBA_hu21557a0f20249dd89e2cb4eb7a0002a5_37567_480x0_resize_box_3.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1w2ezI7rEfC4GDVDAttluBA_hu21557a0f20249dd89e2cb4eb7a0002a5_37567_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1w2ezI7rEfC4GDVDAttluBA_hu4459160865068569590.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1w2ezI7rEfC4GDVDAttluBA_hu15099002063579941690.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1336,7 +1336,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1Je3mptWlwbVu1YNpExazNQ.png&#34;
 	width=&#34;1197&#34;
 	height=&#34;718&#34;
-	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1Je3mptWlwbVu1YNpExazNQ_hu1ed59539412e4017e1a48432e7534f48_200348_480x0_resize_box_3.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1Je3mptWlwbVu1YNpExazNQ_hu1ed59539412e4017e1a48432e7534f48_200348_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1Je3mptWlwbVu1YNpExazNQ_hu1959876370826408776.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1Je3mptWlwbVu1YNpExazNQ_hu568257304483021585.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1352,7 +1352,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wNLpmLyJGuePpk2TcX0QA.png&#34;
 	width=&#34;1392&#34;
 	height=&#34;763&#34;
-	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wNLpmLyJGuePpk2TcX0QA_hufbc8ae841f2955802a257b4289e77668_55168_480x0_resize_box_3.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wNLpmLyJGuePpk2TcX0QA_hufbc8ae841f2955802a257b4289e77668_55168_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wNLpmLyJGuePpk2TcX0QA_hu6482974927551975834.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wNLpmLyJGuePpk2TcX0QA_hu8387762989219140124.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1365,7 +1365,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wyoq4EijSDIHOquVsqyXNg.png&#34;
 	width=&#34;1788&#34;
 	height=&#34;110&#34;
-	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wyoq4EijSDIHOquVsqyXNg_hubeb2733a6a28bdf8efb092f8273baec5_8583_480x0_resize_box_3.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wyoq4EijSDIHOquVsqyXNg_hubeb2733a6a28bdf8efb092f8273baec5_8583_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wyoq4EijSDIHOquVsqyXNg_hu17211818408494728199.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wyoq4EijSDIHOquVsqyXNg_hu5217491017607114645.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1378,7 +1378,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1ErWpGEhYOAvefoYxf1f0vQ.png&#34;
 	width=&#34;1834&#34;
 	height=&#34;486&#34;
-	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1ErWpGEhYOAvefoYxf1f0vQ_hu87d95fd20dd2c5135c80ff321ea5ab08_37629_480x0_resize_box_3.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1ErWpGEhYOAvefoYxf1f0vQ_hu87d95fd20dd2c5135c80ff321ea5ab08_37629_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1ErWpGEhYOAvefoYxf1f0vQ_hu7564076685285241838.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1ErWpGEhYOAvefoYxf1f0vQ_hu11716134410263859302.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1391,7 +1391,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/10ydaPFAkcIRQ4nfxCFpJQ.jpeg&#34;
 	width=&#34;800&#34;
 	height=&#34;480&#34;
-	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/10ydaPFAkcIRQ4nfxCFpJQ_hu87b50c45143782f8691c31f4ca9124bd_12373_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/10ydaPFAkcIRQ4nfxCFpJQ_hu87b50c45143782f8691c31f4ca9124bd_12373_1024x0_resize_q75_box.jpeg 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/10ydaPFAkcIRQ4nfxCFpJQ_hu8465965382639580753.jpeg 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/10ydaPFAkcIRQ4nfxCFpJQ_hu16756767050833616933.jpeg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1401,8 +1401,8 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;That’s why I assume that that’s what Microsoft actually meant by that vague statement.&lt;/p&gt;
-&lt;h4 id=&#34;synchronize-outlook-contacts-toteams&#34;&gt;Synchronize Outlook Contacts to Teams&lt;/h4&gt;
-&lt;p&gt;That’s nice and all but it still doesn’t let us select and call our contacts directly from our Teams desk phones. Depending on the number of contacts we need on our phone, manually adding them is not an option either.&lt;/p&gt;
+&lt;h4 id=&#34;synchronize-outlook-contacts-toteams&#34;&gt;Synchronize Outlook Contacts to Teams
+&lt;/h4&gt;&lt;p&gt;That’s nice and all but it still doesn’t let us select and call our contacts directly from our Teams desk phones. Depending on the number of contacts we need on our phone, manually adding them is not an option either.&lt;/p&gt;
 &lt;p&gt;If Alexander Holmeset is able to &lt;a class=&#34;link&#34; href=&#34;https://alexholmeset.blog/2021/12/13/microsoft-teams-speed-dial-contacts-provisioning/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;add contacts to a user&amp;rsquo;s speed dial list&lt;/a&gt; by using PowerShell, why not use his method to read all our local contacts from Outlook and add them as native Teams contacts?&lt;/p&gt;
 &lt;p&gt;With a little help from &lt;a class=&#34;link&#34; href=&#34;http://squareclouds.net/exporting-outlook-contacts-with-powershell&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -1411,7 +1411,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1KJYS5xwbIuZf7dXtl9A.png&#34;
 	width=&#34;890&#34;
 	height=&#34;554&#34;
-	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1KJYS5xwbIuZf7dXtl9A_hud7a6bcd67871ed8d5f4c475cf7b31e9f_25740_480x0_resize_box_3.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1KJYS5xwbIuZf7dXtl9A_hud7a6bcd67871ed8d5f4c475cf7b31e9f_25740_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1KJYS5xwbIuZf7dXtl9A_hu12258278650063658413.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1KJYS5xwbIuZf7dXtl9A_hu14303482838571780550.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1421,16 +1421,16 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;To reduce dependencies, I’m not using the AAD Internals modules to get the user token which is needed to add the contacts. I slightly modified the example from &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/opt-in-or-opt-out-teams-call-queue-agents-remotely-59fe6147f50d&#34; &gt;this post&lt;/a&gt;. Instead of requesting the token for the Call Queue Opt In / Opt Out service, we’re just requesting a token for normal access to the Teams Web Client. For this to work, you or another user needs to enter his credentials once the login prompt appears. You also need to specify your Teams region by Read-Host. In my case that’s “emea”.&lt;/p&gt;
-&lt;h4 id=&#34;the-script&#34;&gt;The Script&lt;/h4&gt;
-&lt;p&gt;The script will only add a contact to Teams, if the phone number or the name is not already saved to another Teams contact. It will only look for contacts stored in a user&amp;rsquo;s Contacts folder inside the personal mailbox.&lt;/p&gt;
+&lt;h4 id=&#34;the-script&#34;&gt;The Script
+&lt;/h4&gt;&lt;p&gt;The script will only add a contact to Teams, if the phone number or the name is not already saved to another Teams contact. It will only look for contacts stored in a user&amp;rsquo;s Contacts folder inside the personal mailbox.&lt;/p&gt;
 &lt;script src=&#34;https://gist.github.com/mozziemozz/c3057fba9da212578601e0b12b0a95bf.js&#34;&gt;&lt;/script&gt;
 
-&lt;h4 id=&#34;the-result&#34;&gt;The Result&lt;/h4&gt;
-&lt;p&gt;Once the script has done its work. We can see that we now have editable contacts in Teams for all our local Outlook contacts. The downside is that there now are multiple entries because of the different sources.&lt;/p&gt;
+&lt;h4 id=&#34;the-result&#34;&gt;The Result
+&lt;/h4&gt;&lt;p&gt;Once the script has done its work. We can see that we now have editable contacts in Teams for all our local Outlook contacts. The downside is that there now are multiple entries because of the different sources.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1xaTcZzkZ4uGKdUWHiOujjA.png&#34;
 	width=&#34;1842&#34;
 	height=&#34;741&#34;
-	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1xaTcZzkZ4uGKdUWHiOujjA_hu8a6023a34a2113d36c9277c80ef5f20e_77583_480x0_resize_box_3.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1xaTcZzkZ4uGKdUWHiOujjA_hu8a6023a34a2113d36c9277c80ef5f20e_77583_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1xaTcZzkZ4uGKdUWHiOujjA_hu15569508668103094035.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1xaTcZzkZ4uGKdUWHiOujjA_hu8617526910945668059.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1443,7 +1443,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1zmrbJ9B7lyVzowWGS47yQ.jpeg&#34;
 	width=&#34;800&#34;
 	height=&#34;480&#34;
-	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1zmrbJ9B7lyVzowWGS47yQ_hu4fa49c5b93c0d190afdd1584827f1432_14432_480x0_resize_q75_box.jpeg 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1zmrbJ9B7lyVzowWGS47yQ_hu4fa49c5b93c0d190afdd1584827f1432_14432_1024x0_resize_q75_box.jpeg 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1zmrbJ9B7lyVzowWGS47yQ_hu10964771718638023316.jpeg 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1zmrbJ9B7lyVzowWGS47yQ_hu11215438092406676055.jpeg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1456,7 +1456,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wEwlj71A3dFKMlZEIGnEpA.png&#34;
 	width=&#34;1194&#34;
 	height=&#34;719&#34;
-	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wEwlj71A3dFKMlZEIGnEpA_hu779c6b26aa43939ca2fac6359c8d65aa_218191_480x0_resize_box_3.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wEwlj71A3dFKMlZEIGnEpA_hu779c6b26aa43939ca2fac6359c8d65aa_218191_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wEwlj71A3dFKMlZEIGnEpA_hu16196947102771126908.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wEwlj71A3dFKMlZEIGnEpA_hu14155104038475313139.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1482,12 +1482,12 @@
     &gt;gist&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;The code to create the interactive sign in window and to get the token is based of &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/answers/questions/491498/invoke-webrequest-to-get-access-token.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;this example&lt;/a&gt;.&lt;/p&gt;
-&lt;h4 id=&#34;disclaimer&#34;&gt;Disclaimer&lt;/h4&gt;
-&lt;p&gt;Before we get into it, I should probably add a disclaimer that this is a proof of concept, at best. You should not use it in production as it uses some bad security practices (like sharing a user&amp;rsquo;s password). For real. Don’t say I didn’t warn you.&lt;/p&gt;
-&lt;h4 id=&#34;whats-this-aboutagain&#34;&gt;What’s this about again?&lt;/h4&gt;
-&lt;p&gt;However, being able to remotely change the opt in status of call queue agents seems to be quite a big ask from several Microsoft Teams admins and customers, so I decided to publish this piece anyway.&lt;/p&gt;
-&lt;h4 id=&#34;changing-opt-in-status-as-auser&#34;&gt;Changing opt in status as a user&lt;/h4&gt;
-&lt;p&gt;Can the opt in status of a user be changed as an admin? The answer is both yes and no. You can’t do it in any delegated way if that’s what you’re asking. You will need the user’s credentials.&lt;/p&gt;
+&lt;h4 id=&#34;disclaimer&#34;&gt;Disclaimer
+&lt;/h4&gt;&lt;p&gt;Before we get into it, I should probably add a disclaimer that this is a proof of concept, at best. You should not use it in production as it uses some bad security practices (like sharing a user&amp;rsquo;s password). For real. Don’t say I didn’t warn you.&lt;/p&gt;
+&lt;h4 id=&#34;whats-this-aboutagain&#34;&gt;What’s this about again?
+&lt;/h4&gt;&lt;p&gt;However, being able to remotely change the opt in status of call queue agents seems to be quite a big ask from several Microsoft Teams admins and customers, so I decided to publish this piece anyway.&lt;/p&gt;
+&lt;h4 id=&#34;changing-opt-in-status-as-auser&#34;&gt;Changing opt in status as a user
+&lt;/h4&gt;&lt;p&gt;Can the opt in status of a user be changed as an admin? The answer is both yes and no. You can’t do it in any delegated way if that’s what you’re asking. You will need the user’s credentials.&lt;/p&gt;
 &lt;p&gt;If you’re a Teams User which is also a call queue agent, there are numerous ways to change your own opt in status for call queues. That is, if your admin allows opting out of queues of course. Let’s go through them.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;From Teams Desktop Client Settings&lt;/li&gt;
@@ -1498,8 +1498,8 @@
 &lt;li&gt;From the good old &lt;a class=&#34;link&#34; href=&#34;https://aka.ms/cqsettings&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://aka.ms/cqsettings&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h4 id=&#34;im-an-admin-why-cant-i-change-the-damn-opt-instatus&#34;&gt;I’m an Admin, why can’t I change the damn opt in status?&lt;/h4&gt;
-&lt;p&gt;From a Teams PowerShell session, we can only view the opt in status of a queue’s agents but not change it.&lt;/p&gt;
+&lt;h4 id=&#34;im-an-admin-why-cant-i-change-the-damn-opt-instatus&#34;&gt;I’m an Admin, why can’t I change the damn opt in status?
+&lt;/h4&gt;&lt;p&gt;From a Teams PowerShell session, we can only view the opt in status of a queue’s agents but not change it.&lt;/p&gt;
 &lt;p&gt;(Get-CsCallQueue -Identity xxxxxxxx-f74b-46bb-9743-xxxxxxxxxxxx).Agents&lt;/p&gt;
 &lt;p&gt;This will spit out something like this.&lt;/p&gt;
 &lt;p&gt;ObjectId                             OptIn&lt;br&gt;
@@ -1508,30 +1508,30 @@ xxxxxxxx-4d28-4246-9c08-xxxxxxxxxxxx  True&lt;br&gt;
 xxxxxxxx-8bae-419d-a4eb-xxxxxxxxxxxx  True&lt;br&gt;
 xxxxxxxx-49db-40ee-9d05-xxxxxxxxxxxx False&lt;/p&gt;
 &lt;p&gt;Every attempt to change the returned PowerShell object failed. Miserably.&lt;/p&gt;
-&lt;h3 id=&#34;how-can-we-at-least-do-it-as-the-user-but-remotely&#34;&gt;How can we at least do it as the user, but remotely?&lt;/h3&gt;
-&lt;p&gt;Similar to Alex’s approach of creating Teams Contacts from CLI we also have to acquire a user token to be able to change the opt in status of a user by CLI.&lt;/p&gt;
+&lt;h3 id=&#34;how-can-we-at-least-do-it-as-the-user-but-remotely&#34;&gt;How can we at least do it as the user, but remotely?
+&lt;/h3&gt;&lt;p&gt;Similar to Alex’s approach of creating Teams Contacts from CLI we also have to acquire a user token to be able to change the opt in status of a user by CLI.&lt;/p&gt;
 &lt;p&gt;In his scenario, he’s mainly thinking about new users or even accounts which are used to sign into common area phones which might not be MFA enabled yet. In our case this might look different because we want to be able to alter the opt in state of already working staff.&lt;/p&gt;
 &lt;p&gt;At first, I also tried to use the AAD Internals PowerShell Module to receive a user token. In this case, however, it turned out to be much more complicated. When a user opens the Calls settings page in Teams, another token is requested from a different issuing service than the one which is used to access all the other features in Teams.&lt;/p&gt;
 &lt;p&gt;After a long night of googling and binging (yes, I was this desperate) I finally was able to get a working token by modifying the example from the Docs Q&amp;amp;A which is linked in the intro of this article.&lt;/p&gt;
-&lt;h4 id=&#34;prerequisites&#34;&gt;Prerequisites&lt;/h4&gt;
-&lt;p&gt;&lt;strong&gt;Let’s get one thing straight. This approach ONLY works if you know the password of the user and / or the user agrees to share their password or even an MFA secret with you.&lt;/strong&gt;&lt;/p&gt;
+&lt;h4 id=&#34;prerequisites&#34;&gt;Prerequisites
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;Let’s get one thing straight. This approach ONLY works if you know the password of the user and / or the user agrees to share their password or even an MFA secret with you.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;I’m thinking of the following scenario: we want to be able to automatically and remotely opt in and opt out agents of call queues based on various criteria such as working schedules etc.&lt;/p&gt;
 &lt;p&gt;To have at least some kind of security, my script is encrypting the password and the MFA secret before it’s saved to the disk. Once they’re encrypted, they can only be decrypted by the same user account and the same Windows system which was used to encrypt them.&lt;/p&gt;
 &lt;p&gt;Why do we need to save the password to disk, when it’s an interactive login process anyway? Well, if you want to automate it by any means, we can use SendKeys to emulate a user&amp;rsquo;s keystrokes. To be completely honest, I only went so far because I wanted to see for myself if I can get it working…&lt;/p&gt;
-&lt;h4 id=&#34;how-the-scriptworks&#34;&gt;How the script works&lt;/h4&gt;
-&lt;p&gt;The script needs a few parameters to work. We need to provide a user principal name, a user object Id and a call queue Id.&lt;/p&gt;
+&lt;h4 id=&#34;how-the-scriptworks&#34;&gt;How the script works
+&lt;/h4&gt;&lt;p&gt;The script needs a few parameters to work. We need to provide a user principal name, a user object Id and a call queue Id.&lt;/p&gt;
 &lt;p&gt;It will then check the current directory for two or three files depending on whether the -MFA switch is used.&lt;/p&gt;
 &lt;p&gt;You will be prompted to enter the password and the MFA secret if these files do not already exist. The token will be saved to a file once you’ve successfully logged in and acquired one. If the token is expired (happens every few hours or so), you will be prompted for credentials again and the token inside the file will be replaced with the new one. Since we also saved the password to disk, you do not need to enter the password again. The script will decrypt and enter the password by emulating automated keystrokes automatically.&lt;/p&gt;
-&lt;h4 id=&#34;script-modes&#34;&gt;Script modes&lt;/h4&gt;
-&lt;p&gt;The script features a -QueryStatusOnly switch, which will only check if the user is opted in or out of a queue. This will not change anything.&lt;/p&gt;
+&lt;h4 id=&#34;script-modes&#34;&gt;Script modes
+&lt;/h4&gt;&lt;p&gt;The script features a -QueryStatusOnly switch, which will only check if the user is opted in or out of a queue. This will not change anything.&lt;/p&gt;
 &lt;p&gt;For the sake of simplicity, I’ve already stored the values of $UserId, $CallQueueId and $UserName as default values for the parameters. Of course, you can pass your own values if you call the script yourself.&lt;/p&gt;
 &lt;p&gt;In this video, you can see how the username and password are automatically entered, which will ultimately get us the token we need to call the API and query the user’s opt in status.&lt;/p&gt;
 &lt;p&gt;If we run the same thing again, we will already have a valid token.&lt;/p&gt;
 &lt;p&gt;Now let’s take a look at an MFA enabled user. For this, we use the optional -MFA switch. Besides the password, this will also prompt us for the MFA secret. The script then pulls down the PowerShell Script from GitHub and uses it’s code to do some magic and generate the TOTP from the secret.&lt;/p&gt;
-&lt;h4 id=&#34;okbut-how-do-we-opt-a-userout&#34;&gt;Ok — But how do we opt a user out!?&lt;/h4&gt;
-&lt;p&gt;Since we can already see the opt in status of members either in Voice Enabled Channels or via PowerShell this is nothing new. Let’s opt a user out already!&lt;/p&gt;
-&lt;h4 id=&#34;script&#34;&gt;Script&lt;/h4&gt;
-&lt;p&gt;Here’s the script. Please notice that sometimes, activating the AAD Login Window does not always work, so you might have to cancel and run it again. For me, it usually worked the second time I ran the script.&lt;/p&gt;
+&lt;h4 id=&#34;okbut-how-do-we-opt-a-userout&#34;&gt;Ok — But how do we opt a user out!?
+&lt;/h4&gt;&lt;p&gt;Since we can already see the opt in status of members either in Voice Enabled Channels or via PowerShell this is nothing new. Let’s opt a user out already!&lt;/p&gt;
+&lt;h4 id=&#34;script&#34;&gt;Script
+&lt;/h4&gt;&lt;p&gt;Here’s the script. Please notice that sometimes, activating the AAD Login Window does not always work, so you might have to cancel and run it again. For me, it usually worked the second time I ran the script.&lt;/p&gt;
 &lt;script src=&#34;https://gist.github.com/mozziemozz/ce70f39f720bf17632f60a3d6b1be110.js&#34;&gt;&lt;/script&gt;
 
 &lt;p&gt;Here’s an example of running the script with parameters.&lt;/p&gt;
@@ -1543,8 +1543,8 @@ xxxxxxxx-49db-40ee-9d05-xxxxxxxxxxxx False&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;.\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CallQueueOptInOptOutGist&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;ps1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-UserId&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;xxxxxxxx-8bae-419d-a4eb-xxxxxxxxxxxx&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-UserName&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;user@domain.com&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-CallQueueId&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;xxxxxxxx-f74b-46bb-9743-xxxxxxxxxxxx&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Action&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;OptOut&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h4 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h4&gt;
-&lt;p&gt;Even though this method uses some real dirty tricks it still get’s the job done. Well, kind of, at least. I really hope that Microsoft will add the functionality to allow Queue managers to remotely opt in or opt out their agents in a more practical way. It’s a real pity that not even the new &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/powershell/module/teams/set-csusercallingsettings?view=teams-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;/div&gt;&lt;h4 id=&#34;conclusion&#34;&gt;Conclusion
+&lt;/h4&gt;&lt;p&gt;Even though this method uses some real dirty tricks it still get’s the job done. Well, kind of, at least. I really hope that Microsoft will add the functionality to allow Queue managers to remotely opt in or opt out their agents in a more practical way. It’s a real pity that not even the new &lt;a class=&#34;link&#34; href=&#34;https://docs.microsoft.com/en-us/powershell/module/teams/set-csusercallingsettings?view=teams-ps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Set-CsUserCallingSettings&lt;/a&gt; or the Boss/Admin feature can do this!&lt;/p&gt;
 </description>
         </item>

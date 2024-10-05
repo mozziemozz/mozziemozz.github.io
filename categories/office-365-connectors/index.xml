@@ -6,32 +6,32 @@
         <description>Recent content in Office 365 Connectors on HEUSSER.PRO</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Thu, 29 Aug 2024 19:08:52 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/office-365-connectors/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 01 Oct 2024 19:08:52 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/office-365-connectors/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Migrate Teams Incoming Webhooks to Workflows (Power Automate)</title>
         <link>https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/</link>
-        <pubDate>Thu, 29 Aug 2024 19:08:52 +0000</pubDate>
+        <pubDate>Tue, 01 Oct 2024 19:08:52 +0000</pubDate>
         
         <guid>https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/</guid>
         <description>&lt;p&gt;At the beginning of July 2024 Microsoft announced that they will retire Office 365 Connectors in Teams. This was published in the Message Center with post ID &lt;strong&gt;MC808160&lt;/strong&gt;. Initially, Microsoft communicated a rather short deadline but then decided to extend it by quite some time. Users will still be able to add new connectors until December 31st 2024 before they will be retired in December 2025. Microsoft also published this information &lt;a class=&#34;link&#34; href=&#34;https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id=&#34;how-to-find-out-who-set-up-connectors-in-my-organization&#34;&gt;How To Find Out Who Set Up Connectors In My Organization?&lt;/h2&gt;
-&lt;p&gt;The biggest challenge will be finding out which Teams in your organization are currently using Office 365 Connectors in Teams. Luckily, Tony Redmond has created a much appreciated &lt;a class=&#34;link&#34; href=&#34;https://office365itpros.com/2024/07/10/teams-office-connectors/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h2 id=&#34;how-to-find-out-who-set-up-connectors-in-my-organization&#34;&gt;How To Find Out Who Set Up Connectors In My Organization?
+&lt;/h2&gt;&lt;p&gt;The biggest challenge will be finding out which Teams in your organization are currently using Office 365 Connectors in Teams. Luckily, Tony Redmond has created a much appreciated &lt;a class=&#34;link&#34; href=&#34;https://office365itpros.com/2024/07/10/teams-office-connectors/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;script&lt;/a&gt; to scan your tenant for any Teams that are using connectors. I quickly tested this script and can confirm that it lists all the incoming webhooks configured in my lab tenant.&lt;/p&gt;
 &lt;p&gt;Now that we know which Teams are utilizing incoming webhooks, the natural next step is to contact the owners of the affected Teams and help them transitioning their apps to sending data to Power Automate instead. But first we need to make sure that we know how to set up notifications via Power Automate.&lt;/p&gt;
-&lt;h2 id=&#34;pros-and-cons-about-this-change&#34;&gt;Pros And Cons About This Change&lt;/h2&gt;
-&lt;p&gt;The only connector I ever used was the incoming webhook. I mainly used them to send &lt;a class=&#34;link&#34; href=&#34;https://adaptivecards.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h2 id=&#34;pros-and-cons-about-this-change&#34;&gt;Pros And Cons About This Change
+&lt;/h2&gt;&lt;p&gt;The only connector I ever used was the incoming webhook. I mainly used them to send &lt;a class=&#34;link&#34; href=&#34;https://adaptivecards.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Adaptive Cards&lt;/a&gt; to Teams channels and I blogged about different use cases &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/&#34; &gt;here&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/&#34; &gt;here&lt;/a&gt;. That&amp;rsquo;s why this blog post will also be focusing on sending Adaptive Cards through Power Automate and not Office 365 Connectors in general.&lt;/p&gt;
 &lt;p&gt;These examples mostly used the schema for &lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/en-us/outlook/actionable-messages/message-card-reference&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Legacy Actionable Message Cards&lt;/a&gt; and not true Adaptive Cards. While I was able to introduce some Adaptive Card features into the Message Card payloads, it was never really clear to me which features are supported and which aren&amp;rsquo;t. This required a lot of trial and error. Now that we&amp;rsquo;re transitioning to Power Automate, we can fully utilize all the Adaptive Card features which are supported in Teams. More importantly, we can finally relay on the information that&amp;rsquo;s published on the &lt;a class=&#34;link&#34; href=&#34;https://adaptivecards.io/explorer/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Adaptive Card Schema Explorer&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;The downside is that you might have to spend more money on additional licenses for Power Automate service accounts. If you&amp;rsquo;re not using service accounts to send Adaptive Cards to Teams, you&amp;rsquo;ll face the risk that some notifications will stop working when the person who set up a Flow leaves the company. On the plus side, using Power Automate will also give you more flexibility and also more security. (More on that later.)&lt;/p&gt;
-&lt;h2 id=&#34;set-up-a-power-automate-workflows-connector&#34;&gt;Set Up a Power Automate (Workflows) Connector&lt;/h2&gt;
-&lt;p&gt;Let&amp;rsquo;s take a look at how you can set up a Power Automate Flow to replicate the functionality of an incoming webhook directly in Teams.&lt;/p&gt;
+&lt;h2 id=&#34;set-up-a-power-automate-workflows-connector&#34;&gt;Set Up a Power Automate (Workflows) Connector
+&lt;/h2&gt;&lt;p&gt;Let&amp;rsquo;s take a look at how you can set up a Power Automate Flow to replicate the functionality of an incoming webhook directly in Teams.&lt;/p&gt;
 &lt;p&gt;Select the channel where you want to receive the notification and click on the &lt;strong&gt;3 dots&lt;/strong&gt;. Then click on &lt;strong&gt;Workflows&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image_hu3fb6cb1ee069631de21f28e6235eecd7_183291_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image_hu3fb6cb1ee069631de21f28e6235eecd7_183291_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image_hu17067836575163035893.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image_hu3705164775016160227.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Open the Workflows app&#34;
@@ -46,7 +46,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-1.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-1_hue792df4de31073521a928352d455e6aa_146427_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-1_hue792df4de31073521a928352d455e6aa_146427_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-1_hu13098306370784340601.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-1_hu8472554707977568149.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Select the template: Post to a channel when a webhook request is received &#34;
@@ -61,7 +61,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-2.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-2_hu4919f252f96b1d8a0dd4fb55f648bfcf_145859_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-2_hu4919f252f96b1d8a0dd4fb55f648bfcf_145859_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-2_hu1011982923621769736.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-2_hu3264230650608358657.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Set up connections&#34;
@@ -74,7 +74,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-3.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-3_huca67d0eea78bebe1d259ac1a4d6ac31a_124529_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-3_huca67d0eea78bebe1d259ac1a4d6ac31a_124529_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-3_hu13421259205306972981.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-3_hu10885815418521128326.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Confirm the Team and the channel&#34;
@@ -89,7 +89,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-4.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-4_hu4919f252f96b1d8a0dd4fb55f648bfcf_218383_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-4_hu4919f252f96b1d8a0dd4fb55f648bfcf_218383_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-4_hu12102872041567899063.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-4_hu1035464252065735674.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Copy the trigger URL&#34;
@@ -152,7 +152,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5_hub73575a9a0a88ffc322fbc180fc7a1df_224864_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5_hub73575a9a0a88ffc322fbc180fc7a1df_224864_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5_hu12049619759637336247.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5_hu16688186486983862571.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Flow failure info&#34;
@@ -165,7 +165,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-6.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-6_hu14f05ee05276174f88cb05fb55bdccdc_234459_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-6_hu14f05ee05276174f88cb05fb55bdccdc_234459_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-6_hu16082627391339738973.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-6_hu12978097451286139877.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Error details&#34;
@@ -181,7 +181,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-7.png&#34;
 	width=&#34;926&#34;
 	height=&#34;1074&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-7_huc77d7a81d20c8ab8f8394a63ec73251f_169638_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-7_huc77d7a81d20c8ab8f8394a63ec73251f_169638_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-7_hu9042932370275368541.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-7_hu8841001552661673965.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Trigger output&#34;
@@ -196,7 +196,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19_hucec72868a518da22de833eeafc174ae4_132808_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19_hucec72868a518da22de833eeafc174ae4_132808_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19_hu8406155332374909504.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19_hu3255301243670892880.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Flow created by Teams&#34;
@@ -266,7 +266,7 @@
 &lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17_hu3950e0ee8735047fa286af9bb2b9204a_233474_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17_hu3950e0ee8735047fa286af9bb2b9204a_233474_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17_hu13903871934690470927.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17_hu14214375774914690352.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;It works!&#34;
@@ -281,7 +281,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18.png&#34;
 	width=&#34;915&#34;
 	height=&#34;1315&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18_hufca17898f0de8536f4dd2b8f517259f4_187894_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18_hufca17898f0de8536f4dd2b8f517259f4_187894_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18_hu15871628569325334570.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18_hu9565231287786797527.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Trigger Outputs when the Adaptive Card is inside the attachments/content&#34;
@@ -294,8 +294,8 @@
 &gt;&lt;/p&gt;
 &lt;p&gt;Before I found this information, I long tinkered with the Flow itself and made it accept a payload which only includes an Adaptive Card. I basically made this just a few days after the change was announced but I only had time to write about it and figured out how to successfully use the default Flow (Thanks to Tony&amp;rsquo;s post) today.&lt;/p&gt;
 &lt;p&gt;Since I&amp;rsquo;ve been using my Flow for months now and it&amp;rsquo;s working great, I see no harm in showing you an alternative way which will accept a payload which &lt;strong&gt;only&lt;/strong&gt; includes an Adaptive Card, just like incoming webhooks did.&lt;/p&gt;
-&lt;h2 id=&#34;set-up-a-flow-from-scratch&#34;&gt;Set Up a Flow From Scratch&lt;/h2&gt;
-&lt;p&gt;My goal is to minimize the changes I have to do to my scripts and only swap the old webhook Uri for the new Power Automate trigger Uri and update the payload to use the official Adaptive Card schema. By using this method, I don&amp;rsquo;t need to bother about changing the structure of the JSON payload as well.&lt;/p&gt;
+&lt;h2 id=&#34;set-up-a-flow-from-scratch&#34;&gt;Set Up a Flow From Scratch
+&lt;/h2&gt;&lt;p&gt;My goal is to minimize the changes I have to do to my scripts and only swap the old webhook Uri for the new Power Automate trigger Uri and update the payload to use the official Adaptive Card schema. By using this method, I don&amp;rsquo;t need to bother about changing the structure of the JSON payload as well.&lt;/p&gt;
 &lt;p&gt;When the Flow is set up through Teams, it&amp;rsquo;s set up in the environment of the user which created it. This is not what I wanted anyway. I want this to run under a service account. So let&amp;rsquo;s take a look on how to build a working Flow from scratch.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Step 1:&lt;/strong&gt; Start by creating a new Flow and search for &lt;strong&gt;Microsoft Teams Webhook&lt;/strong&gt; for the trigger. Select the only option which is called &lt;strong&gt;When a Teams webhook request is received&lt;/strong&gt;. Make sure that the option &lt;strong&gt;Who can trigger the flow?&lt;/strong&gt; is set to &lt;strong&gt;Anyone&lt;/strong&gt;. (Why this trigger still used the old Teams logo is beyond me&amp;hellip;)&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Step 2:&lt;/strong&gt; Then add a &lt;strong&gt;Compose&lt;/strong&gt; action and add the &lt;strong&gt;Body&lt;/strong&gt; as Inputs from the dynamic content selection. (Note: Select the one with a capital &lt;strong&gt;B&lt;/strong&gt;.)&lt;/p&gt;
@@ -303,7 +303,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-8.png&#34;
 	width=&#34;931&#34;
 	height=&#34;945&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-8_hu2a2c67401a0ec40cb404431912692a48_52347_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-8_hu2a2c67401a0ec40cb404431912692a48_52347_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-8_hu10208623305089933618.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-8_hu6363880623582734220.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;That&amp;rsquo;s the entire flow.&#34;
@@ -319,7 +319,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-9.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-9_huad1ef2d5f74d038192e7d102e3aef399_136222_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-9_huad1ef2d5f74d038192e7d102e3aef399_136222_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-9_hu2288167009019981301.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-9_hu15456474603554545078.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Hello World!&#34;
@@ -332,7 +332,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-10.png&#34;
 	width=&#34;1174&#34;
 	height=&#34;524&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-10_hu9d7af770a96824feb10b16acc4e17862_47167_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-10_hu9d7af770a96824feb10b16acc4e17862_47167_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-10_hu12651012709381117620.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-10_hu4099230719778945892.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Success!&#34;
@@ -343,10 +343,10 @@
 		data-flex-basis=&#34;537px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;advanced-scenarios&#34;&gt;Advanced Scenarios&lt;/h2&gt;
-&lt;p&gt;Now that we have a working Flow, let&amp;rsquo;s look at some other cool stuff we can do now&amp;hellip;&lt;/p&gt;
-&lt;h3 id=&#34;password-protect-the-flow&#34;&gt;Password Protect The Flow&lt;/h3&gt;
-&lt;p&gt;Office 365 Webhooks in Teams didn&amp;rsquo;t support any kind of authentication. The only security measure we had was keeping the webhook URI a secret. With Power Automate Flows, you can select between different options for &lt;strong&gt;Who can trigger the flow?&lt;/strong&gt;. Valid choices are &lt;strong&gt;Any user in my tenant&lt;/strong&gt;, &lt;strong&gt;Specific users in my tenant&lt;/strong&gt; or &lt;strong&gt;Anyone&lt;/strong&gt;. At this point, I haven&amp;rsquo;t actually figured out how user authentication would work.&lt;/p&gt;
+&lt;h2 id=&#34;advanced-scenarios&#34;&gt;Advanced Scenarios
+&lt;/h2&gt;&lt;p&gt;Now that we have a working Flow, let&amp;rsquo;s look at some other cool stuff we can do now&amp;hellip;&lt;/p&gt;
+&lt;h3 id=&#34;password-protect-the-flow&#34;&gt;Password Protect The Flow
+&lt;/h3&gt;&lt;p&gt;Office 365 Webhooks in Teams didn&amp;rsquo;t support any kind of authentication. The only security measure we had was keeping the webhook URI a secret. With Power Automate Flows, you can select between different options for &lt;strong&gt;Who can trigger the flow?&lt;/strong&gt;. Valid choices are &lt;strong&gt;Any user in my tenant&lt;/strong&gt;, &lt;strong&gt;Specific users in my tenant&lt;/strong&gt; or &lt;strong&gt;Anyone&lt;/strong&gt;. At this point, I haven&amp;rsquo;t actually figured out how user authentication would work.&lt;/p&gt;
 &lt;p&gt;Anyway, I already mentioned that my goal for this migration is to make as little changes as possible to my scripts. Therefore I&amp;rsquo;m sticking with anyone can trigger the Flow. By the way, this is also what&amp;rsquo;s used as the default value when you add a new Flow through the Workflows app in Teams as shown in &lt;a class=&#34;link&#34; href=&#34;#set-up-a-power-automate-workflows-connector&#34; &gt;chapter 3&lt;/a&gt; of this article. However, that doesn&amp;rsquo;t mean that I can&amp;rsquo;t add at least some security to this.&lt;/p&gt;
 &lt;p&gt;By using a trigger condition, we can limit who can trigger the Flow as well. To do this, click on the three dots on the trigger and then select &lt;strong&gt;Settings&lt;/strong&gt;. Then scroll to the bottom, enable trigger conditions and past the following code:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;@equals(triggerOutputs()?[&#39;headers&#39;][&#39;TriggerSecret&#39;], &#39;OnlyICanTriggerThisFlow&#39;)&lt;/code&gt;&lt;/p&gt;
@@ -354,7 +354,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-11.png&#34;
 	width=&#34;1365&#34;
 	height=&#34;522&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-11_huee1408da13fc17eddd3fc335b0624007_59922_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-11_huee1408da13fc17eddd3fc335b0624007_59922_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-11_hu14330245624591067472.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-11_hu3553075836722479647.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Trigger Settings&#34;
@@ -367,7 +367,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-12.png&#34;
 	width=&#34;924&#34;
 	height=&#34;1393&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-12_hubab79313ea68a4b4dad5cffa0e8d91ca_108067_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-12_hubab79313ea68a4b4dad5cffa0e8d91ca_108067_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-12_hu3326022890127933909.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-12_hu15343184824364638248.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Trigger Condition&#34;
@@ -434,8 +434,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;If the &lt;strong&gt;TriggerSecret&lt;/strong&gt; is missing from the header or if it&amp;rsquo;s value is wrong, the Flow won&amp;rsquo;t trigger at all. This means that you won&amp;rsquo;t even see a failed Flow action if the trigger URI is called with a wrong password.&lt;/p&gt;
-&lt;h3 id=&#34;use-the-same-flow-for-multiple-channels&#34;&gt;Use The Same Flow For Multiple Channels&lt;/h3&gt;
-&lt;p&gt;Another cool thing about the move to Power Automate is that we can use the same Flow and the same trigger URI to send notifications to different channels. You don&amp;rsquo;t necessarily need to create a Flow for each channel like it was the case with incoming webhooks.&lt;/p&gt;
+&lt;h3 id=&#34;use-the-same-flow-for-multiple-channels&#34;&gt;Use The Same Flow For Multiple Channels
+&lt;/h3&gt;&lt;p&gt;Another cool thing about the move to Power Automate is that we can use the same Flow and the same trigger URI to send notifications to different channels. You don&amp;rsquo;t necessarily need to create a Flow for each channel like it was the case with incoming webhooks.&lt;/p&gt;
 &lt;p&gt;The principle here is the same as with the trigger secret, we just add information about the target channel to the request headers:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -456,7 +456,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-13.png&#34;
 	width=&#34;952&#34;
 	height=&#34;192&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-13_huc65994b488f4d3c253f5f0b1a56e6545_10513_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-13_huc65994b488f4d3c253f5f0b1a56e6545_10513_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-13_hu12159826009661972305.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-13_hu11322132518590545155.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Expression to extract headers from trigger outputs&#34;
@@ -471,7 +471,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-14.png&#34;
 	width=&#34;1939&#34;
 	height=&#34;1377&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-14_huee03996cc3a9932aff446acc3605e411_74416_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-14_huee03996cc3a9932aff446acc3605e411_74416_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-14_hu7720957949630575163.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-14_hu11037026963041257743.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Switch statement to target different channels based on header value&#34;
@@ -482,12 +482,12 @@
 		data-flex-basis=&#34;337px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h3 id=&#34;result&#34;&gt;Result&lt;/h3&gt;
-&lt;p&gt;Even though, I was using the same Flow, with the same trigger URI, this message was now received in the &lt;strong&gt;Notifications - M365&lt;/strong&gt; channel and not in &lt;strong&gt;Notifications - Azure&lt;/strong&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;result&#34;&gt;Result
+&lt;/h3&gt;&lt;p&gt;Even though, I was using the same Flow, with the same trigger URI, this message was now received in the &lt;strong&gt;Notifications - M365&lt;/strong&gt; channel and not in &lt;strong&gt;Notifications - Azure&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-15.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-15_hu095eac925cf76e9d97b5d45b9437b812_133474_480x0_resize_box_3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-15_hu095eac925cf76e9d97b5d45b9437b812_133474_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-15_hu6249113140633450532.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-15_hu6183188826370830636.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Adaptive Card in different channel&#34;
@@ -499,8 +499,8 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;Pretty cool, right?&lt;/p&gt;
-&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
-&lt;p&gt;Over all, I really like this change. The biggest advantage to me is that we&amp;rsquo;ll finally be able to fully utilize the huge potential of Adaptive Cards and there&amp;rsquo;s no trial and error involved anymore to find out which card elements are supported and which are not.&lt;/p&gt;
+&lt;h2 id=&#34;summary&#34;&gt;Summary
+&lt;/h2&gt;&lt;p&gt;Over all, I really like this change. The biggest advantage to me is that we&amp;rsquo;ll finally be able to fully utilize the huge potential of Adaptive Cards and there&amp;rsquo;s no trial and error involved anymore to find out which card elements are supported and which are not.&lt;/p&gt;
 &lt;p&gt;Finding out which Teams are using Office 365 Connectors/incoming webhooks should be easy enough using Tony&amp;rsquo;s script. Approaching all the users and letting them know that their integration will break unless they take action will be the painful part of this migration. But in my opinion this also presents itself as an opportunity to get a hold on which of your end users are making use of sending data to Teams channels and offer them to set up service accounts for them.&lt;/p&gt;
 &lt;p&gt;However, this doesn&amp;rsquo;t mean that there won&amp;rsquo;t be users which will set up or keep setting up their own Workflows in Teams. With incoming webhooks, Admins had the possibility to block the use of the app through Teams app permission policies. If you want to block users from using the Workflows app, that&amp;rsquo;s still possible through the same policy but that would also mean that you&amp;rsquo;re blocking them from using the Workflows app entirely, which might be suboptimal in many scenarios.&lt;/p&gt;
 &lt;p&gt;To end this post on a positive note, I&amp;rsquo;d like to mention that I believe that this change will make a lot of sense in the future. Power Automate is a very well established platform and has seen some great improvements and adoption over the last years. This gives us a much better supported and a very promising foundation to build awesome notification and user input processes powered by Power Automate and Adaptive Cards.&lt;/p&gt;

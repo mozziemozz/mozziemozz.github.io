@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="In this post I'll show you how you can retrieve Teams meeting attendance reports as an Admin via Graph API.">
+<title>Get Microsoft Teams Meeting Attendance Report Through Graph API</title>
+
+<link rel='canonical' href='https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Get Microsoft Teams Meeting Attendance Report Through Graph API">
+<meta property='og:description' content="In this post I'll show you how you can retrieve Teams meeting attendance reports as an Admin via Graph API.">
+<meta property='og:url' content='https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/'>
+<meta property='og:site_name' content='HEUSSER.PRO'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-10-05T09:38:20&#43;00:00'/><meta property='article:modified_time' content='2024-10-05T09:38:20&#43;00:00'/>
+<meta name="twitter:title" content="Get Microsoft Teams Meeting Attendance Report Through Graph API">
+<meta name="twitter:description" content="In this post I'll show you how you can retrieve Teams meeting attendance reports as an Admin via Graph API.">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "kozb6q2xjn");
+    </script>    
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu2751114550893713361.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🫡</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
+            <h2 class="site-description">Martin Heusser | M365 Apps &amp; Services MVP</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/mozziemozz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://x.com/@mozzeph'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/support-me/' >
+                
+                
+                
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-cup"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 11h14v-3h-14z" /><path d="M17.5 11l-1.5 10h-8l-1.5 -10" /><path d="M6 8v-1a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v1" /><path d="M15 5v-2" /></svg>
+                
+                <span>Support Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/imprint/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                
+                <span>Imprint</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#tl-dr---i-know-what-im-doing-just-give-me-the-script-alreadyhttpsgithubcommozziemozzteamsphoneautomationblobmainscriptsmicrosoftgraphteamsgetteamsattendancereportasappps1">TL; DR - <a href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/Teams/GetTeamsAttendanceReportAsApp.ps1">I know what I&rsquo;m doing, just give me the script already!</a></a></li>
+    <li><a href="#view-meeting-attendance-report-as-organizer">View Meeting Attendance Report as Organizer</a></li>
+    <li><a href="#get-meeting-attendance-report-through-graph-powershell">Get Meeting Attendance Report Through Graph PowerShell</a>
+      <ol>
+        <li><a href="#create-a-new-entra-id-app-registration">Create a new Entra ID App Registration.</a>
+          <ol>
+            <li><a href="#add-permissions">Add Permissions</a></li>
+            <li><a href="#add-a-client-secret">Add a Client Secret</a></li>
+          </ol>
+        </li>
+        <li><a href="#run-the-script-to-get-an-attendance-report">Run the Script to get an Attendance Report</a>
+          <ol>
+            <li><a href="#teams-application-access-policy">Teams Application Access Policy</a></li>
+            <li><a href="#script-prompts">Script Prompts</a></li>
+            <li><a href="#results">Results</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#summary">Summary</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/microsoft-teams/" >
+                Microsoft Teams
+            </a>
+        
+            <a href="/categories/microsoft-graph/" >
+                Microsoft Graph
+            </a>
+        
+            <a href="/categories/powershell/" style="background-color: #141e2c; color: #fff;">
+                PowerShell
+            </a>
+        
+            <a href="/categories/teams-meetings/" >
+                Teams Meetings
+            </a>
+        
+            <a href="/categories/automation/" >
+                Automation
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/">Get Microsoft Teams Meeting Attendance Report Through Graph API</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            In this post I&#39;ll show you how you can retrieve Teams meeting attendance reports as an Admin via Graph API.
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Oct 05, 2024</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    6 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>Over a year ago I was asked if it&rsquo;s possible to retrieve a Teams meeting attendance report if the organizer of the meeting isn&rsquo;t available to get the report themselves. At the time, I created a quick and dirty script to get what was urgently needed but today I put it all in a nice and ready to use example.</p>
+<p>Of course an organizer being out of office isn&rsquo;t the only scenario why you&rsquo;d need this. Another popular use case I can think of is to create an automation to automatically archive attendance reports for recurrent meetings.</p>
+<p>First, let&rsquo;s look at how an end user would access and view an attendance report.</p>
+<h2 id="tl-dr---i-know-what-im-doing-just-give-me-the-script-alreadyhttpsgithubcommozziemozzteamsphoneautomationblobmainscriptsmicrosoftgraphteamsgetteamsattendancereportasappps1">TL; DR - <a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/Teams/GetTeamsAttendanceReportAsApp.ps1"  target="_blank" rel="noopener"
+    >I know what I&rsquo;m doing, just give me the script already!</a>
+</h2><h2 id="view-meeting-attendance-report-as-organizer">View Meeting Attendance Report as Organizer
+</h2><p>Only meeting organizers have access to meeting attendance reports. To view an attendance report, organizers can simply open the meeting chat. Teams will automatically post the attendance report after a meeting has ended.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image.png"
+	width="1997"
+	height="1139"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image_hu1552455212699239515.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image_hu8773902193427679136.png 1024w"
+	loading="lazy"
+	
+		alt="Organizer View"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="175"
+		data-flex-basis="420px"
+	
+> <img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-1.png"
+	width="1997"
+	height="1139"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-1_hu1583085536681224228.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-1_hu11509484084775432042.png 1024w"
+	loading="lazy"
+	
+		alt="Attendee View"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="175"
+		data-flex-basis="420px"
+	
+></p>
+<p>Note that the attendance report is only shown in chat for the meeting organizers. Attendees can&rsquo;t view see it. That&rsquo;s also why we&rsquo;re looking into how to get it through the Graph API today. Organizers also see a tab called <strong>Attendance</strong>. This is where they can view the report directly in Teams.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-2.png"
+	width="1997"
+	height="1139"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-2_hu8091262977592003972.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-2_hu15730264878872807062.png 1024w"
+	loading="lazy"
+	
+		alt="Attendance Tab"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="175"
+		data-flex-basis="420px"
+	
+></p>
+<p>It&rsquo;s also possible to download a CSV but it&rsquo;s not very well structured which makes it kind of hard to further process the data.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3.png"
+	width="1420"
+	height="556"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3_hu16710570901127823256.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3_hu15978250730855183848.png 1024w"
+	loading="lazy"
+	
+		alt="CSV Export"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="255"
+		data-flex-basis="612px"
+	
+></p>
+<p>Let&rsquo;s switch gears and make some graph requests.</p>
+<h2 id="get-meeting-attendance-report-through-graph-powershell">Get Meeting Attendance Report Through Graph PowerShell
+</h2><p>Since we&rsquo;re accessing data without a signed in user, we need an Entra ID application with appropriate application permissions.</p>
+<h3 id="create-a-new-entra-id-app-registration">Create a new Entra ID App Registration.
+</h3><p>Note: You&rsquo;ll need Global Admin access to grant the consent for your organization.</p>
+<p>Go to the <a class="link" href="https://entra.microsoft.com/"  target="_blank" rel="noopener"
+    >Entra ID Portal</a> and click on <strong>App registrations</strong> under <strong>Applications</strong> in the left navigation menu.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-4.png"
+	width="395"
+	height="849"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-4_hu780708199451891756.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-4_hu11862707405248585532.png 1024w"
+	loading="lazy"
+	
+		alt="App registrations"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="46"
+		data-flex-basis="111px"
+	
+></p>
+<p>Then click <strong>+ New registration</strong>.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-5.png"
+	width="1224"
+	height="190"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-5_hu4846960727775724153.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-5_hu7599571461887634653.png 1024w"
+	loading="lazy"
+	
+		alt="New registration"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="644"
+		data-flex-basis="1546px"
+	
+></p>
+<p>Give your app registration a name and keep <strong>Accounts in this organizational directory only (&ldquo;Org Name&rdquo; only - Single tenant)</strong>. Under <strong>Redirect URI (optional)</strong> select <strong>Public client/native (mobile &amp; desktop)</strong> and enter <code>http://localhost</code> as redirect URI.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-6.png"
+	width="1316"
+	height="1142"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-6_hu12465281065790982111.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-6_hu4453546652840979674.png 1024w"
+	loading="lazy"
+	
+		alt="App registration properties"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="115"
+		data-flex-basis="276px"
+	
+></p>
+<p>Click <strong>Register</strong> to create the app registration.</p>
+<p>Copy the <strong>Application (client) ID</strong> and the <strong>Directory (tenant ID)</strong>. You&rsquo;ll need this later.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-7.png"
+	width="2028"
+	height="1054"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-7_hu10129649792073719027.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-7_hu1235730354562445183.png 1024w"
+	loading="lazy"
+	
+		alt="Copy Ids"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="192"
+		data-flex-basis="461px"
+	
+></p>
+<h4 id="add-permissions">Add Permissions
+</h4><p>Navigate to <strong>API permissions</strong> in the left navigation pane and click <strong>+ Add a permission</strong>.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-8.png"
+	width="2083"
+	height="1042"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-8_hu521781235381147073.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-8_hu14269633879254870612.png 1024w"
+	loading="lazy"
+	
+		alt="API permissions"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="199"
+		data-flex-basis="479px"
+	
+> <img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-9.png"
+	width="2016"
+	height="1151"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-9_hu8902343436525598569.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-9_hu9649089576575954515.png 1024w"
+	loading="lazy"
+	
+		alt="Select Microsoft Graph"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="175"
+		data-flex-basis="420px"
+	
+> <img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-10.png"
+	width="2107"
+	height="1146"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-10_hu11761829843499643703.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-10_hu15731486774672074566.png 1024w"
+	loading="lazy"
+	
+		alt="Select Application permissions"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="183"
+		data-flex-basis="441px"
+	
+></p>
+<p>Search for <code>OnlineMeeting</code> and expand the menus to select <strong>OnlineMeetingArtifact.Read.All</strong> and <strong>OnlineMeetings.Read.All</strong>.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-11.png"
+	width="2079"
+	height="1217"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-11_hu1029123301090444454.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-11_hu2300880679545297295.png 1024w"
+	loading="lazy"
+	
+		alt="Select permissions"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="170"
+		data-flex-basis="409px"
+	
+></p>
+<p>Click <strong>Add permissions</strong> and then click <strong>Grant admin consent for &ldquo;Org Name&rdquo;</strong>.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-12.png"
+	width="2090"
+	height="1090"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-12_hu9770591544558224282.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-12_hu12476901468595379424.png 1024w"
+	loading="lazy"
+	
+		alt="Grant Consent"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="191"
+		data-flex-basis="460px"
+	
+> <img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-13.png"
+	width="1139"
+	height="199"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-13_hu13338972452853469957.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-13_hu7775883993190971278.png 1024w"
+	loading="lazy"
+	
+		alt="Click Yes"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="572"
+		data-flex-basis="1373px"
+	
+></p>
+<h4 id="add-a-client-secret">Add a Client Secret
+</h4><p>Navigate to <strong>Certificates &amp; secrets</strong> in the left navigation pane. Under <strong>Client secrets (0)</strong> click <strong>+ New client secret</strong>.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-14.png"
+	width="1928"
+	height="1032"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-14_hu2293436619516980334.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-14_hu15147962235929871884.png 1024w"
+	loading="lazy"
+	
+		alt="Client secrets"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="186"
+		data-flex-basis="448px"
+	
+></p>
+<p>Give your secret a name and select after how many months it will expire.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-15.png"
+	width="2102"
+	height="1207"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-15_hu7152857960571106176.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-15_hu11978512614301172097.png 1024w"
+	loading="lazy"
+	
+		alt="Add a client secret"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="174"
+		data-flex-basis="417px"
+	
+></p>
+<p>Copy the secret from the portal. It will only be shown once and you&rsquo;ll need it later.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-16.png"
+	width="1928"
+	height="1037"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-16_hu17047297231994617398.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-16_hu15416110635376457349.png 1024w"
+	loading="lazy"
+	
+		alt="Copy secret"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="185"
+		data-flex-basis="446px"
+	
+></p>
+<p>The configuration of the app registration is now complete.</p>
+<h3 id="run-the-script-to-get-an-attendance-report">Run the Script to get an Attendance Report
+</h3><p>The script can be found in my <a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/Teams/GetTeamsAttendanceReportAsApp.ps1"  target="_blank" rel="noopener"
+    >Teams Phone Automation Repo</a> on GitHub. If you want to make use of the secret encryption feature, you&rsquo;ll need to clone the entire repo because of the dependencies of other files in the repo.</p>
+<p>To be able to retrieve an attendance report from Microsoft Graph, we need a meeting id. Unfortunately, this is not your typical GUID you could easily find in TAC. But we can, however find it easy enough by passing a <strong>Join meeting ID</strong>.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-25.png"
+	width="1734"
+	height="957"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-25_hu2986311443911423294.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-25_hu10765265585117709368.png 1024w"
+	loading="lazy"
+	
+		alt="Meeting Id example"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<p>Luckily, anyone that was invited to the meeting in question can view the Meeting ID and send it to you. Alternatively, the meeting invite could also be forwarded to you. The meeting Id is located below the join link.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-17.png"
+	width="1997"
+	height="1139"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-17_hu7194430074090526351.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-17_hu462441630379005235.png 1024w"
+	loading="lazy"
+	
+		alt="Meeting ID in meeting invite body"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="175"
+		data-flex-basis="420px"
+	
+></p>
+<p>Once you have this ID, you&rsquo;re ready to get the attendance report through PowerShell.</p>
+<h4 id="teams-application-access-policy">Teams Application Access Policy
+</h4><p>The Graph permissions alone are not enough to access the attendance report. We also need to create a new Teams Application Access Policy which includes the app id of the newly created Entra ID app and grant it to the meeting organizer. This is how you can do it in PowerShell.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># Create a new Teams Application Access Policy</span>
+</span></span><span class="line"><span class="cl"><span class="nb">New-CsApplicationAccessPolicy</span> <span class="n">-Identity</span> <span class="nv">$applicationAccessPolicyName</span> <span class="n">-AppIds</span> <span class="nv">$AppId</span> <span class="n">-Description</span> <span class="s2">&#34;Access Meeting Data as Entra ID app on behalf of user&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><a class="link" href="https://learn.microsoft.com/en-us/powershell/module/teams/new-csapplicationaccesspolicy?view=teams-ps"  target="_blank" rel="noopener"
+    >New-CsApplicationAccessPolicy</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># Assign a Teams Application Access Policy to a user</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Grant-CsApplicationAccessPolicy</span> <span class="n">-Identity</span> <span class="nv">$UserId</span> <span class="n">-PolicyName</span> <span class="nv">$applicationAccessPolicyName</span> 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><a class="link" href="https://learn.microsoft.com/en-us/powershell/module/teams/grant-csapplicationaccesspolicy?view=teams-ps"  target="_blank" rel="noopener"
+    >Grant-CsApplicationAccessPolicy</a></p>
+<p>But the script does all of this automatically for you.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-19.png"
+	width="1734"
+	height="957"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-19_hu10719152679535455178.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-19_hu10282738222892772325.png 1024w"
+	loading="lazy"
+	
+		alt="Script output"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+> <img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-20.png"
+	width="1734"
+	height="957"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-20_hu6521691855553458921.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-20_hu18425668790374788519.png 1024w"
+	loading="lazy"
+	
+		alt="PowerShell output"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<h5 id="unassign-teams-application-access-policy">Unassign Teams Application Access Policy
+</h5><p>If you only want to get an attendance report once and need to remove the application access to another user&rsquo;s meeting details, you can unassign the policy again by using this code.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Grant-CsApplicationAccessPolicy</span> <span class="n">-Identity</span> <span class="nv">$UserId</span> <span class="n">-PolicyName</span> <span class="s2">&#34;&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="script-prompts">Script Prompts
+</h4><p>When the script runs for the first time it will ask you for your app secret. Paste it into the terminal. This will save your secret in an encrypted format. Only the signed in user (in Windows) can decrypt it and it can only be decrypted on the same machine on which it was encrypted. You&rsquo;ll also be asked to sign into Teams PowerShell as well.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-18.png"
+	width="1734"
+	height="957"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-18_hu4595984946679195562.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-18_hu5454475057403891671.png 1024w"
+	loading="lazy"
+	
+		alt="Paste secret"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+> <img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-21.png"
+	width="1734"
+	height="957"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-21_hu13533273712239525489.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-21_hu16211369304511111756.png 1024w"
+	loading="lazy"
+	
+		alt="Sign into Teams"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<h4 id="results">Results
+</h4><p>Once the Application Access Policy already exists and was already granted to the organizer, the console output looks much less cluttered. The report will be saved to the current directory and it&rsquo;s filename will include the subject of the meeting.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-22.png"
+	width="1734"
+	height="957"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-22_hu14123386588595758467.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-22_hu14242258358872799878.png 1024w"
+	loading="lazy"
+	
+		alt="Script output"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<p>If there are multiple attendance reports for a meeting, like when a meeting already ended and someone joined again after that or when it&rsquo;s a recurring meeting, all reports will be combined into a single CSV. The CSV does include the report id in the last column.</p>
+<p>Let&rsquo;s compare the CSV that was downloaded from the Teams client versus the one from my script.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3.png"
+	width="1420"
+	height="556"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3_hu16710570901127823256.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3_hu15978250730855183848.png 1024w"
+	loading="lazy"
+	
+		alt="CSV Export from Teams"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="255"
+		data-flex-basis="612px"
+	
+> <img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-23.png"
+	width="1424"
+	height="150"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-23_hu14338726933806513635.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-23_hu1892343337874356130.png 1024w"
+	loading="lazy"
+	
+		alt="CSV Export from Script"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="949"
+		data-flex-basis="2278px"
+	
+></p>
+<p>As you can see, the output from my script gives you a nicely structured CSV which lists 1 participant per row so you can easily import it into other systems without manually changing the structure of the file. Because of that, I decided to create separate files for meeting/attendance summaries.</p>
+<p><img src="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-24.png"
+	width="1513"
+	height="60"
+	srcset="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-24_hu4679063954046974286.png 480w, /p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-24_hu15266802166026083483.png 1024w"
+	loading="lazy"
+	
+		alt="Meeting Summary from Script"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="2521"
+		data-flex-basis="6052px"
+	
+></p>
+<h2 id="summary">Summary
+</h2><p>I personally believe that it&rsquo;s very easy for organizers to access the reports themselves in Teams but having the possibility to get them as an admin via PowerShell as well is certainly a welcome addition to my script toolbox. This will be especially useful in case you&rsquo;re asked to export attendance reports on a regular basis. While the fact that you need to know the unique meeting id before you can get an attendance report makes it a bit harder to truly automate this or you may have to chase other attendees for it, if you weren&rsquo;t invited to the meeting yourself but overall, the join meeting Id should be easy enough to retrieve.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/opt-in-or-opt-out-teams-call-queue-agents-remotely-59fe6147f50d/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Opt In or Opt Out Teams Call Queue Agents Remotely</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Microsoft Graph: Get an Access Token from a PowerShell Session</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/powershell-script-example-upload-small-files-via-microsoft-graph-z45tbunyoa85/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">PowerShell Script Example: Upload Small Files to SharePoint via Microsoft Graph</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Manage Microsoft Teams Call Queues with PowerShell (Force-Sync)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/change-business-hours-of-a-teams-auto-attendant-with-powershell-ed03a15881d2/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Change Business Hours of a Teams Auto Attendant with PowerShell</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "heusser-pro" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2024 HEUSSER.PRO
+    </section>
+    
+    <section class="powerby">
+        
+            Hosted on GitHub Pages <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.27.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
+
