@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="In this blog post I'm going to explain how you can add this missing feature to your tenant for free. (Aside from the costs for the Azure resources.)">
+<title>Get Missed Call Notifications for Teams Call Queues (Free Community Solution)</title>
+
+<link rel='canonical' href='https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Get Missed Call Notifications for Teams Call Queues (Free Community Solution)">
+<meta property='og:description' content="In this blog post I'm going to explain how you can add this missing feature to your tenant for free. (Aside from the costs for the Azure resources.)">
+<meta property='og:url' content='https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/'>
+<meta property='og:site_name' content='HEUSSER.PRO'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-10-21T18:31:43&#43;00:00'/><meta property='article:modified_time' content='2024-10-21T18:31:43&#43;00:00'/><meta property='og:image' content='https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/cover.png' />
+<meta name="twitter:title" content="Get Missed Call Notifications for Teams Call Queues (Free Community Solution)">
+<meta name="twitter:description" content="In this blog post I'm going to explain how you can add this missing feature to your tenant for free. (Aside from the costs for the Azure resources.)"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/cover.png' />
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "kozb6q2xjn");
+    </script>    
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu2751114550893713361.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🫡</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
+            <h2 class="site-description">Martin Heusser | M365 MVP</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/mozziemozz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://x.com/@mozzeph'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/support-me/' >
+                
+                
+                
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-cup"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 11h14v-3h-14z" /><path d="M17.5 11l-1.5 10h-8l-1.5 -10" /><path d="M6 8v-1a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v1" /><path d="M15 5v-2" /></svg>
+                
+                <span>Support Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/imprint/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                
+                <span>Imprint</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#intro">Intro</a></li>
+    <li><a href="#where-can-i-see-missed-calls-on-call-queues">Where Can I See Missed Calls on Call Queues?</a>
+      <ol>
+        <li><a href="#limitations-disclaimer">Limitations Disclaimer</a></li>
+        <li><a href="#tl-dr">TL; DR</a></li>
+        <li><a href="#missed-call-queue-calls-on-ios">Missed Call Queue Calls on iOS</a></li>
+      </ol>
+    </li>
+    <li><a href="#will-microsoft-ever-add-this-feature">Will Microsoft Ever Add This Feature?</a>
+      <ol>
+        <li><a href="#the-queues-app">The Queues App</a></li>
+      </ol>
+    </li>
+    <li><a href="#what-about-teams-on-windows">What About Teams on Windows?</a></li>
+    <li><a href="#where-does-teams-fetch-the-call-history-from">Where Does Teams Fetch the Call History From?</a></li>
+    <li><a href="#fetching-a-users-call-history-through-graph-api">Fetching a Users Call History Through Graph API</a></li>
+    <li><a href="#limitations-of-this-solution">Limitations of This Solution</a></li>
+    <li><a href="#securing-the-credentials-to-access-the-graph-api">Securing The Credentials to Access The Graph API</a></li>
+    <li><a href="#high-level-solution-architecture">High-Level Solution Architecture</a></li>
+    <li><a href="#how-to-build-this-solution">How To Build This Solution</a>
+      <ol>
+        <li><a href="#service-account">Service Account</a></li>
+        <li><a href="#example-scenario">Example Scenario</a></li>
+        <li><a href="#teams">Teams</a></li>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#clone-repository">Clone Repository</a></li>
+        <li><a href="#customize-for-your-environment">Customize For Your Environment</a></li>
+        <li><a href="#run-setupps1">Run Setup.ps1</a></li>
+        <li><a href="#enable-solution">Enable Solution</a></li>
+        <li><a href="#video-tutorial">Video Tutorial</a></li>
+      </ol>
+    </li>
+    <li><a href="#what-do-the-functions-and-the-flow-do">What do the Functions and the Flow do?</a></li>
+    <li><a href="#end-user-experience">End User Experience</a></li>
+    <li><a href="#summary">Summary</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/">
+                <img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/cover_hu11849742234178214071.png"
+                        srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/cover_hu11849742234178214071.png 800w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/cover_hu6233941240469803687.png 1600w"
+                        width="800" 
+                        height="248" 
+                        loading="lazy"
+                        alt="Featured image of post Get Missed Call Notifications for Teams Call Queues (Free Community Solution)" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/microsoft-teams/" >
+                Microsoft Teams
+            </a>
+        
+            <a href="/categories/teams-phone/" >
+                Teams Phone
+            </a>
+        
+            <a href="/categories/azure-functions/" >
+                Azure Functions
+            </a>
+        
+            <a href="/categories/power-automate/" >
+                Power Automate
+            </a>
+        
+            <a href="/categories/microsoft-graph/" >
+                Microsoft Graph
+            </a>
+        
+            <a href="/categories/automation/" >
+                Automation
+            </a>
+        
+            <a href="/categories/powershell/" style="background-color: #141e2c; color: #fff;">
+                PowerShell
+            </a>
+        
+            <a href="/categories/call-queues/" >
+                Call Queues
+            </a>
+        
+            <a href="/categories/adaptive-cards/" >
+                Adaptive Cards
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/">Get Missed Call Notifications for Teams Call Queues (Free Community Solution)</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            In this blog post I&#39;m going to explain how you can add this missing feature to your tenant for free. (Aside from the costs for the Azure resources.)
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Oct 21, 2024</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    22 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="intro">Intro
+</h2><p>If you&rsquo;re reading this, it will likely mean that you&rsquo;ve noticed that Teams doesn&rsquo;t show missed calls on call queues and that you&rsquo;re desperately looking for a solution which doesn&rsquo;t cost a fortune or requires that you give a 3rd party access to your Teams call records. If that&rsquo;s the case, stay with me because I&rsquo;m going to show you how you can build your own notification mechanism inside your Microsoft 365 tenant.</p>
+<p>But first I&rsquo;d like to point out a couple of things about the history of this issue.</p>
+<h2 id="where-can-i-see-missed-calls-on-call-queues">Where Can I See Missed Calls on Call Queues?
+</h2><p>The only place where you can actually see if a call was missed on a call queue is in the iOS call history of an iPhone where a call queue agent is signed in on the Teams app on iOS. An iPhone will only show missed calls if the call was offered to the signed in agent. So, this only works with attendant routing (all agents are offered the call at the same time) and presence based routing <strong>off</strong>.</p>
+<h3 id="limitations-disclaimer">Limitations Disclaimer
+</h3><p><strong>Read this very carefully</strong>:</p>
+<p>This solution is based on the assumption that there&rsquo;s <strong>always</strong> an agent (M365 User) opted into a call queue which <strong>doesn&rsquo;t use presence based routing</strong> and uses <strong>attendant</strong> routing. <strong>Any other routing method won&rsquo;t work</strong> since we can&rsquo;t be sure that the <em>monitoring</em> user got offered the call as well.</p>
+<p>This solution is primarily intended for small businesses that have simple, non-presence based attendant routing queues and don&rsquo;t want to purchase a 3rd party solution to get missed call notifications on call queues. If this isn&rsquo;t feasible for your scenario, you&rsquo;re welcome to continue reading (my discoveries might still be very interesting to you nonetheless) but I&rsquo;m sorry to tell you that this solution won&rsquo;t work for you.</p>
+<h3 id="tl-dr">TL; DR
+</h3><p>If you don&rsquo;t care about all the details and just want to deploy this straight away, feel free to jump directly to <a class="link" href="#clone-repository" >Clone Repo</a> and <a class="link" href="#video-tutorial" >Video Tutorial</a>.</p>
+<h3 id="missed-call-queue-calls-on-ios">Missed Call Queue Calls on iOS
+</h3><p>I actually mentioned using iOS as the closest workaround to seeing missed calls on call queues in one of the many <a class="link" href="https://techcommunity.microsoft.com/t5/microsoft-teams/missed-calls-are-not-shown-on-history-that-came-through-call/m-p/1484151/highlight/true#M63193"  target="_blank" rel="noopener"
+    >Tech Community threads</a> back in 2020. This gives us a good idea of just how long this issue has been persisting. Sadly, a moderator of this thread just confirmed this as the best response and marked the questions as solved. (LOL?)</p>
+<p>I always like to say that not being able to see missed calls on call queues is the Achilles&rsquo; heel of Teams Phone and I just don&rsquo;t understand why Microsoft hasn&rsquo;t provided a solution yet. It&rsquo;s such a basic feature after all.</p>
+<p>Anyway, let&rsquo;s look at some examples on how missed calls on call queues are shown on an iPhone. This won&rsquo;t work on an iPad or an iPod (if that&rsquo;s still a thing?) since these devices don&rsquo;t have a <em>phone</em> app. It only works on an iPhone and <strong>Show Teams calls in call log</strong> must be enabled in the Teams app&rsquo;s settings.</p>
+<p>Unlike normal missed calls, missed calls from call queues won&rsquo;t display a badge counter on the iPhone&rsquo;s phone app and they aren&rsquo;t shown in the notification center or the lock screen either. The badge counter is only shown <em>within</em> the phone app on the call history icon. This is the first reason why this solution is basically useless. You&rsquo;ll see why I mention it anyway later on.</p>
+<p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184922000_iOS.png"
+	width="1125"
+	height="335"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184922000_iOS_hu3936109838447749479.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184922000_iOS_hu4528669562238723060.png 1024w"
+	loading="lazy"
+	
+		alt="No Badge Counter on Phone App"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="335"
+		data-flex-basis="805px"
+	
+></p>
+<p>That means that someone who&rsquo;s an agent in the queue that should be monitored would constantly need to go into the phone app and check if there were any missed calls. There&rsquo;s also no efficient way of extracting call logs from iOS and send them somewhere. Believe me, I have tried everything from getting the data through Siri Shortcuts to getting it from an iCloud or a local backup.</p>
+<p>Once you go into the call history, it&rsquo;s at least possible to filter for missed calls or search for <code>Teams</code> or even the call queue name, despite that being truncated and not visible at all.</p>
+<p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184914000_iOS.png"
+	width="1125"
+	height="2436"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184914000_iOS_hu7911133146697936565.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184914000_iOS_hu5387452047220649022.png 1024w"
+	loading="lazy"
+	
+		alt="Missed Call Queue Call"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="46"
+		data-flex-basis="110px"
+	
+> <img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185013000_iOS.png"
+	width="1125"
+	height="2436"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185013000_iOS_hu13323565535541130799.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185013000_iOS_hu6328059162366975320.png 1024w"
+	loading="lazy"
+	
+		alt="Missed Call Queue Call Details"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="46"
+		data-flex-basis="110px"
+	
+></p>
+<p>I do no need to apologize for the German screenshots. This is my main device and I didn&rsquo;t want to change the language. In case it&rsquo;s not clear: <em>Verpasster Anruf</em> means <em>Missed Call</em>.</p>
+<p>Let&rsquo;s look at the next example. In this case the call was answered by another agent or by the same agent on another device. In that case, the call history item won&rsquo;t be <em>red</em> and the details of the entry say <em>Answered on another device</em> <em>(Auf anderem Gerät angenommen)</em>.</p>
+<p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185055000_iOS.png"
+	width="1125"
+	height="2436"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185055000_iOS_hu2119501650622820240.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185055000_iOS_hu16693605357456167788.png 1024w"
+	loading="lazy"
+	
+		alt="Answered Call Queue Call"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="46"
+		data-flex-basis="110px"
+	
+> <img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185100000_iOS.png"
+	width="1125"
+	height="2436"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185100000_iOS_hu1350302172964426250.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185100000_iOS_hu1257743425889126939.png 1024w"
+	loading="lazy"
+	
+		alt="Answered Call Queue Call Details (Answered on Another Device)"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="46"
+		data-flex-basis="110px"
+	
+></p>
+<p>For a very small company this <em>might</em> be acceptable, at best. But this becomes problematic as soon as you have at least one nested (overflow) queue. In that case, the call on the first queue will be shown as missed, even when it was answered in the overflow queue. This is the second reason why this isn&rsquo;t a practical solution.</p>
+<p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185217000_iOS.png"
+	width="1125"
+	height="2436"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185217000_iOS_hu9082802642001809077.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185217000_iOS_hu2389946594797770318.png 1024w"
+	loading="lazy"
+	
+		alt="1st Call: Answered in Overflow | 2nd Call: Missed in Top-Level Queue (Top to bottom)"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="46"
+		data-flex-basis="110px"
+	
+> <img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185221000_iOS.png"
+	width="1125"
+	height="2436"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185221000_iOS_hu10272365200242678344.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185221000_iOS_hu5407667514355529783.png 1024w"
+	loading="lazy"
+	
+		alt="2nd Call in History (Top to Bottom)"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="46"
+		data-flex-basis="110px"
+	
+> <img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185226000_iOS.png"
+	width="1125"
+	height="2436"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185226000_iOS_hu15789092261060193159.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185226000_iOS_hu17379064014447751259.png 1024w"
+	loading="lazy"
+	
+		alt="1st Call in History (Top to Bottom)"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="46"
+		data-flex-basis="110px"
+	
+></p>
+<p>A real solution needs to be able to recognize if a call was answered in an overflow queue and not report calls as missed, if nobody was able to answer in a top-level queue.</p>
+<h2 id="will-microsoft-ever-add-this-feature">Will Microsoft Ever Add This Feature?
+</h2><p>I&rsquo;ve got good news and bad news for you. The good part is: Yes. The bad part is, believe it or not, that this will be part of Teams Premium. This has been confirmed to me by <em>Ilya Bukshteyn - VP, Microsoft Teams Calling and Devices</em> on LinkedIn.</p>
+<p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/LinkedInComment.jpg"
+	width="946"
+	height="458"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/LinkedInComment_hu12049634540349275782.jpg 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/LinkedInComment_hu10653473519316024250.jpg 1024w"
+	loading="lazy"
+	
+		alt="LinkedIn Comment"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="206"
+		data-flex-basis="495px"
+	
+></p>
+<p>I&rsquo;ve said before that I totally understand that Microsoft is charging for Teams Premium features like Intelligent Recap since that requires actual processing power and costs Microsoft Money to operate. But I&rsquo;m keeping my stance here, something basic as missed call notification should not cost money, regardless of how this is going to be implemented. I really hope that Microsoft realizes this and will re-think that decision, especially since I&rsquo;ve just proven that iOS already logs missed calls.</p>
+<h3 id="the-queues-app">The Queues App
+</h3><p><a class="link" href="https://support.microsoft.com/en-us/office/use-the-queues-app-for-microsoft-teams-370ad83e-c2c1-4a9f-8a59-16c98be102e9"  target="_blank" rel="noopener"
+    >This</a> is the official support article for the new Queues app in Teams. There&rsquo;s a section about <strong>View call history</strong> which as of the time of writing this article states the following:</p>
+<blockquote>
+    <p><p>To view past calls, including calls or voicemails you may have missed, select Calls under Manage queue.</p>
+<p>You can select any call in your history to see more detailed information and call that number back using the number associated with your call queue.</p>
+<p>Currently, call history includes the past calls that you have picked up or calls that you have missed that have a voicemail.</p>
+</p><span class="cite"><span>― </span><span>Microsoft Support</span><cite></cite></span></blockquote>
+<p>In other words, there is no shared call history yet, not even for Teams Premium customers.</p>
+<h2 id="what-about-teams-on-windows">What About Teams on Windows?
+</h2><p>Even without the Queues app, it&rsquo;s exactly as the support article says. Agents only see the calls they answered. They don&rsquo;t see any missed calls or calls answered by other agents, not even if they&rsquo;re a delegate of the user who answered a call queue call. The call from <code>21:43</code> is not visible on the right because it was answered by the user on the left.</p>
+<p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image.png"
+	width="2322"
+	height="1548"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image_hu13672943771796416826.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image_hu17308296513252721316.png 1024w"
+	loading="lazy"
+	
+		alt="Call History for Answered Call Queue Calls for a Specific Agent"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="150"
+		data-flex-basis="360px"
+	
+> <img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-1.png"
+	width="2322"
+	height="1548"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-1_hu14479257733501308996.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-1_hu12947687684252391244.png 1024w"
+	loading="lazy"
+	
+		alt="Call Queue Call History for Another Agent"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="150"
+		data-flex-basis="360px"
+	
+></p>
+<p>The fact that the call history does show answered calls <strong>and</strong> that the iOS call history includes missed calls and calls that were answered by another agent/on another device got me thinking. This data <em>must</em> be available somewhere&hellip;</p>
+<h2 id="where-does-teams-fetch-the-call-history-from">Where Does Teams Fetch the Call History From?
+</h2><p>I opened up Teams in the browser and used the Edge Dev Tools to see what&rsquo;s going on under the hood when I open a user&rsquo;s call history in Teams. I was hoping that this would be a standard Graph request but of course this had to be an internal, unofficial, undocumented API. Sigh.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-rest" data-lang="rest"><span class="line"><span class="cl">GET<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>https://teams.microsoft.com/api/csa/emea/api/v1/chats/48%3Acalllogs/messages?messagePageSize=200<span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-2.png"
+	width="1041"
+	height="758"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-2_hu5853036115275124898.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-2_hu14992833615567621255.png 1024w"
+	loading="lazy"
+	
+		alt="JSON Response"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="137"
+		data-flex-basis="329px"
+	
+></p>
+<p>Using unofficial APIs isn&rsquo;t really suited for production but I&rsquo;m going to show it to you anyway. The browser tools have this neat little feature that lets you copy a request for various CLIs. Of course I&rsquo;m choosing PowerShell.</p>
+<p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-3.png"
+	width="1048"
+	height="1073"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-3_hu3871041827454489038.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-3_hu6919312840070147398.png 1024w"
+	loading="lazy"
+	
+		alt="Copy Request as PowerShell"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="97"
+		data-flex-basis="234px"
+	
+></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$session</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">Microsoft</span><span class="p">.</span><span class="py">PowerShell</span><span class="p">.</span><span class="py">Commands</span><span class="p">.</span><span class="py">WebRequestSession</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$session</span><span class="p">.</span><span class="py">UserAgent</span> <span class="p">=</span> <span class="s2">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 Edg/130.0.0.0&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Invoke-WebRequest</span> <span class="n">-UseBasicParsing</span> <span class="n">-Uri</span> <span class="s2">&#34;https://teams.microsoft.com/api/csa/emea/api/v1/chats/48%3Acalllogs/messages?messagePageSize=200&#34;</span> <span class="p">`</span>
+</span></span><span class="line"><span class="cl"><span class="n">-WebSession</span> <span class="nv">$session</span> <span class="p">`</span>
+</span></span><span class="line"><span class="cl"><span class="n">-Headers</span> <span class="vm">@</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;x-ms-user-type&#34;</span><span class="p">=</span><span class="s2">&#34;real-user&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;authorization&#34;</span><span class="p">=</span><span class="s2">&#34;Bearer (Token Removed)&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;cache-control&#34;</span><span class="p">=</span><span class="s2">&#34;no-store, no-cache&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;x-ms-client-type&#34;</span><span class="p">=</span><span class="s2">&#34;cdlworker&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;x-ms-session-id&#34;</span><span class="p">=</span><span class="s2">&#34;22f0ef6c-d8b7-46a8-aea2-58451d1fd722&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;Referer&#34;</span><span class="p">=</span><span class="s2">&#34;https://teams.microsoft.com/v2/worker/precompiled-web-worker-b686ae686e2a6f80.js&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;x-ms-migration&#34;</span><span class="p">=</span><span class="s2">&#34;True&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;x-ms-client-version&#34;</span><span class="p">=</span><span class="s2">&#34;1415/24090101423&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;x-ms-request-id&#34;</span><span class="p">=</span><span class="s2">&#34;072d879b-e316-4fd6-8c54-b02d82e8f9f6&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;x-ms-client-caller&#34;</span><span class="p">=</span><span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;x-ms-partition&#34;</span><span class="p">=</span><span class="s2">&#34;emea01&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;x-ms-region&#34;</span><span class="p">=</span><span class="s2">&#34;emea&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;x-ringoverride&#34;</span><span class="p">=</span><span class="s2">&#34;general&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>All I need to do is store the outputs of line 3 in a variable to access the raw data after the request has been made in PowerShell:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$callLogs</span> <span class="p">=</span> <span class="nb">Invoke-WebRequest</span> <span class="n">-UseBasicParsing</span> <span class="n">-Uri</span> <span class="s2">&#34;https://teams.microsoft.com/api/csa/emea/api/v1/chats/48%3Acalllogs/messages?messagePageSize=200&#34;</span> <span class="p">`</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Then I needed to convert the JSON response into a PowerShell object:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$callLogs</span> <span class="p">=</span> <span class="p">(</span><span class="nv">$callLogs</span><span class="p">.</span><span class="py">Content</span> <span class="p">|</span> <span class="nb">ConvertFrom-Json</span><span class="p">).</span><span class="py">messages</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>This of course, includes all call logs. To filter for call queues only, I wrote this code:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$callLogProperties</span> <span class="p">=</span> <span class="p">(</span><span class="nv">$callLogs</span><span class="p">.</span><span class="py">properties</span><span class="p">.</span><span class="s1">&#39;call-log&#39;</span> <span class="p">|</span> <span class="nb">ConvertFrom-Json</span><span class="p">)</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="py">callType</span> <span class="o">-eq</span> <span class="s2">&#34;multiParty&#34;</span> <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>By inspecting the call log items, I discovered that it even lists the id of the call queue on which the call was received. Yes, the id of the call queue, not the one of the resource account associated with the call queue.</p>
+<p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-4.png"
+	width="1734"
+	height="957"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-4_hu12871650644665689346.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-4_hu16907089813732580330.png 1024w"
+	loading="lazy"
+	
+		alt="Example of a Single Call Queue Call Log Entry"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<p>To get a table of all call queue calls for this user, I came up with this code:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># Note: This is only displaying the first 6 items</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$callLogProperties</span><span class="p">[</span><span class="mf">0</span><span class="p">.</span><span class="mf">.5</span><span class="p">]</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">startTime</span><span class="p">,</span> <span class="n">callDirection</span><span class="p">,</span> <span class="n">callState</span><span class="p">,</span> <span class="n">callId</span><span class="p">,</span> <span class="vm">@</span><span class="p">{</span><span class="n">Name</span> <span class="p">=</span> <span class="s2">&#34;callerNumber&#34;</span><span class="p">;</span> <span class="n">Expression</span> <span class="p">=</span> <span class="p">{</span><span class="nv">$_</span><span class="p">.</span><span class="n">participants</span><span class="p">[</span><span class="mf">0</span><span class="p">].</span><span class="py">replace</span><span class="p">(</span><span class="s2">&#34;4:&#34;</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">)}}</span> <span class="p">|</span> <span class="nb">Format-Table</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-5.png"
+	width="1734"
+	height="957"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-5_hu17246017893898536124.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-5_hu620952256029961148.png 1024w"
+	loading="lazy"
+	
+		alt="Filtered PowerShell Output of Call Queue Call History for a Specific User"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<p>Sadly, this endpoint does not return missed calls. It does however, include calls that were answered by this user, by another user or declined by this user.</p>
+<p>So, the call history in iOS remains the only place where missed call queue calls are actually visible in a UI. However, if you search the Teams logs in the cache directory (<code>%APPDATA%\Local\Packages\MSTeams_8wekyb3d8bbwe\LocalCache\Microsoft\MSTeams</code>) long enough, you&rsquo;ll find some client logs of missed call queue calls eventually but this is purely educational.</p>
+<p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-6.png"
+	width="1614"
+	height="33"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-6_hu3129591316885723803.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-6_hu12143840759698855516.png 1024w"
+	loading="lazy"
+	
+		alt="Missed Call Reference in Teams Client Logs"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="4890"
+		data-flex-basis="11738px"
+	
+></p>
+<p>What&rsquo;s interesting here is that it says <code>callingEnableMissedCallNotification=false</code>. <em>Dear Teams, why won&rsquo;t you tell us about missed call queue calls!?</em> (This is a rhetorical question.)</p>
+<p>Let&rsquo;s get back to PowerShell. When you copy that request from the browser dev tools, it copies a JWT (JSON Web Token) with it. Obviously this token won&rsquo;t live forever and will need to be renewed at some point. The token expires after roughly 24 hours which seems quite long to me. But still, nobody wants to manually refresh the token every day.</p>
+<p>Just to prove the concept, I hacked together a small PowerShell script which uses bits of the <a class="link" href="https://aadinternals.com/aadinternals/"  target="_blank" rel="noopener"
+    >AADInternals</a> PowerShell module to get a token for the <code>https://chatsvcagg.teams.microsoft.com</code> audience. I was able to get a token using a call queue agent&rsquo;s username and password but I couldn&rsquo;t get it to work when MFA is enforced. Since we won&rsquo;t need this for this solution anyway, I&rsquo;m not going to publish this script here.</p>
+<p>At this point I realized that I need to work with what I had. If I can get a list of all calls that were answered <em>somewhere</em> by <em>someone</em> I can still use that to determine if a call queue call was missed. All I need to do is get a hold of the call id and check if it&rsquo;s in the call log of a user that&rsquo;s an agent of the queue I want to monitor for missed calls.</p>
+<p>But then there was the problem that all this data was retrieved through an internal API. When you look at the JSON response again, you&rsquo;ll notice that there&rsquo;s a property called <strong>containerId</strong> and it&rsquo;s value is <code>48:calllogs</code>. That sounds interesting, doesn&rsquo;t it?</p>
+<h2 id="fetching-a-users-call-history-through-graph-api">Fetching a Users Call History Through Graph API
+</h2><p>My next step was to see if I can get this information <em>officially</em> from Graph by signing into Graph PowerShell with the credentials of a call queue agent.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$user</span> <span class="p">=</span> <span class="nb">Get-MgUser</span> <span class="n">-UserId</span> <span class="s2">&#34;evelyn@nocaptech.ch&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$userCallHistory</span> <span class="p">=</span> <span class="nb">Get-MgUserChatMessage</span> <span class="n">-UserId</span> <span class="nv">$user</span><span class="p">.</span><span class="py">Id</span> <span class="n">-ChatId</span> <span class="s2">&#34;48:calllogs&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Bingo. It works.</p>
+<p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-7.png"
+	width="1734"
+	height="957"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-7_hu9530422137382753659.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-7_hu9705475114274137444.png 1024w"
+	loading="lazy"
+	
+		alt="Get Teams User Call History via Graph PowerShell"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<p>But the Graph API returns much less data than the <em>Chat Service Aggregator</em>. For example, I can&rsquo;t see if the call was accepted, accepted elsewhere or declined by the user.</p>
+<p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-8.png"
+	width="1734"
+	height="957"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-8_hu17424764256241255055.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-8_hu9232055101926601248.png 1024w"
+	loading="lazy"
+	
+		alt="Example of Single Call Record"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<p>But when I access the <code>body</code> property of an object inside the array, I can see the call id.</p>
+<p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-9.png"
+	width="1734"
+	height="957"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-9_hu2213861242925042041.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-9_hu13604203926659761804.png 1024w"
+	loading="lazy"
+	
+		alt="Body\Content Contains Call Id"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<p>So, now I&rsquo;m able to retrieve a list of all calls that were either answered or declined by this user, or that this user was offered by the call queue but was answered by another agent. This brings us to a very important part about the limitations of this solution.</p>
+<h2 id="limitations-of-this-solution">Limitations of This Solution
+</h2><p>You will either need to define a <em>real</em> agent user which will always be opted-in to the queue and you must ensure that this agent will never decline a call. (If an agent declines a call, the call id will show up in their call log but when the call log is retrieved via Graph, the results don&rsquo;t include the callState like <code>accepted</code> or <code>declined</code>.) Because you can&rsquo;t really control that, I highly recommend to set up a service account and add it to the queue as an agent instead, even if that adds a small monthly license cost to it.</p>
+<p>Your queue must not use presence based routing and the service account must always be signed in on a Teams device/app. I recommend signing the user in on a spare iPhone if you have one. If you don&rsquo;t have one, you can also use Teams desktop, a Teams desk phone or an iPad or whatever you can spare. It just needs to be a device which is running and connected to the internet 24/7 and where the service account is signed into the Teams app persistently.</p>
+<p>I made lots of test calls while my service account was signed in on the Teams app on my iPad and this worked flawlessly. The important thing is that the service user always gets offered the calls but never declines them. Since it&rsquo;s not a problem if the service account answers calls, this could also be a non-personal account for a CAP (Common Area Phone) you might already have in place. If you decide to use dedicated service account for monitoring your call queues, you can also add the same service account to multiple queues, even if the different queues don&rsquo;t share the same agents. Just keep in mind that there&rsquo;s a limit of how many chat messages of the call logs chat Power Automate can fetch through the Graph API. This limit is <strong>50</strong>. So, if you expect more than 50 calls in a window of 30 minutes, you&rsquo;ll likely need a dedicated service account per queue. Again, this solution is intended for small companies which just want to see when they missed a call on their main number.</p>
+<p>The service account must be licensed with a license that includes Teams, Teams Phone Standard and SharePoint/OneDrive.</p>
+<p>I&rsquo;ve only tested this with call queues which have Conference Mode <strong>enabled</strong>.</p>
+<h2 id="securing-the-credentials-to-access-the-graph-api">Securing The Credentials to Access The Graph API
+</h2><p>What I did before, to interactively sign into Graph PowerShell using the user&rsquo;s credentials isn&rsquo;t an ideal solution. Even if I was using a service account already. I always try to use MFA, even for service accounts. Let&rsquo;s see if I can get the same result using app only authentication.</p>
+<p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-10.png"
+	width="1734"
+	height="957"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-10_hu9538763137943079228.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-10_hu651095785959676177.png 1024w"
+	loading="lazy"
+	
+		alt="App Only Authentication Doesn&rsquo;t Work"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="434px"
+	
+></p>
+<p>Unfortunately, it&rsquo;s not possible to query the <code>48:calllogs</code> chat id using application permissions, even when the app has the appropriate permission <code>Chat.Read.All</code>. That meant that I had to find another way to securely get the messages in the Call Log Chat. At some point I&rsquo;ll be building a Power Automate Flow to send the Adaptive Cards for the missed call notifications anyway. So why not try to get the chat messages through a Graph Request from Power Automate as well? That would certainly solve the authentication/token issue.</p>
+<h2 id="high-level-solution-architecture">High-Level Solution Architecture
+</h2><p>Alright, it&rsquo;s time to start architecting this whole thing. It might look a little overkill at first but that&rsquo;s because I&rsquo;m a perfectionist.</p>
+<p>The whole process is kicked off approximately 15-30 minutes after a Teams call has ended. That&rsquo;s how long it usually takes for Microsoft to make the call record available in your tenant. By using a <a class="link" href="https://learn.microsoft.com/en-us/graph/api/subscription-post-subscriptions?view=graph-rest-1.0&amp;tabs=http"  target="_blank" rel="noopener"
+    >Graph Subscription</a> I can have Graph send me a notification every time a new record is created or when an existing one is updated. Notifications can be delivered to an endpoint of your choice. I&rsquo;m using an <a class="link" href="https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview?pivots=programming-language-powershell"  target="_blank" rel="noopener"
+    >Azure Function</a> for this.</p>
+<p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Q%20Works%20Lite%20Diagram%20V2.png"
+	width="1280"
+	height="720"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Q%20Works%20Lite%20Diagram%20V2_hu2690247017224506447.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Q%20Works%20Lite%20Diagram%20V2_hu13522805150411089401.png 1024w"
+	loading="lazy"
+	
+		alt="High-level Diagram"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="177"
+		data-flex-basis="426px"
+	
+></p>
+<p>This will kick off a chain of events to determine if a call to a call queue was answered or missed and notify the Team members if it was missed.</p>
+<h2 id="how-to-build-this-solution">How To Build This Solution
+</h2><p>Let&rsquo;s dive into how you can build this solution in your own environment. I&rsquo;ve invested quite a few additional hours to make this as easy as possible for you by writing some deployment scripts. What I didn&rsquo;t script is the creation of the service account, it&rsquo;s licensing or updating the group description. You&rsquo;ll need to follow the instructions below to prepare everything.</p>
+<h3 id="service-account">Service Account
+</h3><p>Create a new account in Entra ID and assign any combination of licenses that include:</p>
+<ul>
+<li>Microsoft Teams</li>
+<li>Skype for Business Online Plan 2</li>
+<li>Exchange Online (Plan 1 or 2)</li>
+<li>SharePoint Online</li>
+<li>Power Automate Free</li>
+<li>Microsoft Teams Phone Standard</li>
+</ul>
+<p>The account doesn&rsquo;t necessarily need a phone number. If you don&rsquo;t assign one, the user must be enabled for <strong>Enterprise Voice</strong> through PowerShell. This is needed so that the account can be added to call queues.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Set-CsPhoneNumberAssignment</span> <span class="n">-Identity</span> <span class="nv">$userId</span> <span class="n">-EnterpriseVoiceEnabled</span> <span class="vm">$true</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="example-scenario">Example Scenario
+</h3><p>Here we have an example call flow. The number is mapped to an auto attendant which then forwards to a call queue which has a nested call queue, in case nobody is able to answer the call in the first queue. Not all agents are opted into the <em>Level 1</em> call queue because only <em>Evelyn Carter</em> is primarily answering calls. If she fails to answer calls in the <em>Level 1</em> queue, the calls overflows into the <em>Level 2</em> queue, where all the agents are opted in. On the left you can see that the service user <em>Q Works</em> hasn&rsquo;t been added as an agent to the queue yet. On the right, the <em>Q Works</em> user is also an agent, so that I can use the Graph API via Power Automate to check if calls were answered by other agents of the queue.</p>
+<p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow.png"
+	width="3920"
+	height="16765"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow_hu12861199453210911393.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow_hu14191321893858572969.png 1024w"
+	loading="lazy"
+	
+		alt="Call Queue without Service Account Agent"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="23"
+		data-flex-basis="56px"
+	
+> <img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow-QWorksEnabled.png"
+	width="3920"
+	height="17605"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow-QWorksEnabled_hu9978655096263468338.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow-QWorksEnabled_hu7779682590270298608.png 1024w"
+	loading="lazy"
+	
+		alt="Call Queue with Service Account Agent"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="22"
+		data-flex-basis="53px"
+	
+></p>
+<p>So far, I have only tested the solution with an auto attendant and a maximum of 2 nested queues or an auto attendant with an IVR which has 2 queues as menu options. In theory, this solution should work with any amount of nested queues or IVR options.</p>
+<h3 id="teams">Teams
+</h3><p>To receive alerts about missed calls on call queues, you need to map your inbound numbers of top-level call queues or queues which are nested behind a top-level auto attendant to the Teams in which you want to receive the notifications. To map a number to a Team, simply adjust the Team&rsquo;s description by adding <code>Q.Works Phone Number:&lt;Your Phone Number&gt;</code> at the very beginning of the description. Do not add any other characters after the phone number.</p>
+<p>Make sure to paste the phone number exactly as it appears in Teams Admin Center on your resource account, including all the spaces. Do not add any other characters such as hyphens or dots.</p>
+<p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-11.png"
+	width="1426"
+	height="767"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-11_hu5671432014897291338.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-11_hu16986070873644479388.png 1024w"
+	loading="lazy"
+	
+		alt="Description in Entra ID Admin Center"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="185"
+		data-flex-basis="446px"
+	
+></p>
+<p>Q Works Lite expects only one Team to receive notifications per phone number. If you&rsquo;re an owner of the Team, you can edit the description directly in the Teams App. But you can also edit the group&rsquo;s description in the M365 Admin or the Entra Admin Center.</p>
+<p>When the Azure function runs, it will fetch the phone number that was called and then look for the Team by searching for the matching description, so that it knows in which Team the notifications need to be posted.</p>
+<h3 id="prerequisites">Prerequisites
+</h3><p>First of all, make sure that you&rsquo;ve got all these tools and PowerShell modules installed on your machine.</p>
+<ul>
+<li>PowerShell 7</li>
+<li>Azure Function Core Tools</li>
+<li>Azure CLI</li>
+<li>Python 3.11.9</li>
+<li>Node.JS
+<ul>
+<li>M365 CLI</li>
+</ul>
+</li>
+<li>PowerShell Modules:
+<ul>
+<li>Microsoft.Graph.Applications</li>
+<li>Microsoft.Graph.Users</li>
+<li>Az.Accounts</li>
+<li>Az.Functions</li>
+<li>Az.KeyVault</li>
+<li>Az.Storage</li>
+<li>Az.Resources</li>
+<li>Az.Websites</li>
+</ul>
+</li>
+</ul>
+<h3 id="clone-repository">Clone Repository
+</h3><p>Before anything is installed/deployed you&rsquo;ll need to clone my git repository or download a <a class="link" href="https://github.com/mozziemozz/Q-Works-Lite-Public"  target="_blank" rel="noopener"
+    >zip file</a> of the code.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">mozziemozz</span><span class="p">/</span><span class="nb">Q-Works</span><span class="n">-Lite-Public</span><span class="p">.</span><span class="py">git</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>You can use the below scripts to install everything. Make sure that you run both scripts as administrator. After installing the tools, close PowerShell and make sure to run the second script in PowerShell 7.</p>
+<ol>
+<li>Run <code>Install-Prerequisites-Tools.ps1</code></li>
+<li>Run <code>Install-Prerequisites-Modules.ps1</code></li>
+</ol>
+<h3 id="customize-for-your-environment">Customize For Your Environment
+</h3><p>Open the Json file located at <code>.\Deployment\environment.json</code> to customize the deployment for your environment. You can specify a name for the solution, your company shortname and the Azure region.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;SolutionName&#34;</span><span class="p">:</span> <span class="s2">&#34;Q Works Lite V3&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;CompanyShortName&#34;</span><span class="p">:</span> <span class="s2">&#34;NCT&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;RedirectURI&#34;</span><span class="p">:</span> <span class="s2">&#34;http://localhost&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;AzureRegion&#34;</span><span class="p">:</span> <span class="s2">&#34;Switzerland North&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="run-setupps1">Run Setup.ps1
+</h3><p>Once all the required tools and modules are installed, run the <code>Setup.ps1</code> script located in the <code>.\Deployment</code> folder of the repo. This will deploy all the resources in Azure. Your account will need global administrator permission and it needs permission to be able to create new Azure resources, including resource groups.</p>
+<h3 id="enable-solution">Enable Solution
+</h3><p>To enable Q Works Lite, you will need to import the Power Automate Flow to the service user&rsquo;s Power Automate environment so that you can then copy the trigger URL and paste it into the deployment script. (You&rsquo;ll be prompted to paste at some point). Don&rsquo;t just import the Zip file that&rsquo;s located in <code>.\PowerAutomate</code>. The deployment script will extract this archive, make some changes specific to your environment and repackage a new zip file which then needs to be uploaded. Finally, run the <code>Renew-GraphSubscription</code> PowerShell function once from the portal or wait for it to be <code>12:15</code> UTC either on this day or the next day. This function will create a new subscription the first time it runs.</p>
+<p>Everything is explained in much more detail in the tutorial video. I highly recommend to watch it either while you&rsquo;re deploying this yourself or before you&rsquo;re getting started.</p>
+<h3 id="video-tutorial">Video Tutorial
+</h3><p>Because I felt like this is too much to type, I&rsquo;m trying something different this time around and I recorded a YouTube video where I run the setup myself and explain everything in detail instead.</p>
+<div class="video-wrapper">
+    <iframe loading="lazy" 
+            src="https://www.youtube.com/embed/C0Y5yiOghwo" 
+            allowfullscreen 
+            title="YouTube Video"
+    >
+    </iframe>
+</div>
+
+<h2 id="what-do-the-functions-and-the-flow-do">What do the Functions and the Flow do?
+</h2><p>There are four functions in total. Three of them are PowerShell functions and one of them is a Python function but all of them use the same Linux App Service Plan. One of these functions is solely used to manage and renew the Graph subscription so it doesn&rsquo;t expire. The Python function uses a Python library called <strong>phonenumbers</strong> to format the raw E.164 numbers into an international format which is easier to read for humans. It basically inserts spaces at the correct positions for any given phone number in the world. I&rsquo;ve used and written about <a class="link" href="/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/" >this</a> in an Azure Runbook before. Now I&rsquo;ve created my own Azure Python Function so this can be used by the <strong>Analyze-CallRecord</strong> PowerShell function. And finally, the <strong>Receive-GraphNotifications</strong> function is receiving the notifications from Graph. Graph <a class="link" href="https://learn.microsoft.com/en-us/graph/change-notifications-delivery-webhooks?tabs=http#http-codes-and-retry-logic"  target="_blank" rel="noopener"
+    >expects a response within 10 seconds</a> so this function is really minimalistic. All it does is save the call Id to a storage queue in the storage account that was created for the PowerShell Function App. A new message in the storage queue will then trigger the <strong>Analyze-CallRecord</strong> function which does the actual leg-work.</p>
+<p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-12.png"
+	width="1703"
+	height="1199"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-12_hu7909063992293898443.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-12_hu2260457866614080552.png 1024w"
+	loading="lazy"
+	
+		alt="Azure Resources"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="142"
+		data-flex-basis="340px"
+	
+></p>
+<p>The authentication to Graph is done through an Entra Application which uses application permissions/app only authentication with a client secret. The client secret is stored securely in an Azure Key Vault and the permissions on the Key Vault secrets are assigned to the managed identity of the PowerShell Function App.</p>
+<p>The main function (Analyze-CallRecord) then checks if it was a <code>groupCall</code> (call queue call) and if it was a PSTN or an internal call. The function only processes external calls to call queues, everything else is disregarded. Unfortunately, it&rsquo;s not possible to create a Graph subscription only for certain types of call records so the function will be called for any new call records. That includes internal calls and Teams meetings as well. However, the free plan includes 1 million executions per month which should be plenty enough for small businesses.</p>
+<p>Once the function has gathered all the details about the call, and if it was indeed a PSTN call to a call queue, the function will then trigger the Power Automate Flow.</p>
+<p>The flow will fetch the <a class="link" href="#fetching-a-users-call-history-through-graph-api" >call logs chat history</a> of the service account (which is also a member of the call queues) and checks if the current call id is present in the call logs or not. If the call id is found in the call logs chat history, it means that the call was answered by another agent. If the call id is not present, it means that the call was missed by all agents and it went unanswered.</p>
+<p>If the call was missed, the flow will post a new adaptive card to the Teams channel and wait for a response (until a call queue agent has clicked the <em>Call Back Completed</em> button).</p>
+<h2 id="end-user-experience">End User Experience
+</h2><p>This is how it looks like in Teams. Once the <strong>Call Completed</strong> button was clicked, the card will update for all users so everybody will be able to see, who called the customer/caller back. (Completed By: {User Name})</p>
+<p><img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-14.png"
+	width="2322"
+	height="1548"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-14_hu16145688351392887223.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-14_hu9621980744674811618.png 1024w"
+	loading="lazy"
+	
+		alt="New Notification"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="150"
+		data-flex-basis="360px"
+	
+> <img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-13.png"
+	width="2322"
+	height="1548"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-13_hu12806696484080169787.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-13_hu8109597909639808360.png 1024w"
+	loading="lazy"
+	
+		alt="Call Back Button"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="150"
+		data-flex-basis="360px"
+	
+> <img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-16.png"
+	width="2322"
+	height="1548"
+	srcset="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-16_hu13351373814562171716.png 480w, /p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-16_hu12594891214410082248.png 1024w"
+	loading="lazy"
+	
+		alt="Updated Card"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="150"
+		data-flex-basis="360px"
+	
+></p>
+<h2 id="summary">Summary
+</h2><p>My goal was to deliver a missed call notification as quickly as possible <strong>but</strong> do it with close to 100% accuracy with V1 of the call records. (I purposely said <em>close to 100%</em> because there could still be occasional outages with the Graph notification service etc.) That&rsquo;s why I chose to go the route of having an always opted in <em>monitoring</em> agent in the queue. The problem is, especially with complex call flows that have a lot of nested queues, IVRs etc. that it can take multiple hours for the call records to have enough information to determine whether a call was answered or missed. If you analyze the data too soon, you&rsquo;ll get false positives and if you wait until the data is complete, it will take much longer until the agents receive the notification.</p>
+<p>I may extend this solution in the future by also processing <em>updated</em> call records to create a shared call history for call queues in a SharePoint list. But for now, or at least until Microsoft delivers shared call history as a feature of Teams Premium / the Queues app, I believe this is as close as we can get to quick and reliable missed call notifications for call queues today.</p>
+<p>The fact that this solution needs a service account, or at least a normal agent who&rsquo;s opted into the queue all the time and that it can only be used on non-presence based attendant routing queues sure is a bummer but I just can&rsquo;t see any other way to deliver accurate notifications as fast as they are with this solution.</p>
+<p>Even with it&rsquo;s limitations, I&rsquo;m very proud of my work and I&rsquo;m very excited to share it with the community today. I&rsquo;ve literally spent hundreds of hours developing this solution and I&rsquo;ve experienced many set-backs and had to iterate through a lot of different approaches to achieve what I&rsquo;ve published today. The good thing is that in the end, I got much more joy than frustration out of it.</p>
+<p>Since I&rsquo;ve only been using this in my lab so far, I don&rsquo;t have any insights of what the Azure resources are going to cost per month but since the Function Apps are using a consumption plan (Y1) and nothing is really stored in these storage accounts, the monthly cost should be next to nothing. Of course this is also depending on your call volume since this will impact how many times your function is invoked.</p>
+<p>If what I said about costs turns out to be true and you like what I&rsquo;ve done for the community and Teams Phone customers, I would very much appreciate it, if you consider supporting this project with a small donation on either <a class="link" href="https://buymeacoffee.com/martin.heusser"  target="_blank" rel="noopener"
+    >Buy me a Coffee</a> or <a class="link" href="https://github.com/sponsors/mozziemozz?frequency=one-time&amp;sponsor=mozziemozz"  target="_blank" rel="noopener"
+    >GitHub Sponsors</a>. Thank you!</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Get Microsoft Teams Meeting Attendance Report Through Graph API</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Manage Microsoft Teams Call Queues with PowerShell (Force-Sync)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Microsoft Teams Call Queue Agent Lists (And how to Force-Sync them)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/opt-in-or-opt-out-teams-call-queue-agents-remotely-59fe6147f50d/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Opt In or Opt Out Teams Call Queue Agents Remotely</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Microsoft Graph: How To Filter Users by Phone Number</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "heusser-pro" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2024 HEUSSER.PRO
+    </section>
+    
+    <section class="powerby">
+        
+            Hosted on GitHub Pages <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.27.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
+
