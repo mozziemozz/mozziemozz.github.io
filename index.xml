@@ -6,7 +6,72 @@
         <description>Recent content on HEUSSER.PRO</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Thu, 05 Dec 2024 15:17:25 +0000</lastBuildDate><atom:link href="https://heusser.pro/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 10 Dec 2024 09:36:29 +0000</lastBuildDate><atom:link href="https://heusser.pro/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>iOS Deep Link to Open Specific Email in Outlook App</title>
+        <link>https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/</link>
+        <pubDate>Tue, 10 Dec 2024 09:36:29 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/</guid>
+        <description>&lt;img src="https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/cover.png" alt="Featured image of post iOS Deep Link to Open Specific Email in Outlook App" /&gt;&lt;p&gt;I cannot believe that the day on which I&amp;rsquo;m finally able to write &lt;em&gt;this&lt;/em&gt; blog post has finally come. I&amp;rsquo;m not exaggerating. I have been trying to solve this and find a way to open specific emails (using the message id) in Outlook for more than &lt;strong&gt;five&lt;/strong&gt; years.&lt;/p&gt;
+&lt;p&gt;This may seem like a very small thing to most but to me, this is really big. And based on various forum posts online, I know that other people were looking for a way to do this as well. Of course, one of these &lt;a class=&#34;link&#34; href=&#34;https://stackoverflow.com/questions/60339181/open-link-to-specific-email-message-directly-in-outlook-for-ios-uri-scheme-de&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;forum posts&lt;/a&gt; is from myself, from 4 years and 9 months ago.&lt;/p&gt;
+&lt;p&gt;When ChatGPT was released, I tried to search for a solution again but all that happened was that I was let down by an over confident AI generated answer that turned out to do exactly nothing for me.&lt;/p&gt;
+&lt;p&gt;So, today, I felt like it&amp;rsquo;s time to try my luck again. I guess if I had a middle name, it would be &lt;em&gt;Determination&lt;/em&gt;. I found this other Stack Overflow &lt;a class=&#34;link&#34; href=&#34;https://stackoverflow.com/questions/64214137/open-received-email-via-ms-outlook-emails-uri-scheme&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;post&lt;/a&gt;, on which I apparently also commented coincidentally exactly (on the day) 1 year ago!&lt;/p&gt;
+&lt;blockquote&gt;
+    &lt;p&gt;Can you please try to decompile the Microsoft To Do APK? If an email is flagged and there&amp;rsquo;s a task for it in To Do Flagged Emails, there&amp;rsquo;s a button to open the email in Outlook. I think To Do holds the answer how you can open an Email by id in Outlook&amp;hellip;&lt;/p&gt;&lt;span class=&#34;cite&#34;&gt;&lt;span&gt;― &lt;/span&gt;&lt;span&gt;Myself&lt;/span&gt;&lt;cite&gt;&lt;/cite&gt;&lt;/span&gt;&lt;/blockquote&gt;
+&lt;p&gt;The next thing I know was that I downloaded the To Do APK, decompiled it using an online tool and when I searched for &lt;code&gt;ms-outlook://&lt;/code&gt; I found this line:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;(Uri.parse(&amp;#34;ms-outlook://emails/message/open?restID=&amp;#34; + str + &amp;#34;&amp;amp;immutableID=&amp;#34; + str2 + &amp;#34;&amp;amp;account=&amp;#34; + str3))
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;There you have it Ladies and Gentlemen, this is how you link to a specific email using the messaged id in Outlook on iOS.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ms-outlook://emails/message/open?restID=&amp;lt;messageId&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Now I can finally link to an email and open it directly in Outlook on iOS from wherever I want. I mostly use this for notifications sent through Power Automate but it works from any app which supports links.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/image.png&#34;
+	width=&#34;1902&#34;
+	height=&#34;1191&#34;
+	srcset=&#34;https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/image_hu6522794602921752768.png 480w, https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/image_hu9836411068436552879.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;iOS Deep Link for Specific Email in Power Automate&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;159&#34;
+		data-flex-basis=&#34;383px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/20241210_103309094_iOS.gif&#34;
+	width=&#34;443&#34;
+	height=&#34;960&#34;
+	srcset=&#34;https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/20241210_103309094_iOS_hu18108732255989864201.gif 480w, https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/20241210_103309094_iOS_hu16883129433512736319.gif 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Open Specific Email Demo&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;46&#34;
+		data-flex-basis=&#34;110px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;For what it&amp;rsquo;s worth, this is much easier with the iOS stock &lt;strong&gt;Mail&lt;/strong&gt; app. There you just have to create a link with &lt;code&gt;message:&amp;lt;messageId&amp;gt;&lt;/code&gt;. But of course it&amp;rsquo;s much nicer to directly open the email in Outlook as many companies don&amp;rsquo;t allow anything else than Outlook.&lt;/p&gt;
+&lt;p&gt;I haven&amp;rsquo;t tested this on Android but given that I got the link from the APK, I&amp;rsquo;m quite sure that this will work on Android as well.&lt;/p&gt;
+&lt;p&gt;I hope this made your day as well!&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Understanding Microsoft Entra ID App Registrations, Enterprise Apps and Service Principals</title>
         <link>https://heusser.pro/p/whats-the-difference-between-an-entra-id-app-registration-and-an-enterprise-app-4yyib4g1sk5a/</link>
         <pubDate>Thu, 05 Dec 2024 15:17:25 +0000</pubDate>
