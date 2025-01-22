@@ -6,7 +6,258 @@
         <description>Recent content in Teams Phone on HEUSSER.PRO</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Fri, 15 Nov 2024 17:31:43 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/teams-phone/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 22 Jan 2025 16:47:23 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/teams-phone/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>M365 Call Flow Visualizer Update: Support Nested Voice Apps without Resource Accounts</title>
+        <link>https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/</link>
+        <pubDate>Wed, 22 Jan 2025 16:47:23 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/</guid>
+        <description>&lt;p&gt;In December 2024 Microsoft made a change to their auto attendant and call queue service allowing admins to build call flows without associating a resource account to every nested voice app (call queues and auto attendants). Top-level auto attendants or call queues which are directly called by a phone number still need a resource account associated with them though.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image.png&#34;
+	width=&#34;1314&#34;
+	height=&#34;592&#34;
+	srcset=&#34;https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image_hu10974329009499559063.png 480w, https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image_hu638150580740741593.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Microsoft Learn Article&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;221&#34;
+		data-flex-basis=&#34;532px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When I wanted to create some diagrams of newly configured call flows using my &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;M365 Call Flow Visualizer&lt;/a&gt; tool, I noticed that I got Mermaid syntax errors and that the diagrams weren&amp;rsquo;t displaying anymore. This was because the newly built call flows were already referencing the voice apps directly and not the resource accounts anymore.&lt;/p&gt;
+&lt;h2 id=&#34;how-does-it-look-in-powershell&#34;&gt;How does it look in PowerShell?
+&lt;/h2&gt;&lt;p&gt;Let&amp;rsquo;s look at some examples. This is an auto attendant which I haven&amp;rsquo;t touched in years. It&amp;rsquo;s a simple demo attendant which has a voice menu where different keys will transfer to two different auto attendants.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/Demo_AA_CallFlow.png&#34;
+	width=&#34;7090&#34;
+	height=&#34;8280&#34;
+	srcset=&#34;https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/Demo_AA_CallFlow_hu2430828034472427460.png 480w, https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/Demo_AA_CallFlow_hu9925744265729155814.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Demo Auto Attendant&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;85&#34;
+		data-flex-basis=&#34;205px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When I check this attendant in PowerShell, I can see that the &lt;strong&gt;CallTarget&lt;/strong&gt;  type is &lt;strong&gt;ApplicationEndpoint&lt;/strong&gt; which means it points to a resource account (Online Application Instance).&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;PS &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;E:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GitHub&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;heusser-pro&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-v2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$aa&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Get-CsAutoAttendant&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Identity&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;9516a748&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;95e5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;4024&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-aae1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;5f11fad27a52&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;PS &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;E:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GitHub&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;heusser-pro&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-v2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$aa&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;DefaultCallFlow&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;Menu&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;MenuOptions&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Action&lt;/span&gt;         &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;TransferCallToTarget&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;DtmfResponse&lt;/span&gt;   &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Tone1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;VoiceResponses&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;CallTarget&lt;/span&gt;     &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Type &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ApplicationEndpoint&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                 &lt;span class=&#34;n&#34;&gt;Id&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;0ae17201&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;09fb&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;4434&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-ac7b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;66681fb34345&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Prompt&lt;/span&gt;         &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Action&lt;/span&gt;         &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;TransferCallToTarget&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;DtmfResponse&lt;/span&gt;   &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Tone2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;VoiceResponses&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;CallTarget&lt;/span&gt;     &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Type &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ApplicationEndpoint&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                 &lt;span class=&#34;n&#34;&gt;Id&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;1ba43d85&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;20c8&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;41bf-a474&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;9b771877b4be&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Prompt&lt;/span&gt;         &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Action&lt;/span&gt;         &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;TransferCallToTarget&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;DtmfResponse&lt;/span&gt;   &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Tone3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;VoiceResponses&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;CallTarget&lt;/span&gt;     &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Type &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ExternalPstn&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                 &lt;span class=&#34;n&#34;&gt;Id&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tel&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;496971041xxxx&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Prompt&lt;/span&gt;         &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;In TAC, we now have a new option called &lt;strong&gt;Resource Account&lt;/strong&gt; next to the existing &lt;strong&gt;Voice App&lt;/strong&gt; option. This way, we can choose if we want to forward calls to a resource account associated with a voice app or to a voice app directly.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-1.png&#34;
+	width=&#34;1501&#34;
+	height=&#34;902&#34;
+	srcset=&#34;https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-1_hu5230733521726866103.png 480w, https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-1_hu4957849273693642997.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;New Options in TAC&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;166&#34;
+		data-flex-basis=&#34;399px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This is actually a bit confusing to me. As I recall, the option to transfer to another attendant or queue was always called &lt;strong&gt;Voice app&lt;/strong&gt; before but it was actually referencing resource accounts. I checked one of my previous blog &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq&#34; &gt;posts&lt;/a&gt; and found this screenshot where it&amp;rsquo;s clearly visible that the &lt;strong&gt;Voice app&lt;/strong&gt; is in fact referencing a the UPN of a resource account.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-3.png&#34;
+	width=&#34;1024&#34;
+	height=&#34;634&#34;
+	srcset=&#34;https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-3_hu11009751251401510677.png 480w, https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-3_hu11975135075253846106.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Old screenshot&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;161&#34;
+		data-flex-basis=&#34;387px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When we look at the voice menu in TAC again after the change, we can see that the existing options which previously said &lt;strong&gt;Voice app&lt;/strong&gt; are now called &lt;strong&gt;Resource account&lt;/strong&gt;. I&amp;rsquo;ve replaced the third menu option with a &lt;strong&gt;Voice App&lt;/strong&gt; now.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-4.png&#34;
+	width=&#34;1482&#34;
+	height=&#34;500&#34;
+	srcset=&#34;https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-4_hu3520804567569325066.png 480w, https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-4_hu11578278856283770985.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;New labels&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;296&#34;
+		data-flex-basis=&#34;711px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;So, existing configs referencing resource accounts that were previously labeled &lt;strong&gt;Voice app&lt;/strong&gt; are now called &lt;strong&gt;Resource accounts&lt;/strong&gt; and if you want to reference a voice app, you&amp;rsquo;ll need to select &lt;strong&gt;Voice app&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s look at the PowerShell output again. Notice how the third option now says &lt;strong&gt;ConfigurationEndpoint&lt;/strong&gt; and not &lt;strong&gt;ApplicationEndpoint&lt;/strong&gt; anymore. Both options are valid configurations and can be mixed and matched as you need but it&amp;rsquo;s important to understand the difference.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;PS &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;E:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GitHub&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;heusser-pro&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-v2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$aa&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Get-CsAutoAttendant&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Identity&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;9516a748&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;95e5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;4024&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-aae1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;5f11fad27a52&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;PS &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;E:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GitHub&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;heusser-pro&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-v2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$aa&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;DefaultCallFlow&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;Menu&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;MenuOptions&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Action&lt;/span&gt;         &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;TransferCallToTarget&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;DtmfResponse&lt;/span&gt;   &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Tone1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;VoiceResponses&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;CallTarget&lt;/span&gt;     &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Type &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ApplicationEndpoint&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                 &lt;span class=&#34;n&#34;&gt;Id&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;0ae17201&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;09fb&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;4434&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-ac7b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;66681fb34345&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Prompt&lt;/span&gt;         &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Action&lt;/span&gt;         &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;TransferCallToTarget&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;DtmfResponse&lt;/span&gt;   &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Tone2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;VoiceResponses&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;CallTarget&lt;/span&gt;     &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Type &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ApplicationEndpoint&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                 &lt;span class=&#34;n&#34;&gt;Id&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;1ba43d85&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;20c8&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;41bf-a474&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;9b771877b4be&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Prompt&lt;/span&gt;         &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Action&lt;/span&gt;         &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;TransferCallToTarget&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;DtmfResponse&lt;/span&gt;   &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Tone3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;VoiceResponses&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;CallTarget&lt;/span&gt;     &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Type &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ConfigurationEndpoint&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                 &lt;span class=&#34;n&#34;&gt;Id&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;82c392e9-ec73&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;4890&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-bc5e&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;99d385f935b9&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Prompt&lt;/span&gt;         &lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;updated-m365-call-flow-visualizer&#34;&gt;Updated M365 Call Flow Visualizer
+&lt;/h2&gt;&lt;p&gt;I&amp;rsquo;ve updated the M365 Call Flow Visualizer to support nested voice apps which don&amp;rsquo;t have associated resource accounts anymore.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/Demo_AA_CallFlow-1.png&#34;
+	width=&#34;6790&#34;
+	height=&#34;6910&#34;
+	srcset=&#34;https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/Demo_AA_CallFlow-1_hu11378968734609657819.png 480w, https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/Demo_AA_CallFlow-1_hu5387465555628438067.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Successfully generated diagram&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;98&#34;
+		data-flex-basis=&#34;235px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The visualizer has always only shown an auto attendant or a call queue as a node element, regardless of which resource account was linked, it&amp;rsquo;s still the same in the current version. As you can see in the diagram above, both the keys 2 and 3 point to the same auto attendant even though one menu option is referencing the resource account and the other one is referencing the auto attendant directly (voice app).&lt;/p&gt;
+&lt;h2 id=&#34;additional-notes&#34;&gt;Additional Notes
+&lt;/h2&gt;&lt;p&gt;Even though the functionality to link voice apps without resource accounts have been added to TAC already, it will still display a warning that all voice apps must have an associated resource account.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-2.png&#34;
+	width=&#34;2405&#34;
+	height=&#34;674&#34;
+	srcset=&#34;https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-2_hu8658783250765056407.png 480w, https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-2_hu11725511930315717712.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;TAC Warning&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;356&#34;
+		data-flex-basis=&#34;856px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Call flows which don&amp;rsquo;t have any resource accounts associated with them, are not supported in historical reports yet. Availability for this is expected in early 2025 according to &lt;a class=&#34;link&#34; href=&#34;https://www.linkedin.com/posts/miguelcorteguera_set-up-a-microsoft-teams-auto-attendant-activity-7260296970555027456-MPow?utm_source=share&amp;amp;utm_medium=member_desktop&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this&lt;/a&gt; LinkedIn post.&lt;/p&gt;
+&lt;p&gt;From what I can see, auto attendants or call queues will not show up in Teams search either because there is no user account object to search for.&lt;/p&gt;
+&lt;h2 id=&#34;version-notes&#34;&gt;Version Notes
+&lt;/h2&gt;&lt;p&gt;If you&amp;rsquo;re already making use of this new capability, make sure to pull the &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;repo&lt;/a&gt; or download the latest version to be able to generate diagrams for these new call flows. You&amp;rsquo;ll need version &lt;strong&gt;3.1.9&lt;/strong&gt;. This version also fixes and issue where an inbound number was shown multiple times in case a nested voice app looped back to the initial top-level voice app. A full change log can be found &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer/blob/main/Changelog.md&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;When I wrote this blog, I didn&amp;rsquo;t think about writing additional code to reflect in the diagram if a &lt;strong&gt;TransferCallToTarget&lt;/strong&gt; or &lt;strong&gt;TransferCallToOperator&lt;/strong&gt; action is transferring to a voice app or a resource account. However, the longer I thought about it, the more sense it made. I&amp;rsquo;ve already got a new version (3.2.0) ready for your to try in my dev branch on &lt;a class=&#34;link&#34; href=&#34;https://github.com/mozziemozz/M365CallFlowVisualizer/tree/dev&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Here&amp;rsquo;s a wild example. As you can see, each &lt;strong&gt;TransferCallToTarget&lt;/strong&gt; node which goes to either an auto attendant or a call queue now shows if it&amp;rsquo;s transferring to a resource account or the voice app itself.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/Demo_AA_CallFlow-2.png&#34;
+	width=&#34;7840&#34;
+	height=&#34;29870&#34;
+	srcset=&#34;https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/Demo_AA_CallFlow-2_hu13767914273929590422.png 480w, https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/Demo_AA_CallFlow-2_hu18382190842457442761.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Version 3.2.0 including voice app/resource account information for transfers&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;26&#34;
+		data-flex-basis=&#34;62px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;As you can imagine, maintaining the code and keeping up with Microsoft&amp;rsquo;s changes takes up a lot of my spare time. If you want to support me, you can do that &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/support-me&#34; &gt;here&lt;/a&gt;.&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Get Missed Call Notifications for Teams Call Queues (Free Community Solution)</title>
         <link>https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/</link>
         <pubDate>Fri, 15 Nov 2024 17:31:43 +0000</pubDate>
