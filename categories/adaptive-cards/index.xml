@@ -6,7 +6,108 @@
         <description>Recent content in Adaptive Cards on HEUSSER.PRO</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Fri, 15 Nov 2024 17:31:43 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/adaptive-cards/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 23 Feb 2025 12:34:32 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/adaptive-cards/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Update: Teams Shared Voicemail for Basic Call Flows (Fix Call Back Links)</title>
+        <link>https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/</link>
+        <pubDate>Sun, 23 Feb 2025 12:34:32 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/</guid>
+        <description>&lt;img src="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/cover.png" alt="Featured image of post Update: Teams Shared Voicemail for Basic Call Flows (Fix Call Back Links)" /&gt;&lt;p&gt;This is an update to my previous blog post &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju&#34; &gt;Teams Shared Voicemail for Basic Call Flows&lt;/a&gt; initially published on January 17, 2024. Microsoft recently made some changes to the way in which Teams voicemails are sent to inboxes. This change was announced in &lt;a class=&#34;link&#34; href=&#34;https://mc.merill.net/message/MC987329&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;MC987329&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Previously, voicemails from unknown numbers were sent with the phone number as the sender. Now they&amp;rsquo;re sent from &lt;code&gt;noreply@skype.voicemail.microsoft.com&lt;/code&gt; which broke the deep links on call back buttons on the adaptive cards sent to Teams.&lt;/p&gt;
+&lt;h2 id=&#34;flow-updates&#34;&gt;Flow Updates
+&lt;/h2&gt;&lt;p&gt;I&amp;rsquo;ve updated my flow to address this change and include working deep links on the adaptive cards again. Prior to this change, all the information (From address and From name) could be accessed directly in the trigger outputs.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image.png&#34;
+	width=&#34;2154&#34;
+	height=&#34;865&#34;
+	srcset=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image_hu_40be5c0a35a32a0d.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image_hu_3125301d95bbe1dc.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Composing From Address or Number and Name in old Flow&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;249&#34;
+		data-flex-basis=&#34;597px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Since the from address is now &lt;code&gt;noreply@skype.voicemail.microsoft.com&lt;/code&gt; the phone number needs to be extracted from the email body. To make this work, I&amp;rsquo;m initializing two more variables at the beginning of the flow and then check if the from address matches &lt;code&gt;noreply&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-1.png&#34;
+	width=&#34;2149&#34;
+	height=&#34;648&#34;
+	srcset=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-1_hu_7470b4526b3e7513.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-1_hu_cfc3e62d5fa3d66d.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;New variables&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;331&#34;
+		data-flex-basis=&#34;795px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-2.png&#34;
+	width=&#34;2149&#34;
+	height=&#34;880&#34;
+	srcset=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-2_hu_579b979fc14aa731.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-2_hu_f5d2e6eae8a5633d.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;If email match noreply&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;244&#34;
+		data-flex-basis=&#34;586px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If that&amp;rsquo;s the case, the phone number and the name will be extracted from the email body and stored in the new variables. If not (in case the voicemail was left by an internal user or a known contact), the values of the trigger outputs will be written to the new variables.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-3.png&#34;
+	width=&#34;2155&#34;
+	height=&#34;1146&#34;
+	srcset=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-3_hu_8b60a1fbda16788b.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-3_hu_da3f428b3a7f9048.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Extract phone number and name from email body in new flow version&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;188&#34;
+		data-flex-basis=&#34;451px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Finally, I had to replace the &lt;code&gt;Outputs&lt;/code&gt; of the original compose actions with the variables in all places (i.e. in the adaptive cards) where they were referenced.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-4.png&#34;
+	width=&#34;912&#34;
+	height=&#34;947&#34;
+	srcset=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-4_hu_86d91ab0f760984c.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-4_hu_fa61671e46915f28.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Old flow&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;96&#34;
+		data-flex-basis=&#34;231px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-5.png&#34;
+	width=&#34;913&#34;
+	height=&#34;861&#34;
+	srcset=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-5_hu_cab78c09f153cee3.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-5_hu_5fb00462ecb0ea16.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;New flow&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;106&#34;
+		data-flex-basis=&#34;254px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;download-updated-flow&#34;&gt;Download Updated Flow
+&lt;/h2&gt;&lt;p&gt;You can download the updated version of the flow &lt;a class=&#34;link&#34; href=&#34;https://raw.githubusercontent.com/mozziemozz/TeamsPhoneAutomation/main/Scripts/PowerAutomate/Flows/TeamsSharedVoicemailBasicV3%28M365GroupInbox%29_GitHub.zip&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;.&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Get Missed Call Notifications for Teams Call Queues (Free Community Solution)</title>
         <link>https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/</link>
         <pubDate>Fri, 15 Nov 2024 17:31:43 +0000</pubDate>
@@ -32,7 +133,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184922000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;335&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184922000_iOS_hu3936109838447749479.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184922000_iOS_hu4528669562238723060.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184922000_iOS_hu_fbeeb652e4080180.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184922000_iOS_hu_35245e230677048d.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;No Badge Counter on Phone App&#34;
@@ -48,7 +149,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184914000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184914000_iOS_hu7911133146697936565.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184914000_iOS_hu5387452047220649022.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184914000_iOS_hu_69b3f687f525e35c.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184914000_iOS_hu_5177105cb47798cd.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Missed Call Queue Call&#34;
@@ -61,7 +162,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185013000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185013000_iOS_hu13323565535541130799.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185013000_iOS_hu6328059162366975320.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185013000_iOS_hu_81b338805b9aedd4.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185013000_iOS_hu_5e76621c271b057c.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Missed Call Queue Call Details&#34;
@@ -77,7 +178,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185055000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185055000_iOS_hu2119501650622820240.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185055000_iOS_hu16693605357456167788.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185055000_iOS_hu_71a161c32be2ddb0.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185055000_iOS_hu_6acaaba2f8369802.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Answered Call Queue Call&#34;
@@ -90,7 +191,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185100000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185100000_iOS_hu1350302172964426250.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185100000_iOS_hu1257743425889126939.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185100000_iOS_hu_ecbbcca45c21b694.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185100000_iOS_hu_e87210defe564ab4.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Answered Call Queue Call Details (Answered on Another Device)&#34;
@@ -105,7 +206,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185217000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185217000_iOS_hu9082802642001809077.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185217000_iOS_hu2389946594797770318.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185217000_iOS_hu_856ece06f58ffc3e.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185217000_iOS_hu_ff03692214ef04df.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;1st Call: Answered in Overflow | 2nd Call: Missed in Top-Level Queue (Top to bottom)&#34;
@@ -118,7 +219,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185221000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185221000_iOS_hu10272365200242678344.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185221000_iOS_hu5407667514355529783.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185221000_iOS_hu_84a967aaa95b5f84.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185221000_iOS_hu_e3c6615dc9953dc6.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;2nd Call in History (Top to Bottom)&#34;
@@ -131,7 +232,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185226000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185226000_iOS_hu15789092261060193159.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185226000_iOS_hu17379064014447751259.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185226000_iOS_hu_ba6b9e5a03c5838c.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185226000_iOS_hu_74c3953f6e6dffc3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;1st Call in History (Top to Bottom)&#34;
@@ -148,7 +249,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/LinkedInComment.jpg&#34;
 	width=&#34;946&#34;
 	height=&#34;458&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/LinkedInComment_hu12049634540349275782.jpg 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/LinkedInComment_hu10653473519316024250.jpg 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/LinkedInComment_hu_2633e5fa3d7c83b2.jpg 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/LinkedInComment_hu_a9e1f65600278e66.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;LinkedIn Comment&#34;
@@ -174,7 +275,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image.png&#34;
 	width=&#34;2322&#34;
 	height=&#34;1548&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image_hu13672943771796416826.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image_hu17308296513252721316.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image_hu_8e4e9b03d3be23fb.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image_hu_d4f36104c8f962ac.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Call History for Answered Call Queue Calls for a Specific Agent&#34;
@@ -187,7 +288,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-1.png&#34;
 	width=&#34;2322&#34;
 	height=&#34;1548&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-1_hu14479257733501308996.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-1_hu12947687684252391244.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-1_hu_a4362acfbd67ae5a.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-1_hu_19810e59527e45cc.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Call Queue Call History for Another Agent&#34;
@@ -214,7 +315,7 @@
 &lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-2.png&#34;
 	width=&#34;1041&#34;
 	height=&#34;758&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-2_hu5853036115275124898.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-2_hu14992833615567621255.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-2_hu_d92044b5846fad97.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-2_hu_50528a6bdb6dc96b.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;JSON Response&#34;
@@ -229,7 +330,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-3.png&#34;
 	width=&#34;1048&#34;
 	height=&#34;1073&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-3_hu3871041827454489038.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-3_hu6919312840070147398.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-3_hu_784aed2262cf9dd.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-3_hu_992c8e5e8bbbfb67.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Copy Request as PowerShell&#34;
@@ -315,7 +416,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-4.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-4_hu12871650644665689346.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-4_hu16907089813732580330.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-4_hu_9df4d24602bdd8f7.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-4_hu_d91c87ec138e9d78.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Example of a Single Call Queue Call Log Entry&#34;
@@ -340,7 +441,7 @@
 &lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-5.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-5_hu17246017893898536124.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-5_hu620952256029961148.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-5_hu_688ea42252713593.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-5_hu_c5683e0d15c2fb1a.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Filtered PowerShell Output of Call Queue Call History for a Specific User&#34;
@@ -356,7 +457,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-6.png&#34;
 	width=&#34;1614&#34;
 	height=&#34;33&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-6_hu3129591316885723803.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-6_hu12143840759698855516.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-6_hu_7161e4ea87b472b0.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-6_hu_aa843c86149e6ff.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Missed Call Reference in Teams Client Logs&#34;
@@ -389,7 +490,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-7.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-7_hu9530422137382753659.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-7_hu9705475114274137444.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-7_hu_25fdf2d007e0878f.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-7_hu_f6d921bf4fc0ac57.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Get Teams User Call History via Graph PowerShell&#34;
@@ -404,7 +505,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-8.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-8_hu17424764256241255055.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-8_hu9232055101926601248.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-8_hu_5cd9c3ae3a3d03a8.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-8_hu_d4285149a534df8a.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Example of Single Call Record&#34;
@@ -419,7 +520,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-9.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-9_hu2213861242925042041.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-9_hu13604203926659761804.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-9_hu_ef403532ae4f0a10.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-9_hu_ea73dfbf125ab723.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Body\Content Contains Call Id&#34;
@@ -442,10 +543,10 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-10.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-10_hu9538763137943079228.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-10_hu651095785959676177.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-10_hu_ef99b5a2e50f3ec9.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-10_hu_8ebe1deec63baa14.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
-		alt=&#34;App Only Authentication Doesn&amp;rsquo;t Work&#34;
+		alt=&#34;App Only Authentication Doesn’t Work&#34;
 	
 	
 		class=&#34;gallery-image&#34; 
@@ -462,7 +563,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Q%20Works%20Lite%20Diagram%20V2.png&#34;
 	width=&#34;1280&#34;
 	height=&#34;720&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Q%20Works%20Lite%20Diagram%20V2_hu2690247017224506447.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Q%20Works%20Lite%20Diagram%20V2_hu13522805150411089401.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Q%20Works%20Lite%20Diagram%20V2_hu_a3451f55fb2e7b58.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Q%20Works%20Lite%20Diagram%20V2_hu_1126d08bae4e732.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;High-level Diagram&#34;
@@ -500,7 +601,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow.png&#34;
 	width=&#34;3920&#34;
 	height=&#34;16765&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow_hu12861199453210911393.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow_hu14191321893858572969.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow_hu_e690e45d57c26a2a.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow_hu_d732487b3aa93cf9.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Call Queue without Service Account Agent&#34;
@@ -513,7 +614,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow-QWorksEnabled.png&#34;
 	width=&#34;3920&#34;
 	height=&#34;17605&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow-QWorksEnabled_hu9978655096263468338.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow-QWorksEnabled_hu7779682590270298608.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow-QWorksEnabled_hu_cfb0c39b78b57d4.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow-QWorksEnabled_hu_17855f875a547ace.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Call Queue with Service Account Agent&#34;
@@ -531,7 +632,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-11.png&#34;
 	width=&#34;1426&#34;
 	height=&#34;767&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-11_hu5671432014897291338.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-11_hu16986070873644479388.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-11_hu_343832e626fd8bf0.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-11_hu_2a9dc06f142976d6.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Description in Entra ID Admin Center&#34;
@@ -627,7 +728,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-12.png&#34;
 	width=&#34;1703&#34;
 	height=&#34;1199&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-12_hu7909063992293898443.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-12_hu2260457866614080552.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-12_hu_2823b5268ebfa17.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-12_hu_6828aaa41f01492d.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Azure Resources&#34;
@@ -648,7 +749,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-14.png&#34;
 	width=&#34;2322&#34;
 	height=&#34;1548&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-14_hu16145688351392887223.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-14_hu9621980744674811618.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-14_hu_1010be22b83e4bff.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-14_hu_5f9f074d4e807a08.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;New Notification&#34;
@@ -661,7 +762,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-13.png&#34;
 	width=&#34;2322&#34;
 	height=&#34;1548&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-13_hu12806696484080169787.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-13_hu8109597909639808360.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-13_hu_da135e2f98306d6b.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-13_hu_514ed3ada36a2845.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Call Back Button&#34;
@@ -674,7 +775,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-16.png&#34;
 	width=&#34;2322&#34;
 	height=&#34;1548&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-16_hu13351373814562171716.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-16_hu12594891214410082248.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-16_hu_c577187481050811.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-16_hu_fdff43b4fd47d5ac.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Updated Card&#34;
@@ -709,7 +810,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow.png&#34;
 	width=&#34;7840&#34;
 	height=&#34;7820&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu7272508111248889636.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu2016930160223947453.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu_260817bfe9a7390c.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu_615eefe02aa2a20a.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -723,7 +824,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39.png&#34;
 	width=&#34;920&#34;
 	height=&#34;172&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu6276923195173620822.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu9769458055859161011.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu_e960f18bdafca6b5.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu_7c0e4795983a9ba4.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -738,7 +839,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39.png&#34;
 	width=&#34;1104&#34;
 	height=&#34;1365&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hu3691167799431175005.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hu12860602678462286633.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hu_2cf1d40bdfce727.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hu_20c493535ae8346f.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -751,7 +852,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53.png&#34;
 	width=&#34;1944&#34;
 	height=&#34;1585&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu4052034907694077373.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu15607944988022955664.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu_c7ba3ead60d40c9e.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu_dda079d38fd74060.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -765,7 +866,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17.png&#34;
 	width=&#34;2241&#34;
 	height=&#34;932&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu18345731162980052300.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu8683442676467481998.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu_b33b2e3438113f62.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu_58b7cfe370057bde.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -799,7 +900,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw.png&#34;
 	width=&#34;7840&#34;
 	height=&#34;5630&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hu12855296586873793472.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hu5436304556483671852.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hu_8f20dfd6747f1d83.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hu_ec119919f185c28f.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -813,7 +914,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w.png&#34;
 	width=&#34;2033&#34;
 	height=&#34;543&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hu10242821503798733846.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hu14495164218824647678.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hu_4f269ca5ccda894a.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hu_b5549786c88c9422.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -865,7 +966,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw.png&#34;
 	width=&#34;1054&#34;
 	height=&#34;489&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu8526223670376369789.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu923701379336760308.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu_2c87107b1a734ab8.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu_abe867a345c229d2.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -881,7 +982,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g.png&#34;
 	width=&#34;1382&#34;
 	height=&#34;763&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu2728496663489879185.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu5761825704734345070.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu_9d324ee456607556.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu_cb786e0a7b08ea15.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -893,7 +994,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ.png&#34;
 	width=&#34;1384&#34;
 	height=&#34;760&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu1933363755079576700.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu13564362274648033296.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu_df0b9be26b1b3310.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu_4feb3c8217f1ba70.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -906,7 +1007,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA.png&#34;
 	width=&#34;885&#34;
 	height=&#34;232&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_hu2874519935006339848.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_hu7741457662367446754.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_hu_ececa6da711a1655.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_hu_39c5d48ac1d9d47c.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -918,7 +1019,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug.png&#34;
 	width=&#34;882&#34;
 	height=&#34;230&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu352885753578483131.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu8273292575465076490.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu_a6b8543956033421.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu_72345325d415829b.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -932,7 +1033,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ.png&#34;
 	width=&#34;1384&#34;
 	height=&#34;481&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hu1422730863264469117.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hu2161688040932036547.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hu_49a699708462405f.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hu_9d38a50bef3184fb.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -945,7 +1046,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA.png&#34;
 	width=&#34;1379&#34;
 	height=&#34;1003&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu12012160211085122908.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu4945891878961499679.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu_f545d5486ad946ba.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu_e67878864d57c0c0.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -958,7 +1059,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA.png&#34;
 	width=&#34;1468&#34;
 	height=&#34;422&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu10524768591447971398.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu2149592211078648373.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu_3194ffe0c91e66d.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu_3869f30fe3592f9e.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -971,7 +1072,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q.png&#34;
 	width=&#34;1385&#34;
 	height=&#34;539&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu15458806330991475184.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu6948695240082654987.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu_1751dc284ba1d809.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu_2de9e647c863a89e.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -989,7 +1090,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig.png&#34;
 	width=&#34;2149&#34;
 	height=&#34;961&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu10642960343245584212.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu15002541618406063103.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu_629788c01542017f.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu_219cba109726bf0.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1004,7 +1105,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw.png&#34;
 	width=&#34;1554&#34;
 	height=&#34;740&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu5463160827794298530.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu4029770359386110174.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu_aa64a69e905122bb.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu_57d982876e3bc0bc.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1018,7 +1119,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ.png&#34;
 	width=&#34;1025&#34;
 	height=&#34;1195&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu5937485943100323066.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu15200492561129714022.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu_ed8e1b08e26e972f.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu_6915680e687aeebb.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1031,7 +1132,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw.png&#34;
 	width=&#34;1388&#34;
 	height=&#34;846&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu14014501432488919598.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu7289622198699713943.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu_8f2fda2d7d5e8615.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu_fdcc56d5cfd2dace.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1044,7 +1145,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A.png&#34;
 	width=&#34;2284&#34;
 	height=&#34;961&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_hu11908678012870351812.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_hu1712600209183588314.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_hu_78eb2723b933f471.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_hu_bb545286fbe90dde.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1062,7 +1163,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g.png&#34;
 	width=&#34;2095&#34;
 	height=&#34;1392&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hu16515656192914363879.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hu9617947552083075885.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hu_225c36404e438c1b.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hu_f5b553056da9b909.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1075,7 +1176,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw.png&#34;
 	width=&#34;915&#34;
 	height=&#34;351&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu1657808557811107612.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu11851405960407821866.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu_743e7f965189621d.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu_411f7983b045b97c.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1087,7 +1188,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ.png&#34;
 	width=&#34;1933&#34;
 	height=&#34;907&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hu3119412816953799147.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hu1742214663190435552.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hu_743b5d0b1a64f03.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hu_6591f6409bf09161.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1099,7 +1200,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw.png&#34;
 	width=&#34;913&#34;
 	height=&#34;349&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hu5307429991215446537.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hu15168558474484845638.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hu_f42b60474443fa0d.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hu_83f2757fea081d92.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1111,7 +1212,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ.png&#34;
 	width=&#34;914&#34;
 	height=&#34;1033&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_hu5465998868029572349.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_hu3064536430309956232.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_hu_665132cb22bf0eab.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_hu_972c3ea6e84eb429.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1123,7 +1224,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw.png&#34;
 	width=&#34;916&#34;
 	height=&#34;218&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu14997008649639381127.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu12034864242468898112.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu_68cffa45d72fe459.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu_1cabe4a793d65c59.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1140,7 +1241,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu11109037850452349308.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu17447961148085830847.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu_2bb9d93d996b8ad1.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu_8fc425194d8f16f7.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1172,7 +1273,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1fQcNBnDUDxER2RrRYDd3w.png&#34;
 	width=&#34;2190&#34;
 	height=&#34;315&#34;
-	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1fQcNBnDUDxER2RrRYDd3w_hu3034356793226170838.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1fQcNBnDUDxER2RrRYDd3w_hu14724216378298220086.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1fQcNBnDUDxER2RrRYDd3w_hu_a34ff7c20d5d1015.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1fQcNBnDUDxER2RrRYDd3w_hu_61258ed5cb342825.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Holiday Schedules in Teams Admin Center&#34;
@@ -1192,7 +1293,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1QKq3e17FCDqQEvn5hbJzfg.png&#34;
 	width=&#34;1489&#34;
 	height=&#34;745&#34;
-	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1QKq3e17FCDqQEvn5hbJzfg_hu11674743888103282197.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1QKq3e17FCDqQEvn5hbJzfg_hu11861829260789832165.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1QKq3e17FCDqQEvn5hbJzfg_hu_8bf613fc1ff5278e.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1QKq3e17FCDqQEvn5hbJzfg_hu_26f90a362d60f3ec.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;en-US date format&#34;
@@ -1207,7 +1308,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/15exIWj45WBr92GT2Jut6UQ.png&#34;
 	width=&#34;1478&#34;
 	height=&#34;737&#34;
-	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/15exIWj45WBr92GT2Jut6UQ_hu13717092920608122669.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/15exIWj45WBr92GT2Jut6UQ_hu15475968410738808022.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/15exIWj45WBr92GT2Jut6UQ_hu_79a531492c2b49e1.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/15exIWj45WBr92GT2Jut6UQ_hu_ec2a6b23b084e7ef.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;de-CH date format&#34;
@@ -1222,7 +1323,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AcxduYIh3KWZjYOITozFQ.png&#34;
 	width=&#34;1485&#34;
 	height=&#34;794&#34;
-	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AcxduYIh3KWZjYOITozFQ_hu4677433707772385773.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AcxduYIh3KWZjYOITozFQ_hu266510165975810734.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AcxduYIh3KWZjYOITozFQ_hu_89ccbc147532d9f9.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AcxduYIh3KWZjYOITozFQ_hu_920ce999dd54b327.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Adaptive Card date picker&#34;
@@ -1239,7 +1340,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1h3iWOIBo7n33yhjeAHKNow.png&#34;
 	width=&#34;1397&#34;
 	height=&#34;420&#34;
-	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1h3iWOIBo7n33yhjeAHKNow_hu6571618173843459272.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1h3iWOIBo7n33yhjeAHKNow_hu3859008471761273829.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1h3iWOIBo7n33yhjeAHKNow_hu_975584511ecf471.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1h3iWOIBo7n33yhjeAHKNow_hu_8d704648b4ac1e88.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Adaptive Card drop-down list&#34;
@@ -1287,7 +1388,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1GR5EyFfJfYB6i4K3scmjeg.png&#34;
 	width=&#34;1055&#34;
 	height=&#34;42&#34;
-	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1GR5EyFfJfYB6i4K3scmjeg_hu5641259114092207642.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1GR5EyFfJfYB6i4K3scmjeg_hu4961657240343386721.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1GR5EyFfJfYB6i4K3scmjeg_hu_81fcbf06884514bf.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1GR5EyFfJfYB6i4K3scmjeg_hu_43a598e62b692ece.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1301,7 +1402,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1H9UkxAEL3jrTfviZvVSgg.png&#34;
 	width=&#34;1520&#34;
 	height=&#34;235&#34;
-	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1H9UkxAEL3jrTfviZvVSgg_hu16981988639064353800.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1H9UkxAEL3jrTfviZvVSgg_hu13284528033247977450.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1H9UkxAEL3jrTfviZvVSgg_hu_349651dd859cbae4.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1H9UkxAEL3jrTfviZvVSgg_hu_457934d2f53150b1.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Start the Runbook to test&#34;
@@ -1316,7 +1417,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AYdQc3exHJ9FyyXQiVqSA.png&#34;
 	width=&#34;1480&#34;
 	height=&#34;746&#34;
-	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AYdQc3exHJ9FyyXQiVqSA_hu11838043791191278464.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AYdQc3exHJ9FyyXQiVqSA_hu9969006082296334711.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AYdQc3exHJ9FyyXQiVqSA_hu_2c77ee4b57fda546.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AYdQc3exHJ9FyyXQiVqSA_hu_6be4744a8105200c.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Adaptive Card sent by the Runbook&#34;
@@ -1331,7 +1432,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/19gmVaYLQTt48rRlAxtOv3g.png&#34;
 	width=&#34;1478&#34;
 	height=&#34;239&#34;
-	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/19gmVaYLQTt48rRlAxtOv3g_hu14086379905075071568.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/19gmVaYLQTt48rRlAxtOv3g_hu11756378478327737448.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/19gmVaYLQTt48rRlAxtOv3g_hu_5453bab8a71f0419.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/19gmVaYLQTt48rRlAxtOv3g_hu_3a5b4acc4725b224.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Adaptive Card after it has been updated by the Function&#34;
@@ -1346,7 +1447,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1DTMQw26Duejt40miV2ig.png&#34;
 	width=&#34;1482&#34;
 	height=&#34;304&#34;
-	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1DTMQw26Duejt40miV2ig_hu14196355385711350306.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1DTMQw26Duejt40miV2ig_hu9134204769880532954.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1DTMQw26Duejt40miV2ig_hu_7bbf1ccb31f4df86.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1DTMQw26Duejt40miV2ig_hu_734dc5a9644890b7.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Adaptive Card confirmation sent by the second Runbook&#34;
@@ -1361,7 +1462,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/11Wx5wc7HVIBSgXum5COQLA.png&#34;
 	width=&#34;1290&#34;
 	height=&#34;866&#34;
-	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/11Wx5wc7HVIBSgXum5COQLA_hu5523670643061680018.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/11Wx5wc7HVIBSgXum5COQLA_hu4628957092880871972.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/11Wx5wc7HVIBSgXum5COQLA_hu_b2acddc754ba6289.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/11Wx5wc7HVIBSgXum5COQLA_hu_d0a1370be3e3724a.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;01. September 2023 has been added at the end of the list by the Runbook&#34;
@@ -1379,7 +1480,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1VTj3UiR6hEnLHyOiYbAUQ.png&#34;
 	width=&#34;1186&#34;
 	height=&#34;398&#34;
-	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1VTj3UiR6hEnLHyOiYbAUQ_hu8158064788678457607.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1VTj3UiR6hEnLHyOiYbAUQ_hu17649757732134002554.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1VTj3UiR6hEnLHyOiYbAUQ_hu_5f580b2f463d81e4.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1VTj3UiR6hEnLHyOiYbAUQ_hu_bc55580031c84bb.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Channel notification Settings in Teams&#34;
@@ -1408,7 +1509,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg.png&#34;
 	width=&#34;919&#34;
 	height=&#34;295&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg_hu11498010014334603720.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg_hu17278700087240363418.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg_hu_1bbc5ddff5c3c785.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg_hu_da12cc7ea4480c6e.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1421,7 +1522,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg.png&#34;
 	width=&#34;912&#34;
 	height=&#34;285&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg_hu12103196523936936177.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg_hu12179697413673838041.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg_hu_e91aeb8f69a33cea.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg_hu_52515add349b3c12.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1435,7 +1536,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA.png&#34;
 	width=&#34;916&#34;
 	height=&#34;283&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA_hu11712586045009292280.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA_hu3939707186250032632.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA_hu_b09b3699b4186876.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA_hu_b7081aeba721bbd4.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1449,7 +1550,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ.png&#34;
 	width=&#34;915&#34;
 	height=&#34;285&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ_hu5049373067404564692.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ_hu6497115018323546124.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ_hu_18502116db6c5ba8.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ_hu_2bf79537e9ac6503.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1464,7 +1565,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw.png&#34;
 	width=&#34;1973&#34;
 	height=&#34;807&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw_hu6899760532551412851.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw_hu5755714650185974796.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw_hu_57af2001f222fc35.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw_hu_7113c9815f6bf100.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1477,7 +1578,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q.png&#34;
 	width=&#34;972&#34;
 	height=&#34;962&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q_hu216914765717667602.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q_hu3197001903234287653.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q_hu_56eca94b42dda14e.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q_hu_aa4b9b3c90ad7bc0.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1490,7 +1591,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg.png&#34;
 	width=&#34;832&#34;
 	height=&#34;1790&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg_hu4294098630919036970.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg_hu17421349481040579635.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg_hu_baa83b2b2440fc90.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg_hu_befb4be6458b9d4a.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1549,7 +1650,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag.png&#34;
 	width=&#34;1233&#34;
 	height=&#34;396&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag_hu166847154440334082.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag_hu6514374341251866140.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag_hu_7cf68074c4dd0eb8.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag_hu_a3cc6a17d8e4864a.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1562,7 +1663,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg.png&#34;
 	width=&#34;1896&#34;
 	height=&#34;1020&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg_hu10646922207206201746.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg_hu13223624521137667189.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg_hu_d47db4d4a8dc86b4.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg_hu_2332cf660b1f53a.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1575,7 +1676,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg.png&#34;
 	width=&#34;1240&#34;
 	height=&#34;241&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg_hu4380780706159104824.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg_hu4071443795981480362.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg_hu_5975dbe41e76d836.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg_hu_431ee1e44e7515eb.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1588,7 +1689,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA.png&#34;
 	width=&#34;889&#34;
 	height=&#34;228&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA_hu7866697553645383011.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA_hu15134611314274284034.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA_hu_ce0ed1ec4e44be68.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA_hu_e109e76e9cb75a0b.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1601,7 +1702,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA.png&#34;
 	width=&#34;1228&#34;
 	height=&#34;289&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA_hu6639743601489609687.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA_hu11633006669754039099.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA_hu_df33b29ff5c07b6f.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA_hu_3cab282b95f1799c.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	

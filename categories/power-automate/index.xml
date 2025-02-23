@@ -6,7 +6,108 @@
         <description>Recent content in Power Automate on HEUSSER.PRO</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Tue, 10 Dec 2024 09:36:29 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/power-automate/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 23 Feb 2025 12:34:32 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/power-automate/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Update: Teams Shared Voicemail for Basic Call Flows (Fix Call Back Links)</title>
+        <link>https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/</link>
+        <pubDate>Sun, 23 Feb 2025 12:34:32 +0000</pubDate>
+        
+        <guid>https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/</guid>
+        <description>&lt;img src="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/cover.png" alt="Featured image of post Update: Teams Shared Voicemail for Basic Call Flows (Fix Call Back Links)" /&gt;&lt;p&gt;This is an update to my previous blog post &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju&#34; &gt;Teams Shared Voicemail for Basic Call Flows&lt;/a&gt; initially published on January 17, 2024. Microsoft recently made some changes to the way in which Teams voicemails are sent to inboxes. This change was announced in &lt;a class=&#34;link&#34; href=&#34;https://mc.merill.net/message/MC987329&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;MC987329&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Previously, voicemails from unknown numbers were sent with the phone number as the sender. Now they&amp;rsquo;re sent from &lt;code&gt;noreply@skype.voicemail.microsoft.com&lt;/code&gt; which broke the deep links on call back buttons on the adaptive cards sent to Teams.&lt;/p&gt;
+&lt;h2 id=&#34;flow-updates&#34;&gt;Flow Updates
+&lt;/h2&gt;&lt;p&gt;I&amp;rsquo;ve updated my flow to address this change and include working deep links on the adaptive cards again. Prior to this change, all the information (From address and From name) could be accessed directly in the trigger outputs.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image.png&#34;
+	width=&#34;2154&#34;
+	height=&#34;865&#34;
+	srcset=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image_hu_40be5c0a35a32a0d.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image_hu_3125301d95bbe1dc.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Composing From Address or Number and Name in old Flow&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;249&#34;
+		data-flex-basis=&#34;597px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Since the from address is now &lt;code&gt;noreply@skype.voicemail.microsoft.com&lt;/code&gt; the phone number needs to be extracted from the email body. To make this work, I&amp;rsquo;m initializing two more variables at the beginning of the flow and then check if the from address matches &lt;code&gt;noreply&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-1.png&#34;
+	width=&#34;2149&#34;
+	height=&#34;648&#34;
+	srcset=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-1_hu_7470b4526b3e7513.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-1_hu_cfc3e62d5fa3d66d.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;New variables&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;331&#34;
+		data-flex-basis=&#34;795px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-2.png&#34;
+	width=&#34;2149&#34;
+	height=&#34;880&#34;
+	srcset=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-2_hu_579b979fc14aa731.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-2_hu_f5d2e6eae8a5633d.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;If email match noreply&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;244&#34;
+		data-flex-basis=&#34;586px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If that&amp;rsquo;s the case, the phone number and the name will be extracted from the email body and stored in the new variables. If not (in case the voicemail was left by an internal user or a known contact), the values of the trigger outputs will be written to the new variables.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-3.png&#34;
+	width=&#34;2155&#34;
+	height=&#34;1146&#34;
+	srcset=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-3_hu_8b60a1fbda16788b.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-3_hu_da3f428b3a7f9048.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Extract phone number and name from email body in new flow version&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;188&#34;
+		data-flex-basis=&#34;451px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Finally, I had to replace the &lt;code&gt;Outputs&lt;/code&gt; of the original compose actions with the variables in all places (i.e. in the adaptive cards) where they were referenced.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-4.png&#34;
+	width=&#34;912&#34;
+	height=&#34;947&#34;
+	srcset=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-4_hu_86d91ab0f760984c.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-4_hu_fa61671e46915f28.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Old flow&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;96&#34;
+		data-flex-basis=&#34;231px&#34;
+	
+&gt; &lt;img src=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-5.png&#34;
+	width=&#34;913&#34;
+	height=&#34;861&#34;
+	srcset=&#34;https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-5_hu_cab78c09f153cee3.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-5_hu_5fb00462ecb0ea16.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;New flow&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;106&#34;
+		data-flex-basis=&#34;254px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;download-updated-flow&#34;&gt;Download Updated Flow
+&lt;/h2&gt;&lt;p&gt;You can download the updated version of the flow &lt;a class=&#34;link&#34; href=&#34;https://raw.githubusercontent.com/mozziemozz/TeamsPhoneAutomation/main/Scripts/PowerAutomate/Flows/TeamsSharedVoicemailBasicV3%28M365GroupInbox%29_GitHub.zip&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;.&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>iOS Deep Link to Open Specific Email in Outlook App</title>
         <link>https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/</link>
         <pubDate>Tue, 10 Dec 2024 09:36:29 +0000</pubDate>
@@ -42,7 +143,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/image.png&#34;
 	width=&#34;1902&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/image_hu6522794602921752768.png 480w, https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/image_hu9836411068436552879.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/image_hu_b36dc70247d05532.png 480w, https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/image_hu_a2a742cca7a62104.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;iOS Deep Link for Specific Email in Power Automate&#34;
@@ -55,7 +156,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/20241210_103309094_iOS.gif&#34;
 	width=&#34;443&#34;
 	height=&#34;960&#34;
-	srcset=&#34;https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/20241210_103309094_iOS_hu18108732255989864201.gif 480w, https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/20241210_103309094_iOS_hu16883129433512736319.gif 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/20241210_103309094_iOS_hu_6cc83b832ec95609.gif 480w, https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/20241210_103309094_iOS_hu_a8ed15a43407c7d0.gif 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Open Specific Email Demo&#34;
@@ -97,7 +198,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184922000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;335&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184922000_iOS_hu3936109838447749479.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184922000_iOS_hu4528669562238723060.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184922000_iOS_hu_fbeeb652e4080180.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184922000_iOS_hu_35245e230677048d.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;No Badge Counter on Phone App&#34;
@@ -113,7 +214,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184914000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184914000_iOS_hu7911133146697936565.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184914000_iOS_hu5387452047220649022.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184914000_iOS_hu_69b3f687f525e35c.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184914000_iOS_hu_5177105cb47798cd.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Missed Call Queue Call&#34;
@@ -126,7 +227,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185013000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185013000_iOS_hu13323565535541130799.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185013000_iOS_hu6328059162366975320.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185013000_iOS_hu_81b338805b9aedd4.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185013000_iOS_hu_5e76621c271b057c.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Missed Call Queue Call Details&#34;
@@ -142,7 +243,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185055000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185055000_iOS_hu2119501650622820240.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185055000_iOS_hu16693605357456167788.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185055000_iOS_hu_71a161c32be2ddb0.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185055000_iOS_hu_6acaaba2f8369802.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Answered Call Queue Call&#34;
@@ -155,7 +256,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185100000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185100000_iOS_hu1350302172964426250.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185100000_iOS_hu1257743425889126939.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185100000_iOS_hu_ecbbcca45c21b694.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185100000_iOS_hu_e87210defe564ab4.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Answered Call Queue Call Details (Answered on Another Device)&#34;
@@ -170,7 +271,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185217000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185217000_iOS_hu9082802642001809077.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185217000_iOS_hu2389946594797770318.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185217000_iOS_hu_856ece06f58ffc3e.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185217000_iOS_hu_ff03692214ef04df.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;1st Call: Answered in Overflow | 2nd Call: Missed in Top-Level Queue (Top to bottom)&#34;
@@ -183,7 +284,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185221000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185221000_iOS_hu10272365200242678344.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185221000_iOS_hu5407667514355529783.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185221000_iOS_hu_84a967aaa95b5f84.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185221000_iOS_hu_e3c6615dc9953dc6.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;2nd Call in History (Top to Bottom)&#34;
@@ -196,7 +297,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185226000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185226000_iOS_hu15789092261060193159.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185226000_iOS_hu17379064014447751259.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185226000_iOS_hu_ba6b9e5a03c5838c.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185226000_iOS_hu_74c3953f6e6dffc3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;1st Call in History (Top to Bottom)&#34;
@@ -213,7 +314,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/LinkedInComment.jpg&#34;
 	width=&#34;946&#34;
 	height=&#34;458&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/LinkedInComment_hu12049634540349275782.jpg 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/LinkedInComment_hu10653473519316024250.jpg 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/LinkedInComment_hu_2633e5fa3d7c83b2.jpg 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/LinkedInComment_hu_a9e1f65600278e66.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;LinkedIn Comment&#34;
@@ -239,7 +340,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image.png&#34;
 	width=&#34;2322&#34;
 	height=&#34;1548&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image_hu13672943771796416826.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image_hu17308296513252721316.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image_hu_8e4e9b03d3be23fb.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image_hu_d4f36104c8f962ac.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Call History for Answered Call Queue Calls for a Specific Agent&#34;
@@ -252,7 +353,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-1.png&#34;
 	width=&#34;2322&#34;
 	height=&#34;1548&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-1_hu14479257733501308996.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-1_hu12947687684252391244.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-1_hu_a4362acfbd67ae5a.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-1_hu_19810e59527e45cc.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Call Queue Call History for Another Agent&#34;
@@ -279,7 +380,7 @@
 &lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-2.png&#34;
 	width=&#34;1041&#34;
 	height=&#34;758&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-2_hu5853036115275124898.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-2_hu14992833615567621255.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-2_hu_d92044b5846fad97.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-2_hu_50528a6bdb6dc96b.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;JSON Response&#34;
@@ -294,7 +395,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-3.png&#34;
 	width=&#34;1048&#34;
 	height=&#34;1073&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-3_hu3871041827454489038.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-3_hu6919312840070147398.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-3_hu_784aed2262cf9dd.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-3_hu_992c8e5e8bbbfb67.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Copy Request as PowerShell&#34;
@@ -380,7 +481,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-4.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-4_hu12871650644665689346.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-4_hu16907089813732580330.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-4_hu_9df4d24602bdd8f7.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-4_hu_d91c87ec138e9d78.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Example of a Single Call Queue Call Log Entry&#34;
@@ -405,7 +506,7 @@
 &lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-5.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-5_hu17246017893898536124.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-5_hu620952256029961148.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-5_hu_688ea42252713593.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-5_hu_c5683e0d15c2fb1a.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Filtered PowerShell Output of Call Queue Call History for a Specific User&#34;
@@ -421,7 +522,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-6.png&#34;
 	width=&#34;1614&#34;
 	height=&#34;33&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-6_hu3129591316885723803.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-6_hu12143840759698855516.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-6_hu_7161e4ea87b472b0.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-6_hu_aa843c86149e6ff.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Missed Call Reference in Teams Client Logs&#34;
@@ -454,7 +555,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-7.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-7_hu9530422137382753659.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-7_hu9705475114274137444.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-7_hu_25fdf2d007e0878f.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-7_hu_f6d921bf4fc0ac57.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Get Teams User Call History via Graph PowerShell&#34;
@@ -469,7 +570,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-8.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-8_hu17424764256241255055.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-8_hu9232055101926601248.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-8_hu_5cd9c3ae3a3d03a8.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-8_hu_d4285149a534df8a.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Example of Single Call Record&#34;
@@ -484,7 +585,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-9.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-9_hu2213861242925042041.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-9_hu13604203926659761804.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-9_hu_ef403532ae4f0a10.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-9_hu_ea73dfbf125ab723.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Body\Content Contains Call Id&#34;
@@ -507,10 +608,10 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-10.png&#34;
 	width=&#34;1734&#34;
 	height=&#34;957&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-10_hu9538763137943079228.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-10_hu651095785959676177.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-10_hu_ef99b5a2e50f3ec9.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-10_hu_8ebe1deec63baa14.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
-		alt=&#34;App Only Authentication Doesn&amp;rsquo;t Work&#34;
+		alt=&#34;App Only Authentication Doesn’t Work&#34;
 	
 	
 		class=&#34;gallery-image&#34; 
@@ -527,7 +628,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Q%20Works%20Lite%20Diagram%20V2.png&#34;
 	width=&#34;1280&#34;
 	height=&#34;720&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Q%20Works%20Lite%20Diagram%20V2_hu2690247017224506447.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Q%20Works%20Lite%20Diagram%20V2_hu13522805150411089401.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Q%20Works%20Lite%20Diagram%20V2_hu_a3451f55fb2e7b58.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Q%20Works%20Lite%20Diagram%20V2_hu_1126d08bae4e732.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;High-level Diagram&#34;
@@ -565,7 +666,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow.png&#34;
 	width=&#34;3920&#34;
 	height=&#34;16765&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow_hu12861199453210911393.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow_hu14191321893858572969.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow_hu_e690e45d57c26a2a.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow_hu_d732487b3aa93cf9.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Call Queue without Service Account Agent&#34;
@@ -578,7 +679,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow-QWorksEnabled.png&#34;
 	width=&#34;3920&#34;
 	height=&#34;17605&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow-QWorksEnabled_hu9978655096263468338.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow-QWorksEnabled_hu7779682590270298608.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow-QWorksEnabled_hu_cfb0c39b78b57d4.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow-QWorksEnabled_hu_17855f875a547ace.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Call Queue with Service Account Agent&#34;
@@ -596,7 +697,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-11.png&#34;
 	width=&#34;1426&#34;
 	height=&#34;767&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-11_hu5671432014897291338.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-11_hu16986070873644479388.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-11_hu_343832e626fd8bf0.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-11_hu_2a9dc06f142976d6.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Description in Entra ID Admin Center&#34;
@@ -692,7 +793,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-12.png&#34;
 	width=&#34;1703&#34;
 	height=&#34;1199&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-12_hu7909063992293898443.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-12_hu2260457866614080552.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-12_hu_2823b5268ebfa17.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-12_hu_6828aaa41f01492d.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Azure Resources&#34;
@@ -713,7 +814,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-14.png&#34;
 	width=&#34;2322&#34;
 	height=&#34;1548&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-14_hu16145688351392887223.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-14_hu9621980744674811618.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-14_hu_1010be22b83e4bff.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-14_hu_5f9f074d4e807a08.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;New Notification&#34;
@@ -726,7 +827,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-13.png&#34;
 	width=&#34;2322&#34;
 	height=&#34;1548&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-13_hu12806696484080169787.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-13_hu8109597909639808360.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-13_hu_da135e2f98306d6b.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-13_hu_514ed3ada36a2845.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Call Back Button&#34;
@@ -739,7 +840,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-16.png&#34;
 	width=&#34;2322&#34;
 	height=&#34;1548&#34;
-	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-16_hu13351373814562171716.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-16_hu12594891214410082248.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-16_hu_c577187481050811.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-16_hu_fdff43b4fd47d5ac.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Updated Card&#34;
@@ -786,7 +887,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image_hu17067836575163035893.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image_hu3705164775016160227.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image_hu_d83f58a4f4a0f843.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image_hu_516515cfd05a15c5.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Open the Workflows app&#34;
@@ -801,7 +902,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-1.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-1_hu13098306370784340601.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-1_hu8472554707977568149.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-1_hu_ed0b5b5bd34d6527.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-1_hu_da25da3c5770313d.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Select the template: Post to a channel when a webhook request is received &#34;
@@ -816,7 +917,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-2.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-2_hu1011982923621769736.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-2_hu3264230650608358657.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-2_hu_696ef90060e5dbc9.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-2_hu_77669f2cfc08e37b.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Set up connections&#34;
@@ -829,7 +930,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-3.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-3_hu13421259205306972981.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-3_hu10885815418521128326.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-3_hu_9b3a5c3d42a598c3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-3_hu_7f3cab872a0d430b.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Confirm the Team and the channel&#34;
@@ -844,7 +945,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-4.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-4_hu12102872041567899063.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-4_hu1035464252065735674.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-4_hu_8f3510629a320198.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-4_hu_dabfbd2ceef78c27.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Copy the trigger URL&#34;
@@ -907,7 +1008,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5_hu12049619759637336247.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5_hu16688186486983862571.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5_hu_20b25ad7b44cc067.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5_hu_a8efb83019129245.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Flow failure info&#34;
@@ -920,7 +1021,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-6.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-6_hu16082627391339738973.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-6_hu12978097451286139877.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-6_hu_6662fd880199fd98.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-6_hu_9f0f678123d6a83a.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Error details&#34;
@@ -936,7 +1037,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-7.png&#34;
 	width=&#34;926&#34;
 	height=&#34;1074&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-7_hu9042932370275368541.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-7_hu8841001552661673965.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-7_hu_681b4f8c75f73e7.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-7_hu_fc149307f5188e94.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Trigger output&#34;
@@ -951,7 +1052,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19_hu8406155332374909504.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19_hu3255301243670892880.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19_hu_37ef271f7b971f01.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19_hu_eea382feb74e4fc4.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Flow created by Teams&#34;
@@ -1021,7 +1122,7 @@
 &lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17_hu13903871934690470927.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17_hu14214375774914690352.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17_hu_6db47afd349c099a.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17_hu_fb7c2965207191bd.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;It works!&#34;
@@ -1036,7 +1137,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18.png&#34;
 	width=&#34;915&#34;
 	height=&#34;1315&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18_hu15871628569325334570.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18_hu9565231287786797527.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18_hu_85830dad7caf398a.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18_hu_bf1b4530b00eb5aa.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Trigger Outputs when the Adaptive Card is inside the attachments/content&#34;
@@ -1058,10 +1159,10 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-8.png&#34;
 	width=&#34;931&#34;
 	height=&#34;945&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-8_hu10208623305089933618.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-8_hu6363880623582734220.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-8_hu_43c5f38158afffc1.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-8_hu_907a904f76b860dc.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
-		alt=&#34;That&amp;rsquo;s the entire flow.&#34;
+		alt=&#34;That’s the entire flow.&#34;
 	
 	
 		class=&#34;gallery-image&#34; 
@@ -1074,7 +1175,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-9.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-9_hu2288167009019981301.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-9_hu15456474603554545078.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-9_hu_eff84cb70332a0c5.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-9_hu_b320c317a90ebd12.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Hello World!&#34;
@@ -1087,7 +1188,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-10.png&#34;
 	width=&#34;1174&#34;
 	height=&#34;524&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-10_hu12651012709381117620.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-10_hu4099230719778945892.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-10_hu_be944ba59dde5338.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-10_hu_b84c645e09aeb02f.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Success!&#34;
@@ -1109,7 +1210,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-11.png&#34;
 	width=&#34;1365&#34;
 	height=&#34;522&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-11_hu14330245624591067472.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-11_hu3553075836722479647.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-11_hu_6432e50d669856c4.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-11_hu_845a37889f18ed1d.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Trigger Settings&#34;
@@ -1122,7 +1223,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-12.png&#34;
 	width=&#34;924&#34;
 	height=&#34;1393&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-12_hu3326022890127933909.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-12_hu15343184824364638248.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-12_hu_3a3bf698cbbd75a3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-12_hu_6e6f75056efa8df7.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Trigger Condition&#34;
@@ -1211,7 +1312,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-13.png&#34;
 	width=&#34;952&#34;
 	height=&#34;192&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-13_hu12159826009661972305.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-13_hu11322132518590545155.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-13_hu_5ae3b3010c3bf6f0.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-13_hu_770c15bbc35eafd2.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Expression to extract headers from trigger outputs&#34;
@@ -1226,7 +1327,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-14.png&#34;
 	width=&#34;1939&#34;
 	height=&#34;1377&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-14_hu7720957949630575163.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-14_hu11037026963041257743.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-14_hu_3bda3311190a649e.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-14_hu_950a27a5dccded46.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Switch statement to target different channels based on header value&#34;
@@ -1242,7 +1343,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-15.png&#34;
 	width=&#34;2153&#34;
 	height=&#34;1388&#34;
-	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-15_hu6249113140633450532.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-15_hu6183188826370830636.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-15_hu_7d89d834d11b2646.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-15_hu_9c0be465ac427894.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Adaptive Card in different channel&#34;
@@ -1274,7 +1375,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image.png&#34;
 	width=&#34;1793&#34;
 	height=&#34;693&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu2291258742031666590.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu18200194872119687648.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu_49c2b27357730239.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu_361eb514353b3b4f.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Phone numbers in Entra ID&#34;
@@ -1406,7 +1507,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1.png&#34;
 	width=&#34;1644&#34;
 	height=&#34;899&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hu10126803005311397619.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hu13422273645719726784.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hu_92ff7fde5abe850d.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hu_84381021b589bf20.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Output from Invoke-MgGraphRequest&#34;
@@ -1421,7 +1522,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4.png&#34;
 	width=&#34;1644&#34;
 	height=&#34;262&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu10390745089598602075.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu17704760490908083956.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu_ca1b433299048a88.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu_bb9630fd73059695.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Format-Table does not work with specific properties&#34;
@@ -1445,7 +1546,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3.png&#34;
 	width=&#34;1644&#34;
 	height=&#34;899&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu5228443779759100930.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu1660153902600262052.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu_aa05bebc5e432893.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu_f4a255960b2ec256.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;There are no name/value pairs anymore.&#34;
@@ -1462,7 +1563,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2.png&#34;
 	width=&#34;1507&#34;
 	height=&#34;262&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu17228196303366751409.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu3954587770765512058.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu_4de9e5b2909fb265.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu_e5c8b0d94d0e16f7.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Supported filters for Office 365 Users&#34;
@@ -1478,7 +1579,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5.png&#34;
 	width=&#34;938&#34;
 	height=&#34;1296&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_hu9415391741213701859.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_hu2191900681216763414.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_hu_15810a0c6ec70930.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_hu_2571de27c697ea1d.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Power Automate Flow to filter for users by phone number&#34;
@@ -1512,7 +1613,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6.png&#34;
 	width=&#34;960&#34;
 	height=&#34;1138&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu7402497629987320838.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu1972615602850717830.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu_28f9711ae8084ce3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu_370e74537fcbb3f8.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Output from Microsoft Graph within Power Automate&#34;
@@ -1575,7 +1676,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1_hu11913583426385938427.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1_hu9304733878779632263.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1_hu_763bad1306e732c0.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1_hu_ce8a67ed6527e6d.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click the &amp;#43; to add a tab.&#34;
@@ -1588,10 +1689,10 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2_hu530063749930359838.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2_hu15157909680239559655.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2_hu_125eeccbef5e5279.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2_hu_34f0998b7753546f.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
-		alt=&#34;Search for &amp;lsquo;Lists&amp;rsquo; and click on it.&#34;
+		alt=&#34;Search for ‘Lists’ and click on it.&#34;
 	
 	
 		class=&#34;gallery-image&#34; 
@@ -1601,7 +1702,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3_hu7937741121339155755.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3_hu17538482900093854851.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3_hu_df774a1b8c9e92ec.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3_hu_ab98990638826702.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click Save.&#34;
@@ -1614,7 +1715,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4_hu2377144743537114884.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4_hu4314821337011684003.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4_hu_4cb286772d89b4c7.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4_hu_ae7d551129868a7a.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Select Create a list.&#34;
@@ -1627,7 +1728,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5_hu5463564391803077305.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5_hu6123452386488159593.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5_hu_614a7c26a408719f.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5_hu_f1ee6a73bd8686e.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click on Blank list.&#34;
@@ -1640,7 +1741,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6_hu17252448217805581256.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6_hu4365632963787324501.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6_hu_3b77dd866f18a75a.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6_hu_cc68201dc3af55d6.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Give your list a name and select a color and an icon. Then click create.&#34;
@@ -1655,7 +1756,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8_hu129451366560112092.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8_hu245937803451660543.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8_hu_1e4468a24bb032dd.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8_hu_e284bf7ccd2c0230.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Select Person and click Next.&#34;
@@ -1668,10 +1769,10 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7_hu6970902461574767365.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7_hu1498024393115296102.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7_hu_7ef5ad1f0a176dad.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7_hu_2607eef89ad073f8.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
-		alt=&#34;Enter &amp;lsquo;Agent&amp;rsquo; as column name and toggle Show profile photos to Yes.&#34;
+		alt=&#34;Enter ‘Agent’ as column name and toggle Show profile photos to Yes.&#34;
 	
 	
 		class=&#34;gallery-image&#34; 
@@ -1681,7 +1782,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9_hu8043155632980410742.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9_hu8963576290552745298.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9_hu_e3e10171d06fbe17.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9_hu_e944876ee0a48f19.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Add another column and choose Yes/No as type.&#34;
@@ -1694,10 +1795,10 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10_hu962999845287303447.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10_hu1603584529402314834.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10_hu_124a8db043c07947.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10_hu_5594ac8f5c48030.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
-		alt=&#34;Name it &amp;lsquo;Opt In&amp;rsquo; and click Save.&#34;
+		alt=&#34;Name it ‘Opt In’ and click Save.&#34;
 	
 	
 		class=&#34;gallery-image&#34; 
@@ -1707,10 +1808,10 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11_hu16542849257511873056.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11_hu16932690610536722226.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11_hu_7f7898356c469be0.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11_hu_d3815f09bdb2dfb.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
-		alt=&#34;Add another Yes/No column called &amp;lsquo;Updated by Power Automate&amp;rsquo; and set the default value to No.&#34;
+		alt=&#34;Add another Yes/No column called ‘Updated by Power Automate’ and set the default value to No.&#34;
 	
 	
 		class=&#34;gallery-image&#34; 
@@ -1722,7 +1823,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12_hu9770511780570287800.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12_hu9399227338352732912.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12_hu_84251706f79dc0c9.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12_hu_4d6af6dc197c6d46.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click on the column, then select Column settings, Show/hide columns.&#34;
@@ -1735,7 +1836,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13_hu4303637038459811682.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13_hu6139821486824365882.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13_hu_1f2ce508e48559ad.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13_hu_740b876607f059d7.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Uncheck Title and click Apply.&#34;
@@ -1750,7 +1851,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1191&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14_hu12602022400071259707.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14_hu18177151818299355995.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14_hu_426e8c933604526.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14_hu_678d6cb004eb2bd5.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Add all call queue agents to the Agent column.&#34;
@@ -1765,10 +1866,10 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1216&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18_hu11655581890386546295.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18_hu5477638153986702771.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18_hu_d457242dc34800d5.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18_hu_43af90f6b183424.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
-		alt=&#34;Tip: You can reorder tabs by dragging. I&amp;rsquo;ve put my List tab next to the Calls tab.&#34;
+		alt=&#34;Tip: You can reorder tabs by dragging. I’ve put my List tab next to the Calls tab.&#34;
 	
 	
 		class=&#34;gallery-image&#34; 
@@ -1785,10 +1886,10 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image.png&#34;
 	width=&#34;2064&#34;
 	height=&#34;1823&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image_hu9639506191421241325.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image_hu17382347141440935731.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image_hu_4aca9d6c122e1f79.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image_hu_f5906340bd5d3fa1.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
-		alt=&#34;This is the Power Automate Flow in all it&amp;rsquo;s glory.&#34;
+		alt=&#34;This is the Power Automate Flow in all it’s glory.&#34;
 	
 	
 		class=&#34;gallery-image&#34; 
@@ -1802,7 +1903,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21.png&#34;
 	width=&#34;876&#34;
 	height=&#34;242&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21_hu17969875031334252726.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21_hu7863184465684036780.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21_hu_3b7de55b599cf749.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21_hu_24cefe900990c434.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click on Import Package (Legacy).&#34;
@@ -1816,7 +1917,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22.png&#34;
 	width=&#34;2233&#34;
 	height=&#34;431&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22_hu9378649849066676247.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22_hu5514892286775171662.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22_hu_27ac99c260aa551a.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22_hu_664837d80fefbed9.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Next, select and upload the Zip file.&#34;
@@ -1830,7 +1931,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23.png&#34;
 	width=&#34;1847&#34;
 	height=&#34;1147&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23_hu17564494902182706656.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23_hu4258437063927111829.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23_hu_d08c18c70536136c.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23_hu_fdc2496f6bf6ce48.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click the first Wrench Icon to update the name of the Flow.&#34;
@@ -1844,7 +1945,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24.png&#34;
 	width=&#34;1895&#34;
 	height=&#34;1326&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24_hu4213196471572211845.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24_hu15721084507449836354.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24_hu_e80da065e04a8a8.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24_hu_82d41f487b9d4ccc.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click the Wrench Icon for both connections and choose an existing connection or set up a new one.&#34;
@@ -1858,7 +1959,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25.png&#34;
 	width=&#34;1856&#34;
 	height=&#34;1326&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25_hu5151078014175545705.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25_hu4840205175460810919.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25_hu_a45ba4f7b1a63a3b.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25_hu_8bbe9b7603cad842.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Finally, click Import.&#34;
@@ -1873,7 +1974,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26.png&#34;
 	width=&#34;1439&#34;
 	height=&#34;515&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26_hu18259315964895338768.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26_hu7481541286255530911.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26_hu_408378babf9ac085.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26_hu_c15b1bc333f303ff.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Click Trun on&#34;
@@ -1888,7 +1989,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15.png&#34;
 	width=&#34;933&#34;
 	height=&#34;330&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15_hu1602228107939671958.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15_hu18399674530512702439.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15_hu_8d4da9d08e3a4ab6.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15_hu_4694cb13c9cc3013.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Set the Flow trigger to your Site and List.&#34;
@@ -1903,7 +2004,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16.png&#34;
 	width=&#34;937&#34;
 	height=&#34;298&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16_hu17774634404559597013.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16_hu4017430030039818292.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16_hu_c585637524f351e3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16_hu_a76c81a1b6609569.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Set the call queue Id&#34;
@@ -1921,7 +2022,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27.png&#34;
 	width=&#34;1440&#34;
 	height=&#34;422&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27_hu8528806638046816043.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27_hu1128282297428298293.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27_hu_586ea062b4215b68.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27_hu_ca0fbe7ed24a004e.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;From there, click Share.&#34;
@@ -1935,7 +2036,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28.png&#34;
 	width=&#34;1716&#34;
 	height=&#34;470&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28_hu5086464589580250981.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28_hu7595605989610089656.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28_hu_f23f91783b719686.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28_hu_d31bd19c823dc4eb.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Search for another call queue agent and select them from the drop-down menu.&#34;
@@ -1949,7 +2050,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29.png&#34;
 	width=&#34;1039&#34;
 	height=&#34;734&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29_hu167498132066773330.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29_hu3234347335798673121.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29_hu_8ed9050a690eb506.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29_hu_c31db2ea6ded8104.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Confirm by clicking Ok.&#34;
@@ -1965,7 +2066,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30.png&#34;
 	width=&#34;1403&#34;
 	height=&#34;955&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30_hu4561416554919895521.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30_hu5466886728487689714.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30_hu_2a07896dfbb0fc3d.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30_hu_8ed2f0e76eb181eb.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Instruct them to click the three dots and select Save as.&#34;
@@ -1979,7 +2080,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31.png&#34;
 	width=&#34;1030&#34;
 	height=&#34;472&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31_hu2857392925328974134.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31_hu17070033798895599830.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31_hu_5cd1ba5dd912abb9.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31_hu_dbfcc3c28ecb29ba.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Instruct them to create the connections by clicking Continue.&#34;
@@ -1993,7 +2094,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32.png&#34;
 	width=&#34;1038&#34;
 	height=&#34;420&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32_hu5182470505484744005.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32_hu3043512181455849335.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32_hu_bf04447320b9d52a.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32_hu_24b7e18963320438.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;They can rename the Flow before saving.&#34;
@@ -2007,10 +2108,10 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33.png&#34;
 	width=&#34;1057&#34;
 	height=&#34;947&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33_hu17293382911932268230.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33_hu9749183023347001063.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33_hu_e7168c50945fa66c.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33_hu_5de16586c7e6c50b.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
-		alt=&#34;Finally, they&amp;rsquo;ll need to go to My flows again and turn on the copied Flow using the menu behind the three dots.&#34;
+		alt=&#34;Finally, they’ll need to go to My flows again and turn on the copied Flow using the menu behind the three dots.&#34;
 	
 	
 		class=&#34;gallery-image&#34; 
@@ -2024,7 +2125,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17.png&#34;
 	width=&#34;1428&#34;
 	height=&#34;1835&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17_hu18094835676414418205.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17_hu11659137885635116474.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17_hu_e8f80b80c0f62e88.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17_hu_ba5466081c459b2.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Flow to update the List if CQ Agents opt in/out via Teams clients.&#34;
@@ -2040,10 +2141,10 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19.png&#34;
 	width=&#34;2108&#34;
 	height=&#34;1216&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19_hu1896115540196913194.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19_hu11852883048610094001.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19_hu_f92b2030c82ceed3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19_hu_afcc35e23a8b9c40.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
-		alt=&#34;The List tab after it&amp;rsquo;s been updated by Power Automate.&#34;
+		alt=&#34;The List tab after it’s been updated by Power Automate.&#34;
 	
 	
 		class=&#34;gallery-image&#34; 
@@ -2065,7 +2166,7 @@
 &lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20.png&#34;
 	width=&#34;917&#34;
 	height=&#34;1395&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20_hu5708539168798782398.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20_hu437063029256463986.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20_hu_c507a8b7b58ddf83.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20_hu_249ba26a2a550cdc.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;The trigger condition will prevent infinite trigger loops.&#34;
@@ -2083,7 +2184,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35.png&#34;
 	width=&#34;923&#34;
 	height=&#34;410&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35_hu2117963138089312102.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35_hu8761090421070259272.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35_hu_ee5cfbae98c25340.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35_hu_222bb534c8265752.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Set the CallQueueId variable.&#34;
@@ -2098,7 +2199,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36.png&#34;
 	width=&#34;939&#34;
 	height=&#34;446&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36_hu8017697667298753491.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36_hu10571986564566521542.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36_hu_b583d297032db823.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36_hu_421dab11de7df7cf.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Replace Site Address and List Name.&#34;
@@ -2113,7 +2214,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37.png&#34;
 	width=&#34;969&#34;
 	height=&#34;717&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37_hu17667313924104665433.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37_hu8836776512602459146.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37_hu_3b2bf93755b3c569.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37_hu_d690148f27dd27ea.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Replace Site Address and List Name.&#34;
@@ -2130,7 +2231,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/TeamsCQOptIn.gif&#34;
 	width=&#34;1195&#34;
 	height=&#34;672&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/TeamsCQOptIn_hu9871273669532964979.gif 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/TeamsCQOptIn_hu332530050797161910.gif 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/TeamsCQOptIn_hu_f736fa3a24af3e80.gif 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/TeamsCQOptIn_hu_7e965ff2b75bee6.gif 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Note: The Flow was in test mode to speed up the demo. In real life, it will usually take a few minutes to change an opt in status.&#34;
@@ -2145,7 +2246,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34.png&#34;
 	width=&#34;1488&#34;
 	height=&#34;1090&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34_hu860538479537783540.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34_hu15071899178839810327.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34_hu_8401168aed3180ff.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34_hu_85953db063fcd0d8.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;The default polling interval is 5 minutes.&#34;
@@ -2162,7 +2263,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS_hu11523580541972779827.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS_hu1652069061924224646.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS_hu_a073311d5d98549f.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS_hu_a605fa63a0bc13d4.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;List tab in Teams mobile.&#34;
@@ -2175,7 +2276,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS_hu18018118354172697295.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS_hu2060395788159105390.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS_hu_9b077990a18128c2.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS_hu_976efe11209dcabc.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Editing a list item in Teams mobile.&#34;
@@ -2188,7 +2289,7 @@
 &gt; &lt;img src=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS_hu18422803775100028305.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS_hu12898352815111235887.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS_hu_4c78dee4407e037f.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS_hu_ca698d77c737eeeb.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Toggle switches in Lists app.&#34;
@@ -2224,7 +2325,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow.png&#34;
 	width=&#34;7840&#34;
 	height=&#34;7820&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu7272508111248889636.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu2016930160223947453.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu_260817bfe9a7390c.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu_615eefe02aa2a20a.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2238,7 +2339,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39.png&#34;
 	width=&#34;920&#34;
 	height=&#34;172&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu6276923195173620822.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu9769458055859161011.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu_e960f18bdafca6b5.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu_7c0e4795983a9ba4.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2253,7 +2354,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39.png&#34;
 	width=&#34;1104&#34;
 	height=&#34;1365&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hu3691167799431175005.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hu12860602678462286633.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hu_2cf1d40bdfce727.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hu_20c493535ae8346f.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2266,7 +2367,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53.png&#34;
 	width=&#34;1944&#34;
 	height=&#34;1585&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu4052034907694077373.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu15607944988022955664.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu_c7ba3ead60d40c9e.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu_dda079d38fd74060.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2280,7 +2381,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17.png&#34;
 	width=&#34;2241&#34;
 	height=&#34;932&#34;
-	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu18345731162980052300.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu8683442676467481998.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu_b33b2e3438113f62.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu_58b7cfe370057bde.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2314,7 +2415,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw.png&#34;
 	width=&#34;7840&#34;
 	height=&#34;5630&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hu12855296586873793472.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hu5436304556483671852.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hu_8f20dfd6747f1d83.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hu_ec119919f185c28f.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2328,7 +2429,7 @@
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w.png&#34;
 	width=&#34;2033&#34;
 	height=&#34;543&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hu10242821503798733846.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hu14495164218824647678.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hu_4f269ca5ccda894a.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hu_b5549786c88c9422.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2380,7 +2481,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw.png&#34;
 	width=&#34;1054&#34;
 	height=&#34;489&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu8526223670376369789.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu923701379336760308.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu_2c87107b1a734ab8.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu_abe867a345c229d2.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2396,7 +2497,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g.png&#34;
 	width=&#34;1382&#34;
 	height=&#34;763&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu2728496663489879185.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu5761825704734345070.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu_9d324ee456607556.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu_cb786e0a7b08ea15.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2408,7 +2509,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ.png&#34;
 	width=&#34;1384&#34;
 	height=&#34;760&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu1933363755079576700.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu13564362274648033296.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu_df0b9be26b1b3310.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu_4feb3c8217f1ba70.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2421,7 +2522,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA.png&#34;
 	width=&#34;885&#34;
 	height=&#34;232&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_hu2874519935006339848.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_hu7741457662367446754.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_hu_ececa6da711a1655.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_hu_39c5d48ac1d9d47c.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2433,7 +2534,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug.png&#34;
 	width=&#34;882&#34;
 	height=&#34;230&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu352885753578483131.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu8273292575465076490.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu_a6b8543956033421.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu_72345325d415829b.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2447,7 +2548,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ.png&#34;
 	width=&#34;1384&#34;
 	height=&#34;481&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hu1422730863264469117.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hu2161688040932036547.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hu_49a699708462405f.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hu_9d38a50bef3184fb.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2460,7 +2561,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA.png&#34;
 	width=&#34;1379&#34;
 	height=&#34;1003&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu12012160211085122908.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu4945891878961499679.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu_f545d5486ad946ba.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu_e67878864d57c0c0.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2473,7 +2574,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA.png&#34;
 	width=&#34;1468&#34;
 	height=&#34;422&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu10524768591447971398.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu2149592211078648373.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu_3194ffe0c91e66d.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu_3869f30fe3592f9e.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2486,7 +2587,7 @@ PS Test EV Enabled SharedVoicemail UserMailbox
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q.png&#34;
 	width=&#34;1385&#34;
 	height=&#34;539&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu15458806330991475184.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu6948695240082654987.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu_1751dc284ba1d809.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu_2de9e647c863a89e.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2504,7 +2605,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig.png&#34;
 	width=&#34;2149&#34;
 	height=&#34;961&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu10642960343245584212.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu15002541618406063103.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu_629788c01542017f.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu_219cba109726bf0.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2519,7 +2620,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw.png&#34;
 	width=&#34;1554&#34;
 	height=&#34;740&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu5463160827794298530.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu4029770359386110174.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu_aa64a69e905122bb.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu_57d982876e3bc0bc.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2533,7 +2634,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ.png&#34;
 	width=&#34;1025&#34;
 	height=&#34;1195&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu5937485943100323066.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu15200492561129714022.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu_ed8e1b08e26e972f.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu_6915680e687aeebb.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2546,7 +2647,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw.png&#34;
 	width=&#34;1388&#34;
 	height=&#34;846&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu14014501432488919598.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu7289622198699713943.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu_8f2fda2d7d5e8615.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu_fdcc56d5cfd2dace.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2559,7 +2660,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A.png&#34;
 	width=&#34;2284&#34;
 	height=&#34;961&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_hu11908678012870351812.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_hu1712600209183588314.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_hu_78eb2723b933f471.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_hu_bb545286fbe90dde.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2577,7 +2678,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g.png&#34;
 	width=&#34;2095&#34;
 	height=&#34;1392&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hu16515656192914363879.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hu9617947552083075885.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hu_225c36404e438c1b.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hu_f5b553056da9b909.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2590,7 +2691,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw.png&#34;
 	width=&#34;915&#34;
 	height=&#34;351&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu1657808557811107612.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu11851405960407821866.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu_743e7f965189621d.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu_411f7983b045b97c.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2602,7 +2703,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ.png&#34;
 	width=&#34;1933&#34;
 	height=&#34;907&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hu3119412816953799147.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hu1742214663190435552.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hu_743b5d0b1a64f03.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hu_6591f6409bf09161.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2614,7 +2715,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw.png&#34;
 	width=&#34;913&#34;
 	height=&#34;349&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hu5307429991215446537.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hu15168558474484845638.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hu_f42b60474443fa0d.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hu_83f2757fea081d92.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2626,7 +2727,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ.png&#34;
 	width=&#34;914&#34;
 	height=&#34;1033&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_hu5465998868029572349.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_hu3064536430309956232.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_hu_665132cb22bf0eab.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_hu_972c3ea6e84eb429.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2638,7 +2739,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw.png&#34;
 	width=&#34;916&#34;
 	height=&#34;218&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu14997008649639381127.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu12034864242468898112.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu_68cffa45d72fe459.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu_1cabe4a793d65c59.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2655,7 +2756,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg.png&#34;
 	width=&#34;1125&#34;
 	height=&#34;2436&#34;
-	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu11109037850452349308.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu17447961148085830847.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu_2bb9d93d996b8ad1.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu_8fc425194d8f16f7.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2698,7 +2799,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1T1jm9F4WsGlBZC8i4blxvA.png&#34;
 	width=&#34;882&#34;
 	height=&#34;305&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1T1jm9F4WsGlBZC8i4blxvA_hu11789020853176736568.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1T1jm9F4WsGlBZC8i4blxvA_hu8972897116156548730.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1T1jm9F4WsGlBZC8i4blxvA_hu_2685cc3bf934266e.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1T1jm9F4WsGlBZC8i4blxvA_hu_bb888f357e4438aa.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2711,7 +2812,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/16ZZdpshqTSEsTAWd4pB7g.png&#34;
 	width=&#34;1308&#34;
 	height=&#34;1452&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/16ZZdpshqTSEsTAWd4pB7g_hu5893550846938556681.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/16ZZdpshqTSEsTAWd4pB7g_hu14925142084208369769.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/16ZZdpshqTSEsTAWd4pB7g_hu_19559fe20b97e767.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/16ZZdpshqTSEsTAWd4pB7g_hu_b62bd9424aa66e2f.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2724,7 +2825,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1lfTXEyWS0I7tBpbJ3kMSRQ.png&#34;
 	width=&#34;863&#34;
 	height=&#34;883&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1lfTXEyWS0I7tBpbJ3kMSRQ_hu11561264302143991247.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1lfTXEyWS0I7tBpbJ3kMSRQ_hu17772287774462005278.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1lfTXEyWS0I7tBpbJ3kMSRQ_hu_c531ed4e6763012.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1lfTXEyWS0I7tBpbJ3kMSRQ_hu_47d613ef21e892bc.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2737,7 +2838,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1y6twx4IlKDCiKBsF0athug.png&#34;
 	width=&#34;1655&#34;
 	height=&#34;412&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1y6twx4IlKDCiKBsF0athug_hu17661092906365605265.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1y6twx4IlKDCiKBsF0athug_hu6394300497751482186.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1y6twx4IlKDCiKBsF0athug_hu_bf926bf5d110f082.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1y6twx4IlKDCiKBsF0athug_hu_28dbedb8c9215ca9.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2751,7 +2852,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1NHO9Br7TMFi6ElrQP1Q.png&#34;
 	width=&#34;865&#34;
 	height=&#34;581&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1NHO9Br7TMFi6ElrQP1Q_hu12029844455100949330.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1NHO9Br7TMFi6ElrQP1Q_hu16110502634329584933.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1NHO9Br7TMFi6ElrQP1Q_hu_2b6c2812442375ad.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1NHO9Br7TMFi6ElrQP1Q_hu_2762f5d3a47daa2d.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2767,7 +2868,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1FfN90woT9tQGuHUS0DYJZQ.png&#34;
 	width=&#34;2325&#34;
 	height=&#34;1370&#34;
-	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1FfN90woT9tQGuHUS0DYJZQ_hu13500464953612064462.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1FfN90woT9tQGuHUS0DYJZQ_hu10205571845755029831.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1FfN90woT9tQGuHUS0DYJZQ_hu_76cb0682519b1af8.png 480w, https://heusser.pro/p/how-to-pin-an-phone-number-to-the-teams-side-rail-539a230a55c7/1FfN90woT9tQGuHUS0DYJZQ_hu_c0cad3a290a621df.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2804,7 +2905,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg.png&#34;
 	width=&#34;919&#34;
 	height=&#34;295&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg_hu11498010014334603720.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg_hu17278700087240363418.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg_hu_1bbc5ddff5c3c785.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg_hu_da12cc7ea4480c6e.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2817,7 +2918,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg.png&#34;
 	width=&#34;912&#34;
 	height=&#34;285&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg_hu12103196523936936177.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg_hu12179697413673838041.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg_hu_e91aeb8f69a33cea.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg_hu_52515add349b3c12.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2831,7 +2932,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA.png&#34;
 	width=&#34;916&#34;
 	height=&#34;283&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA_hu11712586045009292280.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA_hu3939707186250032632.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA_hu_b09b3699b4186876.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA_hu_b7081aeba721bbd4.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2845,7 +2946,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ.png&#34;
 	width=&#34;915&#34;
 	height=&#34;285&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ_hu5049373067404564692.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ_hu6497115018323546124.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ_hu_18502116db6c5ba8.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ_hu_2bf79537e9ac6503.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2860,7 +2961,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw.png&#34;
 	width=&#34;1973&#34;
 	height=&#34;807&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw_hu6899760532551412851.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw_hu5755714650185974796.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw_hu_57af2001f222fc35.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw_hu_7113c9815f6bf100.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2873,7 +2974,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q.png&#34;
 	width=&#34;972&#34;
 	height=&#34;962&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q_hu216914765717667602.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q_hu3197001903234287653.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q_hu_56eca94b42dda14e.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q_hu_aa4b9b3c90ad7bc0.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2886,7 +2987,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg.png&#34;
 	width=&#34;832&#34;
 	height=&#34;1790&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg_hu4294098630919036970.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg_hu17421349481040579635.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg_hu_baa83b2b2440fc90.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg_hu_befb4be6458b9d4a.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2945,7 +3046,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag.png&#34;
 	width=&#34;1233&#34;
 	height=&#34;396&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag_hu166847154440334082.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag_hu6514374341251866140.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag_hu_7cf68074c4dd0eb8.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag_hu_a3cc6a17d8e4864a.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2958,7 +3059,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg.png&#34;
 	width=&#34;1896&#34;
 	height=&#34;1020&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg_hu10646922207206201746.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg_hu13223624521137667189.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg_hu_d47db4d4a8dc86b4.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg_hu_2332cf660b1f53a.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2971,7 +3072,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg.png&#34;
 	width=&#34;1240&#34;
 	height=&#34;241&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg_hu4380780706159104824.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg_hu4071443795981480362.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg_hu_5975dbe41e76d836.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg_hu_431ee1e44e7515eb.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2984,7 +3085,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA.png&#34;
 	width=&#34;889&#34;
 	height=&#34;228&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA_hu7866697553645383011.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA_hu15134611314274284034.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA_hu_ce0ed1ec4e44be68.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA_hu_e109e76e9cb75a0b.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -2997,7 +3098,7 @@ More than 2 hours = 😞&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA.png&#34;
 	width=&#34;1228&#34;
 	height=&#34;289&#34;
-	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA_hu6639743601489609687.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA_hu11633006669754039099.png 1024w&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA_hu_df33b29ff5c07b6f.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA_hu_3cab282b95f1799c.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
