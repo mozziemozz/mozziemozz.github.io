@@ -661,36 +661,105 @@
 </h4><p>So where is it best to create new Teams? Sadly, the answer is: It depends. The first question you should ask yourself is if the membership needs to be assigned or dynamic. If it should be dynamic, you must create it from Entra ID. Otherwise, there is no clear winner here. Each portal does it slightly different which creates unwanted and most likely also unnoticed differences in M365 Group settings. If you want to be consistent across all your Teams and Groups, I recommend defining one or multiple standards and then creating a PowerShell script which creates new Teams and Groups according to your needs.</p>
 <h3 id="powershell-cheat-sheet-for-m365groups">PowerShell Cheat-Sheet for M365 Groups
 </h3><p>Since we’ve now learned that creating Groups or Teams from different Admin Centers can have different effects, I put together a little PowerShell cheat-sheet containing some handy one-lineres to help you quickly adjust M365 Group settings. Since these settings are applied to the M365 Group and not to the Team, they all require the Exchange Online PowerShell Module which can be installed using this code.</p>
-<p># Install Module<br>
-Install-Module -Name ExchangeOnlineManagement</p>
-<p># Connect to Exchange Online<br>
-Connect-ExchangeOnline</p>
-<p>To store the group object in <code>$group</code> we simply need to query a group like this.</p>
-<p># Get group properties<br>
-$group = Get-UnifiedGroup -Identity <a class="link" href="mailto:TeamCreatedinTACPublic@mvplab.ch" >TeamCreatedinTACPublic@mvplab.ch</a></p>
-<p>To disable the welcome email, which is sent to new group members, use this code.</p>
-<p># Disable welcome message for new group members<br>
-Set-UnifiedGroup -Identity $group.Identity -UnifiedGroupWelcomeMessageEnabled $false</p>
-<p>If a Team has been created in the Teams Client, you can use this code to unhide the group from Outlook.</p>
-<p># Unhide group from Outlook clients<br>
-Set-UnifiedGroup -Identity $group.Identity -HiddenFromExchangeClientsEnabled:$false</p>
-<p>To allow external email addresses to send emails to the group email address, use this code.</p>
-<p># Enable let people outside this organization email this group<br>
-Set-UnifiedGroup -Identity $group.Identity -RequireSenderAuthenticationEnabled:$false</p>
-<p>To change the privacy of a group use either <strong>Private</strong> or <strong>Public</strong> as a value for the <code>-AccessType</code> parameter.</p>
-<p># Change access type to private<br>
-Set-UnifiedGroup -Identity $group.Identity -AccessType &ldquo;Private&rdquo;</p>
-<p>To keep owners and members in sync or rather to make sure that all owners are added as members too, you can use this code.</p>
-<p># Add group owners to group members if not already there<br>
-Connect-MgGraph</p>
-<p>$group = Get-MgGroup -GroupId &ldquo;<GUID>&rdquo;</p>
-<p>$groupOwners = Get-MgGroupOwner -All -GroupId $group.Id<br>
-$groupMembers = Get-MgGroupMember -All -GroupId $group.Id</p>
-<p>foreach ($groupOwner in $groupOwners | Where-Object {$_.Id -notin $groupMembers.Id}) {</p>
-<pre><code>New-MgGroupMember -GroupId $group.Id -DirectoryObjectId $groupOwner.Id  
-</code></pre>
-<p>}</p>
-<p>Note: This uses the <strong>Microsoft.Graph.Groups</strong> PowerShell module and not <strong>ExchangeOnlineManagement</strong>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># Install Module  </span>
+</span></span><span class="line"><span class="cl"><span class="nb">Install-Module</span> <span class="n">-Name</span> <span class="n">ExchangeOnlineManagement</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Connect to Exchange Online  </span>
+</span></span><span class="line"><span class="cl"><span class="nb">Connect-ExchangeOnline</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">To</span> <span class="n">store</span> <span class="n">the</span> <span class="nb">group </span><span class="n">object</span> <span class="k">in</span> <span class="p">`$</span><span class="n">group</span><span class="p">`</span> <span class="n">we</span> <span class="n">simply</span> <span class="n">need</span> <span class="n">to</span> <span class="n">query</span> <span class="n">a</span> <span class="nb">group </span><span class="n">like</span> <span class="n">this</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Get group properties  </span>
+</span></span><span class="line"><span class="cl"><span class="nv">$group</span> <span class="p">=</span> <span class="nb">Get-UnifiedGroup</span> <span class="n">-Identity</span> <span class="n">TeamCreatedinTACPublic</span><span class="nv">@mvplab</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">To</span> <span class="n">disable</span> <span class="n">the</span> <span class="n">welcome</span> <span class="n">email</span><span class="p">,</span> <span class="n">which</span> <span class="n">is</span> <span class="n">sent</span> <span class="n">to</span> <span class="n">new</span> <span class="nb">group </span><span class="n">members</span><span class="p">,</span> <span class="n">use</span> <span class="n">this</span> <span class="n">code</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Disable welcome message for new group members  </span>
+</span></span><span class="line"><span class="cl"><span class="nb">Set-UnifiedGroup</span> <span class="n">-Identity</span> <span class="nv">$group</span><span class="p">.</span><span class="py">Identity</span> <span class="n">-UnifiedGroupWelcomeMessageEnabled</span> <span class="vm">$false</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">If</span> <span class="n">a</span> <span class="n">Team</span> <span class="n">has</span> <span class="n">been</span> <span class="n">created</span> <span class="k">in</span> <span class="n">the</span> <span class="n">Teams</span> <span class="n">Client</span><span class="p">,</span> <span class="n">you</span> <span class="n">can</span> <span class="n">use</span> <span class="n">this</span> <span class="n">code</span> <span class="n">to</span> <span class="n">unhide</span> <span class="n">the</span> <span class="nb">group </span><span class="n">from</span> <span class="n">Outlook</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Unhide group from Outlook clients  </span>
+</span></span><span class="line"><span class="cl"><span class="nb">Set-UnifiedGroup</span> <span class="n">-Identity</span> <span class="nv">$group</span><span class="p">.</span><span class="py">Identity</span> <span class="n">-HiddenFromExchangeClientsEnabled:</span><span class="vm">$false</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">To</span> <span class="n">allow</span> <span class="n">external</span> <span class="n">email</span> <span class="n">addresses</span> <span class="n">to</span> <span class="n">send</span> <span class="n">emails</span> <span class="n">to</span> <span class="n">the</span> <span class="nb">group </span><span class="n">email</span> <span class="n">address</span><span class="p">,</span> <span class="n">use</span> <span class="n">this</span> <span class="n">code</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Enable let people outside this organization email this group  </span>
+</span></span><span class="line"><span class="cl"><span class="nb">Set-UnifiedGroup</span> <span class="n">-Identity</span> <span class="nv">$group</span><span class="p">.</span><span class="py">Identity</span> <span class="n">-RequireSenderAuthenticationEnabled:</span><span class="vm">$false</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">To</span> <span class="n">change</span> <span class="n">the</span> <span class="n">privacy</span> <span class="n">of</span> <span class="n">a</span> <span class="nb">group </span><span class="n">use</span> <span class="n">either</span> <span class="p">**</span><span class="n">Private</span><span class="p">**</span> <span class="n">or</span> <span class="p">**</span><span class="n">Public</span><span class="p">**</span> <span class="n">as</span> <span class="n">a</span> <span class="n">value</span> <span class="k">for</span> <span class="n">the</span> <span class="p">`-</span><span class="n">AccessType</span><span class="p">`</span> <span class="nb">parameter</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Change access type to private  </span>
+</span></span><span class="line"><span class="cl"><span class="nb">Set-UnifiedGroup</span> <span class="n">-Identity</span> <span class="nv">$group</span><span class="p">.</span><span class="py">Identity</span> <span class="n">-AccessType</span> <span class="s2">&#34;Private&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">To</span> <span class="n">keep</span> <span class="n">owners</span> <span class="n">and</span> <span class="n">members</span> <span class="k">in</span> <span class="n">sync</span> <span class="n">or</span> <span class="n">rather</span> <span class="n">to</span> <span class="n">make</span> <span class="n">sure</span> <span class="n">that</span> <span class="n">all</span> <span class="n">owners</span> <span class="n">are</span> <span class="n">added</span> <span class="n">as</span> <span class="n">members</span> <span class="n">too</span><span class="p">,</span> <span class="n">you</span> <span class="n">can</span> <span class="n">use</span> <span class="n">this</span> <span class="n">code</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Add group owners to group members if not already there  </span>
+</span></span><span class="line"><span class="cl"><span class="nb">Connect-MgGraph</span>  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl"><span class="nv">$group</span> <span class="p">=</span> <span class="nb">Get-MgGroup</span> <span class="n">-GroupId</span> <span class="s2">&#34;&lt;GUID&gt;&#34;</span>  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl"><span class="nv">$groupOwners</span> <span class="p">=</span> <span class="nb">Get-MgGroupOwner</span> <span class="n">-All</span> <span class="n">-GroupId</span> <span class="nv">$group</span><span class="p">.</span><span class="py">Id</span>  
+</span></span><span class="line"><span class="cl"><span class="nv">$groupMembers</span> <span class="p">=</span> <span class="nb">Get-MgGroupMember</span> <span class="n">-All</span> <span class="n">-GroupId</span> <span class="nv">$group</span><span class="p">.</span><span class="py">Id</span>  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl"><span class="k">foreach</span> <span class="p">(</span><span class="nv">$groupOwner</span> <span class="k">in</span> <span class="nv">$groupOwners</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="p">{$\</span><span class="n">_</span><span class="p">.</span><span class="py">Id</span> <span class="n">-notin</span> <span class="nv">$groupMembers</span><span class="p">.</span><span class="n">Id</span><span class="p">})</span> <span class="p">{</span>  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">    <span class="nb">New-MgGroupMember</span> <span class="n">-GroupId</span> <span class="nv">$group</span><span class="p">.</span><span class="py">Id</span> <span class="n">-DirectoryObjectId</span> <span class="nv">$groupOwner</span><span class="p">.</span><span class="py">Id</span>  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Note: This uses the <strong>Microsoft.Graph.Groups</strong> PowerShell module and not <strong>ExchangeOnlineManagement</strong>.</p>
 <h3 id="closing-words">Closing Words
 </h3><p>I hope that this article and the comparison chart help you to better understand why some groups might have different settings than others. I also recommend to always add all owners as explicit members too, whenever you assign owners to a group. Hopefully, the last code snippet will make things easier for you to accomplish this.</p>
 
