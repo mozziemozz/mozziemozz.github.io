@@ -332,6 +332,18 @@ $azAccount = Connect-AzAccount -Identity -TenantId $tenantId&lt;/p&gt;
 &lt;p&gt;Immediate forwarding is configured through an overflow Threshold of 0 and not a Timeout of 0. This is because, typically, Overflow Threshold is less used than timeout. I always recommend using Overflow Threshold 0 when you want to do an immediate forwarding. Unlike Timeout 0, the call is forwarded directly, without the Queue answering the call first when using Overflow. You can read more about that &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6&#34; &gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;If the immediate forwarding is disabled again, the value of the Overflow Threshold will be set to 50 again. This is the default value which is configured for new Call Queues. Of course, you change that in the Runbook code.&lt;/p&gt;
 &lt;p&gt;This is what the Message Card looks like when it’s sent by the Azure Function.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1n4ZwmTEeRT5ZS0JNafTHMA.png&#34;
+	width=&#34;1488&#34;
+	height=&#34;711&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1n4ZwmTEeRT5ZS0JNafTHMA_hu_362a37b26056b3e4.png 480w, https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1n4ZwmTEeRT5ZS0JNafTHMA_hu_66c2f003e6bb18eb.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;209&#34;
+		data-flex-basis=&#34;502px&#34;
+	
+&gt;&lt;/p&gt;
 &lt;h3 id=&#34;lets-buildit&#34;&gt;Let’s Build It
 &lt;/h3&gt;&lt;p&gt;To build this on your own, please refer to my first article since the configuration steps are the same. You just need to replace the code of the Azure Functions and Runbooks from the Gists below.&lt;/p&gt;
 &lt;h4 id=&#34;runbook-code&#34;&gt;Runbook Code
@@ -344,6 +356,18 @@ $azAccount = Connect-AzAccount -Identity -TenantId $tenantId&lt;/p&gt;
 
 &lt;h4 id=&#34;request-card-functioncode&#34;&gt;Request Card Function Code
 &lt;/h4&gt;&lt;p&gt;To get a drop-down list with all your queues, we need to create one first.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1XL7fswGM4Jfa6t0vFfacjA.png&#34;
+	width=&#34;1491&#34;
+	height=&#34;712&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1XL7fswGM4Jfa6t0vFfacjA_hu_e797d85963443fa7.png 480w, https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1XL7fswGM4Jfa6t0vFfacjA_hu_ac5185ae93d6bb96.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;209&#34;
+		data-flex-basis=&#34;502px&#34;
+	
+&gt;&lt;/p&gt;
 &lt;p&gt;You can use the following code to create a list, which we’ll insert in our Function code later.&lt;/p&gt;
 &lt;script src=&#34;https://gist.github.com/mozziemozz/767ebef524b966842b67436cc2ba9a0a.js&#34;&gt;&lt;/script&gt;
 
@@ -366,9 +390,57 @@ $azAccount = Connect-AzAccount -Identity -TenantId $tenantId&lt;/p&gt;
 &gt;&lt;/p&gt;
 &lt;p&gt;That’s all. Now your users will be able to request a config change card. Let’s go through the process again.&lt;/p&gt;
 &lt;p&gt;First, the outgoing webhook is mentioned in a channel. The Function will then confirm that the request has been received.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1UUfkSQ4SySzyALPyKoRsQ.png&#34;
+	width=&#34;1471&#34;
+	height=&#34;236&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1UUfkSQ4SySzyALPyKoRsQ_hu_bce95e17336d65f5.png 480w, https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1UUfkSQ4SySzyALPyKoRsQ_hu_c14b6833aa695462.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;623&#34;
+		data-flex-basis=&#34;1495px&#34;
+	
+&gt;&lt;/p&gt;
 &lt;p&gt;The Function will also send the config change card.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1v733Oy8zycFXsgI62bN1g.png&#34;
+	width=&#34;1487&#34;
+	height=&#34;707&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1v733Oy8zycFXsgI62bN1g_hu_94924a8de9eb10a0.png 480w, https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1v733Oy8zycFXsgI62bN1g_hu_fd134e88a4f665de.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;210&#34;
+		data-flex-basis=&#34;504px&#34;
+	
+&gt;&lt;/p&gt;
 &lt;p&gt;Once the user has entered all the information, they will be able to submit the config. This will also update the card and confirm the settings.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/13dVUEDtxlbobZ6WqnL520Q.png&#34;
+	width=&#34;1477&#34;
+	height=&#34;268&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/13dVUEDtxlbobZ6WqnL520Q_hu_c657a50fdc2f0081.png 480w, https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/13dVUEDtxlbobZ6WqnL520Q_hu_c3ea06e043335e73.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;551&#34;
+		data-flex-basis=&#34;1322px&#34;
+	
+&gt;&lt;/p&gt;
 &lt;p&gt;It takes a while until the Runbook has finished. But one it has done its job, it will send us another card, confirming the settings.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1Ke7LzZ63zMU7IemEAdOc3g.png&#34;
+	width=&#34;1488&#34;
+	height=&#34;364&#34;
+	srcset=&#34;https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1Ke7LzZ63zMU7IemEAdOc3g_hu_af72aa9be200f0c3.png 480w, https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/1Ke7LzZ63zMU7IemEAdOc3g_hu_cb7dc76d022a08f5.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;408&#34;
+		data-flex-basis=&#34;981px&#34;
+	
+&gt;&lt;/p&gt;
 &lt;p&gt;Note: Setting a new number as the Queue’s Timeout Action will also reset the configured Overflow Threshold to 50. (If the Overflow Threshold would still be 0, the Timeout settings would have no effect at all.)&lt;/p&gt;
 &lt;p&gt;I hope that these code examples help you to build your own self-service solution for your users.&lt;/p&gt;
 </description>
