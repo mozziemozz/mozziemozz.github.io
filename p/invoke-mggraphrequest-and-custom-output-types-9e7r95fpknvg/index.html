@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="In this post I'll show you how you can use Invoke-MgGraphRequest and make it return a proper PowerShell object instead of just a hash table.">
+<title>Make Invoke-MgGraphRequest Return PowerShell Objects</title>
+
+<link rel='canonical' href='https://heusser.pro/p/invoke-mggraphrequest-and-custom-output-types-9e7r95fpknvg/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Make Invoke-MgGraphRequest Return PowerShell Objects">
+<meta property='og:description' content="In this post I'll show you how you can use Invoke-MgGraphRequest and make it return a proper PowerShell object instead of just a hash table.">
+<meta property='og:url' content='https://heusser.pro/p/invoke-mggraphrequest-and-custom-output-types-9e7r95fpknvg/'>
+<meta property='og:site_name' content='HEUSSER.PRO'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-06-15T08:00:16&#43;00:00'/><meta property='article:modified_time' content='2025-06-15T08:00:16&#43;00:00'/>
+<meta name="twitter:title" content="Make Invoke-MgGraphRequest Return PowerShell Objects">
+<meta name="twitter:description" content="In this post I'll show you how you can use Invoke-MgGraphRequest and make it return a proper PowerShell object instead of just a hash table.">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "kozb6q2xjn");
+    </script>    
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_fe2816fc44d850d2.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🫡</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
+            <h2 class="site-description">Martin Heusser | M365 MVP</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/mozziemozz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://x.com/@mozzeph'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/support-me/' >
+                
+                
+                
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-cup"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 11h14v-3h-14z" /><path d="M17.5 11l-1.5 10h-8l-1.5 -10" /><path d="M6 8v-1a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v1" /><path d="M15 5v-2" /></svg>
+                
+                <span>Support Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/imprint/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                
+                <span>Imprint</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#whats-the-difference-between-a-cmdlet-and-a-function-in-powershell">What&rsquo;s the Difference between a Cmdlet and a Function in PowerShell?</a></li>
+    <li><a href="#get-mguser-vs-invoke-mggraphrequest-output">Get-MgUser vs. Invoke-MgGraphRequest Output</a>
+      <ol>
+        <li><a href="#get-mguser">Get-MgUser</a>
+          <ol>
+            <li><a href="#bonus-tip-get-the-names-of-all-properties-available-on-an-object">Bonus Tip: Get the names of all Properties available on an Object</a></li>
+          </ol>
+        </li>
+        <li><a href="#invoke-mggraphrequest">Invoke-MgGraphRequest</a>
+          <ol>
+            <li><a href="#format-table-example-of-psobject">Format-Table Example of PSObject</a></li>
+            <li><a href="#format-table-example-of-hash-table">Format-Table Example of Hash Table</a></li>
+            <li><a href="#format-list-example-of-psobject">Format-List Example of PSObject</a></li>
+            <li><a href="#format-list-example-of-hash-table">Format-List Example of Hash Table</a></li>
+            <li><a href="#other-output-types">Other Output Types</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#summary">Summary</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/powershell/" style="background-color: #141e2c; color: #fff;">
+                PowerShell
+            </a>
+        
+            <a href="/categories/microsoft-graph/" >
+                Microsoft Graph
+            </a>
+        
+            <a href="/categories/automation/" >
+                Automation
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/invoke-mggraphrequest-and-custom-output-types-9e7r95fpknvg/">Make Invoke-MgGraphRequest Return PowerShell Objects</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            In this post I&#39;ll show you how you can use Invoke-MgGraphRequest and make it return a proper PowerShell object instead of just a hash table.
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jun 15, 2025</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    11 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>I&rsquo;ve blogged about the <code>Invoke-MgGraphRequest</code> Cmdlet <a class="link" href="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86" >before</a>. The funny thing is that I already used the <code>-OutputType</code> parameter there. However, I used the parameter value <strong>HttpResponseMessage</strong> and I did not know or even think of other possible values then.</p>
+<p>Most Microsoft Graph Functions included in <strong><code>Microsoft.Graph.*</code></strong> PowerShell modules will return a <strong>PSObject</strong> by default. That&rsquo;s not the case with <code>Invoke-MgGraphRequest</code> though. That Cmdlet usually returns a hash table by default.</p>
+<h2 id="whats-the-difference-between-a-cmdlet-and-a-function-in-powershell">What&rsquo;s the Difference between a Cmdlet and a Function in PowerShell?
+</h2><p>Before I get to it, I want to do a quick detour. You might have noticed that I referred to one command as a function and to the other one as a Cmdlet. That was totally intentional. I knew both terms already and I&rsquo;m pretty sure you did as well. However, I never really cared enough to learn the difference until now. You might find some old blog posts of me where I incorrectly referenced functions as Cmdlets or vice versa. The difference is quite simple. Cmdlets consist of compiled .NET code while functions are written entirely in PowerShell.</p>
+<p>It&rsquo;s pretty easy to check yourself if a PowerShell command included in a module is a Cmdlet or a function as well. Simply run <code>Get-Command</code> followed by its name to check.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Get-Command</span> <span class="s2">&#34;Get-MgUser&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">CommandType</span>     <span class="n">Name</span>                                               <span class="n">Version</span>    <span class="n">Source</span>
+</span></span><span class="line"><span class="cl"><span class="p">-----------</span>     <span class="p">----</span>                                               <span class="p">-------</span>    <span class="p">------</span>
+</span></span><span class="line"><span class="cl"><span class="kd">Function</span><span class="w">        </span><span class="nb">Get-MgUser</span>                                         <span class="mf">2.28</span><span class="p">.</span><span class="py">0</span>     <span class="n">Microsoft</span><span class="p">.</span><span class="py">Graph</span><span class="p">.</span><span class="py">Users</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Get-Command</span> <span class="s2">&#34;Invoke-MgGraphRequest&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">CommandType</span>     <span class="n">Name</span>                                               <span class="n">Version</span>    <span class="n">Source</span>
+</span></span><span class="line"><span class="cl"><span class="p">-----------</span>     <span class="p">----</span>                                               <span class="p">-------</span>    <span class="p">------</span>
+</span></span><span class="line"><span class="cl"><span class="n">Cmdlet</span>          <span class="nb">Invoke-MgGraphRequest</span>                              <span class="mf">2.28</span><span class="p">.</span><span class="py">0</span>     <span class="n">Microsoft</span><span class="p">.</span><span class="py">Graph</span><span class="p">.</span><span class="py">Authentication</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Now let&rsquo;s compare the default output of <code>Get-MgUser</code> and <code>Invoke-MgGraphRequest</code> to the <code>/users</code> Graph endpoint.</p>
+<h2 id="get-mguser-vs-invoke-mggraphrequest-output">Get-MgUser vs. Invoke-MgGraphRequest Output
+</h2><h3 id="get-mguser">Get-MgUser
+</h3><p>Note: For a better comparison, I&rsquo;m using <code>Select-Object</code> to only include the same properties which are returned by the <code>Invoke-MgGraphRequest</code> Cmdlet below.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$mgUser</span> <span class="p">=</span> <span class="nb">Get-MgUser</span> <span class="n">-UserId</span> <span class="n">a60938e1</span><span class="p">-</span><span class="n">994e</span><span class="p">-</span><span class="n">4d19-bb48</span><span class="p">-</span><span class="n">711b89938245</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">mail</span><span class="p">,</span> <span class="n">officeLocation</span><span class="p">,</span> <span class="n">jobTitle</span><span class="p">,</span> <span class="n">preferredLanguage</span><span class="p">,</span> <span class="n">surname</span><span class="p">,</span> <span class="n">givenName</span><span class="p">,</span> <span class="n">businessPhones</span><span class="p">,</span> <span class="n">userPrincipalName</span><span class="p">,</span> <span class="n">mobilePhone</span><span class="p">,</span> <span class="s2">&#34;@odata.context&#34;</span><span class="p">,</span> <span class="n">id</span><span class="p">,</span> <span class="n">displayName</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$mgUser</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">Mail</span>              <span class="err">:</span> <span class="n">admin</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">OfficeLocation</span>    <span class="err">:</span> 
+</span></span><span class="line"><span class="cl"><span class="n">JobTitle</span>          <span class="err">:</span> <span class="n">ADMIN</span>
+</span></span><span class="line"><span class="cl"><span class="n">PreferredLanguage</span> <span class="err">:</span> 
+</span></span><span class="line"><span class="cl"><span class="n">Surname</span>           <span class="err">:</span> <span class="n">NCT</span>
+</span></span><span class="line"><span class="cl"><span class="n">GivenName</span>         <span class="err">:</span> <span class="n">ADMIN</span>
+</span></span><span class="line"><span class="cl"><span class="n">BusinessPhones</span>    <span class="err">:</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl"><span class="n">UserPrincipalName</span> <span class="err">:</span> <span class="n">admin</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">MobilePhone</span>       <span class="err">:</span> 
+</span></span><span class="line"><span class="cl"><span class="nv">@odata</span><span class="p">.</span><span class="py">context</span>    <span class="err">:</span> 
+</span></span><span class="line"><span class="cl"><span class="n">Id</span>                <span class="err">:</span> <span class="n">a60938e1</span><span class="p">-</span><span class="n">994e</span><span class="p">-</span><span class="n">4d19-bb48</span><span class="p">-</span><span class="n">711b89938245</span>
+</span></span><span class="line"><span class="cl"><span class="n">DisplayName</span>       <span class="err">:</span> <span class="n">ADMIN</span> <span class="n">NCT</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>This returns a <strong>PSObject</strong>. I can confirm this running the following code.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$mgUser</span><span class="p">.</span><span class="py">GetType</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">IsPublic</span> <span class="n">IsSerial</span> <span class="n">Name</span>                                     <span class="n">BaseType</span>
+</span></span><span class="line"><span class="cl"><span class="p">--------</span> <span class="p">--------</span> <span class="p">----</span>                                     <span class="p">--------</span>
+</span></span><span class="line"><span class="cl"><span class="n">True</span>     <span class="n">False</span>    <span class="n">PSCustomObject</span>                           <span class="n">System</span><span class="p">.</span><span class="py">Object</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>This also means that I can access any property of <code>$mgUser</code> by simply adding `.<PropertyName> to it.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$mgUser</span><span class="p">.</span><span class="py">DisplayName</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">ADMIN</span> <span class="n">NCT</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="bonus-tip-get-the-names-of-all-properties-available-on-an-object">Bonus Tip: Get the names of all Properties available on an Object
+</h4><p>If you want to store all the property names of an object in a variable you can use this code.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$propertyNames</span> <span class="p">=</span> <span class="nv">$mgUser</span><span class="p">.</span><span class="py">PSObject</span><span class="p">.</span><span class="py">Properties</span> <span class="p">|</span> <span class="p">?</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="py">MemberType</span> <span class="o">-eq</span> <span class="s2">&#34;NoteProperty&#34;</span> <span class="p">}</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-ExpandProperty</span> <span class="n">Name</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$propertyNames</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">Mail</span>
+</span></span><span class="line"><span class="cl"><span class="n">OfficeLocation</span>
+</span></span><span class="line"><span class="cl"><span class="n">JobTitle</span>
+</span></span><span class="line"><span class="cl"><span class="n">PreferredLanguage</span>
+</span></span><span class="line"><span class="cl"><span class="n">Surname</span>
+</span></span><span class="line"><span class="cl"><span class="n">GivenName</span>
+</span></span><span class="line"><span class="cl"><span class="n">BusinessPhones</span>
+</span></span><span class="line"><span class="cl"><span class="n">UserPrincipalName</span>
+</span></span><span class="line"><span class="cl"><span class="n">MobilePhone</span>
+</span></span><span class="line"><span class="cl"><span class="n">Id</span>
+</span></span><span class="line"><span class="cl"><span class="n">DisplayName</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>If you only want to store the properties who have a value in a variable, you can use this code.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$propertyNames</span> <span class="p">=</span> <span class="nv">$mgUser</span><span class="p">.</span><span class="py">PSObject</span><span class="p">.</span><span class="py">Properties</span> <span class="p">|</span> <span class="p">?</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="py">MemberType</span> <span class="o">-eq</span> <span class="s2">&#34;NoteProperty&#34;</span> <span class="o">-and</span> <span class="nv">$_</span><span class="p">.</span><span class="py">Value</span> <span class="p">}</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-ExpandProperty</span> <span class="n">Name</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">Mail</span>
+</span></span><span class="line"><span class="cl"><span class="n">JobTitle</span>
+</span></span><span class="line"><span class="cl"><span class="n">Surname</span>
+</span></span><span class="line"><span class="cl"><span class="n">GivenName</span>
+</span></span><span class="line"><span class="cl"><span class="n">UserPrincipalName</span>
+</span></span><span class="line"><span class="cl"><span class="n">Id</span>
+</span></span><span class="line"><span class="cl"><span class="n">DisplayName</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>If you&rsquo;re looking for a use case for this, think about a scenario where you want to to a <code>Format-Table</code>, <code>Format-List</code> or <code>Select-Object</code> with lots of properties but are too lazy to type everything by hand. Now that we have all property names in a variable, we can easily reference <code>$propertyNames</code> in other commands.</p>
+<p>Of course this is not limited to the commands mentioned above. You could also use this to as a list of properties you want to include when you do something like <code>Get-MgUser</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Get-MgUser</span> <span class="n">-Top</span> <span class="mf">1</span> <span class="n">-Property</span> <span class="nv">$propertyNames</span> <span class="p">|</span> <span class="nb">fl </span><span class="nv">$propertyNames</span>                                                                     
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">Mail</span>              <span class="err">:</span> <span class="n">admin</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">JobTitle</span>          <span class="err">:</span> <span class="n">ADMIN</span>
+</span></span><span class="line"><span class="cl"><span class="n">Surname</span>           <span class="err">:</span> <span class="n">NCT</span>
+</span></span><span class="line"><span class="cl"><span class="n">GivenName</span>         <span class="err">:</span> <span class="n">ADMIN</span>
+</span></span><span class="line"><span class="cl"><span class="n">UserPrincipalName</span> <span class="err">:</span> <span class="n">admin</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">Id</span>                <span class="err">:</span> <span class="n">a60938e1</span><span class="p">-</span><span class="n">994e</span><span class="p">-</span><span class="n">4d19-bb48</span><span class="p">-</span><span class="n">711b89938245</span>
+</span></span><span class="line"><span class="cl"><span class="n">DisplayName</span>       <span class="err">:</span> <span class="n">ADMIN</span> <span class="n">NCT</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Now only the properties which have a value are shown in the output.</p>
+<p>A more specific example is when you get a SharePoint list item through the Graph API. In my case, my list has a lot of columns which are field properties of list items and I want to compare the values stored in the list to a PowerShell object which holds the values of actual Entra ID objects. Since my PowerShell object doesn&rsquo;t have any SharePoint specific properties which are present on the list item, I needed to create a new object for each list item which only includes the properties present on the PowerShell object of Entra ID values as well. Instead of manually copying and pasting each property name I want included, I used the code below to get all the property names and join all the relevant ones so I could then copy it and append to <code>Select-Object</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="p">(</span><span class="nv">$sharePointListItems</span><span class="p">[</span><span class="mf">0</span><span class="p">].</span><span class="py">PSObject</span><span class="p">.</span><span class="py">Properties</span> <span class="p">|</span> <span class="p">?</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="py">MemberType</span> <span class="o">-eq</span> <span class="s2">&#34;NoteProperty&#34;</span> <span class="o">-and</span> <span class="nv">$_</span><span class="p">.</span><span class="py">Name</span> <span class="o">-notmatch</span> <span class="s2">&#34;_&#34;</span> <span class="p">}</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-ExpandProperty</span> <span class="n">Name</span><span class="p">)</span> <span class="n">-join</span> <span class="s2">&#34;, &#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>I still had to manually remove a couple of properties but at least I didn&rsquo;t have to copy and paste each property name manually. Yes, I&rsquo;m lazy like that.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$currentSharePointListItem</span> <span class="p">=</span> <span class="nv">$sharePointListItems</span><span class="p">.</span><span class="n">IndexOf</span><span class="p">[</span><span class="nv">$currentIndex</span><span class="p">]</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="p">`</span>
+</span></span><span class="line"><span class="cl">    <span class="n">AppOwnerTenantId</span><span class="p">,</span> <span class="n">AppNotifiedSecretCount</span><span class="p">,</span> <span class="n">AppStatusReason</span><span class="p">,</span> <span class="n">AppExpiredCertificateCount</span><span class="p">,</span> <span class="n">AppStatus</span><span class="p">,</span> <span class="n">AppObjectId</span><span class="p">,</span> <span class="n">AppDelegatedPermissionsCount</span><span class="p">,</span> <span class="n">SpCreatedOn</span><span class="p">,</span> <span class="n">AssignmentRequired</span><span class="p">,</span> <span class="n">AppExpiringSoonCertificateCount</span><span class="p">,</span> <span class="n">AppTotalCertificateCount</span><span class="p">,</span> <span class="n">AppConfigApplicationPermissions</span><span class="p">,</span> <span class="n">AppValidSecretCount</span><span class="p">,</span> <span class="n">SpObjectId</span><span class="p">,</span> <span class="n">LinkTitle</span><span class="p">,</span> <span class="n">SpApplicationPermissionsCount</span><span class="p">,</span> <span class="n">AppConfigDelegatedPermissions</span><span class="p">,</span> <span class="n">SpPortalLink</span><span class="p">,</span> <span class="n">AppEditorLookupId</span><span class="p">,</span> <span class="n">EditorLookupId</span><span class="p">,</span> <span class="n">Objects</span><span class="p">,</span> <span class="n">AppValidCertificateCount</span><span class="p">,</span> <span class="n">PublisherDomain</span><span class="p">,</span> <span class="n">AppApplicationPermissionsCount</span><span class="p">,</span> <span class="n">AppType</span><span class="p">,</span> <span class="n">AppAuthorLookupId</span><span class="p">,</span> <span class="n">AppAndSpOwnersMismatch</span><span class="p">,</span> <span class="n">ApplicationPermissionsMismatch</span><span class="p">,</span> <span class="n">AppExpiredSecretCount</span><span class="p">,</span> <span class="n">AppExpiringSoonSecretCount</span><span class="p">,</span> <span class="n">AppTotalSecretCount</span><span class="p">,</span> <span class="n">SpAppId</span><span class="p">,</span> <span class="n">Title</span><span class="p">,</span> <span class="n">AppOwners</span><span class="p">,</span> <span class="n">SpEnabled</span><span class="p">,</span> <span class="n">AppCreatedOn</span><span class="p">,</span> <span class="n">SpGrantedApplicationPermissions</span><span class="p">,</span> <span class="n">AppNotifiedCertificateCount</span><span class="p">,</span> <span class="n">SpDelegatedPermissionsCount</span><span class="p">,</span> <span class="n">SpAdminConsentPermissions</span><span class="p">,</span> <span class="n">DelegatedPermissionsMismatch</span><span class="p">,</span> <span class="n">SpType</span><span class="p">,</span> <span class="n">AppAppId</span><span class="p">,</span> <span class="n">AppPortalLink</span><span class="p">,</span> <span class="n">SignInAudience</span><span class="p">,</span> <span class="n">SpGrantedDelegatedPermissions</span><span class="p">,</span> <span class="n">AppOwnerTenantName</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>As you can see, this would have been quite a lot of copying and pasting, if I had done it manually. Now I have a new object, only containing the properties I want so I can easily compare the object of SharePoint list values against the already existing object containing the values from Entra ID.</p>
+<h3 id="invoke-mggraphrequest">Invoke-MgGraphRequest
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$mgUserREST</span> <span class="p">=</span> <span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/users/a60938e1-994e-4d19-bb48-711b89938245&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$mgUserREST</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">Name</span>                           <span class="n">Value</span>
+</span></span><span class="line"><span class="cl"><span class="p">----</span>                           <span class="p">-----</span>
+</span></span><span class="line"><span class="cl"><span class="n">mail</span>                           <span class="n">admin</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">officeLocation</span>
+</span></span><span class="line"><span class="cl"><span class="n">jobTitle</span>                       <span class="n">ADMIN</span>
+</span></span><span class="line"><span class="cl"><span class="n">preferredLanguage</span>
+</span></span><span class="line"><span class="cl"><span class="n">surname</span>                        <span class="n">NCT</span>
+</span></span><span class="line"><span class="cl"><span class="n">givenName</span>                      <span class="n">ADMIN</span>
+</span></span><span class="line"><span class="cl"><span class="n">businessPhones</span>                 <span class="p">{}</span>
+</span></span><span class="line"><span class="cl"><span class="n">userPrincipalName</span>              <span class="n">admin</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">mobilePhone</span>
+</span></span><span class="line"><span class="cl"><span class="nv">@odata</span><span class="p">.</span><span class="py">context</span>                 <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">graph</span><span class="p">.</span><span class="py">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">v1</span><span class="p">.</span><span class="mf">0</span><span class="p">/</span><span class="nv">$metadata</span><span class="c">#users/$entity</span>
+</span></span><span class="line"><span class="cl"><span class="n">id</span>                             <span class="n">a60938e1</span><span class="p">-</span><span class="n">994e</span><span class="p">-</span><span class="n">4d19-bb48</span><span class="p">-</span><span class="n">711b89938245</span>
+</span></span><span class="line"><span class="cl"><span class="n">displayName</span>                    <span class="n">ADMIN</span> <span class="n">NCT</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>When I run <code>Invoke-MgGraphRequest</code> for the same user Id, I get a hash table instead. Hash tables consist of name/value pairs.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$mgUserREST</span><span class="p">.</span><span class="py">GetType</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">IsPublic</span> <span class="n">IsSerial</span> <span class="n">Name</span>                                     <span class="n">BaseType</span>
+</span></span><span class="line"><span class="cl"><span class="p">--------</span> <span class="p">--------</span> <span class="p">----</span>                                     <span class="p">--------</span>
+</span></span><span class="line"><span class="cl"><span class="n">True</span>     <span class="n">True</span>     <span class="n">Hashtable</span>                                <span class="n">System</span><span class="p">.</span><span class="py">Object</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>While it&rsquo;s still possible to access <code>$mgUserREST.displayName</code> like that, I can also access it like this <code>$mgUserREST[&quot;displayName&quot;]</code>. However, I much prefer PSObjects to hash tables.</p>
+<p>The main reason why I prefer PSObjects is because hash tables don&rsquo;t really support <code>Format-Table</code> and <code>Format-List</code> doesn&rsquo;t look nearly as nice as with PSObjects.</p>
+<h4 id="format-table-example-of-psobject">Format-Table Example of PSObject
+</h4><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$mguser</span> <span class="p">|</span> <span class="nb">ft </span><span class="nv">$propertyNames</span>                                                                                                        
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">Mail</span>               <span class="n">JobTitle</span> <span class="n">Surname</span> <span class="n">GivenName</span> <span class="n">UserPrincipalName</span>  <span class="n">Id</span>                                   <span class="n">DisplayName</span>
+</span></span><span class="line"><span class="cl"><span class="p">----</span>               <span class="p">--------</span> <span class="p">-------</span> <span class="p">---------</span> <span class="p">-----------------</span>  <span class="p">--</span>                                   <span class="p">-----------</span>
+</span></span><span class="line"><span class="cl"><span class="n">admin</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span> <span class="n">ADMIN</span>    <span class="n">NCT</span>     <span class="n">ADMIN</span>     <span class="n">admin</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span> <span class="n">a60938e1</span><span class="p">-</span><span class="n">994e</span><span class="p">-</span><span class="n">4d19-bb48</span><span class="p">-</span><span class="n">711b89938245</span> <span class="n">ADMIN</span> <span class="n">NCT</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="format-table-example-of-hash-table">Format-Table Example of Hash Table
+</h4><p>The output will look exactly like the output <a class="link" href="#invoke-mggraphrequest" >here</a>.</p>
+<h4 id="format-list-example-of-psobject">Format-List Example of PSObject
+</h4><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$mgUser</span> <span class="p">|</span> <span class="nb">fl </span><span class="nv">$propertyNames</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">Mail</span>              <span class="err">:</span> <span class="n">admin</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">JobTitle</span>          <span class="err">:</span> <span class="n">ADMIN</span>
+</span></span><span class="line"><span class="cl"><span class="n">Surname</span>           <span class="err">:</span> <span class="n">NCT</span>
+</span></span><span class="line"><span class="cl"><span class="n">GivenName</span>         <span class="err">:</span> <span class="n">ADMIN</span>
+</span></span><span class="line"><span class="cl"><span class="n">UserPrincipalName</span> <span class="err">:</span> <span class="n">admin</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">Id</span>                <span class="err">:</span> <span class="n">a60938e1</span><span class="p">-</span><span class="n">994e</span><span class="p">-</span><span class="n">4d19-bb48</span><span class="p">-</span><span class="n">711b89938245</span>
+</span></span><span class="line"><span class="cl"><span class="n">DisplayName</span>       <span class="err">:</span> <span class="n">ADMIN</span> <span class="n">NCT</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="format-list-example-of-hash-table">Format-List Example of Hash Table
+</h4><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$mgUserREST</span><span class="p">.</span><span class="py">GetEnumerator</span><span class="p">()</span> <span class="p">|</span> <span class="p">?</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="py">Value</span> <span class="p">}</span> <span class="p">|</span> <span class="nb">fl
+</span></span></span><span class="line"><span class="cl"><span class="nb"></span>
+</span></span><span class="line"><span class="cl"><span class="n">Name</span>  <span class="err">:</span> <span class="n">mail</span>
+</span></span><span class="line"><span class="cl"><span class="n">Value</span> <span class="err">:</span> <span class="n">admin</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">Name</span>  <span class="err">:</span> <span class="n">jobTitle</span>
+</span></span><span class="line"><span class="cl"><span class="n">Value</span> <span class="err">:</span> <span class="n">ADMIN</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">Name</span>  <span class="err">:</span> <span class="n">surname</span>
+</span></span><span class="line"><span class="cl"><span class="n">Value</span> <span class="err">:</span> <span class="n">NCT</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">Name</span>  <span class="err">:</span> <span class="n">givenName</span>
+</span></span><span class="line"><span class="cl"><span class="n">Value</span> <span class="err">:</span> <span class="n">ADMIN</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">Name</span>  <span class="err">:</span> <span class="n">userPrincipalName</span>
+</span></span><span class="line"><span class="cl"><span class="n">Value</span> <span class="err">:</span> <span class="n">admin</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">Name</span>  <span class="err">:</span> <span class="nv">@odata</span><span class="p">.</span><span class="py">context</span>
+</span></span><span class="line"><span class="cl"><span class="n">Value</span> <span class="err">:</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">graph</span><span class="p">.</span><span class="py">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">v1</span><span class="p">.</span><span class="mf">0</span><span class="p">/</span><span class="nv">$metadata</span><span class="c">#users/$entity</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">Name</span>  <span class="err">:</span> <span class="n">id</span>
+</span></span><span class="line"><span class="cl"><span class="n">Value</span> <span class="err">:</span> <span class="n">a60938e1</span><span class="p">-</span><span class="n">994e</span><span class="p">-</span><span class="n">4d19-bb48</span><span class="p">-</span><span class="n">711b89938245</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">Name</span>  <span class="err">:</span> <span class="n">displayName</span>
+</span></span><span class="line"><span class="cl"><span class="n">Value</span> <span class="err">:</span> <span class="n">ADMIN</span> <span class="n">NCT</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>As you can see, PSObjects are much easier to work with in these types of scenarios. Especially if you&rsquo;re working with arrays and multiple objects.</p>
+<p>All the responses of the examples so far only included one user object. It only gets worse with multiple user objects.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$mgUserRESTMultipleUsers</span> <span class="p">=</span> <span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/users?</span><span class="se">`$</span><span class="s2">orderby=displayName&amp;</span><span class="se">`$</span><span class="s2">top=2&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">Name</span>                           <span class="n">Value</span>
+</span></span><span class="line"><span class="cl"><span class="p">----</span>                           <span class="p">-----</span>
+</span></span><span class="line"><span class="cl"><span class="n">value</span>                          <span class="p">{</span><span class="n">a60938e1</span><span class="p">-</span><span class="n">994e</span><span class="p">-</span><span class="n">4d19-bb48</span><span class="p">-</span><span class="n">711b89938245</span><span class="p">,</span> <span class="n">defd4bfe</span><span class="p">-</span><span class="n">987c</span><span class="p">-</span><span class="n">4c5b-a9e3-c59bfb15b57b</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nv">@odata</span><span class="p">.</span><span class="py">nextLink</span>                <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">graph</span><span class="p">.</span><span class="py">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">v1</span><span class="p">.</span><span class="mf">0</span><span class="p">/</span><span class="n">users</span><span class="p">?</span><span class="nv">$orderby</span><span class="p">=</span><span class="n">displayName</span><span class="p">&amp;</span><span class="nv">$top</span><span class="p">=</span><span class="mf">2</span><span class="p">&amp;</span><span class="nv">$skiptoken</span><span class="p">=</span><span class="n">RFNwdAIAAQAAADE6Q2FybG9zIERpYXogZGVmZDRiZmUtOTg3Y</span><span class="err">…</span> 
+</span></span><span class="line"><span class="cl"><span class="nv">@odata</span><span class="p">.</span><span class="py">context</span>                 <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">graph</span><span class="p">.</span><span class="py">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">v1</span><span class="p">.</span><span class="mf">0</span><span class="p">/</span><span class="nv">$metadata</span><span class="c">#users</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>First of all, this is still a hash table but the actual values are now nested in the <strong>Value</strong> property.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$mgUserRESTMultipleUsers</span><span class="p">.</span><span class="py">GetType</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">IsPublic</span> <span class="n">IsSerial</span> <span class="n">Name</span>                                     <span class="n">BaseType</span>
+</span></span><span class="line"><span class="cl"><span class="p">--------</span> <span class="p">--------</span> <span class="p">----</span>                                     <span class="p">--------</span>
+</span></span><span class="line"><span class="cl"><span class="n">True</span>     <span class="n">True</span>     <span class="n">Hashtable</span>                                <span class="n">System</span><span class="p">.</span><span class="py">Object</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>PowerShell says that <code>$mgUserRESTMultipleUsers.Value</code> is an <strong>Object[]</strong> which means it&rsquo;s an array of objects.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$mgUserRESTMultipleUsers</span><span class="p">.</span><span class="py">Value</span><span class="p">.</span><span class="py">GetType</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">IsPublic</span> <span class="n">IsSerial</span> <span class="n">Name</span>                                     <span class="n">BaseType</span>
+</span></span><span class="line"><span class="cl"><span class="p">--------</span> <span class="p">--------</span> <span class="p">----</span>                                     <span class="p">--------</span>
+</span></span><span class="line"><span class="cl"><span class="n">True</span>     <span class="n">True</span>     <span class="n">Object</span><span class="p">[]</span>                                 <span class="n">System</span><span class="p">.</span><span class="py">Array</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>However, when I access the <strong>Value</strong> property, it&rsquo;s still a hash table and we can&rsquo;t even see clearly where one object ends and the next one begins.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$mgUserRESTMultipleUsers</span><span class="p">.</span><span class="py">Value</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">Name</span>                           <span class="n">Value</span>
+</span></span><span class="line"><span class="cl"><span class="p">----</span>                           <span class="p">-----</span>
+</span></span><span class="line"><span class="cl"><span class="n">mail</span>                           <span class="n">admin</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">officeLocation</span>
+</span></span><span class="line"><span class="cl"><span class="n">jobTitle</span>                       <span class="n">ADMIN</span>
+</span></span><span class="line"><span class="cl"><span class="n">preferredLanguage</span>
+</span></span><span class="line"><span class="cl"><span class="n">surname</span>                        <span class="n">NCT</span>
+</span></span><span class="line"><span class="cl"><span class="n">givenName</span>                      <span class="n">ADMIN</span>
+</span></span><span class="line"><span class="cl"><span class="n">businessPhones</span>                 <span class="p">{}</span>
+</span></span><span class="line"><span class="cl"><span class="n">userPrincipalName</span>              <span class="n">admin</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">mobilePhone</span>
+</span></span><span class="line"><span class="cl"><span class="n">id</span>                             <span class="n">a60938e1</span><span class="p">-</span><span class="n">994e</span><span class="p">-</span><span class="n">4d19-bb48</span><span class="p">-</span><span class="n">711b89938245</span>
+</span></span><span class="line"><span class="cl"><span class="n">displayName</span>                    <span class="n">ADMIN</span> <span class="n">NCT</span>
+</span></span><span class="line"><span class="cl"><span class="n">mail</span>                           <span class="n">carlos</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">officeLocation</span>
+</span></span><span class="line"><span class="cl"><span class="n">jobTitle</span>                       <span class="n">Customer</span> <span class="n">Support</span> <span class="n">Representative</span>
+</span></span><span class="line"><span class="cl"><span class="n">preferredLanguage</span>
+</span></span><span class="line"><span class="cl"><span class="n">surname</span>                        <span class="n">Diaz</span>
+</span></span><span class="line"><span class="cl"><span class="n">givenName</span>                      <span class="n">Carlos</span>
+</span></span><span class="line"><span class="cl"><span class="n">businessPhones</span>                 <span class="p">{</span><span class="mf">+41</span> <span class="mf">43</span> <span class="mf">123</span> <span class="mf">45</span> <span class="mf">67</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">userPrincipalName</span>              <span class="n">carlos</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">mobilePhone</span>                    <span class="mf">+41</span> <span class="mf">79</span> <span class="mf">456</span> <span class="mf">78</span> <span class="mf">90</span>
+</span></span><span class="line"><span class="cl"><span class="n">id</span>                             <span class="n">defd4bfe</span><span class="p">-</span><span class="n">987c</span><span class="p">-</span><span class="n">4c5b-a9e3-c59bfb15b57b</span>
+</span></span><span class="line"><span class="cl"><span class="n">displayName</span>                    <span class="n">Carlos</span> <span class="n">Diaz</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Up until now, I&rsquo;ve always used the simple yet effective trick to convert to and from json to convert a hash table to a PSObject.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$mgUserRESTMultipleUsersObject</span> <span class="p">=</span>  <span class="nv">$mgUserRESTMultipleUsers</span><span class="p">.</span><span class="py">Value</span> <span class="p">|</span> <span class="nb">ConvertTo-Json</span> <span class="n">-Depth</span> <span class="mf">99</span> <span class="p">|</span> <span class="nb">ConvertFrom-Json</span> <span class="n">-Depth</span> <span class="mf">99</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$mgUserRESTMultipleUsersObject</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">mail</span>              <span class="err">:</span> <span class="n">admin</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">officeLocation</span>    <span class="err">:</span> 
+</span></span><span class="line"><span class="cl"><span class="n">jobTitle</span>          <span class="err">:</span> <span class="n">ADMIN</span>
+</span></span><span class="line"><span class="cl"><span class="n">preferredLanguage</span> <span class="err">:</span> 
+</span></span><span class="line"><span class="cl"><span class="n">surname</span>           <span class="err">:</span> <span class="n">NCT</span>
+</span></span><span class="line"><span class="cl"><span class="n">givenName</span>         <span class="err">:</span> <span class="n">ADMIN</span>
+</span></span><span class="line"><span class="cl"><span class="n">businessPhones</span>    <span class="err">:</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl"><span class="n">userPrincipalName</span> <span class="err">:</span> <span class="n">admin</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">mobilePhone</span>       <span class="err">:</span> 
+</span></span><span class="line"><span class="cl"><span class="n">id</span>                <span class="err">:</span> <span class="n">a60938e1</span><span class="p">-</span><span class="n">994e</span><span class="p">-</span><span class="n">4d19-bb48</span><span class="p">-</span><span class="n">711b89938245</span>
+</span></span><span class="line"><span class="cl"><span class="n">displayName</span>       <span class="err">:</span> <span class="n">ADMIN</span> <span class="n">NCT</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">mail</span>              <span class="err">:</span> <span class="n">carlos</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">officeLocation</span>    <span class="err">:</span> 
+</span></span><span class="line"><span class="cl"><span class="n">jobTitle</span>          <span class="err">:</span> <span class="n">Customer</span> <span class="n">Support</span> <span class="n">Representative</span>
+</span></span><span class="line"><span class="cl"><span class="n">preferredLanguage</span> <span class="err">:</span> 
+</span></span><span class="line"><span class="cl"><span class="n">surname</span>           <span class="err">:</span> <span class="n">Diaz</span>
+</span></span><span class="line"><span class="cl"><span class="n">givenName</span>         <span class="err">:</span> <span class="n">Carlos</span>
+</span></span><span class="line"><span class="cl"><span class="n">businessPhones</span>    <span class="err">:</span> <span class="p">{</span><span class="mf">+41</span> <span class="mf">43</span> <span class="mf">123</span> <span class="mf">45</span> <span class="mf">67</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">userPrincipalName</span> <span class="err">:</span> <span class="n">carlos</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">mobilePhone</span>       <span class="err">:</span> <span class="mf">+41</span> <span class="mf">79</span> <span class="mf">456</span> <span class="mf">78</span> <span class="mf">90</span>
+</span></span><span class="line"><span class="cl"><span class="n">id</span>                <span class="err">:</span> <span class="n">defd4bfe</span><span class="p">-</span><span class="n">987c</span><span class="p">-</span><span class="n">4c5b-a9e3-c59bfb15b57b</span>
+</span></span><span class="line"><span class="cl"><span class="n">displayName</span>       <span class="err">:</span> <span class="n">Carlos</span> <span class="n">Diaz</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$mgUserRESTMultipleUsersObject</span><span class="p">.</span><span class="py">GetType</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">IsPublic</span> <span class="n">IsSerial</span> <span class="n">Name</span>                                     <span class="n">BaseType</span>
+</span></span><span class="line"><span class="cl"><span class="p">--------</span> <span class="p">--------</span> <span class="p">----</span>                                     <span class="p">--------</span>
+</span></span><span class="line"><span class="cl"><span class="n">True</span>     <span class="n">True</span>     <span class="n">Object</span><span class="p">[]</span>                                 <span class="n">System</span><span class="p">.</span><span class="py">Array</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>But thanks to a recent inline suggestion by GitHub Copilot, I discovered that you can actually change the <strong>OutputType</strong> to <code>PSObject</code> when using <code>Invoke-MgGraphRequest</code>. When multiple values/users are returned, we&rsquo;ll still need to select the <strong>Value</strong> property explicitly.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$mgUserRESTMultipleUsers</span> <span class="p">=</span> <span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/users?</span><span class="se">`$</span><span class="s2">orderby=displayName&amp;</span><span class="se">`$</span><span class="s2">top=2&#34;</span> <span class="n">-OutputType</span> <span class="n">PSObject</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-ExpandProperty</span> <span class="n">Value</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$mgUserRESTMultipleUsers</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">businessPhones</span>    <span class="err">:</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl"><span class="n">displayName</span>       <span class="err">:</span> <span class="n">ADMIN</span> <span class="n">NCT</span>
+</span></span><span class="line"><span class="cl"><span class="n">givenName</span>         <span class="err">:</span> <span class="n">ADMIN</span>
+</span></span><span class="line"><span class="cl"><span class="n">jobTitle</span>          <span class="err">:</span> <span class="n">ADMIN</span>
+</span></span><span class="line"><span class="cl"><span class="n">mail</span>              <span class="err">:</span> <span class="n">admin</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">mobilePhone</span>       <span class="err">:</span> 
+</span></span><span class="line"><span class="cl"><span class="n">officeLocation</span>    <span class="err">:</span> 
+</span></span><span class="line"><span class="cl"><span class="n">preferredLanguage</span> <span class="err">:</span> 
+</span></span><span class="line"><span class="cl"><span class="n">surname</span>           <span class="err">:</span> <span class="n">NCT</span>
+</span></span><span class="line"><span class="cl"><span class="n">userPrincipalName</span> <span class="err">:</span> <span class="n">admin</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">id</span>                <span class="err">:</span> <span class="n">a60938e1</span><span class="p">-</span><span class="n">994e</span><span class="p">-</span><span class="n">4d19-bb48</span><span class="p">-</span><span class="n">711b89938245</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">businessPhones</span>    <span class="err">:</span> <span class="p">{</span><span class="mf">+41</span> <span class="mf">43</span> <span class="mf">123</span> <span class="mf">45</span> <span class="mf">67</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">displayName</span>       <span class="err">:</span> <span class="n">Carlos</span> <span class="n">Diaz</span>
+</span></span><span class="line"><span class="cl"><span class="n">givenName</span>         <span class="err">:</span> <span class="n">Carlos</span>
+</span></span><span class="line"><span class="cl"><span class="n">jobTitle</span>          <span class="err">:</span> <span class="n">Customer</span> <span class="n">Support</span> <span class="n">Representative</span>
+</span></span><span class="line"><span class="cl"><span class="n">mail</span>              <span class="err">:</span> <span class="n">carlos</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">mobilePhone</span>       <span class="err">:</span> <span class="mf">+41</span> <span class="mf">79</span> <span class="mf">456</span> <span class="mf">78</span> <span class="mf">90</span>
+</span></span><span class="line"><span class="cl"><span class="n">officeLocation</span>    <span class="err">:</span> 
+</span></span><span class="line"><span class="cl"><span class="n">preferredLanguage</span> <span class="err">:</span> 
+</span></span><span class="line"><span class="cl"><span class="n">surname</span>           <span class="err">:</span> <span class="n">Diaz</span>
+</span></span><span class="line"><span class="cl"><span class="n">userPrincipalName</span> <span class="err">:</span> <span class="n">carlos</span><span class="nv">@nocaptech</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">id</span>                <span class="err">:</span> <span class="n">defd4bfe</span><span class="p">-</span><span class="n">987c</span><span class="p">-</span><span class="n">4c5b-a9e3-c59bfb15b57b</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$mgUserRESTMultipleUsers</span><span class="p">.</span><span class="py">GetType</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">IsPublic</span> <span class="n">IsSerial</span> <span class="n">Name</span>                                     <span class="n">BaseType</span>
+</span></span><span class="line"><span class="cl"><span class="p">--------</span> <span class="p">--------</span> <span class="p">----</span>                                     <span class="p">--------</span>
+</span></span><span class="line"><span class="cl"><span class="n">True</span>     <span class="n">True</span>     <span class="n">Object</span><span class="p">[]</span>                                 <span class="n">System</span><span class="p">.</span><span class="py">Array</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>When only a single object is returned, the type will be <strong>PSCustomObject</strong> since the base type isn&rsquo;t an array.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$mgUserREST</span> <span class="p">=</span> <span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/users/a60938e1-994e-4d19-bb48-711b89938245&#34;</span> <span class="n">-OutputType</span> <span class="n">PSObject</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$mgUserREST</span><span class="p">.</span><span class="py">GetType</span><span class="p">()</span>                                                                                                              
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">IsPublic</span> <span class="n">IsSerial</span> <span class="n">Name</span>                                     <span class="n">BaseType</span>
+</span></span><span class="line"><span class="cl"><span class="p">--------</span> <span class="p">--------</span> <span class="p">----</span>                                     <span class="p">--------</span>
+</span></span><span class="line"><span class="cl"><span class="n">True</span>     <span class="n">False</span>    <span class="n">PSCustomObject</span>                           <span class="n">System</span><span class="p">.</span><span class="py">Object</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>This is very helpful as it allows you to use <code>Invoke-MgGraphRequest</code> much more like the Graph PowerShell functions and Cmdlets behave, whenever you need to use it.</p>
+<h4 id="other-output-types">Other Output Types
+</h4><p>Other output types are:</p>
+<ul>
+<li>HashTable (default one for most endpoints)</li>
+<li>Json</li>
+<li>HttpResponseMessage</li>
+</ul>
+<h5 id="json-response">Json Response
+</h5><p>If you use <strong>Json</strong> you will need to use <code>ConvertFrom-Json</code> if you want to further process the response in PowerShell.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$mgUserREST</span> <span class="p">=</span> <span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/users/a60938e1-994e-4d19-bb48-711b89938245&#34;</span> <span class="n">-OutputType</span> <span class="n">Json</span> <span class="p">|</span> <span class="nb">ConvertFrom-Json</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h5 id="httpresonsemessage">HttpResonseMessage
+</h5><p>This is the value I used in the blog post I linked at the beginning of this article. While this doesn&rsquo;t include any of the queried object&rsquo;s data, it&rsquo;s certainly handy if you need to get a hold of the access token used in that session.</p>
+<h2 id="summary">Summary
+</h2><p>I&rsquo;m really glad that GitHub Copilot helped me (re)discover this helpful parameter. It certainly makes my scripts more efficient and clean looking. Although it&rsquo;s minimal, I can even save a few lines of code and processing power because I don&rsquo;t need to serialize and deserialize (Json conversion) Graph responses in my code anymore.</p>
+<p>All you need to do to go from the result on the left to the one on the right is to append <code>-OutputType PSObject</code> to <code>Invoke-MgGraphRequest</code>.</p>
+<p><img src="/p/invoke-mggraphrequest-and-custom-output-types-9e7r95fpknvg/image.png"
+	width="1734"
+	height="927"
+	srcset="/p/invoke-mggraphrequest-and-custom-output-types-9e7r95fpknvg/image_hu_e33ed6b2dc9d99a8.png 480w, /p/invoke-mggraphrequest-and-custom-output-types-9e7r95fpknvg/image_hu_e7531e23363852f2.png 1024w"
+	loading="lazy"
+	
+		alt="Without OutputType parameter"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="187"
+		data-flex-basis="448px"
+	
+> <img src="/p/invoke-mggraphrequest-and-custom-output-types-9e7r95fpknvg/image-1.png"
+	width="1734"
+	height="927"
+	srcset="/p/invoke-mggraphrequest-and-custom-output-types-9e7r95fpknvg/image-1_hu_9ed341da545b9519.png 480w, /p/invoke-mggraphrequest-and-custom-output-types-9e7r95fpknvg/image-1_hu_aa5951c106980008.png 1024w"
+	loading="lazy"
+	
+		alt="with OutputType parameter"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="187"
+		data-flex-basis="448px"
+	
+></p>
+<p>I hope that you enjoyed this blog post with lots of code examples and that you learned something as well.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/">
+        
+        
+            <div class="article-image">
+                <img src="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/Cover.d27f75b1486ba1a383c8ceacca207724_hu_f48b701f8e79df8e.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post Find Tenant Owner Company Name with Only an Entra Tenant Id"
+                        data-key="/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb" 
+                        data-hash="md5-0n91sUhroaODyM6syiB3JA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Find Tenant Owner Company Name with Only an Entra Tenant Id</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/">
+        
+        
+            <div class="article-image">
+                <img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/cover.7304950aa6b85bd8562e89f20b457eab_hu_279a6c7452d3f0bf.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post Get Missed Call Notifications for Teams Call Queues (Free Community Solution)"
+                        data-key="/get-missed-call-notifications-for-teams-call-queues-(free-community-solution)-cozo3bhojb7t" 
+                        data-hash="md5-cwSVCqa4W9hWLonyC0V&#43;qw==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Get Missed Call Notifications for Teams Call Queues (Free Community Solution)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Get Microsoft Teams Meeting Attendance Report Through Graph API</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Microsoft Graph: Get an Access Token from a PowerShell Session</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/powershell-script-example-upload-small-files-via-microsoft-graph-z45tbunyoa85/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">PowerShell Script Example: Upload Small Files to SharePoint via Microsoft Graph</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "heusser-pro" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2025 HEUSSER.PRO
+    </section>
+    
+    <section class="powerby">
+        
+            Hosted on GitHub Pages <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
+

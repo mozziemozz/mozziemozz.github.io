@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="In this blog post, I'll show you a neat little trick to find out the company name solely from a tenant id.">
+<title>Find Tenant Owner Company Name with Only an Entra Tenant Id</title>
+
+<link rel='canonical' href='https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Find Tenant Owner Company Name with Only an Entra Tenant Id">
+<meta property='og:description' content="In this blog post, I'll show you a neat little trick to find out the company name solely from a tenant id.">
+<meta property='og:url' content='https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/'>
+<meta property='og:site_name' content='HEUSSER.PRO'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-06-15T11:39:55&#43;00:00'/><meta property='article:modified_time' content='2025-06-15T11:39:55&#43;00:00'/><meta property='og:image' content='https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/Cover.png' />
+<meta name="twitter:title" content="Find Tenant Owner Company Name with Only an Entra Tenant Id">
+<meta name="twitter:description" content="In this blog post, I'll show you a neat little trick to find out the company name solely from a tenant id."><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/Cover.png' />
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "kozb6q2xjn");
+    </script>    
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_fe2816fc44d850d2.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🫡</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
+            <h2 class="site-description">Martin Heusser | M365 MVP</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/mozziemozz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://x.com/@mozzeph'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/support-me/' >
+                
+                
+                
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-cup"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 11h14v-3h-14z" /><path d="M17.5 11l-1.5 10h-8l-1.5 -10" /><path d="M6 8v-1a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v1" /><path d="M15 5v-2" /></svg>
+                
+                <span>Support Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/imprint/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                
+                <span>Imprint</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#doing-it-programmatically-with-powershell">Doing it Programmatically with PowerShell</a></li>
+    <li><a href="#use-cases">Use Cases</a>
+      <ol>
+        <li><a href="#check-app-owner-tenant-id-of-multi-tenant-apps-in-your-tenant">Check App Owner Tenant Id of Multi Tenant Apps in your Tenant</a></li>
+        <li><a href="#check-sign-in-logs-of-users">Check Sign-In Logs of Users</a></li>
+      </ol>
+    </li>
+    <li><a href="#filter-sign-in-logs-for-guest-sign-ins-and-get-tenant-name">Filter Sign-In Logs for Guest Sign-Ins and Get Tenant Name</a></li>
+    <li><a href="#summary">Summary</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/">
+                <img src="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/Cover_hu_8127d2a932e0c882.png"
+                        srcset="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/Cover_hu_8127d2a932e0c882.png 800w, /p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/Cover_hu_94169c94f1757b38.png 1600w"
+                        width="800" 
+                        height="238" 
+                        loading="lazy"
+                        alt="Featured image of post Find Tenant Owner Company Name with Only an Entra Tenant Id" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/entra-id/" >
+                Entra ID
+            </a>
+        
+            <a href="/categories/microsoft-graph/" >
+                Microsoft Graph
+            </a>
+        
+            <a href="/categories/powershell/" style="background-color: #141e2c; color: #fff;">
+                PowerShell
+            </a>
+        
+            <a href="/categories/identity/" >
+                Identity
+            </a>
+        
+            <a href="/categories/automation/" >
+                Automation
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/">Find Tenant Owner Company Name with Only an Entra Tenant Id</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            In this blog post, I&#39;ll show you a neat little trick to find out the company name solely from a tenant id.
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jun 15, 2025</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    6 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>If you work a lot with Microsoft Entra ID a lot, you probably already know the <a class="link" href="https://gettenantpartitionweb.azurewebsites.net"  target="_blank" rel="noopener"
+    >Tenant Lookup Website</a> created by the Microsoft 365 U.S. Government Programs team. However, the lookups this website performs only work in one direction. You can only get a tenant id, if you already know one of its connected domains but you can&rsquo;t get a tenant&rsquo;s domain or name just off of a tenant id.</p>
+<p><img src="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-1.png"
+	width="1350"
+	height="1037"
+	srcset="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-1_hu_bfae7ff9eaa7ffb2.png 480w, /p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-1_hu_6c1b45e4f185612b.png 1024w"
+	loading="lazy"
+	
+		alt="Entering a tenant id won’t return it’s name."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="130"
+		data-flex-basis="312px"
+	
+> <img src="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-2.png"
+	width="1350"
+	height="1037"
+	srcset="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-2_hu_685ebe73501e8e8.png 480w, /p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-2_hu_9d3bd1a0cd21d0fc.png 1024w"
+	loading="lazy"
+	
+		alt="However, entering a domain will return the tenant id as well."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="130"
+		data-flex-basis="312px"
+	
+></p>
+<p>I&rsquo;m not sure how well known this technique is but when I was still working as a consultant for lots of different companies, I also worked in a lot of different tenants. So, I used this trick quite often. You can actually sign into a specific tenant by appending <code>/&lt;tenant id&gt;</code> to i.e. <code>https://portal.azure.com</code>.</p>
+<p>So, to access my <strong>MVP LAB</strong> tenant directly, I can just go to <code>https://portal.azure.com/536f948a-babb-4048-836d-717833aa0da5</code> or even <code>https://portal.azure.com/mvplab.ch</code>.</p>
+<p><img src="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-10.png"
+	width="1335"
+	height="1044"
+	srcset="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-10_hu_52c324a2e5ea0b14.png 480w, /p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-10_hu_a5684c0597bcf6cf.png 1024w"
+	loading="lazy"
+	
+		alt="Sign-In page without custom branding"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="127"
+		data-flex-basis="306px"
+	
+></p>
+<p>This will open my tenant&rsquo;s sign in page. If no company branding is applied, it doesn&rsquo;t tell you much. However, if you view the page source and search for <code>sCompanyDisplayName</code> it will tell you the name of the tenant.</p>
+<p><img src="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image.png"
+	width="332"
+	height="57"
+	srcset="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image_hu_f9dd427cbfaa1fa3.png 480w, /p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image_hu_715d57bf8c14d0be.png 1024w"
+	loading="lazy"
+	
+		alt="Company Display Name in page source"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="582"
+		data-flex-basis="1397px"
+	
+></p>
+<p>The company display name is the one you see in Entra ID&rsquo;s <strong>Overview</strong>.</p>
+<p><img src="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-4.png"
+	width="719"
+	height="308"
+	srcset="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-4_hu_aaff922bfa61002b.png 480w, /p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-4_hu_17fecf408220abf1.png 1024w"
+	loading="lazy"
+	
+		alt="Tenant Name in Entra ID Overview"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="233"
+		data-flex-basis="560px"
+	
+></p>
+<p>If a company is using custom branding, it&rsquo;s even more straight forward to learn more about a tenant&rsquo;s owner. For example, this is LinkedIn&rsquo;s sign-in page.</p>
+<p><img src="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-3.png"
+	width="1352"
+	height="1038"
+	srcset="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-3_hu_9d6571acaacbad6f.png 480w, /p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-3_hu_8bc02e477e6316c8.png 1024w"
+	loading="lazy"
+	
+		alt="LinkedIn sign-in page"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="130"
+		data-flex-basis="312px"
+	
+></p>
+<p>The page source doesn&rsquo;t expose any domains or other unique values. You can only see the company display name or if the tenant has custom branding, you may be able to tell who the tenant belongs to by looking at their logo or background. However, in most cases, this is already better than just knowing a tenant&rsquo;s id.</p>
+<p>Remeber to always be vigilant and that bad actors might create fake tenants which try to trick you into thinking that they&rsquo;re a legit organization by using another companies branding.</p>
+<h2 id="doing-it-programmatically-with-powershell">Doing it Programmatically with PowerShell
+</h2><p>You can also get the company display names programmatically with the PowerShell code below.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$tenantId</span> <span class="p">=</span> <span class="s2">&#34;536f948a-babb-4048-836d-717833aa0da5&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$uri</span> <span class="p">=</span> <span class="s2">&#34;https://login.microsoftonline.com/</span><span class="nv">$tenantId</span><span class="s2">/oauth2/v2.0/authorize?redirect_uri=https%3A%2F%2Fportal.azure.com%2Fsignin%2Findex%2F&amp;response_type=code%20id_token&amp;scope=https%3A%2F%2Fmanagement.core.windows.net%2F%2Fuser_impersonation%20openid%20email%20profile&amp;state=OpenIdConnect.AuthenticationProperties%3DCFuFkF0F_FdfQWmaBEfZkrwUojoCqnTFLK5IXKUlMck0I18skpp-zVFCSJNkKE9PDD8wwaUIkX7ln1Hi-96E_fGMU3wDntJTPpSzmzzpxBHu583WpKvoTxl3fMz2krpQkx9Q4q7EkR3l9HOeidAWtC1tLWQ5A30ZcSPaTlHcIE7eBjvcNf4hRHcPCNJFxIilA0LbqGvlozdcF6Pm-ePVt1LDKYBBPDzH_nrKrs2TzXxSjEvyM0fspA_Ett96_0OLNn2uVcoaHN9zNL0zrT7ycYEob4kRic9RriDCRxvC16Hr0ioDYPodhR1Sg9xiSRIow9JDTIpbDpLJ_lSn6eSEReq7wiJVKkb8G2_O8F08WHEu1_-15BxFR9wLp39AMbshuIVHerJ75CnR2LsfaRcodS53s66hgD4oOZClrmdam3iplbYprcZ2MX4KtHJCYg28l-wK2xyuo287QP4QIvt6C8BXAY3sKkvvSsSSeWhHGwpaCHIPuNi-7-p_9inWWRpY5C_-JGhSAMxRPimqTNejoX64h7HBhxbCa-RVkbDjTZI&amp;response_mode=form_post&amp;nonce=638837950082139429.ODA2YjNjYWYtNmEwMy00NmIyLWExNDEtOWM4YTgxYjU3NDg0ZGJhMjI1ODktZjZlMi00NzdjLTllOWMtMzQxZDJiN2U1YTU4&amp;client_id=c44b4083-3bb0-49c1-b47d-974e53cbdf3c&amp;site_id=501430&amp;client-request-id=7576e1d8-cc63-40c7-8f1d-7faaa5afb0c4&amp;x-client-SKU=ID_NET472&amp;x-client-ver=8.3.0.0&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$tenantLoginPage</span> <span class="p">=</span> <span class="nb">Invoke-WebRequest</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Uri</span> <span class="nv">$uri</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$tenantOwnerName</span> <span class="p">=</span> <span class="nv">$tenantLoginPage</span><span class="p">.</span><span class="py">Content</span><span class="p">.</span><span class="py">Split</span><span class="p">(</span><span class="s2">&#34;sCompanyDisplayName</span><span class="se">`&#34;</span><span class="s2">:&#34;</span><span class="p">)[</span><span class="mf">1</span><span class="p">].</span><span class="py">Split</span><span class="p">(</span><span class="s2">&#34;,&#34;</span><span class="p">)[</span><span class="mf">0</span><span class="p">].</span><span class="py">Trim</span><span class="p">().</span><span class="py">Replace</span><span class="p">(</span><span class="s1">&#39;&#34;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">Write-Host</span> <span class="s2">&#34;Tenant Owner Name of Tenant ID: &#39;</span><span class="nv">$tenantId</span><span class="s2">&#39; is: &#39;</span><span class="nv">$tenantOwnerName</span><span class="s2">&#39;&#34;</span> <span class="n">-ForegroundColor</span> <span class="n">Green</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">Tenant</span> <span class="n">Owner</span> <span class="n">Name</span> <span class="n">of</span> <span class="n">Tenant</span> <span class="n">ID</span><span class="err">:</span> <span class="s1">&#39;536f948a-babb-4048-836d-717833aa0da5&#39;</span> <span class="n">is</span><span class="err">:</span> <span class="s1">&#39;MVP LAB&#39;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="use-cases">Use Cases
+</h2><h3 id="check-app-owner-tenant-id-of-multi-tenant-apps-in-your-tenant">Check App Owner Tenant Id of Multi Tenant Apps in your Tenant
+</h3><p>Why would you want to do this? Let&rsquo;s stick with the example of LinkedIn. You might have wondered how I was even able to get a hold of LinkedIn&rsquo;s tenant id? Well, I have added LinkedIn as an <a class="link" href="p/whats-the-difference-between-an-entra-id-app-registration-and-an-enterprise-app-4yyib4g1sk5a" >Enterprise Application</a> to my tenant. When I check out the service principal of the Linked in app under Enterprise Applications in Entra ID, it only shows the <strong>Homepage URL</strong> but no tenant id.</p>
+<p><img src="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-5.png"
+	width="1475"
+	height="1157"
+	srcset="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-5_hu_6b6e2a0554e270be.png 480w, /p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-5_hu_48cc6696df5c7d1c.png 1024w"
+	loading="lazy"
+	
+		alt="Service Principal of the LinkedIn application in my tenant"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="127"
+		data-flex-basis="305px"
+	
+></p>
+<p>This app is registered as a multi tenant app in LinkedIn&rsquo;s tenant. When I granted consent to it, a service principal for the app got created in my tenant. To get the tenant id of the tenant where it&rsquo;s registered, I can run <code>Get-MgServicePrincipal</code> with the service principal&rsquo;s object id. (The service principal object id is unique in every tenant where the app was added.)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Get-MgServicePrincipal</span> <span class="n">-ServicePrincipalId</span> <span class="n">fcc0ae79</span><span class="p">-</span><span class="n">2cfa</span><span class="p">-</span><span class="n">4bec</span><span class="p">-</span><span class="n">9d75</span><span class="p">-</span><span class="n">7e560591ce02</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">AppDisplayName</span><span class="p">,</span> <span class="n">AppOwnerOrganizationId</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">AppDisplayName</span> <span class="n">AppOwnerOrganizationId</span>
+</span></span><span class="line"><span class="cl"><span class="p">--------------</span> <span class="p">----------------------</span>
+</span></span><span class="line"><span class="cl"><span class="n">LinkedIn</span>       <span class="mf">658728e7</span><span class="p">-</span><span class="mf">1632</span><span class="p">-</span><span class="n">412a</span><span class="p">-</span><span class="mf">9815</span><span class="n">-fe53f53ec58b</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The Entra Portal doesn&rsquo;t surface this information but Graph does. That&rsquo;s how I was able to get to LinkedIn&rsquo;s sign in page.</p>
+<p>Apps that allow sign in with a personal Microsoft Account will list <code>9188040d-6c67-4c5b-b112-36a304b66dad</code> as <strong>AppOwnerOrganizationId</strong>. You can find more information <a class="link" href="https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference"  target="_blank" rel="noopener"
+    >here</a>.</p>
+<h3 id="check-sign-in-logs-of-users">Check Sign-In Logs of Users
+</h3><p>Another good use case is when you&rsquo;re reviewing sign-in logs. If some of your users are guests in other tenants, the sign-in logs will only reference a tenant id but not a tenant name or domain. So, you won&rsquo;t actually know the names of the tenants to which they sign in.</p>
+<p>To create some sign-in logs for testing and demonstrating this, I opened <code>https://myaccount.microsoft.com/mvplab.ch</code> and signed in with the identity of a user which is a guest in this tenant. Note that with <code>https://myaccount.microsoft.com</code> it will only work if you append <code>/&lt;domain&gt;</code>. Appending <code>/&lt;tenant id&gt;</code> won&rsquo;t work. But when you sign in with <code>/&lt;domain&gt;</code>, you&rsquo;re directly taken to that organization and not your own.</p>
+<p><img src="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-6.png"
+	width="2364"
+	height="1144"
+	srcset="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-6_hu_94938c9a33db7f8d.png 480w, /p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-6_hu_30c3b5e8fcb677d9.png 1024w"
+	loading="lazy"
+	
+		alt="Sign-in directly into the org where the user is a guest. Note that the user name includes #EXT#."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="206"
+		data-flex-basis="495px"
+	
+></p>
+<p>If I check the audit log in the user&rsquo;s home tenant now, I can see that there was a guest login in a different tenant. The tenant where the sign-in happened is called <strong>Resource tenant</strong>.</p>
+<p><img src="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-7.png"
+	width="861"
+	height="1412"
+	srcset="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-7_hu_d6777da05840b65b.png 480w, /p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-7_hu_7675385b37323532.png 1024w"
+	loading="lazy"
+	
+		alt="Sign-in logs in home tenant only show tenant id but no names or domains."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="60"
+		data-flex-basis="146px"
+	
+></p>
+<h2 id="filter-sign-in-logs-for-guest-sign-ins-and-get-tenant-name">Filter Sign-In Logs for Guest Sign-Ins and Get Tenant Name
+</h2><p>Since I already provided a way of programatically finding tenant names above, all I needed to create a report which lists guest sign-ins including the resource tenant&rsquo;s display name, was to to retrieve the sign in logs through the Graph API.</p>
+<p>Only the <strong>Beta</strong> api returned the <code>userType</code> property. Funny enough, the Entra ID portal is using the Beta API as well&hellip;</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$guestSignInAuditLog</span> <span class="p">=</span> <span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">GET</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/beta/auditLogs/signIns?</span><span class="se">`$</span><span class="s2">filter=userType eq &#39;guest&#39;&#34;</span> <span class="n">-OutputType</span> <span class="n">PSObject</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-ExpandProperty</span> <span class="n">value</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$guestSignInReport</span> <span class="p">=</span> <span class="vm">@</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">foreach</span> <span class="p">(</span><span class="nv">$signIn</span> <span class="k">in</span> <span class="nv">$guestSignInAuditLog</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nv">$guestSignInReport</span><span class="p">.</span><span class="py">ResourceTenantId</span> <span class="o">-contains</span> <span class="nv">$signIn</span><span class="p">.</span><span class="n">resourceTenantId</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="nv">$resourceTenantName</span> <span class="p">=</span> <span class="nv">$guestSignInReport</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="py">ResourceTenantId</span> <span class="o">-eq</span> <span class="nv">$signIn</span><span class="p">.</span><span class="py">resourceTenantId</span> <span class="p">}</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-First</span> <span class="mf">1</span> <span class="n">-ExpandProperty</span> <span class="n">ResourceTenantName</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nv">$uri</span> <span class="p">=</span> <span class="s2">&#34;https://login.microsoftonline.com/</span><span class="p">$(</span><span class="nv">$signIn</span><span class="p">.</span><span class="n">resourceTenantId</span><span class="p">)</span><span class="s2">/oauth2/v2.0/authorize?redirect_uri=https%3A%2F%2Fportal.azure.com%2Fsignin%2Findex%2F&amp;response_type=code%20id_token&amp;scope=https%3A%2F%2Fmanagement.core.windows.net%2F%2Fuser_impersonation%20openid%20email%20profile&amp;state=OpenIdConnect.AuthenticationProperties%3DCFuFkF0F_FdfQWmaBEfZkrwUojoCqnTFLK5IXKUlMck0I18skpp-zVFCSJNkKE9PDD8wwaUIkX7ln1Hi-96E_fGMU3wDntJTPpSzmzzpxBHu583WpKvoTxl3fMz2krpQkx9Q4q7EkR3l9HOeidAWtC1tLWQ5A30ZcSPaTlHcIE7eBjvcNf4hRHcPCNJFxIilA0LbqGvlozdcF6Pm-ePVt1LDKYBBPDzH_nrKrs2TzXxSjEvyM0fspA_Ett96_0OLNn2uVcoaHN9zNL0zrT7ycYEob4kRic9RriDCRxvC16Hr0ioDYPodhR1Sg9xiSRIow9JDTIpbDpLJ_lSn6eSEReq7wiJVKkb8G2_O8F08WHEu1_-15BxFR9wLp39AMbshuIVHerJ75CnR2LsfaRcodS53s66hgD4oOZClrmdam3iplbYprcZ2MX4KtHJCYg28l-wK2xyuo287QP4QIvt6C8BXAY3sKkvvSsSSeWhHGwpaCHIPuNi-7-p_9inWWRpY5C_-JGhSAMxRPimqTNejoX64h7HBhxbCa-RVkbDjTZI&amp;response_mode=form_post&amp;nonce=638837950082139429.ODA2YjNjYWYtNmEwMy00NmIyLWExNDEtOWM4YTgxYjU3NDg0ZGJhMjI1ODktZjZlMi00NzdjLTllOWMtMzQxZDJiN2U1YTU4&amp;client_id=c44b4083-3bb0-49c1-b47d-974e53cbdf3c&amp;site_id=501430&amp;client-request-id=7576e1d8-cc63-40c7-8f1d-7faaa5afb0c4&amp;x-client-SKU=ID_NET472&amp;x-client-ver=8.3.0.0&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nv">$tenantLoginPage</span> <span class="p">=</span> <span class="nb">Invoke-WebRequest</span> <span class="n">-Method</span> <span class="n">Get</span> <span class="n">-Uri</span> <span class="nv">$uri</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nv">$resourceTenantName</span> <span class="p">=</span> <span class="nv">$tenantLoginPage</span><span class="p">.</span><span class="py">Content</span><span class="p">.</span><span class="py">Split</span><span class="p">(</span><span class="s2">&#34;sCompanyDisplayName</span><span class="se">`&#34;</span><span class="s2">:&#34;</span><span class="p">)[</span><span class="mf">1</span><span class="p">].</span><span class="py">Split</span><span class="p">(</span><span class="s2">&#34;,&#34;</span><span class="p">)[</span><span class="mf">0</span><span class="p">].</span><span class="py">Trim</span><span class="p">().</span><span class="py">Replace</span><span class="p">(</span><span class="s1">&#39;&#34;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nv">$guestSignInReport</span> <span class="p">+=</span> <span class="p">[</span><span class="no">PSCustomObject</span><span class="p">]</span><span class="vm">@</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">UserDisplayName</span> <span class="p">=</span> <span class="nv">$signIn</span><span class="p">.</span><span class="py">userDisplayName</span>
+</span></span><span class="line"><span class="cl">        <span class="n">UserPrincipalName</span> <span class="p">=</span> <span class="nv">$signIn</span><span class="p">.</span><span class="py">userPrincipalName</span>
+</span></span><span class="line"><span class="cl">        <span class="n">UserId</span> <span class="p">=</span> <span class="nv">$signIn</span><span class="p">.</span><span class="py">userId</span>
+</span></span><span class="line"><span class="cl">        <span class="n">AppDisplayName</span> <span class="p">=</span> <span class="nv">$signIn</span><span class="p">.</span><span class="py">appDisplayName</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ResourceTenantId</span> <span class="p">=</span> <span class="nv">$signIn</span><span class="p">.</span><span class="py">resourceTenantId</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ResourceTenantName</span> <span class="p">=</span> <span class="nv">$resourceTenantName</span>
+</span></span><span class="line"><span class="cl">        <span class="n">SignInLogTime</span> <span class="p">=</span> <span class="nv">$signIn</span><span class="p">.</span><span class="py">createdDateTime</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$guestSignInReport</span> <span class="p">|</span> <span class="nb">Out-GridView</span> <span class="n">-Title</span> <span class="s2">&#34;Guest Sign-In Audit Log Report&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Requests to the sign-in page are only made once per unique tenant id. Unfortunately, I didn&rsquo;t have a third lab tenant handy so I can&rsquo;t really show different tenant names in the output but you get the idea.</p>
+<p><img src="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-8.png"
+	width="1646"
+	height="927"
+	srcset="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-8_hu_b04590918e73471a.png 480w, /p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-8_hu_87581fa18ea2b273.png 1024w"
+	loading="lazy"
+	
+		alt="Example output"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="177"
+		data-flex-basis="426px"
+	
+></p>
+<h2 id="summary">Summary
+</h2><p>I hope that this blog post helps you to make your life a little easier since you now know that you can qucikly sign into a different tenant by appending the tenant id or tenand domain to the Azure Portal URL. I also hope that the technique to find tenant names when all you have available is a tenant id outlined in this article is helpful to you so you can get a better understanding of which tenants your users sign in to as guests.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Microsoft Graph: Get an Access Token from a PowerShell Session</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How To Add a New Domain to M365 with MS Graph PowerShell</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/invoke-mggraphrequest-and-custom-output-types-9e7r95fpknvg/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Make Invoke-MgGraphRequest Return PowerShell Objects</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/whats-the-difference-between-an-entra-id-app-registration-and-an-enterprise-app-4yyib4g1sk5a/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Understanding Microsoft Entra ID App Registrations, Enterprise Apps and Service Principals</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/">
+        
+        
+            <div class="article-image">
+                <img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/cover.7304950aa6b85bd8562e89f20b457eab_hu_279a6c7452d3f0bf.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post Get Missed Call Notifications for Teams Call Queues (Free Community Solution)"
+                        data-key="/get-missed-call-notifications-for-teams-call-queues-(free-community-solution)-cozo3bhojb7t" 
+                        data-hash="md5-cwSVCqa4W9hWLonyC0V&#43;qw==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Get Missed Call Notifications for Teams Call Queues (Free Community Solution)</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "heusser-pro" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2025 HEUSSER.PRO
+    </section>
+    
+    <section class="powerby">
+        
+            Hosted on GitHub Pages <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
+
