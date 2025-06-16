@@ -12,7 +12,72 @@
         <pubDate>Sun, 15 Jun 2025 11:39:55 +0000</pubDate>
         
         <guid>https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/</guid>
-        <description>&lt;img src="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/Cover.png" alt="Featured image of post Find Tenant Owner Company Name with Only an Entra Tenant Id" /&gt;&lt;p&gt;If you work a lot with Microsoft Entra ID a lot, you probably already know the &lt;a class=&#34;link&#34; href=&#34;https://gettenantpartitionweb.azurewebsites.net&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+        <description>&lt;img src="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/Cover.png" alt="Featured image of post Find Tenant Owner Company Name with Only an Entra Tenant Id" /&gt;&lt;h2 id=&#34;update-june-16-2025&#34;&gt;Update June 16, 2025
+&lt;/h2&gt;&lt;p&gt;It turns out that this blog was kind of pointless&amp;hellip; Fellow Swiss MVP &lt;a class=&#34;link&#34; href=&#34;https://blog.icewolf.ch&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Andres Bohren&lt;/a&gt; pointed out that the &lt;a class=&#34;link&#34; href=&#34;https://www.powershellgallery.com/packages/MSIdentityTools/2.0.70&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;MSIdentityTools&lt;/a&gt; PowerShell module can already get a company display name &lt;strong&gt;and&lt;/strong&gt; the default domain of a tenant by Id. A quick look at &lt;strong&gt;MSIdentityTools.psm1&lt;/strong&gt; revealed that it&amp;rsquo;s possible to resolve a tenant name/domain by Id without even installing the module.&lt;/p&gt;
+&lt;h3 id=&#34;required-permissions&#34;&gt;Required Permissions
+&lt;/h3&gt;&lt;p&gt;You&amp;rsquo;ll need the &lt;code&gt;CrossTenantInformation.ReadBasic.All&lt;/code&gt; permission to perform these requests. The permission supports both &lt;a class=&#34;link&#34; href=&#34;https://heusser.pro/p/whats-the-difference-between-an-entra-id-app-registration-and-an-enterprise-app-4yyib4g1sk5a/#permissions-on-applications&#34; &gt;delegated and application&lt;/a&gt; authentication.&lt;/p&gt;
+&lt;h3 id=&#34;resolve-default-domain-and-name-by-tenant-id&#34;&gt;Resolve Default Domain and Name by Tenant Id
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Invoke-MgGraphRequest&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Method&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;GET&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Uri&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;https://graph.microsoft.com/beta/tenantRelationships/findTenantInformationByTenantId(tenantId=&amp;#39;536f948a-babb-4048-836d-717833aa0da5&amp;#39;)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;# Output&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Name&lt;/span&gt;                           &lt;span class=&#34;n&#34;&gt;Value&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;----&lt;/span&gt;                           &lt;span class=&#34;p&#34;&gt;-----&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;defaultDomainName&lt;/span&gt;              &lt;span class=&#34;n&#34;&gt;mvplab&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;ch&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;displayName&lt;/span&gt;                    &lt;span class=&#34;n&#34;&gt;MVP&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;LAB&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;@odata&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;context&lt;/span&gt;                 &lt;span class=&#34;n&#34;&gt;https&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;//&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;microsoft&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;com&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;beta&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$metadata&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;#microsoft.graph.tenantInformation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;federationBrandName&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;tenantId&lt;/span&gt;                       &lt;span class=&#34;n&#34;&gt;536f948a-babb&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;4048&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;836d&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;717833aa0da5&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;find-tenant-id-by-domain&#34;&gt;Find Tenant Id by Domain
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Invoke-MgGraphRequest&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Method&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;GET&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Uri&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;https://graph.microsoft.com/beta/tenantRelationships/findTenantInformationByDomainName(domainName=&amp;#39;mvplab.ch&amp;#39;)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;# Output&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Name&lt;/span&gt;                           &lt;span class=&#34;n&#34;&gt;Value&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;----&lt;/span&gt;                           &lt;span class=&#34;p&#34;&gt;-----&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;defaultDomainName&lt;/span&gt;              &lt;span class=&#34;n&#34;&gt;mvplab&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;ch&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;displayName&lt;/span&gt;                    &lt;span class=&#34;n&#34;&gt;MVP&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;LAB&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;@odata&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;context&lt;/span&gt;                 &lt;span class=&#34;n&#34;&gt;https&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;//&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;microsoft&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;com&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;beta&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$metadata&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;#microsoft.graph.tenantInformation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;federationBrandName&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;tenantId&lt;/span&gt;                       &lt;span class=&#34;n&#34;&gt;536f948a-babb&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;4048&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;836d&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;717833aa0da5&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;You can query any domain verified in a tenant to get its Id. It doesn&amp;rsquo;t need to be the tenant&amp;rsquo;s default domain. I think this could actually be a bit problematic in some cases as it could potentially reveal more information that you might intend to at a given time.&lt;/p&gt;
+&lt;p&gt;For example, I&amp;rsquo;m thinking about a scenario where a company is about to launch a new product or acquire another company and thus has already set up a specific domain in their tenant for said event, but the information isn&amp;rsquo;t public yet.&lt;/p&gt;
+&lt;p&gt;Anyway, thanks for this great tip &lt;a class=&#34;link&#34; href=&#34;https://x.com/andresbohren&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Andres&lt;/a&gt;!&lt;/p&gt;
+&lt;h2 id=&#34;original-article&#34;&gt;Original Article
+&lt;/h2&gt;&lt;p&gt;If you work a lot with Microsoft Entra ID a lot, you probably already know the &lt;a class=&#34;link&#34; href=&#34;https://gettenantpartitionweb.azurewebsites.net&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Tenant Lookup Website&lt;/a&gt; created by the Microsoft 365 U.S. Government Programs team. However, the lookups this website performs only work in one direction. You can only get a tenant id, if you already know one of its connected domains but you can&amp;rsquo;t get a tenant&amp;rsquo;s domain or name just off of a tenant id.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-1.png&#34;
 	width=&#34;1350&#34;

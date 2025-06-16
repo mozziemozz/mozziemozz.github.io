@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="In this blog post, I'll show you a neat little trick to find out the company name solely from a tenant id.">
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="In this blog post, I'll show you a neat little trick to find out the company name solely from a tenant id. This blog was updated on June 16, 2025 to include an even better way which also returns the default domain name of a tenant.">
 <title>Find Tenant Owner Company Name with Only an Entra Tenant Id</title>
 
 <link rel='canonical' href='https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/'>
 
 <link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Find Tenant Owner Company Name with Only an Entra Tenant Id">
-<meta property='og:description' content="In this blog post, I'll show you a neat little trick to find out the company name solely from a tenant id.">
+<meta property='og:description' content="In this blog post, I'll show you a neat little trick to find out the company name solely from a tenant id. This blog was updated on June 16, 2025 to include an even better way which also returns the default domain name of a tenant.">
 <meta property='og:url' content='https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/'>
 <meta property='og:site_name' content='HEUSSER.PRO'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-06-15T11:39:55&#43;00:00'/><meta property='article:modified_time' content='2025-06-15T11:39:55&#43;00:00'/><meta property='og:image' content='https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/Cover.png' />
 <meta name="twitter:title" content="Find Tenant Owner Company Name with Only an Entra Tenant Id">
-<meta name="twitter:description" content="In this blog post, I'll show you a neat little trick to find out the company name solely from a tenant id."><meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:description" content="In this blog post, I'll show you a neat little trick to find out the company name solely from a tenant id. This blog was updated on June 16, 2025 to include an even better way which also returns the default domain name of a tenant."><meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content='https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/Cover.png' />
     <link rel="shortcut icon" href="/favicon.png" />
 
@@ -281,6 +281,14 @@
         <div class="widget--toc">
             <nav id="TableOfContents">
   <ol>
+    <li><a href="#update-june-16-2025">Update June 16, 2025</a>
+      <ol>
+        <li><a href="#required-permissions">Required Permissions</a></li>
+        <li><a href="#resolve-default-domain-and-name-by-tenant-id">Resolve Default Domain and Name by Tenant Id</a></li>
+        <li><a href="#find-tenant-id-by-domain">Find Tenant Id by Domain</a></li>
+      </ol>
+    </li>
+    <li><a href="#original-article">Original Article</a></li>
     <li><a href="#doing-it-programmatically-with-powershell">Doing it Programmatically with PowerShell</a></li>
     <li><a href="#use-cases">Use Cases</a>
       <ol>
@@ -350,7 +358,7 @@
     
         
         <h3 class="article-subtitle">
-            In this blog post, I&#39;ll show you a neat little trick to find out the company name solely from a tenant id.
+            In this blog post, I&#39;ll show you a neat little trick to find out the company name solely from a tenant id. This blog was updated on June 16, 2025 to include an even better way which also returns the default domain name of a tenant.
         </h3>
         
     </div>
@@ -386,7 +394,7 @@
 
 
                 <time class="article-time--reading">
-                    6 minute read
+                    7 minute read
                 </time>
             </div>
         
@@ -401,7 +409,72 @@
     <section class="article-content">
     
     
-    <p>If you work a lot with Microsoft Entra ID a lot, you probably already know the <a class="link" href="https://gettenantpartitionweb.azurewebsites.net"  target="_blank" rel="noopener"
+    <h2 id="update-june-16-2025">Update June 16, 2025
+</h2><p>It turns out that this blog was kind of pointless&hellip; Fellow Swiss MVP <a class="link" href="https://blog.icewolf.ch"  target="_blank" rel="noopener"
+    >Andres Bohren</a> pointed out that the <a class="link" href="https://www.powershellgallery.com/packages/MSIdentityTools/2.0.70"  target="_blank" rel="noopener"
+    >MSIdentityTools</a> PowerShell module can already get a company display name <strong>and</strong> the default domain of a tenant by Id. A quick look at <strong>MSIdentityTools.psm1</strong> revealed that it&rsquo;s possible to resolve a tenant name/domain by Id without even installing the module.</p>
+<h3 id="required-permissions">Required Permissions
+</h3><p>You&rsquo;ll need the <code>CrossTenantInformation.ReadBasic.All</code> permission to perform these requests. The permission supports both <a class="link" href="/p/whats-the-difference-between-an-entra-id-app-registration-and-an-enterprise-app-4yyib4g1sk5a/#permissions-on-applications" >delegated and application</a> authentication.</p>
+<h3 id="resolve-default-domain-and-name-by-tenant-id">Resolve Default Domain and Name by Tenant Id
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">GET</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/beta/tenantRelationships/findTenantInformationByTenantId(tenantId=&#39;536f948a-babb-4048-836d-717833aa0da5&#39;)&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">Name</span>                           <span class="n">Value</span>
+</span></span><span class="line"><span class="cl"><span class="p">----</span>                           <span class="p">-----</span>
+</span></span><span class="line"><span class="cl"><span class="n">defaultDomainName</span>              <span class="n">mvplab</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">displayName</span>                    <span class="n">MVP</span> <span class="n">LAB</span>
+</span></span><span class="line"><span class="cl"><span class="nv">@odata</span><span class="p">.</span><span class="py">context</span>                 <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">graph</span><span class="p">.</span><span class="py">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">beta</span><span class="p">/</span><span class="nv">$metadata</span><span class="c">#microsoft.graph.tenantInformation</span>
+</span></span><span class="line"><span class="cl"><span class="n">federationBrandName</span>
+</span></span><span class="line"><span class="cl"><span class="n">tenantId</span>                       <span class="n">536f948a-babb</span><span class="p">-</span><span class="mf">4048</span><span class="p">-</span><span class="mf">836d</span><span class="p">-</span><span class="n">717833aa0da5</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="find-tenant-id-by-domain">Find Tenant Id by Domain
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">GET</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/beta/tenantRelationships/findTenantInformationByDomainName(domainName=&#39;mvplab.ch&#39;)&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">Name</span>                           <span class="n">Value</span>
+</span></span><span class="line"><span class="cl"><span class="p">----</span>                           <span class="p">-----</span>
+</span></span><span class="line"><span class="cl"><span class="n">defaultDomainName</span>              <span class="n">mvplab</span><span class="p">.</span><span class="py">ch</span>
+</span></span><span class="line"><span class="cl"><span class="n">displayName</span>                    <span class="n">MVP</span> <span class="n">LAB</span>
+</span></span><span class="line"><span class="cl"><span class="nv">@odata</span><span class="p">.</span><span class="py">context</span>                 <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">graph</span><span class="p">.</span><span class="py">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">beta</span><span class="p">/</span><span class="nv">$metadata</span><span class="c">#microsoft.graph.tenantInformation</span>
+</span></span><span class="line"><span class="cl"><span class="n">federationBrandName</span>
+</span></span><span class="line"><span class="cl"><span class="n">tenantId</span>                       <span class="n">536f948a-babb</span><span class="p">-</span><span class="mf">4048</span><span class="p">-</span><span class="mf">836d</span><span class="p">-</span><span class="n">717833aa0da5</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>You can query any domain verified in a tenant to get its Id. It doesn&rsquo;t need to be the tenant&rsquo;s default domain. I think this could actually be a bit problematic in some cases as it could potentially reveal more information that you might intend to at a given time.</p>
+<p>For example, I&rsquo;m thinking about a scenario where a company is about to launch a new product or acquire another company and thus has already set up a specific domain in their tenant for said event, but the information isn&rsquo;t public yet.</p>
+<p>Anyway, thanks for this great tip <a class="link" href="https://x.com/andresbohren"  target="_blank" rel="noopener"
+    >Andres</a>!</p>
+<h2 id="original-article">Original Article
+</h2><p>If you work a lot with Microsoft Entra ID a lot, you probably already know the <a class="link" href="https://gettenantpartitionweb.azurewebsites.net"  target="_blank" rel="noopener"
     >Tenant Lookup Website</a> created by the Microsoft 365 U.S. Government Programs team. However, the lookups this website performs only work in one direction. You can only get a tenant id, if you already know one of its connected domains but you can&rsquo;t get a tenant&rsquo;s domain or name just off of a tenant id.</p>
 <p><img src="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-1.png"
 	width="1350"
