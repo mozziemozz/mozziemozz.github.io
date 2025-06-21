@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="In this blog post I'll show you how you can use PowerShell to find the Personal Bookings URL of any user in your tenant and how you can confirm if a user has already set up their Personal Bookings page/any bookable appointment types.">
+<title>Find Personal Bookings URL of Any User in Your Tenant</title>
+
+<link rel='canonical' href='https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Find Personal Bookings URL of Any User in Your Tenant">
+<meta property='og:description' content="In this blog post I'll show you how you can use PowerShell to find the Personal Bookings URL of any user in your tenant and how you can confirm if a user has already set up their Personal Bookings page/any bookable appointment types.">
+<meta property='og:url' content='https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/'>
+<meta property='og:site_name' content='HEUSSER.PRO'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-06-21T14:14:50&#43;00:00'/><meta property='article:modified_time' content='2025-06-21T14:14:50&#43;00:00'/><meta property='og:image' content='https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/Cover.png' />
+<meta name="twitter:title" content="Find Personal Bookings URL of Any User in Your Tenant">
+<meta name="twitter:description" content="In this blog post I'll show you how you can use PowerShell to find the Personal Bookings URL of any user in your tenant and how you can confirm if a user has already set up their Personal Bookings page/any bookable appointment types."><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/Cover.png' />
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "kozb6q2xjn");
+    </script>    
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_fe2816fc44d850d2.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🫡</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
+            <h2 class="site-description">Martin Heusser | M365 MVP</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/mozziemozz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://x.com/@mozzeph'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/support-me/' >
+                
+                
+                
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-cup"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 11h14v-3h-14z" /><path d="M17.5 11l-1.5 10h-8l-1.5 -10" /><path d="M6 8v-1a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v1" /><path d="M15 5v-2" /></svg>
+                
+                <span>Support Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/imprint/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                
+                <span>Imprint</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#powershell-script-example">PowerShell Script Example</a></li>
+    <li><a href="#comparing-different-results-and-user-experience">Comparing Different Results and User Experience</a></li>
+    <li><a href="#example-of-user-who-already-configured-their-bookings-page">Example of User who Already Configured their Bookings Page</a></li>
+    <li><a href="#example-of-user-who-didnt-already-configure-their-bookings-page">Example of User who didn&rsquo;t Already Configure their Bookings Page</a></li>
+    <li><a href="#ews-capabilities">EWS Capabilities</a></li>
+    <li><a href="#summary-and-additional-thoughts">Summary and Additional Thoughts</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/">
+                <img src="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/Cover_hu_9f8f81386ed1c2fb.png"
+                        srcset="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/Cover_hu_9f8f81386ed1c2fb.png 800w, /p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/Cover_hu_e33449298215e59f.png 1600w"
+                        width="800" 
+                        height="244" 
+                        loading="lazy"
+                        alt="Featured image of post Find Personal Bookings URL of Any User in Your Tenant" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/entra-id/" >
+                Entra ID
+            </a>
+        
+            <a href="/categories/exchange-online/" >
+                Exchange Online
+            </a>
+        
+            <a href="/categories/powershell/" style="background-color: #141e2c; color: #fff;">
+                PowerShell
+            </a>
+        
+            <a href="/categories/licensing/" >
+                Licensing
+            </a>
+        
+            <a href="/categories/automation/" >
+                Automation
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/">Find Personal Bookings URL of Any User in Your Tenant</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            In this blog post I&#39;ll show you how you can use PowerShell to find the Personal Bookings URL of any user in your tenant and how you can confirm if a user has already set up their Personal Bookings page/any bookable appointment types.
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jun 21, 2025</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    10 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>Usually you can only get a hold of someone&rsquo;s <a class="link" href="https://www.microsoft.com/en-us/microsoft-365/business/scheduling-and-booking-app?msockid=156099a91c0364cb0c448c191da96578"  target="_blank" rel="noopener"
+    >Microsoft Personal Bookings</a> URL if the owner of a Personal Bookings page shares their URL with you. However, as an administrator, you might want to find someone&rsquo;s Personal Bookings URL without asking them for it. Or maybe you already asked them but didn&rsquo;t get a response from the user.</p>
+<p>Why would you want to find the Personal Bookings URL of users if they didn&rsquo;t explicitly share it with you anyway? I can think of a couple of uses cases.</p>
+<ol>
+<li>You want to automatically populate users signatures with their Bookings URL</li>
+<li>You want to check if a user has successfully set up their bookable meeting types</li>
+<li>You want to create a report of users who have configured the service and users who didn&rsquo;t bother to configure their Personal Bookings page.</li>
+</ol>
+<p>Obviously solution Nr. 1 requires additional work but there is a great example from <a class="link" href="https://www.loryanstrant.com/2022/10/04/automatically-populate-staff-signatures-with-their-bookings-with-me-public-page/"  target="_blank" rel="noopener"
+    >Loryan Strant</a> on that topic. His blog post explains that the bookings with me URL consists of a user&rsquo;s Exchange GUID and the email domain. So naturally, my script is using the same technique.</p>
+<p>However, my example script goes one step further and makes additional requests and actually tries to fetch available services and available times for a specific user. If the response includes services and time slots, it means that the user has already accessed their Bookings page at least once. When a user accessed the Bookings app in Outlook for the first time, some default meeting types are created automatically.</p>
+<p>I want to point out that I didn&rsquo;t do any additional research if there are better ways to report on whether users are utilizing Personal Bookings or at least have configured their page. This blog post simply shows the result of my research on the topic.</p>
+<h2 id="powershell-script-example">PowerShell Script Example
+</h2><p>The script below allows you to display the Personal Bookings URL for any user that has used Bookings in your tenant.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span><span class="lnt">170
+</span><span class="lnt">171
+</span><span class="lnt">172
+</span><span class="lnt">173
+</span><span class="lnt">174
+</span><span class="lnt">175
+</span><span class="lnt">176
+</span><span class="lnt">177
+</span><span class="lnt">178
+</span><span class="lnt">179
+</span><span class="lnt">180
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="cm">&lt;#
+</span></span></span><span class="line"><span class="cl"><span class="cm">
+</span></span></span><span class="line"><span class="cl"><span class="cm">    .</span><span class="sd">SYNOPSIS</span><span class="cm">
+</span></span></span><span class="line"><span class="cl"><span class="cm">        Get the Microsoft Bookings URL of a user in Exchange Online.
+</span></span></span><span class="line"><span class="cl"><span class="cm">
+</span></span></span><span class="line"><span class="cl"><span class="cm">    .</span><span class="sd">DESCRIPTION</span><span class="cm">
+</span></span></span><span class="line"><span class="cl"><span class="cm">        This script retrieves the Microsoft Bookings URL for a user in Exchange Online. It checks if a user has Microsoft Bookings enabled and if they have set up their personal bookings page already. If a user has not set up their personal bookings page, it will be reflected in the output.
+</span></span></span><span class="line"><span class="cl"><span class="cm">
+</span></span></span><span class="line"><span class="cl"><span class="cm">    .</span><span class="sd">NOTES</span><span class="cm">
+</span></span></span><span class="line"><span class="cl"><span class="cm">        Author:     Martin Heusser
+</span></span></span><span class="line"><span class="cl"><span class="cm">        Link:       https://heusser.pro
+</span></span></span><span class="line"><span class="cl"><span class="cm">                    https://github.com/sponsors/mozziemozz?frequency=one-time&amp;sponsor=mozziemozz
+</span></span></span><span class="line"><span class="cl"><span class="cm">                    https://buymeacoffee.com/martin.heusser
+</span></span></span><span class="line"><span class="cl"><span class="cm">        Version:    1.0.0
+</span></span></span><span class="line"><span class="cl"><span class="cm">        Date:       2025-06-21
+</span></span></span><span class="line"><span class="cl"><span class="cm">
+</span></span></span><span class="line"><span class="cl"><span class="cm">#&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$exoConnection</span> <span class="p">=</span> <span class="nb">Get-ConnectionInformation</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(!</span><span class="nv">$exoConnection</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nb">Connect-ExchangeOnline</span> <span class="n">-ShowBanner:</span><span class="vm">$false</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$tenantId</span> <span class="p">=</span> <span class="nv">$exoConnection</span><span class="p">.</span><span class="py">TenantID</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$graphSession</span> <span class="p">=</span> <span class="nb">Get-MgUser</span> <span class="n">-Top</span> <span class="mf">1</span> <span class="n">-ErrorAction</span> <span class="n">SilentlyContinue</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(!</span><span class="nv">$graphSession</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nb">Connect-MgGraph</span> <span class="n">-Scopes</span> <span class="s2">&#34;User.Read.All&#34;</span> <span class="n">-NoWelcome</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="o">-not</span> <span class="nv">$allUsers</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nv">$allUsers</span> <span class="p">=</span> <span class="nb">Get-MgUser</span> <span class="n">-Filter</span> <span class="s2">&#34;assignedPlans/any(s:s/servicePlanId eq 199a5c09-e0ca-4e37-8f7c-b05d533e1ea2)&#34;</span> <span class="n">-Property</span> <span class="n">Id</span><span class="p">,</span> <span class="n">UserPrincipalName</span><span class="p">,</span> <span class="n">DisplayName</span> <span class="n">-CountVariable</span> <span class="n">Count</span> <span class="n">-ConsistencyLevel</span> <span class="n">eventual</span> <span class="n">-All</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$userPrincipalName</span> <span class="p">=</span> <span class="nv">$allUsers</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">DisplayName</span><span class="p">,</span> <span class="n">Id</span><span class="p">,</span> <span class="n">UserPrincipalName</span> <span class="p">|</span> <span class="nb">Out-GridView</span> <span class="n">-Title</span> <span class="s2">&#34;Select a user to get their Microsoft Bookings URL (Note: Only Bookings Licensed users are shown)&#34;</span> <span class="n">-PassThru</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-ExpandProperty</span> <span class="n">UserPrincipalName</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$domain</span> <span class="p">=</span> <span class="nv">$userPrincipalName</span><span class="p">.</span><span class="py">Split</span><span class="p">(</span><span class="s2">&#34;@&#34;</span><span class="p">)[</span><span class="mf">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$exoMailBox</span> <span class="p">=</span> <span class="nb">Get-EXOMailbox</span> <span class="n">-Identity</span> <span class="nv">$userPrincipalName</span> <span class="n">-Properties</span> <span class="n">ExchangeGUID</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$mailBox</span> <span class="p">=</span> <span class="nb">Get-Mailbox</span> <span class="n">-Identity</span> <span class="nv">$userPrincipalName</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nv">$mailBox</span><span class="p">.</span><span class="py">PersistedCapabilities</span> <span class="o">-notcontains</span> <span class="s2">&#34;BPOS_S_BookingsAddOn&#34;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nb">Write-Host</span> <span class="s2">&#34;User &#39;</span><span class="p">$(</span><span class="nv">$exoMailBox</span><span class="p">.</span><span class="n">DisplayName</span><span class="p">)</span><span class="s2">&#39; does not have Microsoft Bookings enabled in Exchange Online.&#34;</span> <span class="n">-ForegroundColor</span> <span class="n">Red</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nb">Write-Host</span> <span class="s2">&#34;User &#39;</span><span class="p">$(</span><span class="nv">$exoMailBox</span><span class="p">.</span><span class="n">DisplayName</span><span class="p">)</span><span class="s2">&#39; has Microsoft Bookings enabled in Exchange Online.&#34;</span> <span class="n">-ForegroundColor</span> <span class="n">Green</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nv">$exchangeGUIDWithHyphens</span> <span class="p">=</span> <span class="nv">$exoMailBox</span><span class="p">.</span><span class="py">ExchangeGUID</span><span class="p">.</span><span class="py">Guid</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nv">$exchangeGUID</span> <span class="p">=</span> <span class="nv">$exoMailBox</span><span class="p">.</span><span class="py">ExchangeGUID</span><span class="p">.</span><span class="py">Guid</span><span class="p">.</span><span class="py">Replace</span><span class="p">(</span><span class="s2">&#34;-&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nv">$serviceId</span> <span class="p">=</span> <span class="vm">$null</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$response</span> <span class="p">=</span> <span class="vm">$null</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$checkPersonalBookingsPage</span> <span class="p">=</span> <span class="vm">$null</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$personalBookingsURL</span> <span class="p">=</span> <span class="vm">$null</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$checkPersonalBookingsPageBody</span> <span class="p">=</span> <span class="vm">$null</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nv">$personalBookingsURL</span> <span class="p">=</span> <span class="s2">&#34;https://outlook.office.com/bookwithme/user/</span><span class="nv">$exchangeGUID</span><span class="s2">%40</span><span class="nv">$domain</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">try</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nv">$session</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">Microsoft</span><span class="p">.</span><span class="py">PowerShell</span><span class="p">.</span><span class="py">Commands</span><span class="p">.</span><span class="py">WebRequestSession</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$session</span><span class="p">.</span><span class="py">Cookies</span><span class="p">.</span><span class="py">Add</span><span class="p">((</span><span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="py">Net</span><span class="p">.</span><span class="py">Cookie</span><span class="p">(</span><span class="s2">&#34;ClientId&#34;</span><span class="p">,</span> <span class="s2">&#34;4DB0129438C34891BDD6F2D6141584B9&#34;</span><span class="p">,</span> <span class="s2">&#34;/&#34;</span><span class="p">,</span> <span class="s2">&#34;outlook.office.com&#34;</span><span class="p">)))</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$session</span><span class="p">.</span><span class="py">Cookies</span><span class="p">.</span><span class="py">Add</span><span class="p">((</span><span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="py">Net</span><span class="p">.</span><span class="py">Cookie</span><span class="p">(</span><span class="s2">&#34;OIDC&#34;</span><span class="p">,</span> <span class="s2">&#34;1&#34;</span><span class="p">,</span> <span class="s2">&#34;/&#34;</span><span class="p">,</span> <span class="s2">&#34;outlook.office.com&#34;</span><span class="p">)))</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$response</span> <span class="p">=</span> <span class="nb">Invoke-WebRequest</span> <span class="n">-UseBasicParsing</span> <span class="n">-Uri</span> <span class="s2">&#34;https://outlook.office.com/BookingsService/api/V1/bookingBusinessesc2/mbx:</span><span class="p">$(</span><span class="nv">$exchangeGUID</span><span class="p">)</span><span class="s2">@</span><span class="p">$(</span><span class="nv">$tenantId</span><span class="p">)</span><span class="s2">/services&#34;</span> <span class="p">`</span>
+</span></span><span class="line"><span class="cl">        <span class="n">-WebSession</span> <span class="nv">$session</span> <span class="p">`</span>
+</span></span><span class="line"><span class="cl">        <span class="n">-Headers</span> <span class="vm">@</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;authority&#34;</span><span class="p">=</span><span class="s2">&#34;outlook.office.com&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;method&#34;</span><span class="p">=</span><span class="s2">&#34;GET&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;path&#34;</span><span class="p">=</span><span class="s2">&#34;/BookingsService/api/V1/bookingBusinessesc2/mbx:</span><span class="p">$(</span><span class="nv">$exchangeGUID</span><span class="p">)</span><span class="s2">@</span><span class="p">$(</span><span class="nv">$tenantId</span><span class="p">)</span><span class="s2">/services&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;scheme&#34;</span><span class="p">=</span><span class="s2">&#34;https&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;accept&#34;</span><span class="p">=</span><span class="s2">&#34;*/*&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;accept-encoding&#34;</span><span class="p">=</span><span class="s2">&#34;gzip, deflate, br, zstd&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;accept-language&#34;</span><span class="p">=</span><span class="s2">&#34;en-US,en;q=0.9&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;prefer&#34;</span><span class="p">=</span><span class="s2">&#34;exchange.behavior=</span><span class="se">`&#34;</span><span class="s2">IncludeThirdPartyOnlineMeetingProviders</span><span class="se">`&#34;</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;priority&#34;</span><span class="p">=</span><span class="s2">&#34;u=1, i&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;sec-ch-ua-mobile&#34;</span><span class="p">=</span><span class="s2">&#34;?0&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;sec-ch-ua-platform&#34;</span><span class="p">=</span><span class="s2">&#34;</span><span class="se">`&#34;</span><span class="s2">Windows</span><span class="se">`&#34;</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;sec-fetch-dest&#34;</span><span class="p">=</span><span class="s2">&#34;empty&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;sec-fetch-mode&#34;</span><span class="p">=</span><span class="s2">&#34;cors&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;sec-fetch-site&#34;</span><span class="p">=</span><span class="s2">&#34;same-origin&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;x-anchormailbox&#34;</span><span class="p">=</span><span class="s2">&#34;mbx:</span><span class="p">$(</span><span class="nv">$exchangeGUID</span><span class="p">)</span><span class="s2">@</span><span class="p">$(</span><span class="nv">$tenantId</span><span class="p">)</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;x-edge-shopping-flag&#34;</span><span class="p">=</span><span class="s2">&#34;0&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;x-owa-canary&#34;</span><span class="p">=</span><span class="s2">&#34;X-OWA-CANARY_cookie_is_null_or_empty&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;x-owa-hosted-ux&#34;</span><span class="p">=</span><span class="s2">&#34;false&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;x-req-source&#34;</span><span class="p">=</span><span class="s2">&#34;BookWithMe&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="p">`</span>
+</span></span><span class="line"><span class="cl">        <span class="n">-ContentType</span> <span class="s2">&#34;application/json; charset=utf-8&#34;</span> <span class="n">-ErrorAction</span> <span class="n">Stop</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c"># $serviceId = $response.Content | ConvertFrom-Json | Select-Object -ExpandProperty service | Where-Object { $_.isPrivate -eq $true } | Select-Object -ExpandProperty serviceId -First 1</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$serviceId</span> <span class="p">=</span> <span class="nv">$response</span><span class="p">.</span><span class="py">Content</span> <span class="p">|</span> <span class="nb">ConvertFrom-Json</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-ExpandProperty</span> <span class="n">service</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-ExpandProperty</span> <span class="n">serviceId</span> <span class="n">-First</span> <span class="mf">1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nv">$checkPersonalBookingsPageBody</span> <span class="p">=</span> <span class="p">[</span><span class="no">pscustomobject</span><span class="p">]</span><span class="vm">@</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">staffIds</span>      <span class="p">=</span> <span class="vm">@</span><span class="p">(</span><span class="s2">&#34;1c1c7887-e0fc-479b-ac7d-6983d0f026ff&#34;</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl">            <span class="n">startDateTime</span> <span class="p">=</span> <span class="vm">@</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">dateTime</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Get-Date</span><span class="p">).</span><span class="py">ToString</span><span class="p">(</span><span class="s2">&#34;yyyy-MM-ddTHH:mm:ss&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">timeZone</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Get-TimeZone</span><span class="p">).</span><span class="py">Id</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="n">endDateTime</span>   <span class="p">=</span> <span class="vm">@</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">dateTime</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Get-Date</span><span class="p">).</span><span class="py">AddDays</span><span class="p">(</span><span class="mf">1</span><span class="p">).</span><span class="py">ToString</span><span class="p">(</span><span class="s2">&#34;yyyy-MM-ddTHH:mm:ss&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">timeZone</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Get-TimeZone</span><span class="p">).</span><span class="py">Id</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="n">serviceId</span>     <span class="p">=</span> <span class="nv">$serviceId</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="p">|</span> <span class="nb">ConvertTo-Json</span> <span class="n">-Depth</span> <span class="mf">5</span> <span class="n">-Compress</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="nv">$session</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">Microsoft</span><span class="p">.</span><span class="py">PowerShell</span><span class="p">.</span><span class="py">Commands</span><span class="p">.</span><span class="py">WebRequestSession</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$session</span><span class="p">.</span><span class="py">Cookies</span><span class="p">.</span><span class="py">Add</span><span class="p">((</span><span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="py">Net</span><span class="p">.</span><span class="py">Cookie</span><span class="p">(</span><span class="s2">&#34;ClientId&#34;</span><span class="p">,</span> <span class="s2">&#34;09A51AD7CB19435B9DCFE57421FB3DD6&#34;</span><span class="p">,</span> <span class="s2">&#34;/&#34;</span><span class="p">,</span> <span class="s2">&#34;outlook.office.com&#34;</span><span class="p">)))</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$session</span><span class="p">.</span><span class="py">Cookies</span><span class="p">.</span><span class="py">Add</span><span class="p">((</span><span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="py">Net</span><span class="p">.</span><span class="py">Cookie</span><span class="p">(</span><span class="s2">&#34;OIDC&#34;</span><span class="p">,</span> <span class="s2">&#34;1&#34;</span><span class="p">,</span> <span class="s2">&#34;/&#34;</span><span class="p">,</span> <span class="s2">&#34;outlook.office.com&#34;</span><span class="p">)))</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$checkPersonalBookingsPage</span> <span class="p">=</span> <span class="nb">Invoke-WebRequest</span> <span class="n">-UseBasicParsing</span> <span class="n">-Uri</span> <span class="s2">&#34;https://outlook.office.com/BookingsService/api/V1/bookingBusinessesc2/mbx:</span><span class="p">$(</span><span class="nv">$exchangeGUID</span><span class="p">)</span><span class="s2">@</span><span class="p">$(</span><span class="nv">$tenantId</span><span class="p">)</span><span class="s2">/getStaffAvailability&#34;</span> <span class="p">`</span>
+</span></span><span class="line"><span class="cl">        <span class="n">-Method</span> <span class="s2">&#34;POST&#34;</span> <span class="p">`</span>
+</span></span><span class="line"><span class="cl">        <span class="n">-WebSession</span> <span class="nv">$session</span> <span class="p">`</span>
+</span></span><span class="line"><span class="cl">        <span class="n">-Headers</span> <span class="vm">@</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;authority&#34;</span><span class="p">=</span><span class="s2">&#34;outlook.office.com&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;method&#34;</span><span class="p">=</span><span class="s2">&#34;POST&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;path&#34;</span><span class="p">=</span><span class="s2">&#34;/BookingsService/api/V1/bookingBusinessesc2/mbx:</span><span class="p">$(</span><span class="nv">$exchangeGUID</span><span class="p">)</span><span class="s2">@</span><span class="p">$(</span><span class="nv">$tenantId</span><span class="p">)</span><span class="s2">/getStaffAvailability&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;scheme&#34;</span><span class="p">=</span><span class="s2">&#34;https&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;accept&#34;</span><span class="p">=</span><span class="s2">&#34;*/*&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;accept-encoding&#34;</span><span class="p">=</span><span class="s2">&#34;gzip, deflate, br, zstd&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;accept-language&#34;</span><span class="p">=</span><span class="s2">&#34;de-CH,de;q=0.9&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;cache-control&#34;</span><span class="p">=</span><span class="s2">&#34;no-cache&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;dnt&#34;</span><span class="p">=</span><span class="s2">&#34;1&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;origin&#34;</span><span class="p">=</span><span class="s2">&#34;https://outlook.office.com&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;pragma&#34;</span><span class="p">=</span><span class="s2">&#34;no-cache&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;prefer&#34;</span><span class="p">=</span><span class="s2">&#34;exchange.behavior=</span><span class="se">`&#34;</span><span class="s2">IncludeThirdPartyOnlineMeetingProviders</span><span class="se">`&#34;</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;priority&#34;</span><span class="p">=</span><span class="s2">&#34;u=1, i&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;sec-ch-ua-mobile&#34;</span><span class="p">=</span><span class="s2">&#34;?0&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;sec-fetch-dest&#34;</span><span class="p">=</span><span class="s2">&#34;empty&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;sec-fetch-mode&#34;</span><span class="p">=</span><span class="s2">&#34;cors&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;sec-fetch-site&#34;</span><span class="p">=</span><span class="s2">&#34;same-origin&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;x-anchormailbox&#34;</span><span class="p">=</span><span class="s2">&#34;mbx:</span><span class="p">$(</span><span class="nv">$exchangeGUID</span><span class="p">)</span><span class="s2">@</span><span class="p">$(</span><span class="nv">$tenantId</span><span class="p">)</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;x-edge-shopping-flag&#34;</span><span class="p">=</span><span class="s2">&#34;0&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;x-owa-canary&#34;</span><span class="p">=</span><span class="s2">&#34;X-OWA-CANARY_cookie_is_null_or_empty&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;x-owa-hosted-ux&#34;</span><span class="p">=</span><span class="s2">&#34;false&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;x-req-source&#34;</span><span class="p">=</span><span class="s2">&#34;BookWithMe&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="p">`</span>
+</span></span><span class="line"><span class="cl">        <span class="n">-ContentType</span> <span class="s2">&#34;application/json; charset=utf-8&#34;</span> <span class="p">`</span>
+</span></span><span class="line"><span class="cl">        <span class="n">-Body</span> <span class="nv">$checkPersonalBookingsPageBody</span> <span class="n">-ErrorAction</span> <span class="n">Stop</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nb">Write-Host</span> <span class="s2">&#34;User &#39;</span><span class="p">$(</span><span class="nv">$exoMailBox</span><span class="p">.</span><span class="n">DisplayName</span><span class="p">)</span><span class="s2">&#39; set up their Personal Bookings page already.&#34;</span> <span class="n">-ForegroundColor</span> <span class="n">Green</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nv">$personalBookingsPageConfigured</span> <span class="p">=</span> <span class="vm">$true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">catch</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="nb">Write-Host</span> <span class="s2">&#34;User &#39;</span><span class="p">$(</span><span class="nv">$exoMailBox</span><span class="p">.</span><span class="n">DisplayName</span><span class="p">)</span><span class="s2">&#39; didn&#39;t set up their Personal Bookings page yet.&#34;</span> <span class="n">-ForegroundColor</span> <span class="n">Yellow</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nv">$personalBookingsPageConfigured</span> <span class="p">=</span> <span class="vm">$false</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nv">$personalBookingsPageConfigured</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nv">$personalBookingsURLAnonymous</span> <span class="p">=</span> <span class="s2">&#34;</span><span class="p">$(</span><span class="nv">$personalBookingsURL</span><span class="p">)</span><span class="s2">?anonymous&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nv">$personalBookingsURLAnonymous</span> <span class="p">|</span> <span class="nb">Set-Clipboard</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nb">Write-Host</span> <span class="s2">&#34;Microsoft Bookings URL of user &#39;</span><span class="p">$(</span><span class="nv">$exoMailBox</span><span class="p">.</span><span class="n">DisplayName</span><span class="p">)</span><span class="s2">&#39; is &#39;</span><span class="nv">$personalBookingsURL</span><span class="s2">&#39;.&#34;</span> <span class="n">-ForegroundColor</span> <span class="n">Cyan</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nb">Write-Host</span> <span class="s2">&#34;Microsoft Bookings anonymous URL of user &#39;</span><span class="p">$(</span><span class="nv">$exoMailBox</span><span class="p">.</span><span class="n">DisplayName</span><span class="p">)</span><span class="s2">&#39;: is &#39;</span><span class="nv">$personalBookingsURLAnonymous</span><span class="s2">&#39;&#34;</span> <span class="n">-ForegroundColor</span> <span class="n">Magenta</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nb">Write-Host</span> <span class="s2">&#34;The URL has been copied to the clipboard.&#34;</span> <span class="n">-ForegroundColor</span> <span class="n">Green</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="comparing-different-results-and-user-experience">Comparing Different Results and User Experience
+</h2><p>Since this is an example script, it only runs for a single user at a time. If you want this to run for every user in your organization, you&rsquo;ll need to adjust the script and implement a <code>foreach</code> loop on your own. The script uses <code>Out-GridView -PassThru</code> to allow you to select a user. Only users which have the Microsoft Bookings service plan (199a5c09-e0ca-4e37-8f7c-b05d533e1ea2) enabled will be selectable.</p>
+<p><img src="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-1.png"
+	width="994"
+	height="385"
+	srcset="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-1_hu_c7407791c422890.png 480w, /p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-1_hu_c26ce46e1383150b.png 1024w"
+	loading="lazy"
+	
+		alt="Out-GridView selection of Bookings licensed users."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="258"
+		data-flex-basis="619px"
+	
+></p>
+<h2 id="example-of-user-who-already-configured-their-bookings-page">Example of User who Already Configured their Bookings Page
+</h2><p>In the case where a user has already configured their Personal Bookings page, the script will show you both the URLs for authenticated and anonymous access.</p>
+<p><img src="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image.png"
+	width="1501"
+	height="628"
+	srcset="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image_hu_ff18067be6750738.png 480w, /p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image_hu_a33e74574a1a9dd6.png 1024w"
+	loading="lazy"
+	
+		alt="Output of the script for a user which has already configured their Personal Bookings page."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="239"
+		data-flex-basis="573px"
+	
+></p>
+<h2 id="example-of-user-who-didnt-already-configure-their-bookings-page">Example of User who didn&rsquo;t Already Configure their Bookings Page
+</h2><p>This is what the output will look like in case a user has a Bookings license but did not yet set up their Personal Bookings page. This is the case when a user never opened the Bookings app in Outlook.</p>
+<p><img src="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-4.png"
+	width="1761"
+	height="944"
+	srcset="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-4_hu_a9afeb1954330021.png 480w, /p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-4_hu_749e288f2cba67ce.png 1024w"
+	loading="lazy"
+	
+		alt="Output of the script for a user which didn’t already set up their Personal Bookings page."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="186"
+		data-flex-basis="447px"
+	
+></p>
+<p>Technically, the script is able to construct the Personal Bookings URL even if a user never opened the Bookings app in Outlook before. However, when the page is accessed, there&rsquo;s an error message that looks like this. Therefore, the script will not output the user&rsquo;s Personal Bookings URL in this case.</p>
+<p><img src="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-6.png"
+	width="1686"
+	height="1185"
+	srcset="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-6_hu_e6cf80e4d91ca95.png 480w, /p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-6_hu_51c8579356432d88.png 1024w"
+	loading="lazy"
+	
+		alt="Error message when a user never used Bookings before or the page isn’t provisioned yet."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="142"
+		data-flex-basis="341px"
+	
+><img src="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-7.png"
+	width="1686"
+	height="1185"
+	srcset="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-7_hu_9c22bf4b6485b034.png 480w, /p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-7_hu_e204f488891b060b.png 1024w"
+	loading="lazy"
+	
+		alt="After the license is assigned, it takes a couple of minutes until the user is able to access their Bookings page."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="142"
+		data-flex-basis="341px"
+	
+></p>
+<p>Once the Bookings license has been activated, a <strong>Go to my booking page</strong> button will appear in the user&rsquo;s calendar in Outlook on the web. Alternatively, users can also open the <strong>Bookings</strong> app in Outlook (new or classic).</p>
+<p><img src="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-8.png"
+	width="1689"
+	height="1185"
+	srcset="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-8_hu_c4a5d4bc7faf12cc.png 480w, /p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-8_hu_df42b1836246f392.png 1024w"
+	loading="lazy"
+	
+		alt="Go to my booking page button in Outlook."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="142"
+		data-flex-basis="342px"
+	
+></p>
+<p>At this point, the script will still report the booking page as not set up yet because the Personal Bookings page only gets activated once a user clicks on that <strong>Go to my booking page</strong> link for the first time. When the link is clicked, Bookings will automatically create some meeting types for the user&rsquo;s Personal Booking page.</p>
+<p><img src="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-9.png"
+	width="1689"
+	height="1185"
+	srcset="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-9_hu_7301e59d18ee2bc7.png 480w, /p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-9_hu_ff00f9a2aa652fd9.png 1024w"
+	loading="lazy"
+	
+		alt="Personal Booking page with default meeting types."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="142"
+		data-flex-basis="342px"
+	
+></p>
+<p>Even then, it will usually take a few minutes until the page is accessible by other users as well. Once that is the case, the script is able to detect that the page has been set up and will output the URL.</p>
+<p><img src="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-10.png"
+	width="2346"
+	height="927"
+	srcset="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-10_hu_641df795977a0d25.png 480w, /p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-10_hu_5ca3537a20b78e7f.png 1024w"
+	loading="lazy"
+	
+		alt="Output before and after a user has accessed their Personal Booking page for the first time."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="253"
+		data-flex-basis="607px"
+	
+></p>
+<p>All you need to do to open a user&rsquo;s Personal Booking page is to click the link in Terminal.</p>
+<p><img src="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-13.png"
+	width="1686"
+	height="1185"
+	srcset="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-13_hu_540c9c590ccfd811.png 480w, /p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-13_hu_f85640e13839f996.png 1024w"
+	loading="lazy"
+	
+		alt="User’s Personal Booking page opened in browser from the URL in PowerShell output."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="142"
+		data-flex-basis="341px"
+	
+></p>
+<h2 id="ews-capabilities">EWS Capabilities
+</h2><p>To use Bookings, the EWS (Exchange Web Services) capability <strong>BPOS_S_BookingsAddOn</strong> must also be enabled. In my test tenant, this was enabled by default for all users with a Bookings service plan assigned.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Get-Mailbox</span> <span class="n">-Identity</span> <span class="nv">$userPrincipalName</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">PersistedCapabilities</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">PersistedCapabilities</span>
+</span></span><span class="line"><span class="cl"><span class="p">---------------------</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="n">GRAPH_CONNECTORS_SEARCH_INDEX</span><span class="p">,</span> <span class="n">BPOS_S_BookingsAddOn</span><span class="p">,</span> <span class="n">MYANALYTICSP2</span><span class="p">,</span> <span class="n">BPOS_S_Standard</span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>In my testing, one user slipped through and was included in <code>Out-GridView</code> despite not having a Bookings service plan assigned. This is likely due the filter on <code>assignedPlans</code> requiring the <strong>eventual consistency level</strong>.  In that case, or when you set the user principal name manually, the script will tell you that Bookings isn&rsquo;t enabled for that user because the EWS capability is missing.</p>
+<p><img src="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-11.png"
+	width="1730"
+	height="927"
+	srcset="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-11_hu_f372f21b14d7bc30.png 480w, /p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-11_hu_df0b068b11f9f34c.png 1024w"
+	loading="lazy"
+	
+		alt="Output in case a user does not have Bookings enabled in EWS capabilities."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="186"
+		data-flex-basis="447px"
+	
+></p>
+<h2 id="summary-and-additional-thoughts">Summary and Additional Thoughts
+</h2><p>It took me a while to get this right. At first I thought that the <code>serviceId</code> in the request body to the <code>/getStaffAvailability</code> endpoint was a static value. But when I was testing with other users, I realized that the service ids are actually the ids of configured meeting types which are unique per user. Therefore, I had to implement an additional step to get the <strong>services</strong> first. Services are the different bookable meeting types a user has created.</p>
+<p>Since Personal Booking pages are public websites, they&rsquo;re still accessible, even when a user doesn&rsquo;t have any public meeting types configured.</p>
+<p>Even though this user&rsquo;s Personal Booking page says that no public meetings are available, the page can still be opened.</p>
+<p><img src="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-2.png"
+	width="1686"
+	height="1185"
+	srcset="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-2_hu_ae9306138220b98d.png 480w, /p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-2_hu_7a42ae5907237a11.png 1024w"
+	loading="lazy"
+	
+		alt="User with only private meeting types."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="142"
+		data-flex-basis="341px"
+	
+><img src="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-12.png"
+	width="1686"
+	height="1185"
+	srcset="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-12_hu_b9ca53c5527e197b.png 480w, /p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-12_hu_787be2e67b3c7fc6.png 1024w"
+	loading="lazy"
+	
+		alt="Personal Bookings page without any public meeting types."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="142"
+		data-flex-basis="341px"
+	
+></p>
+<p>In that case, the <code>service</code> property will be empty. This request is performed on lines <strong>75-101</strong> in the <a class="link" href="#powershell-script-example" >script</a> above. <code>Invoke-WebRequest</code> is inside a <code>Try-Catch</code> block and uses <code>-ErrorAction Stop</code>. If a user didn&rsquo;t configure their Personal Bookings page already, this request will fail. If a user doesn&rsquo;t have any public meeting types configured, the request will be successful despite an empty response.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$response</span><span class="p">.</span><span class="py">Content</span> <span class="p">|</span> <span class="nb">ConvertFrom-Json</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">service</span> <span class="n">count</span> <span class="n">nextSkipToken</span>
+</span></span><span class="line"><span class="cl"><span class="p">-------</span> <span class="p">-----</span> <span class="p">-------------</span>
+</span></span><span class="line"><span class="cl"><span class="p">{}</span>          <span class="mf">0</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The second check to the <code>/getStaffAvailability</code> endpoint happens on lines <strong>119-150</strong>. In the case where no public meetings are available, the response will still include <code>availabilityItems</code> but they will show as status <code>BOOKINGSAVAILABILITYSTATUS_OUT_OF_OFFICE</code>. If both requests are successful, the script will deem the Personal Bookings page as active.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$checkPersonalBookingsPage</span><span class="p">.</span><span class="py">Content</span> <span class="p">|</span> <span class="nb">ConvertFrom-Json</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-ExpandProperty</span> <span class="n">staffAvailabilityResponse</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-ExpandProperty</span> <span class="n">availabilityItems</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">status</span>                                   <span class="n">startDateTime</span>
+</span></span><span class="line"><span class="cl"><span class="p">------</span>                                   <span class="p">-------------</span>
+</span></span><span class="line"><span class="cl"><span class="n">BOOKINGSAVAILABILITYSTATUS_OUT_OF_OFFICE</span> <span class="vm">@</span><span class="p">{</span><span class="n">dateTime</span><span class="p">=</span><span class="mf">21.06</span><span class="p">.</span><span class="py">2025</span> <span class="mf">00</span><span class="err">:</span><span class="mf">00</span><span class="err">:</span><span class="mf">00</span><span class="p">;</span> <span class="n">timeZone</span><span class="p">=(</span><span class="n">UTC</span><span class="p">+</span><span class="mf">01</span><span class="err">:</span><span class="mf">00</span><span class="p">)</span> <span class="n">Amsterdam</span><span class="p">,</span> <span class="n">Berlin</span><span class="p">,</span> <span class="n">Bern</span><span class="err">…</span>
+</span></span><span class="line"><span class="cl"><span class="n">BOOKINGSAVAILABILITYSTATUS_OUT_OF_OFFICE</span> <span class="vm">@</span><span class="p">{</span><span class="n">dateTime</span><span class="p">=</span><span class="mf">22.06</span><span class="p">.</span><span class="py">2025</span> <span class="mf">00</span><span class="err">:</span><span class="mf">00</span><span class="err">:</span><span class="mf">00</span><span class="p">;</span> <span class="n">timeZone</span><span class="p">=(</span><span class="n">UTC</span><span class="p">+</span><span class="mf">01</span><span class="err">:</span><span class="mf">00</span><span class="p">)</span> <span class="n">Amsterdam</span><span class="p">,</span> <span class="n">Berlin</span><span class="p">,</span> <span class="n">Bern</span><span class="err">…</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The behavior is the same even if all meeting types are deleted. The script is still able to detect that a booking page is set up. I don&rsquo;t really have a need for it right now, but to know that it&rsquo;s possible to query a users configured meeting types and to get available time slots programmatically is pretty cool.</p>
+<p>Here&rsquo;s an example that shows available meeting types for a user with some select properties.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$response</span><span class="p">.</span><span class="py">Content</span> <span class="p">|</span> <span class="nb">ConvertFrom-Json</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-ExpandProperty</span> <span class="n">Service</span> <span class="p">|</span> <span class="nb">ft </span><span class="n">title</span><span class="p">,</span> <span class="n">defaultDuration</span><span class="p">,</span> <span class="n">serviceId</span><span class="p">,</span> <span class="n">isLocationOnline</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">title</span>              <span class="n">defaultDuration</span> <span class="n">serviceId</span>                            <span class="n">isLocationOnline</span>
+</span></span><span class="line"><span class="cl"><span class="p">-----</span>              <span class="p">---------------</span> <span class="p">---------</span>                            <span class="p">----------------</span>
+</span></span><span class="line"><span class="cl"><span class="mf">60</span> <span class="n">minutes</span> <span class="n">meeting</span> <span class="n">PT1H</span>            <span class="n">192c91e9</span><span class="p">-</span><span class="n">906c</span><span class="p">-</span><span class="n">44cb</span><span class="p">-</span><span class="mf">9169</span><span class="p">-</span><span class="n">6dd1e4d8b5b2</span>            <span class="n">False</span>
+</span></span><span class="line"><span class="cl"><span class="mf">30</span> <span class="n">minutes</span> <span class="n">meeting</span> <span class="n">PT30M</span>           <span class="n">8d0ddf36</span><span class="p">-</span><span class="mf">81e4</span><span class="p">-</span><span class="mf">4890</span><span class="n">-bc5b</span><span class="p">-</span><span class="n">7b59d1289970</span>             <span class="n">True</span>
+</span></span><span class="line"><span class="cl"><span class="mf">15</span> <span class="n">minutes</span> <span class="n">meeting</span> <span class="n">PT15M</span>           <span class="n">528b7a49</span><span class="p">-</span><span class="n">817b</span><span class="p">-</span><span class="mf">4351</span><span class="n">-a556</span><span class="p">-</span><span class="n">87de2f0d988b</span>             <span class="n">True</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>And here I&rsquo;m checking the availability of a user programmatically. Since the script only needs <strong>any</strong> <code>serviceId</code>, it just uses the first one (line <strong>104</strong>). The <code>$checkPersonalBookingsPage</code> variable is populated when the script runs with that first <code>serviceId</code>. If you want to check the availability of a specific <code>serviceId</code> you&rsquo;ll need to make sure to use the correct id on line <strong>116</strong>. The code example below uses some custom code to format the output for better viewing and demonstration.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$checkPersonalBookingsPage</span><span class="p">.</span><span class="py">Content</span> <span class="p">|</span> <span class="nb">ConvertFrom-Json</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-ExpandProperty</span> <span class="n">staffAvailabilityResponse</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-ExpandProperty</span> <span class="n">availabilityItems</span> <span class="p">|</span> <span class="nb">ft </span><span class="n">status</span><span class="p">,</span> <span class="vm">@</span><span class="p">{</span><span class="n">Name</span><span class="p">=</span><span class="s2">&#34;startDateTime&#34;</span><span class="p">;</span><span class="n">expression</span><span class="p">={</span><span class="nv">$_</span><span class="p">.</span><span class="py">startDateTime</span><span class="p">.</span><span class="n">dateTime</span><span class="p">}},</span> <span class="vm">@</span><span class="p">{</span><span class="n">Name</span><span class="p">=</span><span class="s2">&#34;endDateTime&#34;</span><span class="p">;</span><span class="n">expression</span><span class="p">={</span><span class="nv">$_</span><span class="p">.</span><span class="py">endDateTime</span><span class="p">.</span><span class="n">dateTime</span><span class="p">}}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">status</span>                                   <span class="n">startDateTime</span>       <span class="n">endDateTime</span>
+</span></span><span class="line"><span class="cl"><span class="p">------</span>                                   <span class="p">-------------</span>       <span class="p">-----------</span>
+</span></span><span class="line"><span class="cl"><span class="n">BOOKINGSAVAILABILITYSTATUS_OUT_OF_OFFICE</span> <span class="mf">23.06</span><span class="p">.</span><span class="py">2025</span> <span class="mf">00</span><span class="err">:</span><span class="mf">00</span><span class="err">:</span><span class="mf">00</span> <span class="mf">23.06</span><span class="p">.</span><span class="py">2025</span> <span class="mf">08</span><span class="err">:</span><span class="mf">00</span><span class="err">:</span><span class="mf">00</span>
+</span></span><span class="line"><span class="cl"><span class="n">BOOKINGSAVAILABILITYSTATUS_AVAILABLE</span>     <span class="mf">23.06</span><span class="p">.</span><span class="py">2025</span> <span class="mf">08</span><span class="err">:</span><span class="mf">00</span><span class="err">:</span><span class="mf">00</span> <span class="mf">23.06</span><span class="p">.</span><span class="py">2025</span> <span class="mf">09</span><span class="err">:</span><span class="mf">00</span><span class="err">:</span><span class="mf">00</span>
+</span></span><span class="line"><span class="cl"><span class="n">BOOKINGSAVAILABILITYSTATUS_BUSY</span>          <span class="mf">23.06</span><span class="p">.</span><span class="py">2025</span> <span class="mf">09</span><span class="err">:</span><span class="mf">00</span><span class="err">:</span><span class="mf">00</span> <span class="mf">23.06</span><span class="p">.</span><span class="py">2025</span> <span class="mf">13</span><span class="err">:</span><span class="mf">00</span><span class="err">:</span><span class="mf">00</span>
+</span></span><span class="line"><span class="cl"><span class="n">BOOKINGSAVAILABILITYSTATUS_AVAILABLE</span>     <span class="mf">23.06</span><span class="p">.</span><span class="py">2025</span> <span class="mf">13</span><span class="err">:</span><span class="mf">00</span><span class="err">:</span><span class="mf">00</span> <span class="mf">23.06</span><span class="p">.</span><span class="py">2025</span> <span class="mf">14</span><span class="err">:</span><span class="mf">00</span><span class="err">:</span><span class="mf">00</span>
+</span></span><span class="line"><span class="cl"><span class="n">BOOKINGSAVAILABILITYSTATUS_BUSY</span>          <span class="mf">23.06</span><span class="p">.</span><span class="py">2025</span> <span class="mf">14</span><span class="err">:</span><span class="mf">00</span><span class="err">:</span><span class="mf">00</span> <span class="mf">23.06</span><span class="p">.</span><span class="py">2025</span> <span class="mf">16</span><span class="err">:</span><span class="mf">00</span><span class="err">:</span><span class="mf">00</span>
+</span></span><span class="line"><span class="cl"><span class="n">BOOKINGSAVAILABILITYSTATUS_AVAILABLE</span>     <span class="mf">23.06</span><span class="p">.</span><span class="py">2025</span> <span class="mf">16</span><span class="err">:</span><span class="mf">00</span><span class="err">:</span><span class="mf">00</span> <span class="mf">23.06</span><span class="p">.</span><span class="py">2025</span> <span class="mf">17</span><span class="err">:</span><span class="mf">00</span><span class="err">:</span><span class="mf">00</span>
+</span></span><span class="line"><span class="cl"><span class="n">BOOKINGSAVAILABILITYSTATUS_OUT_OF_OFFICE</span> <span class="mf">23.06</span><span class="p">.</span><span class="py">2025</span> <span class="mf">17</span><span class="err">:</span><span class="mf">00</span><span class="err">:</span><span class="mf">00</span> <span class="mf">24.06</span><span class="p">.</span><span class="py">2025</span> <span class="mf">00</span><span class="err">:</span><span class="mf">00</span><span class="err">:</span><span class="mf">00</span>
+</span></span><span class="line"><span class="cl"><span class="n">BOOKINGSAVAILABILITYSTATUS_OUT_OF_OFFICE</span> <span class="mf">24.06</span><span class="p">.</span><span class="py">2025</span> <span class="mf">00</span><span class="err">:</span><span class="mf">00</span><span class="err">:</span><span class="mf">00</span> <span class="mf">24.06</span><span class="p">.</span><span class="py">2025</span> <span class="mf">08</span><span class="err">:</span><span class="mf">00</span><span class="err">:</span><span class="mf">00</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>If we compare that with the user&rsquo;s Personal Booking page, we can see that the information checks out. In other words, the web request in PowerShell returns the same information as the user&rsquo;s Personal Booking page displays.</p>
+<p><img src="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-3.png"
+	width="1686"
+	height="1848"
+	srcset="/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-3_hu_f602cd32d3c30707.png 480w, /p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-3_hu_9fcf99e13f2885a1.png 1024w"
+	loading="lazy"
+	
+		alt="Available meeting times on Personal Bookings page."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="91"
+		data-flex-basis="218px"
+	
+></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/">
+        
+        
+            <div class="article-image">
+                <img src="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/Cover.d27f75b1486ba1a383c8ceacca207724_hu_f48b701f8e79df8e.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post Find Tenant Owner Company Name with Only an Entra Tenant Id"
+                        data-key="/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb" 
+                        data-hash="md5-0n91sUhroaODyM6syiB3JA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Find Tenant Owner Company Name with Only an Entra Tenant Id</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Microsoft Graph: Get an Access Token from a PowerShell Session</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Translate Microsoft 365 License GUIDs to Product Names in PowerShell</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/how-to-add-a-new-domain-to-m365-with-ms-graph-powershell-e6b41c02bfa3/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How To Add a New Domain to M365 with MS Graph PowerShell</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Create a Dynamic Azure AD Group with all Teams Phone Standard Licensed Users</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "heusser-pro" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2025 HEUSSER.PRO
+    </section>
+    
+    <section class="powerby">
+        
+            Hosted on GitHub Pages <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
+
