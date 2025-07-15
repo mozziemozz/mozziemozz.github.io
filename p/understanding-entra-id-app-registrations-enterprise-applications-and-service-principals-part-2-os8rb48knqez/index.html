@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="In this blog post, I'm going to talk about what Enterprise Applications and Service Principals are and how they differ from App Registrations again.">
+<title>Understanding Entra ID App Registrations, Enterprise Applications and Service Principals Part 2</title>
+
+<link rel='canonical' href='https://heusser.pro/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Understanding Entra ID App Registrations, Enterprise Applications and Service Principals Part 2">
+<meta property='og:description' content="In this blog post, I'm going to talk about what Enterprise Applications and Service Principals are and how they differ from App Registrations again.">
+<meta property='og:url' content='https://heusser.pro/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/'>
+<meta property='og:site_name' content='HEUSSER.PRO'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-07-08T06:10:29&#43;00:00'/><meta property='article:modified_time' content='2025-07-08T06:10:29&#43;00:00'/>
+<meta name="twitter:title" content="Understanding Entra ID App Registrations, Enterprise Applications and Service Principals Part 2">
+<meta name="twitter:description" content="In this blog post, I'm going to talk about what Enterprise Applications and Service Principals are and how they differ from App Registrations again.">
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "kozb6q2xjn");
+    </script>    
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_fe2816fc44d850d2.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🫡</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
+            <h2 class="site-description">Martin Heusser | M365 MVP</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/mozziemozz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://x.com/@mozzeph'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/support-me/' >
+                
+                
+                
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-cup"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 11h14v-3h-14z" /><path d="M17.5 11l-1.5 10h-8l-1.5 -10" /><path d="M6 8v-1a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v1" /><path d="M15 5v-2" /></svg>
+                
+                <span>Support Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/imprint/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                
+                <span>Imprint</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#what-are-app-registrations">What are App Registrations</a></li>
+    <li><a href="#enterprise-applications-and-service-principals">Enterprise Applications and Service Principals</a></li>
+    <li><a href="#enterprise-applications--service-principals">Enterprise applications == Service Principals</a>
+      <ol>
+        <li><a href="#proof-no-1---documentation">Proof No. 1 - Documentation</a></li>
+        <li><a href="#proof-no-3---entra-id-portal">Proof No. 3 - Entra ID Portal</a></li>
+        <li><a href="#proof-no-4---microsoft-graph">Proof No. 4 - Microsoft Graph</a></li>
+        <li><a href="#proof-no-5---microsoft-employees">Proof No. 5 - Microsoft Employees</a></li>
+      </ol>
+    </li>
+    <li><a href="#other-myths-about-app-registrations-and-service-principals">Other Myths about App Registrations and Service Principals</a></li>
+    <li><a href="#acting-identity-in-app-only-auth-sessions">Acting Identity in App Only Auth Sessions</a>
+      <ol>
+        <li><a href="#app-registration-ids">App Registration IDs</a></li>
+        <li><a href="#service-principal-ids">Service Principal IDs</a></li>
+        <li><a href="#establishing-an-app-only-auth-session">Establishing an App Only Auth Session</a></li>
+        <li><a href="#testing-against-a-service-principals-own-object">Testing against a Service Principal&rsquo;s Own Object</a></li>
+        <li><a href="#the-ultimate-and-final-test">The Ultimate and Final Test</a></li>
+      </ol>
+    </li>
+    <li><a href="#required-permissions-vs-granted-permissions">Required Permissions vs Granted Permissions</a></li>
+    <li><a href="#adding-admin-roles-to-service-principals">Adding Admin Roles to Service Principals</a></li>
+    <li><a href="#why-would-you-have-an-app-registration-only">Why Would you have an App Registration Only?</a></li>
+    <li><a href="#summary">Summary</a></li>
+    <li><a href="#whats-next">What&rsquo;s Next?</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/entra-id/" >
+                Entra ID
+            </a>
+        
+            <a href="/categories/app-registrations/" >
+                App Registrations
+            </a>
+        
+            <a href="/categories/enterprise-apps/" >
+                Enterprise Apps
+            </a>
+        
+            <a href="/categories/service-principals/" >
+                Service Principals
+            </a>
+        
+            <a href="/categories/microsoft-graph/" >
+                Microsoft Graph
+            </a>
+        
+            <a href="/categories/powershell/" style="background-color: #141e2c; color: #fff;">
+                PowerShell
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/">Understanding Entra ID App Registrations, Enterprise Applications and Service Principals Part 2</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            In this blog post, I&#39;m going to talk about what Enterprise Applications and Service Principals are and how they differ from App Registrations again.
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jul 08, 2025</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    27 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>At the end of 2024, I wrote the article <a class="link" href="/p/whats-the-difference-between-an-entra-ID-app-registration-and-an-enterprise-app-4yyib4g1sk5a" >Understanding Microsoft Entra ID App Registrations, Enterprise Apps and Service Principals</a> which has quickly become one of my most read articles. Today I want to revisit that topic and reiterate on some of the things it covers. Especially since it seems like there is still a lot of confusion around the terminology and definitions of <strong>App registrations</strong>, <strong>Enterprise Applications</strong> and <strong>Service Principals</strong>.</p>
+<h2 id="what-are-app-registrations">What are App Registrations
+</h2><p>This one is actually pretty easy to explain. Unlike in my original article, I&rsquo;ll try to keep it shorter this time. An App registration is the application object that gets registered in Entra ID. The portal lists your registered apps as <strong>App registrations</strong> and essentially transforms the verb of <strong>registering</strong> an application to a noun. An app registration is an application that has been registered in Entra ID.</p>
+<p>The <strong>application</strong> part of app registrations only refer to the part of an application that is integrating it in Entra ID. It&rsquo;s by no means a full-fledged app that can be installed, executed or accessed through a browser. Creating app registrations for use with unattended <strong>scripts</strong> is a totally valid use case as well. In that case, there is only a script but no real application. The script still needs an app registration and a service principal to authenticate and access resources like Microsoft Graph.</p>
+<p>Apps can be registered as single or multi tenant. This is called <strong>sign-in audience</strong>. When you register an app yourself, the application object (app registration) will be created in your tenant. When you add a multi-tenant app owned by someone else to your tenant, like i.e. Zoom, you&rsquo;re adding a service principal for Zoom to your tenant, which will then show up under <strong>Enterprise applications</strong> in your tenant.</p>
+<p>In that case, Zoom owns the app registration and they&rsquo;ve registered the app as a multi-tenant app. The app registrations serves as a blueprint and includes the required permissions, for which you&rsquo;ll be asked for consent, when you add the app (a service principal for the multi-tenant app) to your tenant.</p>
+<h2 id="enterprise-applications-and-service-principals">Enterprise Applications and Service Principals
+</h2><p>There are numerous blogs out there which claim that they are not the same thing. They&rsquo;re wrong. Enterprise applications are <strong>pseudo objects</strong>. There is no such thing as an Enterprise application object in Entra ID. That becomes abundantly clear when you go beyond the portal and start working with Microsoft Graph. I&rsquo;m going to talk about that <a class="link" href="#proof-no-4---microsoft-graph" >later on</a>&hellip;</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-46.png"
+	width="500"
+	height="888"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-46_hu_152f99767420ac86.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-46_hu_7c247a596fcd0941.png 1024w"
+	loading="lazy"
+	
+		alt="Nothing beats a good old OG meme…"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="56"
+		data-flex-basis="135px"
+	
+></p>
+<p>You could say that all Enterprise applications are service principals but not all service principals are Enterprise applications. Basically, enterprise applications only describe one specific type of service principals. Only service principals for which an app registration either exists in your or in another tenant are considered enterprise applications.</p>
+<p>I totally get why people get confused here since the Entra ID portal does a bad job clearly labelling things.</p>
+<p>The entire menu in Entra ID is called <strong>Enterprise applications</strong> but the default view in that menu defaults to a specific filter also called <strong>Enterprise Applications</strong>.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image.png"
+	width="1815"
+	height="614"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image_hu_842b4deba9e54967.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image_hu_f06d201cd0d66e11.png 1024w"
+	loading="lazy"
+	
+		alt="Enterprise applications Menu default filter"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="295"
+		data-flex-basis="709px"
+	
+></p>
+<p>The Enterprise applications view lists all service principals for which an app registration exists either in your or in another tenant. However, it doesn&rsquo;t list all your service principals.</p>
+<p>When you change the filter to <strong>Managed identities</strong>, the menu title still says <strong>Enterprise applications</strong> even though the menu is now displaying managed identities only. Managed identities are a type of <strong>service principal</strong>. Remember, that technically, there is no such thing as an Enterprise application object in Entra ID. It&rsquo;s just the name of the menu and the default filter that only shows apps for which an app registration exists in any tenant.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-1.png"
+	width="1788"
+	height="612"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-1_hu_213020e067097d72.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-1_hu_985e407b590609c4.png 1024w"
+	loading="lazy"
+	
+		alt="Enterprise applications Menu with Managed identities filter"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="292"
+		data-flex-basis="701px"
+	
+></p>
+<p>Even when you view a managed identity in detail, it still says <strong>Enterprise Application</strong> in the top right corner of the managed identity service principal object.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-2.png"
+	width="871"
+	height="483"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-2_hu_cc891578ca45e65d.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-2_hu_cf930edfe4d4232d.png 1024w"
+	loading="lazy"
+	
+		alt="Managed identity detail view"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="180"
+		data-flex-basis="432px"
+	
+></p>
+<p>Managed identities do have an application ID but there is no app registration object in your tenant. Since managed identities, including their certificates are managed by Microsoft, I&rsquo;m assuming that there is an app registration in some Microsoft managed tenant somewhere but that is just an assumption.</p>
+<h2 id="enterprise-applications--service-principals">Enterprise applications == Service Principals
+</h2><h3 id="proof-no-1---documentation">Proof No. 1 - Documentation
+</h3><p>Luckily, it looks like Microsoft is acknowledging the problem around the terminology and starts to rectify this a bit by updating their documentation. <a class="link" href="https://learn.microsoft.com/en-us/entra/identity-platform/app-objects-and-service-principals?tabs=browser"  target="_blank" rel="noopener"
+    >This</a> Microsoft Learn article includes a lot of helpful information on the topic.</p>
+<p>In the Entra ID portal, you&rsquo;re always going to see <strong>App registrations</strong> and <strong>Enterprise application</strong> menus. But when you look at the learn article linked above, you&rsquo;ll see that they only mention <strong>Application</strong> and <strong>Service principal</strong> objects in the titles.</p>
+<p>In fact, when you search the page for <strong>Enterprise application</strong> you&rsquo;ll only get one hit. (At the time of writing this article.)</p>
+<blockquote>
+    <p>You can use the Enterprise applications page in the Microsoft Entra admin center to list and manage the service principals in a tenant. You can see the service principal&rsquo;s permissions, user consented permissions, which users have done that consent, sign in information, and more.</p><span class="cite"><span>― </span><span>Microsoft Learn</span><cite></cite></span></blockquote>
+<p>There is also a video embedded on that page:</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-3.png"
+	width="1437"
+	height="774"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-3_hu_c7a132e0b9b1791.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-3_hu_651d15a16aad835.png 1024w"
+	loading="lazy"
+	
+		alt="Screenshot of the video that appears to be offline now."
+	
+	
+		class="gallery-image" 
+		data-flex-grow="185"
+		data-flex-basis="445px"
+	
+></p>
+<p>I transcribed the first part of the video:</p>
+<blockquote>
+    <p>App registrations and service principals are the backbone of secure application management. In the Microsoft Entra Admin Center, App registrations are listed as such and represent your app on a global scale across all tenants.
+Conversely, service principals are listed as enterprise apps and they represent your app within a specific tenant.</p><span class="cite"><span>― </span><span>Microsoft Learn</span><cite></cite></span></blockquote>
+<p><a class="link" href="https://learn.microsoft.com/en-us/entra/fundamentals/users-default-permissions#owned-enterprise-applications"  target="_blank" rel="noopener"
+    >Here&rsquo;s</a> another learn article that states:</p>
+<blockquote>
+    <p>Users can perform the following actions on owned enterprise applications. An enterprise application consists of a service principal, one or more application policies, and sometimes an application object in the same tenant as the service principal.</p><span class="cite"><span>― </span><span>Microsoft Learn</span><cite></cite></span></blockquote>
+<p>And <a class="link" href="https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/application-properties#object-ID"  target="_blank" rel="noopener"
+    >here&rsquo;s</a> another one titled <strong>Properties of an enterprise application</strong>.</p>
+<blockquote>
+    <p><p>This ID is the unique identifier of the service principal object associated with the application. This identifier can be useful when performing management operations against this application using PowerShell or other programmatic interfaces. This identifier is different than the identifier for the application object.</p>
+<p>The identifier is used to update information for the local instance of the application, such as assigning users and groups to the application. The identifier can also be used to update the properties of the enterprise application or to configure single-sign on.</p>
+</p><span class="cite"><span>― </span><span>Microsoft Learn</span><cite></cite></span></blockquote>
+<p>While these two still kind of let you believe that Enterprise applications are a form of Entra ID objects, they at least mention the term service principal alongside enterprise application.</p>
+<h3 id="proof-no-3---entra-id-portal">Proof No. 3 - Entra ID Portal
+</h3><p>I&rsquo;m not sure if you&rsquo;ll let me count the portal as proof that Enterprise applications are in fact service principals since I already said that the portal does it wrong in <strong>most</strong> places. Anyway, if you only create an app registration and don&rsquo;t add a service principal for it, the app registration overview will include a link to <strong>Create Service Principal</strong>.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-4.png"
+	width="1534"
+	height="670"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-4_hu_922625d54b6752a2.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-4_hu_cc8b3af22839a8f6.png 1024w"
+	loading="lazy"
+	
+		alt="App registration without a service principal"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="228"
+		data-flex-basis="549px"
+	
+> <img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-5.png"
+	width="1527"
+	height="611"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-5_hu_188536269c5eb80d.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-5_hu_123c7a50e84c7810.png 1024w"
+	loading="lazy"
+	
+		alt="App registration with service principal"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="249"
+		data-flex-basis="599px"
+	
+></p>
+<p>When you click on that link to <strong>Create Service Principal</strong>, it directly takes you to the newly created service principal object but since this is Entra ID, it will still say <strong>Enterprise Application</strong> at the top of the page.</p>
+<p>Under properties of an Enterprise application the tool tip for <strong>Object ID</strong> also clearly states that this is service principal object.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-7.png"
+	width="1479"
+	height="953"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-7_hu_b8670c8155c56894.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-7_hu_a68f91cf363afe2d.png 1024w"
+	loading="lazy"
+	
+		alt="Tool tip for Service Principal Object ID"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="155"
+		data-flex-basis="372px"
+	
+></p>
+<h3 id="proof-no-4---microsoft-graph">Proof No. 4 - Microsoft Graph
+</h3><p>All Microsoft Graph Functions, Cmdlets and endpoints are called <code>*MgApplication*</code> for app registration and <code>*MgServicePrincipal*</code> for service principal related management operations. You can check for yourself by running <code>Get-Command *EnterpriseApplication*</code> in PowerShell. You&rsquo;ll get zero results.</p>
+<p>Here are some more Microsoft learn links that mention enterprise application in their title but the Microsoft Graph commands are all for service principals.</p>
+<ul>
+<li><a class="link" href="https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/delete-application-portal?pivots=ms-powershell"  target="_blank" rel="noopener"
+    >https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/delete-application-portal?pivots=ms-powershell</a></li>
+<li><a class="link" href="https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/restore-application?pivots=entra-powershell"  target="_blank" rel="noopener"
+    >https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/restore-application?pivots=entra-powershell</a></li>
+<li><a class="link" href="https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/assign-app-owners?pivots=ms-powershell"  target="_blank" rel="noopener"
+    >https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/assign-app-owners?pivots=ms-powershell</a></li>
+</ul>
+<p>At the beginning, I mentioned some blogs claiming that Enterprise applications and service principals are not quite the same things. It&rsquo;s usually not my style to call other people out but I&rsquo;ve had so many discussions about this already that at this point, that facts are all that matter to me.</p>
+<p>Of course I&rsquo;m not saying that I&rsquo;m the only one understanding the topic. There are other great blogs out there which nail it. Here are two examples:</p>
+<ul>
+<li><a class="link" href="https://ericonidentity.com/2023/03/11/aad-app-registrations-and-enterprise-applications-the-definitive-guide/"  target="_blank" rel="noopener"
+    >https://ericonidentity.com/2023/03/11/aad-app-registrations-and-enterprise-applications-the-definitive-guide/</a></li>
+<li><a class="link" href="https://marileeturscak.com/posts/app-registrations-enterprise-applications-service-principals/"  target="_blank" rel="noopener"
+    >https://marileeturscak.com/posts/app-registrations-enterprise-applications-service-principals/</a></li>
+</ul>
+<p>Now <a class="link" href="https://c-nunnets.medium.com/app-registrations-service-principals-and-enterprise-applications-the-most-misunderstood-parts-298c7b7cf886"  target="_blank" rel="noopener"
+    >this</a> one is one I have a problem with.</p>
+<blockquote>
+    <p>An Enterprise Application is essentially a Service Principal with additional configurations specific to your tenant. It is created after the App Registration process but exists within your tenant&rsquo;s context. The Enterprise Application object manages how the application is used within the organization, including SSO configurations, user and group assignments, and conditional access policies.</p><span class="cite"><span>― </span><span>C-Nunnets on Medium</span><cite></cite></span></blockquote>
+<p>So far, so good. That&rsquo;s all correct. However, further down in the FAQ they state this:</p>
+<blockquote>
+    <p><p>Q: Are Service Principals and Enterprise Applications the same thing?
+A: Not quite. A Service Principal is an application&rsquo;s identity to act within EntraID. An Enterprise Application is essentially a Service Principal with extra configurations specific to your tenant, such as user assignments and access policies.</p>
+<p>Q: Why do I need all three? Can&rsquo;t I have one?
+A: You need all three for a complete application lifecycle in EntraID. You register the app for its basic identity, the Service Principal provides the means for the app to act, and the Enterprise Application manages how it is used within your organization.</p>
+</p><span class="cite"><span>― </span><span>C-Nunnets on Medium</span><cite></cite></span></blockquote>
+<p>These statements are not entirely wrong but they&rsquo;re also not a quite correct. Saying that you need all three things when in reality there are only two kind of objects is just wrong. All the properties, such user and group assignments (who is allowed to use the app) are readable and writeable on service principal objects in Microsoft Graph. There are no settings exclusive to the Enterprise applications menu in Entra ID.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-8.png"
+	width="1798"
+	height="576"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-8_hu_42bbf14f1ea504d4.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-8_hu_7103a2c542bb5c48.png 1024w"
+	loading="lazy"
+	
+		alt="Users and groups of the service principal shown in Enterprise applications menu"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="312"
+		data-flex-basis="749px"
+	
+> <img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-9.png"
+	width="1734"
+	height="927"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-9_hu_febe20dfd2a7717f.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-9_hu_76b98df8737f9d96.png 1024w"
+	loading="lazy"
+	
+		alt="Same user returned in Microsoft Graph for the same service principal"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="187"
+		data-flex-basis="448px"
+	
+></p>
+<p>As you can see, the same properties you see in the portal&rsquo;s Enterprise applications section are also available in Microsoft Graph on service principal objects.</p>
+<h3 id="proof-no-5---microsoft-employees">Proof No. 5 - Microsoft Employees
+</h3><p>To be absolutely sure, I asked the question if Enterprise applications are real Entra ID objects or if they are essentially just a fancy term for service principals to two different Microsoft employees independently. One of them has a weekly newsletter about Entra ID and the other one actively contributes to application identity related documentation on Microsoft Learn. They both confirmed to me that there is no such thing as an enterprise application object in Entra ID and if you boil it down, all enterprise applications are service principals.</p>
+<h2 id="other-myths-about-app-registrations-and-service-principals">Other Myths about App Registrations and Service Principals
+</h2><p>While I&rsquo;m at it, I might as well just keep going and clear up some other myths about app registrations and service principals&hellip;</p>
+<h2 id="acting-identity-in-app-only-auth-sessions">Acting Identity in App Only Auth Sessions
+</h2><p>By now it should be clear, that you need both an app registration and a service principal to authenticate and perform actions against Microsoft Graph. You can&rsquo;t have a service principal without an app registration. Keep in mind, that for multi-tenant apps, you won&rsquo;t see the app registration in your tenant but it must definitely exist in another tenant. I covered what happens when a multi-tenant app registration is deleted from a 3rd party tenant <a class="link" href="/p/whats-the-difference-between-an-entra-ID-app-registration-and-an-enterprise-app-4yyib4g1sk5a/#a-multi-tenant-app-registration-which-you-own" >here</a>.</p>
+<p>Because service principals are basically spawned off app registrations, it&rsquo;s theoretically possible to only have an app registration but no service principal. However, you won&rsquo;t be able to do anything until you also have a service principal. I already covered that in detail in my <a class="link" href="/p/whats-the-difference-between-an-entra-ID-app-registration-and-an-enterprise-app-4yyib4g1sk5a/#am-i-using-the-service-principal-or-the-app-registration-to-sign-in" >first blog post</a> about this topic.</p>
+<p>There is one scenario in which you actually want to have <strong>only</strong> an app registration but no service principal in your tenant. I&rsquo;ll talk about that <a class="link" href="#why-would-you-have-an-app-registration-only" >later</a>.</p>
+<p>Let&rsquo;s go over all the different Ids of app registrations and service principals before I actually establish a session using the Microsoft Graph Command Line Tools (Graph PowerShell SDK).</p>
+<h3 id="app-registration-ids">App Registration IDs
+</h3><p>An app registration has two Ids: an Application (client) ID and an Object ID. If you want to learn more about what a client is in OAuth, I suggest reading <a class="link" href="https://auth0.com/intro-to-iam/what-is-oauth-2"  target="_blank" rel="noopener"
+    >this</a> and <a class="link" href="https://www.oauth.com/oauth2-servers/client-registration/client-ID-secret/"  target="_blank" rel="noopener"
+    >this</a> blog post and watch <a class="link" href="https://www.youtube.com/watch?v=WVNvoiA_ktw"  target="_blank" rel="noopener"
+    >this</a> video. By the way, at <code>26:52</code> John Savill also confirms that the Enterprise applications menu in Entra ID is enumerating your service principals.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-11.png"
+	width="1525"
+	height="660"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-11_hu_3bec0cf31b3cdd4e.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-11_hu_2d0d5961bfb5f4db.png 1024w"
+	loading="lazy"
+	
+		alt="Application (client) ID and Object ID on an app App registration"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="231"
+		data-flex-basis="554px"
+	
+></p>
+<p>The application (client) ID is the globally unique (across all Entra tenants) ID of your application. This is used when you want to establish a session to Microsoft Graph from PowerShell or other applications.</p>
+<p>Here&rsquo;s where it gets confusing again. When you use PowerShell to retrieve an application object (app registration) you must enter the app&rsquo;s <strong>Object ID</strong> for the <code>-ApplicationId</code> parameter.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-13.png"
+	width="1734"
+	height="927"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-13_hu_d2d537c50d721488.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-13_hu_8dec5441c39930b8.png 1024w"
+	loading="lazy"
+	
+		alt="Using the Application (client) ID from portal fails"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="187"
+		data-flex-basis="448px"
+	
+> <img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-14.png"
+	width="1734"
+	height="927"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-14_hu_4436100704175e10.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-14_hu_235b782fa1d1a2f0.png 1024w"
+	loading="lazy"
+	
+		alt="Using the Object ID as param value for ApplicationId works"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="187"
+		data-flex-basis="448px"
+	
+></p>
+<p>If you want to retrieve your application object by application (client) ID you need to use a filter:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Get-MgApplication</span> <span class="n">-Filter</span> <span class="s2">&#34;AppId eq &#39;bfdc4320-01d3-4cb0-b033-03ddbe5125d5&#39;&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="service-principal-ids">Service Principal IDs
+</h3><p>Now let&rsquo;s look at the IDs of service principals. A service principal has an Application ID and an Object ID. The Application ID is always the same as the Application (client) ID of the app registration it&rsquo;s derived of. That is the case for both multi-tenant apps (like Zoom etc.) you&rsquo;ve added to your tenant as well as apps you&rsquo;ve registered in your tenant yourself.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-15.png"
+	width="1483"
+	height="1194"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-15_hu_46a5d41b8812bc5d.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-15_hu_6d138288390ecf84.png 1024w"
+	loading="lazy"
+	
+		alt="Service Principal IDs"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="124"
+		data-flex-basis="298px"
+	
+></p>
+<p>When you want to retrieve a service principal with PowerShell, you do that also by passing its <strong>Object ID</strong> for the param value of <code>ServicePrincipalId</code>.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-16.png"
+	width="1734"
+	height="927"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-16_hu_592e4ac7d3ef019f.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-16_hu_d4c56e0a977a0c8c.png 1024w"
+	loading="lazy"
+	
+		alt="Get-MgServicePrincipal using the Object ID"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="187"
+		data-flex-basis="448px"
+	
+></p>
+<p>To retrieve a service principal for an app ID (client ID), you must also use a filter:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Get-MgServicePrincipal</span> <span class="n">-Filter</span> <span class="s2">&#34;AppId eq &#39;bfdc4320-01d3-4cb0-b033-03ddbe5125d5&#39;&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>In both cases, you must use the object ID to retrieve the object, which kind of makes sense if you compare it to other object related commands in the Microsoft ecosystem. What doesn&rsquo;t really make sense is that the param for <code>Get-MgApplication</code> is called <code>-ApplicationId</code> when we generally refer to an app&rsquo;s client ID as the app/application ID but the param expects the object ID. In my opinion something like <code>-ApplicationObjectId</code> would have made more sense here.</p>
+<h3 id="establishing-an-app-only-auth-session">Establishing an App Only Auth Session
+</h3><p>Once signed in, <code>Get-MgContext</code> will show your client ID but there&rsquo;s absolutely no mention of the service principal ID being used in that session.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-12.png"
+	width="1734"
+	height="927"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-12_hu_21147d4a34293e42.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-12_hu_f4c1ce3747cd54a2.png 1024w"
+	loading="lazy"
+	
+		alt="Client ID in Graph Context"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="187"
+		data-flex-basis="448px"
+	
+></p>
+<p>So what&rsquo;s the acting identity, is it the app registration or the service principal?</p>
+<p>There&rsquo;s the fact that client secrets and certificates are configured on app registrations and not on service principals directly. On the other hand, a service principal literally includes the word <strong>principal</strong>, as in security principal in its name.</p>
+<p>Luckily, I also have a <a class="link" href="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/" >blog post</a> about how to get an access token of an already established Graph PowerShell session.</p>
+<p>So I inspected the token claims:</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-10.png"
+	width="1714"
+	height="1236"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-10_hu_73bcaa8b642adff5.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-10_hu_290159cbb2f313b1.png 1024w"
+	loading="lazy"
+	
+		alt="Claims included in the access token"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="138"
+		data-flex-basis="332px"
+	
+></p>
+<p>The token claims clearly list the object ID as value of the service principal for <strong>oid</strong>  alongside the app ID in <strong>app_id</strong>. I already covered that the sign-in logs only list service principal ids but no application ids in my first blog so this makes sense.</p>
+<p>If I compare this against a token of a delegated session, where a user signed in using their credentials, we can see the the <strong>oid</strong> is the user&rsquo;s object ID.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-17.png"
+	width="1734"
+	height="927"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-17_hu_1b6c5ac8cdf9cffd.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-17_hu_3fb4fb302591575b.png 1024w"
+	loading="lazy"
+	
+		alt="Graph Context of Delegated Session with User ID"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="187"
+		data-flex-basis="448px"
+	
+> <img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-18.png"
+	width="1721"
+	height="927"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-18_hu_e65e520174193b55.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-18_hu_9d30007c18a3aa70.png 1024w"
+	loading="lazy"
+	
+		alt="Token claims of delegated session listing user ID as oid"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="185"
+		data-flex-basis="445px"
+	
+></p>
+<p>I think it&rsquo;s safe to say that we all agree that in a delegated session, the authenticated user is the <strong>acting</strong> principal. In that case the oid is the user&rsquo;s ID whereas in an app only auth session the oid is the object ID of the service principal. This makes the service principal the acting identity and not the app registration.</p>
+<p>There&rsquo;s also the fact that in multi-tenant scenarios, your tenant won&rsquo;t have an app registration object if you&rsquo;re using a 3rd party app. You can&rsquo;t use something to sign in, if you don&rsquo;t have an object for it in the first place.</p>
+<h3 id="testing-against-a-service-principals-own-object">Testing against a Service Principal&rsquo;s Own Object
+</h3><p>I took this even further and made another test. I created an app registration and a service principal and didn&rsquo;t grant any permissions to it. Why? Because security principals without permissions can usually only read and update their own object. I wanted to see if the service principal will be able to update only the service principal object or also the app registration object.</p>
+<p>This screenshot shows that there are no <strong>roles</strong> listed between <strong>rh</strong> and <strong>sub</strong> if you compare it to the one above.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-19.png"
+	width="1709"
+	height="1107"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-19_hu_ff3ac6bda3317871.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-19_hu_a4de969e43c75f6c.png 1024w"
+	loading="lazy"
+	
+		alt="Token claims do not include any roles at all"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="154"
+		data-flex-basis="370px"
+	
+></p>
+<p>Even with no permissions at all, I&rsquo;m still able to read both the app registration and service principal object of the app I used to sign in. I can&rsquo;t however, read any other objects.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-20.png"
+	width="1723"
+	height="1027"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-20_hu_74934a57dc17877a.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-20_hu_fe9d12e4b38071b6.png 1024w"
+	loading="lazy"
+	
+		alt="Get-MgApplication"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="167"
+		data-flex-basis="402px"
+	
+> <img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-21.png"
+	width="1723"
+	height="1027"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-21_hu_76c61662703bd79e.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-21_hu_bd615c8947fbd840.png 1024w"
+	loading="lazy"
+	
+		alt="Get-MgServicePrincipal"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="167"
+		data-flex-basis="402px"
+	
+></p>
+<p>Since I&rsquo;m able to read both the application and service principal object, it doesn&rsquo;t prove that the service principal is the acting identity yet.</p>
+<p>Next, I tried updating the display name of both objects. Both failed with <strong>403 forbidden</strong>. I can only assume that this is because the service principal inherits its display name from the app registration object but since the service principal is the acting identity, it&rsquo;s not allowed to update the app registration object. In other words, the app registration object is not the same object as the signed in, acting identity.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-22.png"
+	width="1716"
+	height="1024"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-22_hu_f207752240182b49.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-22_hu_5d13347e7d9da7b6.png 1024w"
+	loading="lazy"
+	
+		alt="Update-MgApplication and Update-MgServicePrincipal both fail"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="167"
+		data-flex-basis="402px"
+	
+></p>
+<p>I then looked for a property which is unique to both objects and identified the <strong>Owners</strong> property as a good test subject. Owners on app registration and service principal objects are different.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-23.png"
+	width="1723"
+	height="1036"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-23_hu_8b081addd5a67717.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-23_hu_5ae3dedbbd810e4f.png 1024w"
+	loading="lazy"
+	
+		alt="Test adding an owner to the service principal and the app registration"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="166"
+		data-flex-basis="399px"
+	
+></p>
+<p>The signed in service principal was allowed to add owners to its own object but was denied adding an owner to its associated app registration.</p>
+<p>Just to be absolutely sure, I tested adding an owner to a different service principal. As expected, this failed.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-24.png"
+	width="1719"
+	height="772"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-24_hu_c430733188d88c94.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-24_hu_fdfc86018aa81c05.png 1024w"
+	loading="lazy"
+	
+		alt="Test adding an owner to a different service principal"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="222"
+		data-flex-basis="534px"
+	
+></p>
+<h3 id="the-ultimate-and-final-test">The Ultimate and Final Test
+</h3><p>Just like user accounts, service principals can be disabled. This can be done from a service principal&rsquo;s properties in the portal or through Graph PowerShell.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-28.png"
+	width="1474"
+	height="654"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-28_hu_b6ac5abd464ca4c8.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-28_hu_9ef499e43067a37c.png 1024w"
+	loading="lazy"
+	
+		alt="Disabling a Service Principal in the Entra ID portal"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="225"
+		data-flex-basis="540px"
+	
+></p>
+<p>The equivalent in PowerShell is:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Update-MgServicePrincipal</span> <span class="n">-ServicePrincipalId</span> <span class="n">d1e8a817</span><span class="p">-</span><span class="mf">57e9</span><span class="p">-</span><span class="mf">4369</span><span class="n">-a31e</span><span class="p">-</span><span class="n">3ef01c673607</span> <span class="n">-AccountEnabled:</span><span class="vm">$false</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>I disabled the service principal but didn&rsquo;t sign out of the established session in PowerShell. When I tried to run a command that worked before again, I got the following error message: <strong>The authenticating application principal is disabled.</strong></p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-26.png"
+	width="1703"
+	height="763"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-26_hu_79cf354952081ebe.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-26_hu_b61f0bf567f0b676.png 1024w"
+	loading="lazy"
+	
+		alt="Error message for disabled Service Principal"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="223"
+		data-flex-basis="535px"
+	
+></p>
+<p>And after some time, the token became invalid.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-27.png"
+	width="1719"
+	height="227"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-27_hu_1ed04ecb8b45d0d9.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-27_hu_8b48a86d3438b457.png 1024w"
+	loading="lazy"
+	
+		alt="Invalid Token error message"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="757"
+		data-flex-basis="1817px"
+	
+></p>
+<p>All of this definitely proves that a <strong>service principal</strong> and not an app registration is the <strong>acting identity</strong> in an app only auth session. This also ties in to the next topic: are permissions granted to app registrations or service principals?</p>
+<h2 id="required-permissions-vs-granted-permissions">Required Permissions vs Granted Permissions
+</h2><p>I already covered permissions quite a bit in my original post. This time I&rsquo;m trying to shed some light on what is happening when you configure permissions on an app registration and grant consent.</p>
+<p>First of all, permissions are not granted to app registrations. They wouldn&rsquo;t be of any use to them anyway, since I&rsquo;ve just proven that service principals are the identities which act against Microsoft Graph and other resources.</p>
+<p>Again, I totally understand why you&rsquo;d think that permissions are granted to app registrations because of what the portal is doing. But I&rsquo;m going to show you why that&rsquo;s not the case.</p>
+<p>We already know that there&rsquo;s different types of service principals. Service principals which have been created for an associated app registration are of type <strong>Application</strong>. You can check this by running the following command:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Get-MgServicePrincipal</span> <span class="n">-ServicePrincipalId</span> <span class="n">37b5562c</span><span class="p">-</span><span class="n">7c23</span><span class="p">-</span><span class="n">46a8-ac32</span><span class="p">-</span><span class="n">5ca4d96dc485</span> <span class="p">|</span> <span class="nb">fl </span><span class="n">DisplayName</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">AppId</span><span class="p">,</span> <span class="n">ServicePrincipalType</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">DisplayName</span>          <span class="err">:</span> <span class="n">AdminUnitScopedServicePrincipal</span>
+</span></span><span class="line"><span class="cl"><span class="n">ID</span>                   <span class="err">:</span> <span class="n">37b5562c</span><span class="p">-</span><span class="n">7c23</span><span class="p">-</span><span class="n">46a8-ac32</span><span class="p">-</span><span class="n">5ca4d96dc485</span>
+</span></span><span class="line"><span class="cl"><span class="n">AppId</span>                <span class="err">:</span> <span class="n">bfdc4320</span><span class="p">-</span><span class="n">01d3</span><span class="p">-</span><span class="n">4cb0-b033</span><span class="p">-</span><span class="n">03ddbe5125d5</span>
+</span></span><span class="line"><span class="cl"><span class="n">ServicePrincipalType</span> <span class="err">:</span> <span class="n">Application</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>And here&rsquo;s an example of a managed identity:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Get-MgServicePrincipal</span> <span class="n">-ServicePrincipalId</span> <span class="n">08c3773a</span><span class="p">-</span><span class="n">83ca</span><span class="p">-</span><span class="mf">4441</span><span class="n">-a6d4</span><span class="p">-</span><span class="n">35d3bb0bf274</span> <span class="p">|</span> <span class="nb">fl </span><span class="n">DisplayName</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">AppId</span><span class="p">,</span> <span class="n">ServicePrincipalType</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output</span>
+</span></span><span class="line"><span class="cl"><span class="n">DisplayName</span>          <span class="err">:</span> <span class="nb">mzz-automation</span><span class="n">-account</span><span class="p">-</span><span class="mf">012</span>
+</span></span><span class="line"><span class="cl"><span class="n">ID</span>                   <span class="err">:</span> <span class="n">08c3773a</span><span class="p">-</span><span class="n">83ca</span><span class="p">-</span><span class="mf">4441</span><span class="n">-a6d4</span><span class="p">-</span><span class="n">35d3bb0bf274</span>
+</span></span><span class="line"><span class="cl"><span class="n">AppId</span>                <span class="err">:</span> <span class="n">0dcc5d4a</span><span class="p">-</span><span class="n">74c0</span><span class="p">-</span><span class="n">4f04</span><span class="p">-</span><span class="n">88cc</span><span class="p">-</span><span class="n">420a7539166e</span>
+</span></span><span class="line"><span class="cl"><span class="n">ServicePrincipalType</span> <span class="err">:</span> <span class="n">ManagedIdentity</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Managed identities still have an app ID but there is no app registration object in your tenant for them. If permissions where granted to app registrations, managed identities simply wouldn&rsquo;t work.</p>
+<p>This is basically what people mean when they say that app registrations serve as a template or a blueprint for the service principals. On app registrations, developers configure (define) what permissions their app needs in order for it to function properly in your tenant.</p>
+<p>App registrations and configured permissions greatly simplify application management for tenant admins and owners of multi-tenant SaaS apps. You can create a service principal for an app like Zoom and grant all required permissions with a single click during the consent process.</p>
+<p>If app registrations didn&rsquo;t offer this functionality, developers would need to create long and complicated guides to explain to their customers what permissions a customer needs to add manually for their app to work in a customer&rsquo;s tenant.</p>
+<p>In fact, it&rsquo;s not even possible to grant permissions to a service principal from the portal. There is no button to add permissions here. You can only do it from an app registration. To learn about all the ways in which permissions can be added, see <a class="link" href="/p/whats-the-difference-between-an-entra-ID-app-registration-and-an-enterprise-app-4yyib4g1sk5a/#add-permissions-to-applications" >this</a>.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-25.png"
+	width="1927"
+	height="1400"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-25_hu_12c8bb0d6fd8b1a2.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-25_hu_a85b4747c12b8822.png 1024w"
+	loading="lazy"
+	
+		alt="Permission on service principal in Entra ID: No add a permission button"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="137"
+		data-flex-basis="330px"
+	
+> <img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-29.png"
+	width="1927"
+	height="1067"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-29_hu_53f5da7e5ec6da05.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-29_hu_6b245722af4ae6d2.png 1024w"
+	loading="lazy"
+	
+		alt="Permissions on app registration in Entra ID: Add a permission button available"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="180"
+		data-flex-basis="433px"
+	
+></p>
+<p>If you want to, you can grant permissions directly to a service principal through PowerShell or by using the <a class="link" href="https://pnp.github.io/cli-microsoft365/cmd/entra/approleassignment/approleassignment-add"  target="_blank" rel="noopener"
+    >CLI for M365</a>.</p>
+<p>Using the CLI for M365 is actually a lot easier than using Graph PowerShell in this case. Here&rsquo;s an example on how to add a bunch of Graph permissions to a service principal:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># M365 CLI login</span>
+</span></span><span class="line"><span class="cl"><span class="n">m365</span> <span class="n">login</span> <span class="p">-</span><span class="n">-appId</span> <span class="nv">$appId</span> <span class="p">-</span><span class="n">-tenant</span> <span class="nv">$tenantId</span> <span class="p">-</span><span class="n">-authType</span> <span class="n">browser</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">m365</span> <span class="n">entra</span> <span class="n">approleassignment</span> <span class="n">add</span> <span class="p">-</span><span class="n">-appObjectId</span> <span class="nv">$servicePrincipalObjectId</span> <span class="p">-</span><span class="n">-resource</span> <span class="s2">&#34;Microsoft Graph&#34;</span> <span class="p">-</span><span class="n">-scopes</span> <span class="s2">&#34;Application.Read.All,Sites.Selected,User.Read.All,CrossTenantInformation.ReadBasic.All&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Now I&rsquo;m not going to lie, this is confusing to me as well. The param is called <code>--appObjectId</code> and the description says: <em>Application objectId of the App Registration to which the configured scopes (app roles) should be applied</em>.</p>
+<p>This doesn&rsquo;t add up as I&rsquo;m able to assign new permissions to a managed identity using it&rsquo;s service principal object ID but not its application ID. It&rsquo;s the same for an application service principal. The only ID that the above command works with is the service principal&rsquo;s object ID. And unlike the param description, that makes total sense. (I&rsquo;m going to reach out to the CLI for M365 team and ask for clarification.)</p>
+<p>I&rsquo;ve added the <strong>Directory.ReadWrite.All</strong> Graph permission to a service principal now using the CLI for M365. You can see that it&rsquo;s now granted to the service principal in the screenshot below.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-30.png"
+	width="2166"
+	height="1426"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-30_hu_d624dc42a42dca88.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-30_hu_fb1f6d421ae0f5ba.png 1024w"
+	loading="lazy"
+	
+		alt="Permissions granted to the service principal"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="151"
+		data-flex-basis="364px"
+	
+></p>
+<p>Now if I switch to this service principal&rsquo;s app registration, you can see that permissions are split up between <strong>Configured permissions</strong> and <strong>Other permissions granted</strong>. And just because permissions are configured, it doesn&rsquo;t mean they&rsquo;ve been granted as well. Permissions that <strong>actually</strong> have been granted to the service principal feature a green check.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-31.png"
+	width="2168"
+	height="1673"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-31_hu_793fd2b43bb3ea69.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-31_hu_288d5e3feec3c645.png 1024w"
+	loading="lazy"
+	
+		alt="Permissions on the app registration"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="129"
+		data-flex-basis="311px"
+	
+></p>
+<p><strong>ChatMessage.Read.All</strong> hasn&rsquo;t been granted yet. If you go back to the screenshot of the service principal permissions, you can see that it&rsquo;s not available there. This means that it can&rsquo;t be used before consent is granted.</p>
+<p><strong>Other permissions granted</strong> list permissions which have been granted to the service principal directly. Ideally, your apps will never look like this because keeping configured and granted permissions in sync is one of the main purposes of app registrations.</p>
+<p>The property that represents what the portal displays as <strong>configured permissions</strong> is called <code>RequiredResourceAccess</code> in Graph objects.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-32.png"
+	width="1734"
+	height="927"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-32_hu_4d7dc1b54626abb1.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-32_hu_62ddc1bc38582b13.png 1024w"
+	loading="lazy"
+	
+		alt="Required Resource Access in Graph PowerShell output"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="187"
+		data-flex-basis="448px"
+	
+></p>
+<p>This can be verified by using the browser dev tools as well. When the an app registration&rsquo;s permissions page is loaded, it first gets the app registration by app ID from <code>https://graph.microsoft.com/beta/myorganization/applications(appId='bfdc4320-01d3-4cb0-b033-03ddbe5125d5')</code>.  The response then lists the configured permissions under requiredResourceAccess regardless of if the permissions have already been granted to the service principal.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-33.png"
+	width="770"
+	height="824"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-33_hu_3d144d4a79cb568a.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-33_hu_bd0192f18eb120b4.png 1024w"
+	loading="lazy"
+	
+		alt="Required Resource Access part in web response"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="93"
+		data-flex-basis="224px"
+	
+></p>
+<p>Delegated permissions are listed as <strong>Scope</strong> and application permissions are called <strong>Role</strong>. In the <a class="link" href="https://learn.microsoft.com/en-us/graph/permissions-reference#chatmessagereadall"  target="_blank" rel="noopener"
+    >Microsoft Graph Permission Reference</a> we can see that the ID of <strong>ChatMessage.Read.All</strong> is <code>b9bb2381-47a4-46cd-aafb-00cb12f68504</code> which is part of the required resource access even though it hasn&rsquo;t been granted the the service principal yet. You can read more about application and delegated permissions <a class="link" href="/p/whats-the-difference-between-an-entra-id-app-registration-and-an-enterprise-app-4yyib4g1sk5a/#delegated-vs-application-permissions" >here</a>.</p>
+<p>If we check the ID of a permission which is listed under <strong>Other permissions granted</strong>, for example <strong>Directory.ReadWrite.All</strong> (<a class="link" href="https://learn.microsoft.com/en-us/graph/permissions-reference#directoryreadwriteall"  target="_blank" rel="noopener"
+    >19dbc75e-c2e2-444c-a770-ec69d8559fc7</a>) we can see that it&rsquo;s not part of the required resource access property.</p>
+<p>Let&rsquo;s check the next request in the browser dev tools. This goes to <code>https://graph.microsoft.com/v1.0/servicePrincipals?$filter=appId eq 'bfdc4320-01d3-4cb0-b033-03ddbe5125d5'</code>. This endpoint does not return app role assignments (granted application permissions) or scopes (granted delegated permissions). It&rsquo;s simply performed to find the service principal object ID by filtering service principals for a matching app (client) ID (the one of the current app registration).</p>
+<p>Finally, the portal is requesting the app role assignments (application permissions) and OAuth 2 permission grants (delegated permissions) for the current service principal ID using these requests:</p>
+<p><code>https://graph.microsoft.com/v1.0/servicePrincipals/37b5562c-7c23-46a8-ac32-5ca4d96dc485/appRoleAssignments?$top=999</code></p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-34.png"
+	width="941"
+	height="1230"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-34_hu_75138299789d089c.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-34_hu_30df366bba4cab24.png 1024w"
+	loading="lazy"
+	
+		alt="Response including application permissions granted to the service principal"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="76"
+		data-flex-basis="183px"
+	
+></p>
+<p>The second last permission in the screenshot (19dbc75e-c2e2-444c-a770-ec69d8559fc7) is <strong>Directory.ReadWrite.All</strong>.</p>
+<p>The second request shows the granted delegated permissions.</p>
+<p><code>https://graph.microsoft.com/v1.0/oauth2PermissionGrants?$filter=clientId%20eq%20%2737b5562c-7c23-46a8-ac32-5ca4d96dc485%27%20and%20consentType%20eq%20%27AllPrincipals%27&amp;$top=999</code></p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-35.png"
+	width="993"
+	height="377"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-35_hu_5db80da0721bb220.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-35_hu_bb9605ceb5d2c852.png 1024w"
+	loading="lazy"
+	
+		alt="Response including delegated permissions granted to the service principal"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="263"
+		data-flex-basis="632px"
+	
+></p>
+<p>So, earlier I established that service principals are the acting identities in authenticated sessions and this proves that permissions are granted to service principals and not app registrations. App registrations merely define what permissions a service principal should have for the app to function properly.</p>
+<p>The problem is that the portal tricks you into believing that permissions are granted to app registrations because in the portal, granting permissions is only possible through the app registration menu. But behind the scenes permissions are granted to an app&rsquo;s service principal when you grant admin consent to new permissions.</p>
+<p>I wasn&rsquo;t able to fully trace what happens when you grant consent to a permission on an app registration in the browser dev tools but I was able to do it for when you revoke admin consent for a permission.</p>
+<p>In that case, a <strong>DELETE</strong> request <strong>including the app role ID</strong> and the <strong>service principal by object ID</strong> is sent to <code>https://graph.microsoft.com/v1.0/servicePrincipals/37b5562c-7c23-46a8-ac32-5ca4d96dc485/appRoleAssignments/LFa1NyN8qEasMlyk2W3EhSrSirfW4XtPjJPVuu_KHX0</code>.</p>
+<p>The app role ID is only present on the service principal&rsquo;s app role assignments and not on the app registration. An app registration simply doesn&rsquo;t hold any privileges, roles or permissions despite the way it&rsquo;s presented in the portal. This was also confirmed to me by the aforementioned Microsoft employees.</p>
+<h2 id="adding-admin-roles-to-service-principals">Adding Admin Roles to Service Principals
+</h2><p>Not only Graph permissions can be assigned to service principals. It&rsquo;s also possible to assign administrative roles, such as Groups Administrator to a service principal. Even in this case, Entra ID doesn&rsquo;t make it easy for us to understand. When you add a role assignment to a service principal, the search result will list a service principal&rsquo;s application ID instead of the object ID. To make it extra confusing, it will even list managed identities as Enterprise applications.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-44.png"
+	width="1982"
+	height="669"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-44_hu_537a2db3e053fc72.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-44_hu_4221820339e67c89.png 1024w"
+	loading="lazy"
+	
+		alt="Detials shows the app ID of a service principal instead of the object ID"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="296"
+		data-flex-basis="711px"
+	
+> <img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-42.png"
+	width="1469"
+	height="951"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-42_hu_3e8ec2401bf72d38.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-42_hu_c2c7d39bea7d8508.png 1024w"
+	loading="lazy"
+	
+		alt="Managed identity properties"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="154"
+		data-flex-basis="370px"
+	
+></p>
+<p>After the role assignment has been added to the service principal, it still shows the app ID as user name but it does say <strong>ServicePrincipal</strong> under <strong>Type</strong>. Managed identities do have an app ID but there is no app registration object in the tenant.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-45.png"
+	width="1641"
+	height="575"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-45_hu_582cd09eb7848cae.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-45_hu_4fbde3709c8f7037.png 1024w"
+	loading="lazy"
+	
+		alt="Administrative role assignment for a service principal"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="285"
+		data-flex-basis="684px"
+	
+></p>
+<p>Another peek into the browser dev tools also confirms that it&rsquo;s returning the service principal object. (This is also the case for service principals for which an app registration object does exist in the same tenant.)</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-41.png"
+	width="1155"
+	height="303"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-41_hu_18094dbdd8037872.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-41_hu_6e10261ce930d494.png 1024w"
+	loading="lazy"
+	
+		alt="Service principal object in web response"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="381"
+		data-flex-basis="914px"
+	
+> <img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-43.png"
+	width="856"
+	height="430"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-43_hu_203f6e1759fc2d33.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-43_hu_3b8348ba806cd181.png 1024w"
+	loading="lazy"
+	
+		alt="Service principal object in web response"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="199"
+		data-flex-basis="477px"
+	
+></p>
+<p>While the portal lists the app ID, the web request to the role assignments endpoint clearly returns <code>Microsoft.DirectoryServices.ServicePrincipal</code> as principal value and also features the service principal object ID. For comparison, a user role assignment&rsquo;s principal is listed as <code>Microsoft.DirectoryServices.User</code>.</p>
+<h2 id="why-would-you-have-an-app-registration-only">Why Would you have an App Registration Only?
+</h2><p>I&rsquo;m not sure how common this misconception is but I want to talk about it anyway. Earlier I said that there is one scenario in which you might want to have an app registration only. That is when you&rsquo;re the publisher of a multi-tenant app and you&rsquo;re either using a dedicated tenant for the app registration or you don&rsquo;t actually need to access any resources in the tenant where your app is registered.</p>
+<p>Most publishers of SaaS apps likely also use their own product but some companies choose to register their applications in a dedicated tenant which is only used to host the app registration and maybe some Azure resources. If I was building a SaaS app, I wouldn&rsquo;t stick my app registration into the same tenant that&rsquo;s used for daily business. I&rsquo;d add the app as an external app to my internal operations tenant the same way as any customer would add the app.</p>
+<p>When I started dealing with app registrations, I always assumed that you need to grant admin consent in any case and that all the checks must be green in order for customers to be able to use the app. That&rsquo;s not the case.</p>
+<p>A service principal only needs to have permissions granted or even needs to be created in each tenant where the app is being used. If I&rsquo;m the provider of a multi-tenant app and I only want my app to access the data of my customers and don&rsquo;t use the app myself in the tenant where the app registration lives, I don&rsquo;t need to grant any permissions. In fact, I don&rsquo;t even need a service principal for it in that tenant.</p>
+<p>As you can see, I only have a multi-tenant app registration but no service principal in the tenant where the app is registered. My app needs the <strong>User.Read.All</strong> application permission but since there is no service principal for it in my tenant, the permission hasn&rsquo;t been granted. (Granting consent would create the service principal automatically). Finally, the app has a client secret to connect to Microsoft Graph without a signed in user.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-36.png"
+	width="1526"
+	height="611"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-36_hu_5350a6153b7dae39.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-36_hu_5324bff7f8415078.png 1024w"
+	loading="lazy"
+	
+		alt="App registration in service tenant"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="249"
+		data-flex-basis="599px"
+	
+> <img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-37.png"
+	width="1930"
+	height="910"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-37_hu_f349eb708dc5684b.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-37_hu_f8d99d2a91e444f3.png 1024w"
+	loading="lazy"
+	
+		alt="Configured permissions of app registration"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="212"
+		data-flex-basis="509px"
+	
+> <img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-38.png"
+	width="1924"
+	height="767"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-38_hu_823dccdef3db6d18.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-38_hu_7efd267d00e57552.png 1024w"
+	loading="lazy"
+	
+		alt="Client secret on app registration"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="250"
+		data-flex-basis="602px"
+	
+></p>
+<p>I&rsquo;ve added the app to another test tenant of mine. (This would be a customer tenant.)</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-39.png"
+	width="2215"
+	height="911"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-39_hu_b1226e46475494b6.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-39_hu_3be3ae73075f5bd5.png 1024w"
+	loading="lazy"
+	
+		alt="Multi-tenant app in customer tenant"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="243"
+		data-flex-basis="583px"
+	
+></p>
+<p>Now as the app owner, I can connect to the customer tenant using their tenant ID and the client ID of my registered app:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$tenantId</span> <span class="p">=</span> <span class="nb">Read-Host</span> <span class="n">-Prompt</span> <span class="s2">&#34;Enter the tenant ID&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$credentials</span> <span class="p">=</span> <span class="nb">Get-Credential</span> <span class="n">-Message</span> <span class="s2">&#34;Enter the application (client) ID and secret&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">Connect-MgGraph</span> <span class="n">-TenantId</span> <span class="nv">$tenantId</span> <span class="n">-ClientSecretCredential</span> <span class="nv">$credentials</span> <span class="n">-NoWelcome</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Since I&rsquo;m passing both the <strong>Tenant ID</strong> and the <strong>App ID</strong> in <code>Connect-MgGraph</code>, I can now access the resources in the customer tenant using the service principal that was created in the customer tenant, when the customer added the app by granting admin consent.</p>
+<p>At first I thought it was weird that the application (client) ID is used for sign in, when the token is issued for the app&rsquo;s service principal but after this test, it makes perfect sense.</p>
+<p>When both the app registration and a service principal exist in the same tenant (like with any single-tenant app), it&rsquo;s easy to find the service principal ID. But when I look at this from a multi-tenant perspective, it becomes clear that I can&rsquo;t possibly know the service principal object ids of all the tenants my app has been added to. And the sign in process/command would need to be unique for each tenant (different service principal ID).</p>
+<p>But by providing the tenant ID and the app ID during sing in, the correct service principal object ID can be determined by the target tenant and a token for it is issued.</p>
+<p>So, here you can see that I&rsquo;m now able to use the <strong>User.Read.All</strong> application permission which the customer tenant has granted consent to, to query a user from another tenant even though the tenant where the app is registered doesn&rsquo;t even have any granted permissions or let alone a service principal object.</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-40.png"
+	width="1734"
+	height="927"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-40_hu_90425f8212626296.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-40_hu_e31f1f254f4f2ebf.png 1024w"
+	loading="lazy"
+	
+		alt="Proof that no service principal is needed in app owner’s tenant"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="187"
+		data-flex-basis="448px"
+	
+></p>
+<h2 id="summary">Summary
+</h2><p>App registrations and service principals remain an extremely complex topic. I generally think it&rsquo;s a good idea to stick to facts and technical terms. Frankly, I&rsquo;m not sure how that will work out in this case as the term Enterprise applications is all over the place in Entra ID but not once mentioned in Graph/PowerShell.</p>
+<p>I guess I don&rsquo;t really care whether we call them Enterprise applications or service principals as long as we&rsquo;re aware of the following key takeaways:</p>
+<p>Enterprise applications is just a term for service principals which are associated with application objects (app registrations). All Enterprise applications are service principals but not all service principals types are considered Enterprise applications as well.</p>
+<p>Enterprise apps sometimes also describe multi-tenant apps for which the app registration lives in another tenant (i.e. Zoom etc.). However, that doesn&rsquo;t bode too well with me either since the Enterprise applications menu in Entra ID also lists all service principals of the apps for which an app registration exists in the same tenant.</p>
+<p>In app only auth scenarios, service principals are the acting identity and permissions are always granted to service principals and not to app registrations.</p>
+<p>I hope that this blog provided new insights and answers to some of the questions you might have had. Gathering all of this information and proof was quite fun but also very time intensive. If you appreciate the effort, feel free to buy me a coffee.</p>
+<p>At this point I&rsquo;d also like to thank all the people who already bought me a coffee after reading my original article.</p>
+<h2 id="whats-next">What&rsquo;s Next?
+</h2><p>I think most of the problems outlined in this blog post are owed to the fact that Entra ID uses two separate menus (App registrations and Enterprise applications) to manage the different types of objects, even though they&rsquo;re closely related.</p>
+<p>Each app registration and service principal share two (visible and obvious) things: the application (client) ID and the application name. This got me thinking&hellip; what if we stop thinking about them as two separate things but rather start thinking of them as <strong>one app</strong> consisting of different objects.</p>
+<p>Wouldn&rsquo;t it be great to see only an app&rsquo;s name and ID but instantly know what kind of objects exist for any app in my tenant? Do I have an app registration and a service principal or is it an external app owned by someone else, in which case I only have a service principal?</p>
+<p>Over the past couple of weeks, I&rsquo;ve been prototyping an Azure runbook that leverages the Graph API to gather and combine all the relevant information to then update a SharePoint list on a schedule. This gives me a single pane of glass type of thing where I can see all my apps, including all important properties.</p>
+<p>The list allows me to do all kinds of cool stuff like creating pre-built filters in different views but also offers great search and filtering capabilities. For example, I can search for any Graph permission and immediately see any apps that have that exact permission.</p>
+<p>I&rsquo;ll be sharing more information and the code to build this yourself over the next couple of months. Here&rsquo;s a sneak peek of it:</p>
+<p><img src="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-6.png"
+	width="3267"
+	height="997"
+	srcset="/p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-6_hu_285110992b75b84f.png 480w, /p/understanding-entra-id-app-registrations-enterprise-applications-and-service-principals-part-2-os8rb48knqez/image-6_hu_ad2f9493ef28d99a.png 1024w"
+	loading="lazy"
+	
+		alt="Sneak peek of Unified Entra Apps View in a SharePoint list"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="327"
+		data-flex-basis="786px"
+	
+></p>
+<p>Stay tuned!</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/whats-the-difference-between-an-entra-id-app-registration-and-an-enterprise-app-4yyib4g1sk5a/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Understanding Microsoft Entra ID App Registrations, Enterprise Apps and Service Principals</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/">
+        
+        
+            <div class="article-image">
+                <img src="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/Cover.d27f75b1486ba1a383c8ceacca207724_hu_f48b701f8e79df8e.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post Find Tenant Owner Company Name with Only an Entra Tenant Id"
+                        data-key="/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb" 
+                        data-hash="md5-0n91sUhroaODyM6syiB3JA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Find Tenant Owner Company Name with Only an Entra Tenant Id</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Microsoft Graph: How To Filter Users by Phone Number</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Microsoft Graph: Get an Access Token from a PowerShell Session</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Translate Microsoft 365 License GUIDs to Product Names in PowerShell</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "heusser-pro" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2025 HEUSSER.PRO
+    </section>
+    
+    <section class="powerby">
+        
+            Hosted on GitHub Pages <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
+
