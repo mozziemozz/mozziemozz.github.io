@@ -505,50 +505,95 @@
 	
 ></p>
 <p>Paste the following JSON object into your flow and replace the variables with your own names if needed.</p>
-<p>{<br>
-&ldquo;$schema&rdquo;: &ldquo;<a class="link" href="http://adaptivecards.io/schemas/adaptive-card.json"  target="_blank" rel="noopener"
-    >http://adaptivecards.io/schemas/adaptive-card.json</a>&rdquo;,<br>
-&ldquo;type&rdquo;: &ldquo;AdaptiveCard&rdquo;,<br>
-&ldquo;version&rdquo;: &ldquo;1.3&rdquo;,<br>
-&ldquo;body&rdquo;: [<br>
-{<br>
-&ldquo;type&rdquo;: &ldquo;TextBlock&rdquo;,<br>
-&ldquo;text&rdquo;: &ldquo;@{triggerOutputs()?[&lsquo;body/subject&rsquo;]}&rdquo;,<br>
-&ldquo;size&rdquo;: &ldquo;Large&rdquo;<br>
-},<br>
-{<br>
-&ldquo;type&rdquo;: &ldquo;TextBlock&rdquo;,<br>
-&ldquo;text&rdquo;: &ldquo;New Voicemail from @{variables(&lsquo;FromNumber&rsquo;)}&rdquo;<br>
-},<br>
-{<br>
-&ldquo;type&rdquo;: &ldquo;ActionSet&rdquo;,<br>
-&ldquo;actions&rdquo;: [<br>
-{<br>
-&ldquo;type&rdquo;: &ldquo;Action.OpenUrl&rdquo;,<br>
-&ldquo;title&rdquo;: &ldquo;Listen to Voicemail Message&rdquo;,<br>
-&ldquo;url&rdquo;: &ldquo;@{outputs(&lsquo;Create_sharing_link_for_a_file_or_folder&rsquo;)?[&lsquo;body/link/webUrl&rsquo;]}&rdquo;<br>
-}<br>
-]<br>
-},<br>
-{<br>
-&ldquo;type&rdquo;: &ldquo;ActionSet&rdquo;,<br>
-&ldquo;actions&rdquo;: [<br>
-{<br>
-&ldquo;type&rdquo;: &ldquo;Action.OpenUrl&rdquo;,<br>
-&ldquo;title&rdquo;: &ldquo;@{variables(&lsquo;FromNumber&rsquo;)} Call Back&rdquo;,<br>
-&ldquo;url&rdquo;: &ldquo;<a class="link" href="https://teams.microsoft.com/l/call/0/0?users=4:@%7Bvariables%28%27CallBackNumber%27%29%7D"  target="_blank" rel="noopener"
-    >https://teams.microsoft.com/l/call/0/0?users=4:@{variables(&lsquo;CallBackNumber&rsquo;)}</a>&rdquo;<br>
-},<br>
-{<br>
-&ldquo;type&rdquo;: &ldquo;Action.Submit&rdquo;,<br>
-&ldquo;title&rdquo;: &ldquo;Call Completed&rdquo;,<br>
-&ldquo;style&rdquo;: &ldquo;positive&rdquo;<br>
-}<br>
-]<br>
-}<br>
-]<br>
-}</p>
-<h3 id="the-result">The Result
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;$schema&#34;</span><span class="p">:</span> <span class="s2">&#34;http://adaptivecards.io/schemas/adaptive-card.json&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;AdaptiveCard&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;1.3&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;body&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;TextBlock&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;text&#34;</span><span class="p">:</span> <span class="s2">&#34;@{triggerOutputs()?[&#39;body/subject&#39;]}&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;size&#34;</span><span class="p">:</span> <span class="s2">&#34;Large&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;TextBlock&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;text&#34;</span><span class="p">:</span> <span class="s2">&#34;New Voicemail from @{variables(&#39;FromNumber&#39;)}&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;ActionSet&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;actions&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;Action.OpenUrl&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;title&#34;</span><span class="p">:</span> <span class="s2">&#34;Listen to Voicemail Message&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;@{outputs(&#39;Create_sharing_link_for_a_file_or_folder&#39;)?[&#39;body/link/webUrl&#39;]}&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;ActionSet&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;actions&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;Action.OpenUrl&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;title&#34;</span><span class="p">:</span> <span class="s2">&#34;@{variables(&#39;FromNumber&#39;)} Call Back&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://teams.microsoft.com/l/call/0/0?users=4:@{variables(&#39;CallBackNumber&#39;)}&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;Action.Submit&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;title&#34;</span><span class="p">:</span> <span class="s2">&#34;Call Completed&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;style&#34;</span><span class="p">:</span> <span class="s2">&#34;positive&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="the-result">The Result
 </h3><p>Let’s see how this looks from a user&rsquo;s perspective. Whenever a new shared voicemail is received in the shared mailbox, the Flow will be triggered and sends an adaptive card into the channel.</p>
 <p>All Team members will know that a new voicemail has been received and they can listen to it by clicking the button.</p>
 <p><img src="/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag.png"

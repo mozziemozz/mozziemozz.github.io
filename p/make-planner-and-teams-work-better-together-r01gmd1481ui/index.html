@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="In this blog post I'm showing you how you can use Power Automate to automatically create and link a new thread in Teams to a task in Planner. It also includes information about the new Threads experience in Teams channels and I was even able to find a way to hide attachment previews on Planner tasks using Power Automate!">
+<title>Make Planner and Teams Work Better Together With New Threads Experience</title>
+
+<link rel='canonical' href='https://heusser.pro/p/make-planner-and-teams-work-better-together-r01gmd1481ui/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Make Planner and Teams Work Better Together With New Threads Experience">
+<meta property='og:description' content="In this blog post I'm showing you how you can use Power Automate to automatically create and link a new thread in Teams to a task in Planner. It also includes information about the new Threads experience in Teams channels and I was even able to find a way to hide attachment previews on Planner tasks using Power Automate!">
+<meta property='og:url' content='https://heusser.pro/p/make-planner-and-teams-work-better-together-r01gmd1481ui/'>
+<meta property='og:site_name' content='HEUSSER.PRO'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-09-12T16:53:57&#43;00:00'/><meta property='article:modified_time' content='2025-09-12T16:53:57&#43;00:00'/><meta property='og:image' content='https://heusser.pro/p/make-planner-and-teams-work-better-together-r01gmd1481ui/cover.png' />
+<meta name="twitter:title" content="Make Planner and Teams Work Better Together With New Threads Experience">
+<meta name="twitter:description" content="In this blog post I'm showing you how you can use Power Automate to automatically create and link a new thread in Teams to a task in Planner. It also includes information about the new Threads experience in Teams channels and I was even able to find a way to hide attachment previews on Planner tasks using Power Automate!"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://heusser.pro/p/make-planner-and-teams-work-better-together-r01gmd1481ui/cover.png' />
+    <link rel="shortcut icon" href="/favicon.png" />
+
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "kozb6q2xjn");
+    </script>
+
+    <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/322026ee4ec1c733948748bc/script.js"></script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_fe2816fc44d850d2.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🫡</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">HEUSSER.PRO</a></h1>
+            <h2 class="site-description">Martin Heusser | M365 MVP</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/mozziemozz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://x.com/@mozzeph'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/advertise/' >
+                
+                
+                
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-device-desktop-dollar"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M13 16h-9a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v5.5" /><path d="M7 20h6.5" /><path d="M9 16v4" /><path d="M21 15h-2.5a1.5 1.5 0 0 0 0 3h1a1.5 1.5 0 0 1 0 3h-2.5" /><path d="M19 21v1m0 -8v1" /></svg>
+                
+                <span>Advertise</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/support-me/' >
+                
+                
+                
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-cup"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 11h14v-3h-14z" /><path d="M17.5 11l-1.5 10h-8l-1.5 -10" /><path d="M6 8v-1a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v1" /><path d="M15 5v-2" /></svg>
+                
+                <span>Support Me</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/imprint/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                
+                <span>Imprint</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#new-threads-experience-in-teams-channels">New Threads Experience in Teams Channels</a></li>
+    <li><a href="#what-does-this-have-to-do-with-planner">What does this have to do with Planner?</a></li>
+    <li><a href="#what-if-we-could-link-every-task-to-a-thread-in-a-teams-channel">What if we could link every task to a thread in a Teams channel?</a></li>
+    <li><a href="#see-it-in-action">See it in action</a></li>
+    <li><a href="#setup">Setup</a>
+      <ol>
+        <li><a href="#disabling-attachment-previews-through-graph-api">Disabling attachment previews through Graph API</a>
+          <ol>
+            <li><a href="#power-automate-native-graph-actions">Power Automate Native Graph Actions</a></li>
+            <li><a href="#call-other-graph-endpoints-from-power-automate">Call other Graph endpoints from Power Automate</a></li>
+          </ol>
+        </li>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#download-and-import-the-flow-premium--standard">Download and import the Flow (Premium &amp; Standard)</a></li>
+        <li><a href="#premium-version">Premium Version</a></li>
+        <li><a href="#standard-version">Standard Version</a></li>
+      </ol>
+    </li>
+    <li><a href="#summary">Summary</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/">
+                <img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/cover_hu_25844f403d4bf0a4.png"
+                        srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/cover_hu_25844f403d4bf0a4.png 800w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/cover_hu_829cf40d508d76cb.png 1600w"
+                        width="800" 
+                        height="239" 
+                        loading="lazy"
+                        alt="Featured image of post Make Planner and Teams Work Better Together With New Threads Experience" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/microsoft-teams/" >
+                Microsoft Teams
+            </a>
+        
+            <a href="/categories/planner/" >
+                Planner
+            </a>
+        
+            <a href="/categories/power-automate/" >
+                Power Automate
+            </a>
+        
+            <a href="/categories/microsoft-graph/" >
+                Microsoft Graph
+            </a>
+        
+            <a href="/categories/automation/" >
+                Automation
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/">Make Planner and Teams Work Better Together With New Threads Experience</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            In this blog post I&#39;m showing you how you can use Power Automate to automatically create and link a new thread in Teams to a task in Planner. It also includes information about the new Threads experience in Teams channels and I was even able to find a way to hide attachment previews on Planner tasks using Power Automate!
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Sep 12, 2025</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    13 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="new-threads-experience-in-teams-channels">New Threads Experience in Teams Channels
+</h2><p>Microsoft released a new <strong>Threads</strong> experience for Teams channel conversations and spun up a new page on their <a class="link" href="https://adoption.microsoft.com/en-us/microsoft-teams/new-chat-and-channels-experience/threads-in-channels/"  target="_blank" rel="noopener"
+    >adoption website</a> with some great downloadable materials regarding Threads.</p>
+<p>If you&rsquo;ve been around Teams for long enough, you probably remember how many people accidentally replied with a new post instead of replying to a channel post&hellip; As a result of this, Microsoft revamped how channels worked by hiding the compose box behind a <strong>Post</strong> button.</p>
+<p>While that mostly prevented people starting new threads instead of replying to a parent message, it created a new problem: Teams was never auto expanding all thread replies by default so it was very hard to view entire threads at a glance. A thread always had to be opened in a separate window or the entire conversation had to be opened inside the channel to view all replies in a thread.</p>
+<p>Now, with the new Threads experience, the channel looks much more like a group chat. The compose box is back and it&rsquo;s very easy to either send a new message or reply to an existing message in a thread.</p>
+<p><img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image.png"
+	width="2322"
+	height="1548"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image_hu_abb068b9761047fd.png 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/image_hu_37250289051154c0.png 1024w"
+	loading="lazy"
+	
+		alt="Posts experience in channels: Not all replies are visible"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="150"
+		data-flex-basis="360px"
+	
+> <img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-1.png"
+	width="2322"
+	height="1548"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-1_hu_e3934c803fb3a17b.png 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-1_hu_cb910d21411111ac.png 1024w"
+	loading="lazy"
+	
+		alt="Threads experience in channels: None of the replies are visible in the main view"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="150"
+		data-flex-basis="360px"
+	
+></p>
+<p>Threads can be opened on the side which makes it easy to follow a specific topic while keeping an eye on new messages sent to the channel. What&rsquo;s even cooler is that you can choose to reply to the thread only, or to the thread and the channel. This is perfect if a group of people are done discussing a specific topic and want to let the wider group know what the outcome was. By posting a summary to the thread and the channel, people who weren&rsquo;t involved in the thread conversation will have it easier to know if the thread is worth reading or if the summary is enough.</p>
+<p><img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-2.png"
+	width="2322"
+	height="1548"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-2_hu_d78c4f5040ee5756.png 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-2_hu_c2573efbdec3d912.png 1024w"
+	loading="lazy"
+	
+		alt="Reply in thread and channel while thread is still open"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="150"
+		data-flex-basis="360px"
+	
+> <img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-3.png"
+	width="2322"
+	height="1548"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-3_hu_be3cedf739da7c63.png 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-3_hu_e79498cc2fabac6a.png 1024w"
+	loading="lazy"
+	
+		alt="Reply in thread an channel while thread is closed"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="150"
+		data-flex-basis="360px"
+	
+></p>
+<p>When the experience is switched to Threads, the <strong>Post</strong> tab is also renamed to <strong>Conversation</strong>.</p>
+<h2 id="what-does-this-have-to-do-with-planner">What does this have to do with Planner?
+</h2><p>Planner might not be the best project or task management tool out there but it&rsquo;s included in most M365 license SKUs and nicely integrated into Teams. For example, it&rsquo;s very easy to add a plan as a tab in a Teams channel. But because Planner has been around for longer than Teams, it&rsquo;s also not as tightly integrated into Teams as I would like.</p>
+<p>My main complaint with it is that the comments section of planner tasks doesn&rsquo;t offer a lot of functionality or flexibility. It&rsquo;s not possible to mention other team members or add hyperlinks and attachments to comments on Planner tasks. It basically only supports plain text.</p>
+<p>Another area where Planner falls short are <a class="link" href="https://support.microsoft.com/en-us/office/stay-updated-with-notifications-in-planner-f6a32f83-058d-4f39-988d-8a2e932820ec"  target="_blank" rel="noopener"
+    >notifications</a>. While there are Teams feed notifications for tasks assignments and completions, some notifications can only be received by email. Email notifications for new comments on tasks are only sent to the group inbox, unless users are explicitly <a class="link" href="https://support.microsoft.com/en-gb/office/join-leave-or-follow-groups-in-outlook-2e59e19c-b872-44c8-ae84-0acc4b79c45d#id0efbf=new_outlook"  target="_blank" rel="noopener"
+    >following all messages in their inbox</a> for the plan&rsquo;s group. For an individual user to receive notifications about new comments directly in their inbox, they must first comment on a task themselves.</p>
+<p>You can learn more about follow in inbox here:</p>
+<ul>
+<li><a class="link" href="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/#microsoft-365groups"  target="_blank" rel="noopener"
+    >https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/#microsoft-365groups</a></li>
+<li><a class="link" href="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/#subscribing-the-shared-mailbox-to-the-m365-groupinbox"  target="_blank" rel="noopener"
+    >https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/#subscribing-the-shared-mailbox-to-the-m365-groupinbox</a></li>
+</ul>
+<p>In other words, only the group mailbox is notified about the first comment on any planner task and members are only notified about new comments directly, if they previously commented on the same task.</p>
+<p>Even though Planner does offer limited email notifications, all of this still sounds less than ideal to me. And even if the notifications are good enough for you, it still doesn&rsquo;t change the fact that comments in Planner are pretty bare bones.</p>
+<h2 id="what-if-we-could-link-every-task-to-a-thread-in-a-teams-channel">What if we could link every task to a thread in a Teams channel?
+</h2><p>This was an idea that recently came to me&hellip; So I built it. The concept is fairly easy:</p>
+<p>A Power Automate flow triggers every time someone creates a task in a specific plan. The flow then sends an adaptive card with a button that links to the task and immediately sends a reply to the card to create a new thread in the channel.</p>
+<p><img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-16.png"
+	width="1485"
+	height="531"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-16_hu_3abc995a156bcf9a.png 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-16_hu_55a33a26e5e17a5.png 1024w"
+	loading="lazy"
+	
+		alt="Adaptive card sent to channel for newly created Planner task (no thread exists yet)"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="279"
+		data-flex-basis="671px"
+	
+></p>
+<p>The message mentions the user who created the task so that this user is automatically following the thread and gets notified if anybody else responds in the thread. Once the thread is created, the flow updates the card and adds a second button which opens the thread.</p>
+<p><img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-4.png"
+	width="1470"
+	height="530"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-4_hu_573391d4edf6d378.png 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-4_hu_519d489fdda84c75.png 1024w"
+	loading="lazy"
+	
+		alt="Updated adaptive card including the button to open the thread"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="277"
+		data-flex-basis="665px"
+	
+></p>
+<p>The <strong>Open Thread</strong> button makes it every easy to view all all messages or respond with a &ldquo;comment&rdquo; to any specific task from this plan.</p>
+<p><img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-5.png"
+	width="2322"
+	height="1548"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-5_hu_d53041e6024287b8.png 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-5_hu_3917e663a7ed1fa5.png 1024w"
+	loading="lazy"
+	
+		alt="Updated adaptive card with thread open on the side"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="150"
+		data-flex-basis="360px"
+	
+></p>
+<p>Finally, the flow adds the link to the Teams thread as an attachment on the task. This creates a relation between both entities. From the thread it&rsquo;s easy to open the task in Planner and from the task, people can use the attached link to quickly get back to the thread.</p>
+<p><img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-6.png"
+	width="2322"
+	height="1548"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-6_hu_d81b87aa7b6b73f8.png 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-6_hu_374e058e55178c0e.png 1024w"
+	loading="lazy"
+	
+		alt="Link to Teams Thread in the task’s attachments"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="150"
+		data-flex-basis="360px"
+	
+></p>
+<p><del>Unfortunately, I wasn&rsquo;t able to disable the <strong>Show on card</strong> toggle for the attachment when the attachment is added through Power Automate. That&rsquo;s why you&rsquo;re seeing this big Teams icon behind the task in the screenshot above.</del></p>
+<p><del>It&rsquo;s totally possible to do it via Graph API but I couldn&rsquo;t find any action in Power Automate that supports the <code>/planner</code> Graph endpoint. Unless I missed something, this would require an HTTP action which requires an access token for Microsoft Graph. I may try to solve this in the future. For now, you&rsquo;ll just have to uncheck the box manually if you don&rsquo;t like the preview of the attachments either.</del></p>
+<p>I&rsquo;m going to show you how I did that in the <a class="link" href="#setup" >setup</a> section.</p>
+<h2 id="see-it-in-action">See it in action
+</h2><p>Anyway, here&rsquo;s how it looks in Teams. Thanks to deep links, it&rsquo;s super easy and seamless to jump back and forth between Teams threads and Planner tasks!</p>
+<p><img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/Animation.gif"
+	width="1396"
+	height="932"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/Animation_hu_1615d731d531a74f.gif 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/Animation_hu_5c3d403a2a3c039b.gif 1024w"
+	loading="lazy"
+	
+		alt="Animated gif to demonstrate how it looks in Teams"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="149"
+		data-flex-basis="359px"
+	
+></p>
+<h2 id="setup">Setup
+</h2><p>I&rsquo;ve created two versions of this flow. A <a class="link" href="#premium-version" >premium</a> and a <a class="link" href="#standard-version" >standard</a> version. The premium version requires you to make less changes to the flow after importing it into your environment but it needs a Power Automate Premium license to do that. The premium version is also capable of disabling the previews of attachments added to the Planner task by the flow.</p>
+<h3 id="disabling-attachment-previews-through-graph-api">Disabling attachment previews through Graph API
+</h3><p>When I was researching this topic, I found quite a few posts from frustrated people trying to disable attachment previews on Planner tasks. All the answers pointed to the Graph API. The problem is that most of the blogs out there just show you how you can use the <strong>HTTP</strong> action using an access token to call the Graph API. But not all of them protect the client secret. Some at least use an Azure Key Vault to protect the secrets.</p>
+<p>However, to my knowledge, you still need to include a username and a password when you want to get a delegated access token for Microsoft Graph. (If you&rsquo;re reading this and my knowledge is outdated or wrong, please let me know&hellip; I&rsquo;d love to hear that I&rsquo;m wrong.). Anyway, I don&rsquo;t want to use an account&rsquo;s password inside Power Automate, regardless if it&rsquo;s of a regular user or the one of a service account. But I also want to be able to call (almost) any Graph endpoint, not just the ones the various native actions are limited to.</p>
+<h4 id="power-automate-native-graph-actions">Power Automate Native Graph Actions
+</h4><p>The following actions allow you to call the Graph API natively. You would use this if a certain native action doesn&rsquo;t quite do what you need. Like in my case, the <strong>Update task details</strong> action doesn&rsquo;t support the <code>previewType</code> property as it sits <a class="link" href="https://learn.microsoft.com/en-us/graph/api/plannertaskdetails-update?view=graph-rest-1.0&amp;tabs=http#request-body"  target="_blank" rel="noopener"
+    >one level higher</a> than the <code>references</code> property which is what gets targeted by this action.</p>
+<p>I guess you could say that these native actions are similar to Microsoft Graph PowerShell commands (<a class="link" href="/p/invoke-mggraphrequest-and-custom-output-types-9e7r95fpknvg/#whats-the-difference-between-a-cmdlet-and-a-function-in-powershell" >Cmdlets and Functions</a>) vs <code>Invoke-MgGraphRequest</code> because the latter one is typically used when a PowerShell command <a class="link" href="/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86" >doesn&rsquo;t support a niche use case</a>.</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>Connector</th>
+          <th>Action</th>
+          <th>Supported Endpoints 1st Segment</th>
+          <th>Supported Endpoints 2nd Segment</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Teams</td>
+          <td>Send a Microsoft Graph HTTP request</td>
+          <td><code>/teams</code>, <code>/me</code>, <code>/users</code></td>
+          <td><code>channels</code>, <code>chats</code>, <code>installedApps</code>, <code>messages</code>, <code>pinnedMessages</code></td>
+      </tr>
+      <tr>
+          <td>Office 365 Outlook</td>
+          <td>Send an HTTP request</td>
+          <td><code>/me</code>, <code>/users/&lt;userId&gt;</code></td>
+          <td><code>messages</code>, <code>mailFolders</code>, <code>events</code>, <code>calendar</code>, <code>calendars</code>, <code>outlook</code>, <code>inferenceClassification</code></td>
+      </tr>
+      <tr>
+          <td>Office 365 Groups</td>
+          <td>Send an HTTP request V2</td>
+          <td><code>/groups</code></td>
+          <td><code>N/A</code></td>
+      </tr>
+      <tr>
+          <td>Office 365 Groups Mail</td>
+          <td>Send an HTTP request</td>
+          <td><code>/groups</code></td>
+          <td><code>N/A</code></td>
+      </tr>
+      <tr>
+          <td>Office 365 Users</td>
+          <td>Send an HTTP request</td>
+          <td><code>/me</code>, <code>/users/&lt;userId&gt;</code></td>
+          <td><code>messages</code>, <code>mailFolders</code>, <code>events</code>, <code>calendar</code>, <code>calendars</code>, <code>outlook</code>, <code>inferenceClassification</code></td>
+      </tr>
+  </tbody>
+</table></div>
+<h4 id="call-other-graph-endpoints-from-power-automate">Call other Graph endpoints from Power Automate
+</h4><p>To edit a planner task&rsquo;s details, such as disabling attachment previews, the request URI is <code>https://graph.microsoft.com/v1.0/planner/tasks/{taskID}/details</code>. As you can see, none of the above built in actions support that endpoint. While the <code>/groups</code> endpoint does allow you to fetch tasks from <code>https://graph.microsoft.com/v1.0/groups/{group-id}/planner/plans/{planId}/tasks</code>, it doesn&rsquo;t work for this since anything that targets a task&rsquo;s details must use the <code>/planner</code> endpoint directly.</p>
+<p>I&rsquo;ve seen the <strong>HTTP with Microsoft Entra ID (preauthorized)</strong> action in Power Automate before but up until today, I never actually tried it. It turns out that as long as you have a Power Automate Premium license, you can just sign in with your account as you would with any other Power Automate connection.</p>
+<p>To use this action, simply enter <code>https://graph.microsoft.com</code> for both the <strong>Base Resource URL</strong> and the <strong>Microsoft Entra ID Resource URI (Application ID URI)</strong> and click <strong>Create</strong>. In the pop-up, sign-in with your account.</p>
+<p><img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-8.png"
+	width="893"
+	height="732"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-8_hu_e5657dd2e8a49c7.png 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-8_hu_8e88f5ba185e2711.png 1024w"
+	loading="lazy"
+	
+		alt="Add a new connection for HTTP with Microsoft Entra ID (preauthorized)"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="121"
+		data-flex-basis="292px"
+	
+></p>
+<p>Now you can use this connection to make any delegated Graph request your account has permission for without the need for any other custom actions for authentication purposes. There is no need to acquire an access token or build an authorization header yourself since Power Automate will handle the the entire authentication internally. So, this really is very similar to <code>Invoke-MgGraphRequest</code>.</p>
+<p>Given the fact that the generic <strong>HTTP</strong> action requires a Premium license as well, this seems like a vastly superior solution for what I&rsquo;m trying to do here. Of course I still appreciate the non-premium actions listed in the table above for requests to supported endpoints. They can be quite handy for some scenarios, like for example, <a class="link" href="/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/#bonus-tip-power-automate" >filtering Entra ID users by phone number</a>.</p>
+<p>To update a Planner task&rsquo;s details, a valid <strong>ETag</strong> needs to be included in the <code>If-Match</code> header of the update request. To get this ETag, you need to do a <code>GET</code> request before you can actually send the <code>PATCH</code> request.</p>
+<p><img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-9.png"
+	width="1421"
+	height="666"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-9_hu_33aa131d2b07e2f4.png 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-9_hu_9e7f15d340ebfed4.png 1024w"
+	loading="lazy"
+	
+		alt="Get the task details including the ETag"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="213"
+		data-flex-basis="512px"
+	
+> <img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-10.png"
+	width="1424"
+	height="601"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-10_hu_a65a655743e136de.png 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-10_hu_4fc7a97151cf6673.png 1024w"
+	loading="lazy"
+	
+		alt="Compose the ETag using the expression below"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="236"
+		data-flex-basis="568px"
+	
+> <img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-11.png"
+	width="1422"
+	height="927"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-11_hu_87d0aff23fd09a2c.png 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-11_hu_3c09192f49f7f6f4.png 1024w"
+	loading="lazy"
+	
+		alt="Patch the task details with the body below"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="153"
+		data-flex-basis="368px"
+	
+></p>
+<p>The expression to extract the ETag from the response&rsquo;s header is like this: <code>outputs('Get_Task_Details')?['headers']?['ETag']</code> and the content of the body is like this: <code>{&quot;previewType&quot;:&quot;noPreview&quot;}</code>.</p>
+<h3 id="prerequisites">Prerequisites
+</h3><p>To use this flow in your environment you need to have the following:</p>
+<ul>
+<li>A Team with a Planner linked to the Team&rsquo;s Microsoft 365 Group</li>
+<li>A Teams channel where you want to create the threads for new Planner tasks</li>
+<li>A tab linked to the plan in the same channel</li>
+<li>A Power Automate license (Power Automate Premium for the premium flow version)</li>
+</ul>
+<p>I recommend to create a dedicated channel for this. The flow uses <strong>Task Management</strong> as the default name. If you name yours differently, you&rsquo;ll need to update one more variable in the flow.</p>
+<h3 id="download-and-import-the-flow-premium--standard">Download and import the Flow (Premium &amp; Standard)
+</h3><p>If you&rsquo;ve been following me for a while, you probably already know that I rarely <em>just</em> write a blog post. I am a perfectionist and take pride in going the extra mile for my readers by making the solutions I develop for my blog as accessible and easy to deploy in your own environment as easy as possible. For example, I spent quite a few hours creating this flow in a way where you only have to adjust <strong>two</strong> values in the flow&rsquo;s trigger for it to work in your own environment. (It&rsquo;s three values for the Standard version.)</p>
+<p>I&rsquo;m trying something new by providing the Zip files through my <a class="link" href="https://buymeacoffee.com/martin.heusser"  target="_blank" rel="noopener"
+    >Buy me a Coffee</a> page. This flow is available both as a paid and a free version. Both items include exactly the same content and it&rsquo;s entirely up to you whether you choose to make a small contribution to my work or not. Both items include the Zip file for both the Premium and the Standard Flow version.</p>
+<p><a class="link" href="https://buymeacoffee.com/martin.heusser/e/457294"  target="_blank" rel="noopener"
+    >Download the paid version</a></p>
+<p><a class="link" href="https://buymeacoffee.com/martin.heusser/e/457290"  target="_blank" rel="noopener"
+    >Download the free version</a></p>
+<p>Downloading from Buy me a Coffee will help me get a better understanding of how many people actually try solutions I develop for this blog compared to people just reading the blog. However, if you absolutely don&rsquo;t wish to provide a name and an email address, you may also download the flow for free from my GitHub repo.</p>
+<p><a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/CreateNewTeamsThreadforNewPlannerTask%28PremiumVersion%29_20250914223708.zip"  target="_blank" rel="noopener"
+    >Download from GitHub (Premium Version)</a></p>
+<p><a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/CreateNewTeamsThreadforNewPlannerTask%28StandardVersion%29_20250914223713.zip"  target="_blank" rel="noopener"
+    >Download from GitHub (Standard Version)</a></p>
+<p>Download any Zip file and import the desired version it in Power Automate using <strong>Import Package (Legacy)</strong>. Link or create all the necessary connections and turn on the flow. Then open the flow in the editor.</p>
+<p>Click on the trigger <strong>When a new task is created</strong> and select your Team as <strong>Group Id</strong> and your plan as <strong>Plan Id</strong>.</p>
+<p><img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-12.png"
+	width="1425"
+	height="603"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-12_hu_e4b3c89ced99502.png 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-12_hu_1edcbec69e002e82.png 1024w"
+	loading="lazy"
+	
+		alt="Update the trigger"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="236"
+		data-flex-basis="567px"
+	
+></p>
+<p>Optionally, if your channel is called differently than <strong>Task Management</strong> update the value in the <strong>Initialize ChannelName</strong> variable.</p>
+<p><img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-13.png"
+	width="1420"
+	height="682"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-13_hu_7b67d500b0f495f4.png 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-13_hu_ae4cf9ef429214ed.png 1024w"
+	loading="lazy"
+	
+		alt="Optional: Update ChannelName variable"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="208"
+		data-flex-basis="499px"
+	
+></p>
+<p>Note: I only tested with channel names that contain white spaces. I haven&rsquo;t tested with any other special characters and don&rsquo;t know if that would require additional code such as URL encoding.</p>
+<h3 id="premium-version">Premium Version
+</h3><p>If you&rsquo;re using the premium version, you&rsquo;re already done. All the subsequent actions can derive the required IDs and values from your own environment from just the <strong>Group Id</strong> and <strong>Plan Id</strong> you selected in the flow trigger.</p>
+<h3 id="standard-version">Standard Version
+</h3><p>If you&rsquo;re using the standard version, the first two steps are the same as for the premium version. Make sure to update the trigger and if necessary the <strong>ChannelName</strong> variable.</p>
+<p>Next, go to the Planner tab in your Teams channel and copy the link to any task from that plan.</p>
+<p><img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-14.png"
+	width="1295"
+	height="847"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-14_hu_a9a10192698b10b0.png 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-14_hu_1cff8400c26d468e.png 1024w"
+	loading="lazy"
+	
+		alt="Copy link to task from Planner tab in Teams"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="152"
+		data-flex-basis="366px"
+	
+></p>
+<p>It should look something like this. The Id you need to copy starts after <code>planner.v1.</code> and ends before <code>_p_</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="hl"><span class="lnt">2
+</span></span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">https://teams.microsoft.com/l/entity/com.microsoft.teamspace.tab.planner/planner.v1.
+</span></span><span class="line hl"><span class="cl">71a2d562-261b-455a-bbec-e4cf4e8b2b35
+</span></span><span class="line"><span class="cl">_p_Suw_NhvrKkm7VVm9ZBCdDZcADsIk?tenantId=4bffbf87-53a0-4fce-b58b-4179cb3a3b7d&amp;webUrl=https%3A%2F%2Ftasks.teams.microsoft.com%2Fteamsui%2FpersonalApp%2Falltasklists&amp;context=%7B%22subEntityId%22%3A%22%2Fv1%2Fplan%2FSuw_NhvrKkm7VVm9ZBCdDZcADsIk%2Fview%2Fboard%2Ftask%2FjW2vGnCsgkCWdJC8wiS83JcAKtXG%22%2C%22channelId%22%3A%2219%3Ad203ba2a9dc941f58018235370f8b540%40thread.tacv2%22%7D
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Note: Temporarily switch to the blog&rsquo;s light mode theme if you can&rsquo;t see the highlighted ID properly.</p>
+<p>Copy this ID and paste it into the flow&rsquo;s <strong>Initialize EntityId</strong> action.</p>
+<p><img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-15.png"
+	width="1419"
+	height="730"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-15_hu_2da91c2856cc69e2.png 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-15_hu_42c3844c81d5a9c8.png 1024w"
+	loading="lazy"
+	
+		alt="Replace EntityId"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="194"
+		data-flex-basis="466px"
+	
+></p>
+<p>If you know your group ID and channel ID, you may also get the entity ID from PowerShell using this code:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$groupId</span> <span class="p">=</span> <span class="nb">Read-Host</span> <span class="s2">&#34;Enter group ID&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$channelId</span> <span class="p">=</span> <span class="nb">Read-Host</span> <span class="s2">&#34;Enter channel ID&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="nb">Invoke-MgGraphRequest</span> <span class="n">-Method</span> <span class="n">GET</span> <span class="n">-Uri</span> <span class="s2">&#34;https://graph.microsoft.com/v1.0/teams/</span><span class="nv">$groupId</span><span class="s2">/channels/</span><span class="nv">$channelId</span><span class="s2">/tabs?</span><span class="se">`$</span><span class="s2">expand=teamsApp&amp;</span><span class="se">`$</span><span class="s2">filter=teamsApp/id eq &#39;com.microsoft.teamspace.tab.planner&#39;&#34;</span> <span class="n">-OutputType</span> <span class="n">PSObject</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-ExpandProperty</span> <span class="n">value</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-ExpandProperty</span> <span class="n">configuration</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-ExpandProperty</span> <span class="n">entityId</span><span class="p">).</span><span class="py">Split</span><span class="p">(</span><span class="s2">&#34;.v1.&#34;</span><span class="p">)[</span><span class="mf">-1</span><span class="p">].</span><span class="py">Split</span><span class="p">(</span><span class="s2">&#34;_p_&#34;</span><span class="p">)[</span><span class="mf">0</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Output:</span>
+</span></span><span class="line"><span class="cl"><span class="n">71a2d562</span><span class="p">-</span><span class="n">261b</span><span class="p">-</span><span class="n">455a-bbec-e4cf4e8b2b35</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>That&rsquo;s all. Your flow is now ready to go in your environment as well!</p>
+<h2 id="summary">Summary
+</h2><p>I really like the new Threads experience and I&rsquo;m very excited to see more Team owners adopt this for the majority of their channels or at least for the ones where frequent back and forth messaging is happening.</p>
+<p>The flow presented in this blog post allows you to ignore the Planner native comments feature and bring the entire correspondence of any task into normal Teams channel conversations. People don&rsquo;t need to worry about missing notifications for new comments on their tasks anymore and you&rsquo;ll still have a link between any task and it&rsquo;s created thread in the designated channel.</p>
+<p>Furthermore, Planner doesn&rsquo;t seem to include comments in keyword search results but of course you&rsquo;ll be able to search for a tasks&rsquo;s title (even though it&rsquo;s part of an adaptive card) as well text in &ldquo;comments&rdquo; which have been posted as thread replies.</p>
+<p><img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-7.png"
+	width="1047"
+	height="492"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-7_hu_47e9cdf0c4c95ac1.png 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-7_hu_ffda6a4741f903d0.png 1024w"
+	loading="lazy"
+	
+		alt="Comment on Planner task"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="212"
+		data-flex-basis="510px"
+	
+> <img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-17.png"
+	width="1502"
+	height="639"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-17_hu_f1eceb40337ec4ac.png 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-17_hu_e2ddfcaa26db535a.png 1024w"
+	loading="lazy"
+	
+		alt="Empty search results for keyword found in comments"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="235"
+		data-flex-basis="564px"
+	
+> <img src="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-18.png"
+	width="615"
+	height="351"
+	srcset="/p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-18_hu_f37a8c9b63144c1c.png 480w, /p/make-planner-and-teams-work-better-together-r01gmd1481ui/image-18_hu_7b46807d5dd0ae60.png 1024w"
+	loading="lazy"
+	
+		alt="“Comments” in Teams threads can be found…"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="175"
+		data-flex-basis="420px"
+	
+></p>
+<p>Lastly, I&rsquo;m very happy that I stuck with my persistence and learned about that <strong>HTTP with Microsoft Entra ID (preauthorized)</strong> connector and action in Power Automate. This is for sure going to help me out a lot in the future!</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/">
+        
+        
+            <div class="article-image">
+                <img src="/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/cover.7304950aa6b85bd8562e89f20b457eab_hu_279a6c7452d3f0bf.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post Get Missed Call Notifications for Teams Call Queues (Free Community Solution)"
+                        data-key="/get-missed-call-notifications-for-teams-call-queues-(free-community-solution)-cozo3bhojb7t" 
+                        data-hash="md5-cwSVCqa4W9hWLonyC0V&#43;qw==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Get Missed Call Notifications for Teams Call Queues (Free Community Solution)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Get Microsoft Teams Meeting Attendance Report Through Graph API</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/opt-in-or-opt-out-teams-call-queue-agents-remotely-59fe6147f50d/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Opt In or Opt Out Teams Call Queue Agents Remotely</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/">
+        
+        
+            <div class="article-image">
+                <img src="/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/Cover.d27f75b1486ba1a383c8ceacca207724_hu_f48b701f8e79df8e.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post Find Tenant Owner Company Name with Only an Entra Tenant Id"
+                        data-key="/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb" 
+                        data-hash="md5-0n91sUhroaODyM6syiB3JA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Find Tenant Owner Company Name with Only an Entra Tenant Id</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/invoke-mggraphrequest-and-custom-output-types-9e7r95fpknvg/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Make Invoke-MgGraphRequest Return PowerShell Objects</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "heusser-pro" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2025 HEUSSER.PRO
+    </section>
+    
+    <section class="powerby">
+        
+            Hosted on GitHub Pages <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
+
