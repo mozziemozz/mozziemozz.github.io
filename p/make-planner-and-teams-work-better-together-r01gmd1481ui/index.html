@@ -702,11 +702,13 @@
 <li>A Team with a Planner linked to the Team&rsquo;s Microsoft 365 Group</li>
 <li>A Teams channel where you want to create the threads for new Planner tasks</li>
 <li>A tab linked to the plan in the same channel</li>
-<li>A Power Automate license (Power Automate Premium for the premium flow version)</li>
+<li>A Power Automate licensed user which is also a Team owner (Power Automate Premium for the premium flow version)</li>
 </ul>
 <p>I recommend to create a dedicated channel for this. The flow uses <strong>Task Management</strong> as the default name. If you name yours differently, you&rsquo;ll need to update one more variable in the flow.</p>
+<p>I recommend that the Planner tab is added to the channel by the same user that will be running the flow. In my testing, I ran into an issue where the flow user got a forbidden error on retrieving the channel&rsquo;s tabs. My user wasn&rsquo;t an owner of the Team at first but even after promoting the user to owner, it still wasn&rsquo;t able to retrieve the channel tabs. Only after I created a Planner tab using the same user that runs the flow, it started working. I can&rsquo;t say for sure if it was a permission delay issue or if a user actually needs to link a plan to a Teams tab before it&rsquo;s allowed to query the <code>/tabs</code> segment of a Teams channel.</p>
 <h3 id="download-and-import-the-flow-premium--standard">Download and import the Flow (Premium &amp; Standard)
-</h3><p>If you&rsquo;ve been following me for a while, you probably already know that I rarely <em>just</em> write a blog post. I am a perfectionist and take pride in going the extra mile for my readers by making the solutions I develop for my blog as accessible and easy to deploy in your own environment as easy as possible. For example, I spent quite a few hours creating this flow in a way where you only have to adjust <strong>two</strong> values in the flow&rsquo;s trigger for it to work in your own environment. (It&rsquo;s three values for the Standard version.)</p>
+</h3><p><strong>Update September 15, 2025:</strong> I&rsquo;ve updated the flows at 10:00 UTC since the old versions still had a hardcoded value in the <strong>Compose Thread Link</strong> action. If you&rsquo;ve downloaded the flows before that time, please download and import the new versions.</p>
+<p>If you&rsquo;ve been following me for a while, you probably already know that I rarely <em>just</em> write a blog post. I am a perfectionist and take pride in going the extra mile for my readers by making the solutions I develop for my blog as accessible and easy to deploy in your own environment as easy as possible. For example, I spent quite a few hours creating this flow in a way where you only have to adjust <strong>two</strong> values in the flow&rsquo;s trigger for it to work in your own environment. (It&rsquo;s three values for the Standard version.)</p>
 <p>I&rsquo;m trying something new by providing the Zip files through my <a class="link" href="https://buymeacoffee.com/martin.heusser"  target="_blank" rel="noopener"
     >Buy me a Coffee</a> page. This flow is available both as a paid and a free version. Both items include exactly the same content and it&rsquo;s entirely up to you whether you choose to make a small contribution to my work or not. Both items include the Zip file for both the Premium and the Standard Flow version.</p>
 <p><a class="link" href="https://buymeacoffee.com/martin.heusser/e/457294"  target="_blank" rel="noopener"
@@ -714,9 +716,9 @@
 <p><a class="link" href="https://buymeacoffee.com/martin.heusser/e/457290"  target="_blank" rel="noopener"
     >Download the free version</a></p>
 <p>Downloading from Buy me a Coffee will help me get a better understanding of how many people actually try solutions I develop for this blog compared to people just reading the blog. However, if you absolutely don&rsquo;t wish to provide a name and an email address, you may also download the flow for free from my GitHub repo.</p>
-<p><a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/CreateNewTeamsThreadforNewPlannerTask%28PremiumVersion%29_20250914223708.zip"  target="_blank" rel="noopener"
+<p><a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/CreateNewTeamsThreadforNewPlannerTask%28PremiumVersion%29_20250915095051.zip"  target="_blank" rel="noopener"
     >Download from GitHub (Premium Version)</a></p>
-<p><a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/CreateNewTeamsThreadforNewPlannerTask%28StandardVersion%29_20250914223713.zip"  target="_blank" rel="noopener"
+<p><a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/CreateNewTeamsThreadforNewPlannerTask%28StandardVersion%29_20250915095122.zip"  target="_blank" rel="noopener"
     >Download from GitHub (Standard Version)</a></p>
 <p>Download any Zip file and import the desired version it in Power Automate using <strong>Import Package (Legacy)</strong>. Link or create all the necessary connections and turn on the flow. Then open the flow in the editor.</p>
 <p>Click on the trigger <strong>When a new task is created</strong> and select your Team as <strong>Group Id</strong> and your plan as <strong>Plan Id</strong>.</p>
@@ -749,7 +751,7 @@
 		data-flex-basis="499px"
 	
 ></p>
-<p>Note: I only tested with channel names that contain white spaces. I haven&rsquo;t tested with any other special characters and don&rsquo;t know if that would require additional code such as URL encoding.</p>
+<p>Note: I only tested with channel and Team names that contain white spaces. I haven&rsquo;t tested with any other special characters and don&rsquo;t know if that would require additional code such as URL encoding. The flow only includes code to replace white spaces with <code>%2B</code>.</p>
 <h3 id="premium-version">Premium Version
 </h3><p>If you&rsquo;re using the premium version, you&rsquo;re already done. All the subsequent actions can derive the required IDs and values from your own environment from just the <strong>Group Id</strong> and <strong>Plan Id</strong> you selected in the flow trigger.</p>
 <h3 id="standard-version">Standard Version
