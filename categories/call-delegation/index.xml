@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Call Delegation on HEUSSER.PRO</title><link>https://heusser.pro/categories/call-delegation/</link><description>Recent content in Call Delegation on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 18 Sep 2023 08:28:01 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/call-delegation/index.xml" rel="self" type="application/rss+xml"/><item><title>Pick Up Held and Join Active Calls for Boss/Delegate Scenarios in Microsoft Teams</title><link>https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/</link><pubDate>Mon, 18 Sep 2023 08:28:01 +0000</pubDate><guid>https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/</guid><description>&lt;p>Microsoft recently introduced a big update to call delegation in Microsoft Teams. The last substantial change was when Microsoft rolled out &lt;code>Set-CsUserCallingSettings&lt;/code> and the possibility to change a Teams user’s call forwarding settings through Teams Admin Center.&lt;/p>
+&lt;p>The new features include the ability for delegates or delegators to pick up held calls or join active calls. There’s a small catch though. When a new delegate is added through TAC or PowerShell, permission to join active calls can’t be granted. It needs to be granted by the delegator itself or through the workaround I will teach you in this blog.&lt;/p>
+&lt;p>In TAC, it’s only possible to flip a toggle switch for &lt;strong>Allow changing call settings.&lt;/strong> There’s no specific option for join or pickup calls yet.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1jDMcHylHOX8704yzYzNuBA.png"
+width="1534"
+height="1086"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1jDMcHylHOX8704yzYzNuBA_hu_e214e62b7084d80.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1jDMcHylHOX8704yzYzNuBA_hu_3f9d6ab69aed79d8.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="141"
+data-flex-basis="339px"
+>&lt;/p>
+&lt;p>It’s the same in PowerShell unfortunately.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1G9MQGdfTpyLsScrMP1iDw.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1G9MQGdfTpyLsScrMP1iDw_hu_2f216d85004c8534.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1G9MQGdfTpyLsScrMP1iDw_hu_f553aaa90bc44345.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;h3 id="test-scenario">Test Scenario
+&lt;/h3>&lt;p>I’ve added the user &lt;strong>Bill Stearn&lt;/strong> as a delegate of &lt;strong>Mike Wagner&lt;/strong> in this case. As Bill, I can view the granted permissions in his Teams client.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1PiILqDdHXeVHnsQG47xVyA.png"
+width="1156"
+height="474"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1PiILqDdHXeVHnsQG47xVyA_hu_7ef722423b4f0ad9.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1PiILqDdHXeVHnsQG47xVyA_hu_b76285d7bfc8b1da.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="243"
+data-flex-basis="585px"
+>&lt;/p>
+&lt;p>Here we can see that &lt;strong>Join active calls&lt;/strong> is disabled and greyed out because the delegate permissions were granted by an admin through TAC and not by the delegator himself.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1TZ7zQhnEfpTyWlZj3p9zg.png"
+width="650"
+height="815"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1TZ7zQhnEfpTyWlZj3p9zg_hu_93e4fb0fe9314608.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1TZ7zQhnEfpTyWlZj3p9zg_hu_d0a3b2a988e05725.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="79"
+data-flex-basis="191px"
+>&lt;/p>
+&lt;p>Mike has set up &lt;strong>Wendy Rhoades&lt;/strong> as an additional delegate. This delegate was added through TAC as well, so her permissions look exactly the same and she can’t enable &lt;strong>Join active calls&lt;/strong> either.&lt;/p>
+&lt;p>Let’s take a look at Mike’s call settings in Teams. From there, he would be able to enable the &lt;strong>Join active calls&lt;/strong> permission for his delegates.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/19PL9m1NtORRcFXPHtg6w.png"
+width="655"
+height="969"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/19PL9m1NtORRcFXPHtg6w_hu_5abcb9cfbf5854ce.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/19PL9m1NtORRcFXPHtg6w_hu_a4600d376242d2db.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="67"
+data-flex-basis="162px"
+>&lt;/p>
+&lt;p>Here’s the thing though. Because both delegates were granted the &lt;strong>Allow changing call settings&lt;/strong> permission through TAC, they’re both allowed to change Mike’s call settings, which does in fact allow them to set the delegate permissions as well.&lt;/p>
+&lt;p>If you want to do &lt;em>Ninja IT&lt;/em> and set up full delegate permissions without bothering Mike at all, you’ll need to set up two delegates and they’ll need to enable the missing permission of each other.&lt;/p>
+&lt;p>Let’s see how Wendy would enable Bill to join Mike’s active calls. From &lt;strong>Manage delegates&lt;/strong> she’ll need to click on the three dots on Mike’s entry and select &lt;strong>Change delegates.&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1vWd26yJKv2WY6Djkr1lvSQ.png"
+width="1154"
+height="563"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1vWd26yJKv2WY6Djkr1lvSQ_hu_3711f1d1558c5664.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1vWd26yJKv2WY6Djkr1lvSQ_hu_b7a4a7ed6bd11743.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="204"
+data-flex-basis="491px"
+>&lt;/p>
+&lt;p>In Mike’s delegate settings, she then has to click the three dots on Bill’s entry and select &lt;strong>Edit permissions&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1KwYgPYD4gnIDjkBYrKBK9A.png"
+width="1160"
+height="416"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1KwYgPYD4gnIDjkBYrKBK9A_hu_c68458cbe58c296b.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1KwYgPYD4gnIDjkBYrKBK9A_hu_b39715fd1697e361.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="278"
+data-flex-basis="669px"
+>&lt;/p>
+&lt;p>This will allow Wendy to enable &lt;strong>Join active calls&lt;/strong> on Mike’s delegate permissions for Bill.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1TjdJa5vFr7d7UTtbtC6qWA.png"
+width="639"
+height="872"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1TjdJa5vFr7d7UTtbtC6qWA_hu_613427bc64bf7597.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1TjdJa5vFr7d7UTtbtC6qWA_hu_5d5da328cd344790.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="73"
+data-flex-basis="175px"
+>&lt;/p>
+&lt;p>If Bill now goes back to view his delegate permissions for Mike, he can see that &lt;strong>Join active calls&lt;/strong> was enabled.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1EcDgPRLMjYe6z3XJEwgldw.png"
+width="650"
+height="816"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1EcDgPRLMjYe6z3XJEwgldw_hu_79b8cd559b7bebac.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1EcDgPRLMjYe6z3XJEwgldw_hu_896dcdf98f63c0ab.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="79"
+data-flex-basis="191px"
+>&lt;/p>
+&lt;p>As you can see, multiple delegates can help each other set up full delegate permissions for their shared boss without bothering them as long as at least one delegate is added by an admin through TAC.&lt;/p>
+&lt;p>&lt;strong>If there’s only going to be one delegate, you can temporarily add your own Teams account as a delegate through TAC. Then you can use your own Teams client to add the real delegate with full permissions and remove your own account through TAC again.&lt;/strong>&lt;/p>
+&lt;p>I hope that Microsoft will soon update TAC so that the new permission can be granted without the need of my workaround.&lt;/p>
+&lt;h3 id="new-delegate-user-interface">New Delegate User Interface
+&lt;/h3>&lt;p>Finally, here are some screenshots of how the new UI for call delegation works. Mike’s call settings are configured to also ring his delegates for these example calling scenarios.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1UZcfAKqnO1FJhbS9Mirxsw.png"
+width="799"
+height="606"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1UZcfAKqnO1FJhbS9Mirxsw_hu_db1f66e2b8613d54.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1UZcfAKqnO1FJhbS9Mirxsw_hu_8aab2eb4c62a9634.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="316px"
+>&lt;/p>
+&lt;p>The new delegate tabs in the Calls app are available in both the new and the old Teams client.&lt;/p>
+&lt;p>Delegates can also see other people supporting the same person. In this case, Wendy can see that Bill is supporting Mike as well.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1NiQ6zHfGQ4rxW1PmjXAg.png"
+width="2004"
+height="1176"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1NiQ6zHfGQ4rxW1PmjXAg_hu_1d685bae3107893e.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1NiQ6zHfGQ4rxW1PmjXAg_hu_962ba1c6fa1c9c97.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="170"
+data-flex-basis="408px"
+>&lt;/p>
+&lt;p>An inbound call which is intended for a delegator but forwarded to delegates will look like this.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1m2B6ebHrfMX34ckn1Yn6hQ.png"
+width="541"
+height="417"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1m2B6ebHrfMX34ckn1Yn6hQ_hu_5e666f28b75865ae.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1m2B6ebHrfMX34ckn1Yn6hQ_hu_5250f65716a6e5d7.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="129"
+data-flex-basis="311px"
+>&lt;/p>
+&lt;p>For the record, this is how it looked in the old Teams client.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1lMmaHnyIl0angFvf7VXw.png"
+width="452"
+height="438"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1lMmaHnyIl0angFvf7VXw_hu_4696ecbdf24fe4f9.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1lMmaHnyIl0angFvf7VXw_hu_76b17c8316e2b1.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="103"
+data-flex-basis="247px"
+>&lt;/p>
+&lt;p>The new Teams client will also show an indicator for missed calls on a delegator’s line.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1vvSkRWSA2Clu1XIZoLw4w.png"
+width="718"
+height="91"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1vvSkRWSA2Clu1XIZoLw4w_hu_541587ee0149dc5a.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1vvSkRWSA2Clu1XIZoLw4w_hu_247e54b3d7308f6b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="789"
+data-flex-basis="1893px"
+>&lt;/p>
+&lt;h3 id="join-and-pick-upcalls">Join and Pick Up Calls
+&lt;/h3>&lt;p>In this example, Mike (the delegator) accepted the call himself. Wendy can see that there’s an active call in Mike’s call tab. She can also see that the call is managed by Mike himself. If need be, she could join the call too.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1ahR0QvgKAIaJF2pt493tg.png"
+width="2004"
+height="1176"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1ahR0QvgKAIaJF2pt493tg_hu_f9d51d585cb5386.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1ahR0QvgKAIaJF2pt493tg_hu_6a7b85fd282e9781.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="170"
+data-flex-basis="408px"
+>&lt;/p>
+&lt;p>If Mike puts the call on hold, Wendy can see that, and the &lt;strong>Join&lt;/strong> button changes to a &lt;strong>Resume&lt;/strong> button.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1b1TGVydKd4Uvdde1BvJpQ.png"
+width="2004"
+height="1176"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1b1TGVydKd4Uvdde1BvJpQ_hu_53ff6f575465227f.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1b1TGVydKd4Uvdde1BvJpQ_hu_546b1730b0c20e67.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="170"
+data-flex-basis="408px"
+>&lt;/p>
+&lt;p>Of course, the call cannot just be picked up by Wendy but by all of Mike’s delegates who have that permission. Or he could just resume the call himself.&lt;/p>
+&lt;p>In this example, Bill who is another delegate picked up the call and Wendy can see that Mike’s call is connected to Bill now.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1iBbYB6G1CEbUYGn1YjYWA.png"
+width="2004"
+height="1176"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1iBbYB6G1CEbUYGn1YjYWA_hu_b953811cb440aa4c.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1iBbYB6G1CEbUYGn1YjYWA_hu_3793360ef2a6ddac.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="170"
+data-flex-basis="408px"
+>&lt;/p>
+&lt;p>If Mike decides to Join the call with the external caller and Bill, Wendy will be able to see that too, and she still has the option to join the three people who are already on the call.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1oux26xT5AHEV3mLaIarpzA.png"
+width="2004"
+height="1176"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1oux26xT5AHEV3mLaIarpzA_hu_313f7de8f9cb6545.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1oux26xT5AHEV3mLaIarpzA_hu_7d3aea44f9cf1954.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="170"
+data-flex-basis="408px"
+>
+&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1lNACYe4LWgltcvxRxthbig.png"
+width="2004"
+height="1176"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1lNACYe4LWgltcvxRxthbig_hu_2d5933b7dbc7e81c.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1lNACYe4LWgltcvxRxthbig_hu_d5080388e9df904d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="170"
+data-flex-basis="408px"
+>&lt;/p>
+&lt;p>This works in the opposite direction too. If Wendy answers a call which was forwarded to her by Mike and puts that call on hold, Mike will be able to pick up the call.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/17fiLpMRJ8LxJy0XNpvLoQ.png"
+width="2004"
+height="1169"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/17fiLpMRJ8LxJy0XNpvLoQ_hu_5acc27a5885517d0.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/17fiLpMRJ8LxJy0XNpvLoQ_hu_efa4a92426fe6e5d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="171"
+data-flex-basis="411px"
+>&lt;/p>
+&lt;p>And last but not least, delegates can also see the call history of their delegators and for example see when another delegate answered a call of their shared delegator.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/16eqh8GUuZO2ZL0ffXqiaHg.png"
+width="2004"
+height="1169"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/16eqh8GUuZO2ZL0ffXqiaHg_hu_aeba3a2ecc817fa7.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/16eqh8GUuZO2ZL0ffXqiaHg_hu_5168017c2529298a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="171"
+data-flex-basis="411px"
+>&lt;/p>
+&lt;h4 id="wrapping-up">Wrapping Up
+&lt;/h4>&lt;p>The new delegate features are a huge improvement and finally fill a big void in Microsoft Teams Phone. Everything is super easy and intuitive. The new Teams client is looking great as well, and I really like the style of the new calling notifications. The fact that missed calls on a delegator line are only visible in the new Teams client makes me believe that we’re going to see lots of calling related improvements in the new Teams over the next coming months. Exciting times lie ahead. The only thing that remains a little cumbersome is that you can’t grant the &lt;strong>Join active calls&lt;/strong> permission through TAC or PowerShell yet. However, the workaround outlined in this article should do the trick until Microsoft adds official support in TAC and PowerShell.&lt;/p></description></item></channel></rss>

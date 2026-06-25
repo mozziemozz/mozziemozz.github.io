@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Webhooks on HEUSSER.PRO</title><link>https://heusser.pro/categories/webhooks/</link><description>Recent content in Webhooks on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 01 Oct 2024 19:08:52 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/webhooks/index.xml" rel="self" type="application/rss+xml"/><item><title>Migrate Teams Incoming Webhooks to Workflows (Power Automate)</title><link>https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/</link><pubDate>Tue, 01 Oct 2024 19:08:52 +0000</pubDate><guid>https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/</guid><description>&lt;p>At the beginning of July 2024 Microsoft announced that they will retire Office 365 Connectors in Teams. This was published in the Message Center with post ID &lt;strong>MC808160&lt;/strong>. Initially, Microsoft communicated a rather short deadline but then decided to extend it by quite some time. Users will still be able to add new connectors until December 31st 2024 before they will be retired in December 2025. Microsoft also published this information &lt;a class="link" href="https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/p>
+&lt;h2 id="how-to-find-out-who-set-up-connectors-in-my-organization">How To Find Out Who Set Up Connectors In My Organization?
+&lt;/h2>&lt;p>The biggest challenge will be finding out which Teams in your organization are currently using Office 365 Connectors in Teams. Luckily, Tony Redmond has created a much appreciated &lt;a class="link" href="https://office365itpros.com/2024/07/10/teams-office-connectors/" target="_blank" rel="noopener"
+>script&lt;/a> to scan your tenant for any Teams that are using connectors. I quickly tested this script and can confirm that it lists all the incoming webhooks configured in my lab tenant.&lt;/p>
+&lt;p>Now that we know which Teams are utilizing incoming webhooks, the natural next step is to contact the owners of the affected Teams and help them transitioning their apps to sending data to Power Automate instead. But first we need to make sure that we know how to set up notifications via Power Automate.&lt;/p>
+&lt;h2 id="pros-and-cons-about-this-change">Pros And Cons About This Change
+&lt;/h2>&lt;p>The only connector I ever used was the incoming webhook. I mainly used them to send &lt;a class="link" href="https://adaptivecards.io/" target="_blank" rel="noopener"
+>Adaptive Cards&lt;/a> to Teams channels and I blogged about different use cases &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851/" >here&lt;/a> and &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831/" >here&lt;/a>. That&amp;rsquo;s why this blog post will also be focusing on sending Adaptive Cards through Power Automate and not Office 365 Connectors in general.&lt;/p>
+&lt;p>These examples mostly used the schema for &lt;a class="link" href="https://learn.microsoft.com/en-us/outlook/actionable-messages/message-card-reference" target="_blank" rel="noopener"
+>Legacy Actionable Message Cards&lt;/a> and not true Adaptive Cards. While I was able to introduce some Adaptive Card features into the Message Card payloads, it was never really clear to me which features are supported and which aren&amp;rsquo;t. This required a lot of trial and error. Now that we&amp;rsquo;re transitioning to Power Automate, we can fully utilize all the Adaptive Card features which are supported in Teams. More importantly, we can finally relay on the information that&amp;rsquo;s published on the &lt;a class="link" href="https://adaptivecards.io/explorer/" target="_blank" rel="noopener"
+>Adaptive Card Schema Explorer&lt;/a>.&lt;/p>
+&lt;p>The downside is that you might have to spend more money on additional licenses for Power Automate service accounts. If you&amp;rsquo;re not using service accounts to send Adaptive Cards to Teams, you&amp;rsquo;ll face the risk that some notifications will stop working when the person who set up a Flow leaves the company. On the plus side, using Power Automate will also give you more flexibility and also more security. (More on that later.)&lt;/p>
+&lt;h2 id="set-up-a-power-automate-workflows-connector">Set Up a Power Automate (Workflows) Connector
+&lt;/h2>&lt;p>Let&amp;rsquo;s take a look at how you can set up a Power Automate Flow to replicate the functionality of an incoming webhook directly in Teams.&lt;/p>
+&lt;p>Select the channel where you want to receive the notification and click on the &lt;strong>3 dots&lt;/strong>. Then click on &lt;strong>Workflows&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image.png"
+width="2153"
+height="1388"
+srcset="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image_hu_d83f58a4f4a0f843.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image_hu_516515cfd05a15c5.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Open the Workflows app"
+class="gallery-image"
+data-flex-grow="155"
+data-flex-basis="372px"
+>&lt;/p>
+&lt;p>Next, search for &lt;strong>Post to a channel&lt;/strong> to find the action shown in the screenshot below and click it.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-1.png"
+width="2153"
+height="1388"
+srcset="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-1_hu_ed0b5b5bd34d6527.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-1_hu_da25da3c5770313d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Select the template: Post to a channel when a webhook request is received "
+class="gallery-image"
+data-flex-grow="155"
+data-flex-basis="372px"
+>&lt;/p>
+&lt;p>Click &lt;strong>Next&lt;/strong> and then &lt;strong>Add workflow&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-2.png"
+width="2153"
+height="1388"
+srcset="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-2_hu_696ef90060e5dbc9.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-2_hu_77669f2cfc08e37b.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Set up connections"
+class="gallery-image"
+data-flex-grow="155"
+data-flex-basis="372px"
+> &lt;img src="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-3.png"
+width="2153"
+height="1388"
+srcset="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-3_hu_9b3a5c3d42a598c3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-3_hu_7f3cab872a0d430b.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Confirm the Team and the channel"
+class="gallery-image"
+data-flex-grow="155"
+data-flex-basis="372px"
+>&lt;/p>
+&lt;p>Finally, copy the URL. You&amp;rsquo;ll need this to send Adaptive Cards to your channel.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-4.png"
+width="2153"
+height="1388"
+srcset="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-4_hu_8f3510629a320198.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-4_hu_dabfbd2ceef78c27.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Copy the trigger URL"
+class="gallery-image"
+data-flex-grow="155"
+data-flex-basis="372px"
+>&lt;/p>
+&lt;p>That&amp;rsquo;s it. The Flow is now set up and can be triggered by sending a &lt;strong>POST&lt;/strong> request to the trigger URL.&lt;/p>
+&lt;p>Of course I expected this to work straight away and tested it by sending a very basic Adaptive Card:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$flowTriggerUri&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;&amp;lt;Your trigger URI&amp;gt;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$adaptiveCard&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="sh">@&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh">{
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;type&amp;#34;: &amp;#34;AdaptiveCard&amp;#34;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;&lt;/span>&lt;span class="nv">$schema&lt;/span>&lt;span class="sh">&amp;#34;: &amp;#34;http://adaptivecards.io/schemas/adaptive-card.json&amp;#34;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;version&amp;#34;: &amp;#34;1.3&amp;#34;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;body&amp;#34;: [
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> {
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;type&amp;#34;: &amp;#34;TextBlock&amp;#34;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;text&amp;#34;: &amp;#34;Hello World!&amp;#34;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;wrap&amp;#34;: true,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;color&amp;#34;: &amp;#34;Accent&amp;#34;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;size&amp;#34;: &amp;#34;ExtraLarge&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> }
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> ]
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh">}
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh">&amp;#34;@&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Invoke-RestMethod&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="nv">$flowTriggerUri&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Post&lt;/span> &lt;span class="n">-Body&lt;/span> &lt;span class="nv">$adaptiveCard&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>To my surprise, this failed. This is how I have typically been sending data to incoming webhooks.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5.png"
+width="2153"
+height="1388"
+srcset="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5_hu_20b25ad7b44cc067.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-5_hu_a8efb83019129245.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Flow failure info"
+class="gallery-image"
+data-flex-grow="155"
+data-flex-basis="372px"
+> &lt;img src="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-6.png"
+width="2153"
+height="1388"
+srcset="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-6_hu_6662fd880199fd98.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-6_hu_9f0f678123d6a83a.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Error details"
+class="gallery-image"
+data-flex-grow="155"
+data-flex-basis="372px"
+>&lt;/p>
+&lt;p>The Workflows app in Teams doesn&amp;rsquo;t show all the details but on on &lt;a class="link" href="https://make.powerautomate.com/" target="_blank" rel="noopener"
+>make.powerautomate.com&lt;/a> I was able to see that the Adaptive Card Payload was indeed received.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-7.png"
+width="926"
+height="1074"
+srcset="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-7_hu_681b4f8c75f73e7.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-7_hu_fc149307f5188e94.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Trigger output"
+class="gallery-image"
+data-flex-grow="86"
+data-flex-basis="206px"
+>&lt;/p>
+&lt;p>For the record, this is how the Flow that was created from the template looks like.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19.png"
+width="2153"
+height="1388"
+srcset="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19_hu_37ef271f7b971f01.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-19_hu_eea382feb74e4fc4.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Flow created by Teams"
+class="gallery-image"
+data-flex-grow="155"
+data-flex-basis="372px"
+>&lt;/p>
+&lt;p>I then did some more research and stumbled upon another &lt;a class="link" href="https://office365itpros.com/2024/06/17/teams-post-to-channel-workflow/" target="_blank" rel="noopener"
+>blog post&lt;/a> from Tony Redmond. This blog post also includes a link to his script on &lt;a class="link" href="https://github.com/12Knocksinna/Office365itpros/blob/master/Post-ItemsToHTTPWorkFlow.PS1" target="_blank" rel="noopener"
+>GitHub&lt;/a>.&lt;/p>
+&lt;p>From this, I learned that the Flow is expecting the actual Adaptive Card JSON to be inside &lt;code>content&lt;/code> which itself is an item in the &lt;code>attachments&lt;/code> array. Also the JSON needs to include &lt;code>&amp;quot;type&amp;quot;: &amp;quot;message&amp;quot;&lt;/code> and &lt;code>attachments&lt;/code> needs to other properties before &lt;code>content&lt;/code> too.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;message&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;attachments&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;contentType&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;application/vnd.microsoft.card.adaptive&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;contentUrl&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">null&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;content&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;AdaptiveCard&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;$schema&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;http://adaptivecards.io/schemas/adaptive-card.json&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;version&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;1.3&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;body&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;TextBlock&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;text&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Hello World!&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;wrap&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;color&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Accent&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;size&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;ExtraLarge&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17.png"
+width="2153"
+height="1388"
+srcset="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17_hu_6db47afd349c099a.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-17_hu_fb7c2965207191bd.png 1024w"
+loading="lazy"
+decoding="async"
+alt="It works!"
+class="gallery-image"
+data-flex-grow="155"
+data-flex-basis="372px"
+>&lt;/p>
+&lt;p>For comparison, here&amp;rsquo;s the trigger outputs.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18.png"
+width="915"
+height="1315"
+srcset="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18_hu_85830dad7caf398a.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-18_hu_bf1b4530b00eb5aa.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Trigger Outputs when the Adaptive Card is inside the attachments/content"
+class="gallery-image"
+data-flex-grow="69"
+data-flex-basis="166px"
+>&lt;/p>
+&lt;p>Before I found this information, I long tinkered with the Flow itself and made it accept a payload which only includes an Adaptive Card. I basically made this just a few days after the change was announced but I only had time to write about it and figured out how to successfully use the default Flow (Thanks to Tony&amp;rsquo;s post) today.&lt;/p>
+&lt;p>Since I&amp;rsquo;ve been using my Flow for months now and it&amp;rsquo;s working great, I see no harm in showing you an alternative way which will accept a payload which &lt;strong>only&lt;/strong> includes an Adaptive Card, just like incoming webhooks did.&lt;/p>
+&lt;h2 id="set-up-a-flow-from-scratch">Set Up a Flow From Scratch
+&lt;/h2>&lt;p>My goal is to minimize the changes I have to do to my scripts and only swap the old webhook Uri for the new Power Automate trigger Uri and update the payload to use the official Adaptive Card schema. By using this method, I don&amp;rsquo;t need to bother about changing the structure of the JSON payload as well.&lt;/p>
+&lt;p>When the Flow is set up through Teams, it&amp;rsquo;s set up in the environment of the user which created it. This is not what I wanted anyway. I want this to run under a service account. So let&amp;rsquo;s take a look on how to build a working Flow from scratch.&lt;/p>
+&lt;p>&lt;strong>Step 1:&lt;/strong> Start by creating a new Flow and search for &lt;strong>Microsoft Teams Webhook&lt;/strong> for the trigger. Select the only option which is called &lt;strong>When a Teams webhook request is received&lt;/strong>. Make sure that the option &lt;strong>Who can trigger the flow?&lt;/strong> is set to &lt;strong>Anyone&lt;/strong>. (Why this trigger still used the old Teams logo is beyond me&amp;hellip;)&lt;/p>
+&lt;p>&lt;strong>Step 2:&lt;/strong> Then add a &lt;strong>Compose&lt;/strong> action and add the &lt;strong>Body&lt;/strong> as Inputs from the dynamic content selection. (Note: Select the one with a capital &lt;strong>B&lt;/strong>.)&lt;/p>
+&lt;p>&lt;strong>Step 3:&lt;/strong> Add a &lt;strong>Post card in a chat or channel&lt;/strong> action and select your Team and Channel and then select the &lt;strong>Outputs&lt;/strong> of the Compose action in the Adaptive Card field.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-8.png"
+width="931"
+height="945"
+srcset="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-8_hu_43c5f38158afffc1.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-8_hu_907a904f76b860dc.png 1024w"
+loading="lazy"
+decoding="async"
+alt="That’s the entire flow."
+class="gallery-image"
+data-flex-grow="98"
+data-flex-basis="236px"
+>&lt;/p>
+&lt;p>Note that my custom Flow doesn&amp;rsquo;t include an &lt;strong>Apply to each&lt;/strong> action and thus, it&amp;rsquo;s not possible to send multiple Adaptive Cards at once. While this would be possible when you&amp;rsquo;re using the default Flow, I don&amp;rsquo;t really see why I&amp;rsquo;d need that.&lt;/p>
+&lt;p>When I use the same code example from above, which only includes the Adaptive Card JSON to send the POST request, the Flow doesn&amp;rsquo;t fail anymore and the card is posted in Teams.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-9.png"
+width="2153"
+height="1388"
+srcset="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-9_hu_eff84cb70332a0c5.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-9_hu_b320c317a90ebd12.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Hello World!"
+class="gallery-image"
+data-flex-grow="155"
+data-flex-basis="372px"
+> &lt;img src="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-10.png"
+width="1174"
+height="524"
+srcset="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-10_hu_be944ba59dde5338.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-10_hu_b84c645e09aeb02f.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Success!"
+class="gallery-image"
+data-flex-grow="224"
+data-flex-basis="537px"
+>&lt;/p>
+&lt;h2 id="advanced-scenarios">Advanced Scenarios
+&lt;/h2>&lt;p>Now that we have a working Flow, let&amp;rsquo;s look at some other cool stuff we can do now&amp;hellip;&lt;/p>
+&lt;h3 id="password-protect-the-flow">Password Protect The Flow
+&lt;/h3>&lt;p>Office 365 Webhooks in Teams didn&amp;rsquo;t support any kind of authentication. The only security measure we had was keeping the webhook URI a secret. With Power Automate Flows, you can select between different options for &lt;strong>Who can trigger the flow?&lt;/strong>. Valid choices are &lt;strong>Any user in my tenant&lt;/strong>, &lt;strong>Specific users in my tenant&lt;/strong> or &lt;strong>Anyone&lt;/strong>. At this point, I haven&amp;rsquo;t actually figured out how user authentication would work.&lt;/p>
+&lt;p>Anyway, I already mentioned that my goal for this migration is to make as little changes as possible to my scripts. Therefore I&amp;rsquo;m sticking with anyone can trigger the Flow. By the way, this is also what&amp;rsquo;s used as the default value when you add a new Flow through the Workflows app in Teams as shown in &lt;a class="link" href="#set-up-a-power-automate-workflows-connector" >chapter 3&lt;/a> of this article. However, that doesn&amp;rsquo;t mean that I can&amp;rsquo;t add at least some security to this.&lt;/p>
+&lt;p>By using a trigger condition, we can limit who can trigger the Flow as well. To do this, click on the three dots on the trigger and then select &lt;strong>Settings&lt;/strong>. Then scroll to the bottom, enable trigger conditions and past the following code:&lt;/p>
+&lt;p>&lt;code>@equals(triggerOutputs()?['headers']['TriggerSecret'], 'OnlyICanTriggerThisFlow')&lt;/code>&lt;/p>
+&lt;p>Then click &lt;strong>Done&lt;/strong>. The value I set for the trigger secret now essentially becomes the password required to trigger this Flow now. Of course, you can change it to whatever you like.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-11.png"
+width="1365"
+height="522"
+srcset="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-11_hu_6432e50d669856c4.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-11_hu_845a37889f18ed1d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Trigger Settings"
+class="gallery-image"
+data-flex-grow="261"
+data-flex-basis="627px"
+> &lt;img src="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-12.png"
+width="924"
+height="1393"
+srcset="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-12_hu_3a3bf698cbbd75a3.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-12_hu_6e6f75056efa8df7.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Trigger Condition"
+class="gallery-image"
+data-flex-grow="66"
+data-flex-basis="159px"
+>&lt;/p>
+&lt;p>In the request to trigger the Flow, the password must be added to the headers and they must be included into the request:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$flowTriggerUri&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;Your trigger URI&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$flowHeaders&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;TriggerSecret&amp;#34;&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;OnlyICanTriggerThisFlow&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$adaptiveCard&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="sh">@&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh">{
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;type&amp;#34;: &amp;#34;AdaptiveCard&amp;#34;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;&lt;/span>&lt;span class="nv">$schema&lt;/span>&lt;span class="sh">&amp;#34;: &amp;#34;http://adaptivecards.io/schemas/adaptive-card.json&amp;#34;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;version&amp;#34;: &amp;#34;1.3&amp;#34;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;body&amp;#34;: [
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> {
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;type&amp;#34;: &amp;#34;TextBlock&amp;#34;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;text&amp;#34;: &amp;#34;Hello World!&amp;#34;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;wrap&amp;#34;: true,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;color&amp;#34;: &amp;#34;Accent&amp;#34;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;size&amp;#34;: &amp;#34;ExtraLarge&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> }
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> ]
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh">}
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh">&amp;#34;@&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Invoke-RestMethod&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="nv">$flowTriggerUri&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Post&lt;/span> &lt;span class="n">-Headers&lt;/span> &lt;span class="nv">$flowHeaders&lt;/span> &lt;span class="n">-Body&lt;/span> &lt;span class="nv">$adaptiveCard&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>If the &lt;strong>TriggerSecret&lt;/strong> is missing from the header or if it&amp;rsquo;s value is wrong, the Flow won&amp;rsquo;t trigger at all. This means that you won&amp;rsquo;t even see a failed Flow action if the trigger URI is called with a wrong password.&lt;/p>
+&lt;h3 id="use-the-same-flow-for-multiple-channels">Use The Same Flow For Multiple Channels
+&lt;/h3>&lt;p>Another cool thing about the move to Power Automate is that we can use the same Flow and the same trigger URI to send notifications to different channels. You don&amp;rsquo;t necessarily need to create a Flow for each channel like it was the case with incoming webhooks.&lt;/p>
+&lt;p>The principle here is the same as with the trigger secret, we just add information about the target channel to the request headers:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$flowHeaders&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;TriggerSecret&amp;#34;&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;OnlyICanTriggerThisFlow&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;Channel&amp;#34;&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;M365&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>To access this data in Power Automate, we need to add another &lt;strong>Compose&lt;/strong> action with the following expression:&lt;/p>
+&lt;p>&lt;code>triggerOutputs()?['headers']['Channel']&lt;/code>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-13.png"
+width="952"
+height="192"
+srcset="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-13_hu_5ae3b3010c3bf6f0.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-13_hu_770c15bbc35eafd2.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Expression to extract headers from trigger outputs"
+class="gallery-image"
+data-flex-grow="495"
+data-flex-basis="1190px"
+>&lt;/p>
+&lt;p>Next, we&amp;rsquo;ll just create a switch statement in which we&amp;rsquo;ll add a &lt;strong>Post card in a chat or channel&lt;/strong> action for each case we want to cover. This could be different channels inside the same Team or even channels from other Teams the service account is a member of.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-14.png"
+width="1939"
+height="1377"
+srcset="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-14_hu_3bda3311190a649e.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-14_hu_950a27a5dccded46.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Switch statement to target different channels based on header value"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="337px"
+>&lt;/p>
+&lt;h3 id="result">Result
+&lt;/h3>&lt;p>Even though, I was using the same Flow, with the same trigger URI, this message was now received in the &lt;strong>Notifications - M365&lt;/strong> channel and not in &lt;strong>Notifications - Azure&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-15.png"
+width="2153"
+height="1388"
+srcset="https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-15_hu_7d89d834d11b2646.png 480w, https://heusser.pro/p/migrate-teams-office-365-connectors-to-workflows-8p40yq7jfebm/image-15_hu_9c0be465ac427894.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Adaptive Card in different channel"
+class="gallery-image"
+data-flex-grow="155"
+data-flex-basis="372px"
+>&lt;/p>
+&lt;p>Pretty cool, right?&lt;/p>
+&lt;h2 id="summary">Summary
+&lt;/h2>&lt;p>Over all, I really like this change. The biggest advantage to me is that we&amp;rsquo;ll finally be able to fully utilize the huge potential of Adaptive Cards and there&amp;rsquo;s no trial and error involved anymore to find out which card elements are supported and which are not.&lt;/p>
+&lt;p>Finding out which Teams are using Office 365 Connectors/incoming webhooks should be easy enough using Tony&amp;rsquo;s script. Approaching all the users and letting them know that their integration will break unless they take action will be the painful part of this migration. But in my opinion this also presents itself as an opportunity to get a hold on which of your end users are making use of sending data to Teams channels and offer them to set up service accounts for them.&lt;/p>
+&lt;p>However, this doesn&amp;rsquo;t mean that there won&amp;rsquo;t be users which will set up or keep setting up their own Workflows in Teams. With incoming webhooks, Admins had the possibility to block the use of the app through Teams app permission policies. If you want to block users from using the Workflows app, that&amp;rsquo;s still possible through the same policy but that would also mean that you&amp;rsquo;re blocking them from using the Workflows app entirely, which might be suboptimal in many scenarios.&lt;/p>
+&lt;p>To end this post on a positive note, I&amp;rsquo;d like to mention that I believe that this change will make a lot of sense in the future. Power Automate is a very well established platform and has seen some great improvements and adoption over the last years. This gives us a much better supported and a very promising foundation to build awesome notification and user input processes powered by Power Automate and Adaptive Cards.&lt;/p>
+&lt;p>Oh, and I also really like the fact that unlike the &lt;strong>HTTP&lt;/strong> trigger, the Teams webhook trigger doesn&amp;rsquo;t require a Power Automate Premium license.&lt;/p></description></item></channel></rss>

@@ -1,0 +1,1058 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Licensing on HEUSSER.PRO</title><link>https://heusser.pro/categories/licensing/</link><description>Recent content in Licensing on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 21 Jun 2025 14:14:50 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/licensing/index.xml" rel="self" type="application/rss+xml"/><item><title>Find Personal Bookings URL of Any User in Your Tenant</title><link>https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/</link><pubDate>Sat, 21 Jun 2025 14:14:50 +0000</pubDate><guid>https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/</guid><description>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/Cover.png" alt="Featured image of post Find Personal Bookings URL of Any User in Your Tenant" />&lt;p>Usually you can only get a hold of someone&amp;rsquo;s &lt;a class="link" href="https://www.microsoft.com/en-us/microsoft-365/business/scheduling-and-booking-app?msockid=156099a91c0364cb0c448c191da96578" target="_blank" rel="noopener"
+>Microsoft Personal Bookings&lt;/a> URL if the owner of a Personal Bookings page shares their URL with you. However, as an administrator, you might want to find someone&amp;rsquo;s Personal Bookings URL without asking them for it. Or maybe you already asked them but didn&amp;rsquo;t get a response from the user.&lt;/p>
+&lt;p>Why would you want to find the Personal Bookings URL of users if they didn&amp;rsquo;t explicitly share it with you anyway? I can think of a couple of uses cases.&lt;/p>
+&lt;ol>
+&lt;li>You want to automatically populate users signatures with their Bookings URL&lt;/li>
+&lt;li>You want to check if a user has successfully set up their bookable meeting types&lt;/li>
+&lt;li>You want to create a report of users who have configured the service and users who didn&amp;rsquo;t bother to configure their Personal Bookings page.&lt;/li>
+&lt;/ol>
+&lt;p>Obviously solution Nr. 1 requires additional work but there is a great example from &lt;a class="link" href="https://www.loryanstrant.com/2022/10/04/automatically-populate-staff-signatures-with-their-bookings-with-me-public-page/" target="_blank" rel="noopener"
+>Loryan Strant&lt;/a> on that topic. His blog post explains that the bookings with me URL consists of a user&amp;rsquo;s Exchange GUID and the email domain. So naturally, my script is using the same technique.&lt;/p>
+&lt;p>However, my example script goes one step further and makes additional requests and actually tries to fetch available services and available times for a specific user. If the response includes services and time slots, it means that the user has already accessed their Bookings page at least once. When a user accessed the Bookings app in Outlook for the first time, some default meeting types are created automatically.&lt;/p>
+&lt;p>I want to point out that I didn&amp;rsquo;t do any additional research if there are better ways to report on whether users are utilizing Personal Bookings or at least have configured their page. This blog post simply shows the result of my research on the topic.&lt;/p>
+&lt;h2 id="powershell-script-example">PowerShell Script Example
+&lt;/h2>&lt;p>The script below allows you to display the Personal Bookings URL for any user that has used Bookings in your tenant.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt"> 10
+&lt;/span>&lt;span class="lnt"> 11
+&lt;/span>&lt;span class="lnt"> 12
+&lt;/span>&lt;span class="lnt"> 13
+&lt;/span>&lt;span class="lnt"> 14
+&lt;/span>&lt;span class="lnt"> 15
+&lt;/span>&lt;span class="lnt"> 16
+&lt;/span>&lt;span class="lnt"> 17
+&lt;/span>&lt;span class="lnt"> 18
+&lt;/span>&lt;span class="lnt"> 19
+&lt;/span>&lt;span class="lnt"> 20
+&lt;/span>&lt;span class="lnt"> 21
+&lt;/span>&lt;span class="lnt"> 22
+&lt;/span>&lt;span class="lnt"> 23
+&lt;/span>&lt;span class="lnt"> 24
+&lt;/span>&lt;span class="lnt"> 25
+&lt;/span>&lt;span class="lnt"> 26
+&lt;/span>&lt;span class="lnt"> 27
+&lt;/span>&lt;span class="lnt"> 28
+&lt;/span>&lt;span class="lnt"> 29
+&lt;/span>&lt;span class="lnt"> 30
+&lt;/span>&lt;span class="lnt"> 31
+&lt;/span>&lt;span class="lnt"> 32
+&lt;/span>&lt;span class="lnt"> 33
+&lt;/span>&lt;span class="lnt"> 34
+&lt;/span>&lt;span class="lnt"> 35
+&lt;/span>&lt;span class="lnt"> 36
+&lt;/span>&lt;span class="lnt"> 37
+&lt;/span>&lt;span class="lnt"> 38
+&lt;/span>&lt;span class="lnt"> 39
+&lt;/span>&lt;span class="lnt"> 40
+&lt;/span>&lt;span class="lnt"> 41
+&lt;/span>&lt;span class="lnt"> 42
+&lt;/span>&lt;span class="lnt"> 43
+&lt;/span>&lt;span class="lnt"> 44
+&lt;/span>&lt;span class="lnt"> 45
+&lt;/span>&lt;span class="lnt"> 46
+&lt;/span>&lt;span class="lnt"> 47
+&lt;/span>&lt;span class="lnt"> 48
+&lt;/span>&lt;span class="lnt"> 49
+&lt;/span>&lt;span class="lnt"> 50
+&lt;/span>&lt;span class="lnt"> 51
+&lt;/span>&lt;span class="lnt"> 52
+&lt;/span>&lt;span class="lnt"> 53
+&lt;/span>&lt;span class="lnt"> 54
+&lt;/span>&lt;span class="lnt"> 55
+&lt;/span>&lt;span class="lnt"> 56
+&lt;/span>&lt;span class="lnt"> 57
+&lt;/span>&lt;span class="lnt"> 58
+&lt;/span>&lt;span class="lnt"> 59
+&lt;/span>&lt;span class="lnt"> 60
+&lt;/span>&lt;span class="lnt"> 61
+&lt;/span>&lt;span class="lnt"> 62
+&lt;/span>&lt;span class="lnt"> 63
+&lt;/span>&lt;span class="lnt"> 64
+&lt;/span>&lt;span class="lnt"> 65
+&lt;/span>&lt;span class="lnt"> 66
+&lt;/span>&lt;span class="lnt"> 67
+&lt;/span>&lt;span class="lnt"> 68
+&lt;/span>&lt;span class="lnt"> 69
+&lt;/span>&lt;span class="lnt"> 70
+&lt;/span>&lt;span class="lnt"> 71
+&lt;/span>&lt;span class="lnt"> 72
+&lt;/span>&lt;span class="lnt"> 73
+&lt;/span>&lt;span class="lnt"> 74
+&lt;/span>&lt;span class="lnt"> 75
+&lt;/span>&lt;span class="lnt"> 76
+&lt;/span>&lt;span class="lnt"> 77
+&lt;/span>&lt;span class="lnt"> 78
+&lt;/span>&lt;span class="lnt"> 79
+&lt;/span>&lt;span class="lnt"> 80
+&lt;/span>&lt;span class="lnt"> 81
+&lt;/span>&lt;span class="lnt"> 82
+&lt;/span>&lt;span class="lnt"> 83
+&lt;/span>&lt;span class="lnt"> 84
+&lt;/span>&lt;span class="lnt"> 85
+&lt;/span>&lt;span class="lnt"> 86
+&lt;/span>&lt;span class="lnt"> 87
+&lt;/span>&lt;span class="lnt"> 88
+&lt;/span>&lt;span class="lnt"> 89
+&lt;/span>&lt;span class="lnt"> 90
+&lt;/span>&lt;span class="lnt"> 91
+&lt;/span>&lt;span class="lnt"> 92
+&lt;/span>&lt;span class="lnt"> 93
+&lt;/span>&lt;span class="lnt"> 94
+&lt;/span>&lt;span class="lnt"> 95
+&lt;/span>&lt;span class="lnt"> 96
+&lt;/span>&lt;span class="lnt"> 97
+&lt;/span>&lt;span class="lnt"> 98
+&lt;/span>&lt;span class="lnt"> 99
+&lt;/span>&lt;span class="lnt">100
+&lt;/span>&lt;span class="lnt">101
+&lt;/span>&lt;span class="lnt">102
+&lt;/span>&lt;span class="lnt">103
+&lt;/span>&lt;span class="lnt">104
+&lt;/span>&lt;span class="lnt">105
+&lt;/span>&lt;span class="lnt">106
+&lt;/span>&lt;span class="lnt">107
+&lt;/span>&lt;span class="lnt">108
+&lt;/span>&lt;span class="lnt">109
+&lt;/span>&lt;span class="lnt">110
+&lt;/span>&lt;span class="lnt">111
+&lt;/span>&lt;span class="lnt">112
+&lt;/span>&lt;span class="lnt">113
+&lt;/span>&lt;span class="lnt">114
+&lt;/span>&lt;span class="lnt">115
+&lt;/span>&lt;span class="lnt">116
+&lt;/span>&lt;span class="lnt">117
+&lt;/span>&lt;span class="lnt">118
+&lt;/span>&lt;span class="lnt">119
+&lt;/span>&lt;span class="lnt">120
+&lt;/span>&lt;span class="lnt">121
+&lt;/span>&lt;span class="lnt">122
+&lt;/span>&lt;span class="lnt">123
+&lt;/span>&lt;span class="lnt">124
+&lt;/span>&lt;span class="lnt">125
+&lt;/span>&lt;span class="lnt">126
+&lt;/span>&lt;span class="lnt">127
+&lt;/span>&lt;span class="lnt">128
+&lt;/span>&lt;span class="lnt">129
+&lt;/span>&lt;span class="lnt">130
+&lt;/span>&lt;span class="lnt">131
+&lt;/span>&lt;span class="lnt">132
+&lt;/span>&lt;span class="lnt">133
+&lt;/span>&lt;span class="lnt">134
+&lt;/span>&lt;span class="lnt">135
+&lt;/span>&lt;span class="lnt">136
+&lt;/span>&lt;span class="lnt">137
+&lt;/span>&lt;span class="lnt">138
+&lt;/span>&lt;span class="lnt">139
+&lt;/span>&lt;span class="lnt">140
+&lt;/span>&lt;span class="lnt">141
+&lt;/span>&lt;span class="lnt">142
+&lt;/span>&lt;span class="lnt">143
+&lt;/span>&lt;span class="lnt">144
+&lt;/span>&lt;span class="lnt">145
+&lt;/span>&lt;span class="lnt">146
+&lt;/span>&lt;span class="lnt">147
+&lt;/span>&lt;span class="lnt">148
+&lt;/span>&lt;span class="lnt">149
+&lt;/span>&lt;span class="lnt">150
+&lt;/span>&lt;span class="lnt">151
+&lt;/span>&lt;span class="lnt">152
+&lt;/span>&lt;span class="lnt">153
+&lt;/span>&lt;span class="lnt">154
+&lt;/span>&lt;span class="lnt">155
+&lt;/span>&lt;span class="lnt">156
+&lt;/span>&lt;span class="lnt">157
+&lt;/span>&lt;span class="lnt">158
+&lt;/span>&lt;span class="lnt">159
+&lt;/span>&lt;span class="lnt">160
+&lt;/span>&lt;span class="lnt">161
+&lt;/span>&lt;span class="lnt">162
+&lt;/span>&lt;span class="lnt">163
+&lt;/span>&lt;span class="lnt">164
+&lt;/span>&lt;span class="lnt">165
+&lt;/span>&lt;span class="lnt">166
+&lt;/span>&lt;span class="lnt">167
+&lt;/span>&lt;span class="lnt">168
+&lt;/span>&lt;span class="lnt">169
+&lt;/span>&lt;span class="lnt">170
+&lt;/span>&lt;span class="lnt">171
+&lt;/span>&lt;span class="lnt">172
+&lt;/span>&lt;span class="lnt">173
+&lt;/span>&lt;span class="lnt">174
+&lt;/span>&lt;span class="lnt">175
+&lt;/span>&lt;span class="lnt">176
+&lt;/span>&lt;span class="lnt">177
+&lt;/span>&lt;span class="lnt">178
+&lt;/span>&lt;span class="lnt">179
+&lt;/span>&lt;span class="lnt">180
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="cm">&amp;lt;#
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> .&lt;/span>&lt;span class="sd">SYNOPSIS&lt;/span>&lt;span class="cm">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Get the Microsoft Bookings URL of a user in Exchange Online.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> .&lt;/span>&lt;span class="sd">DESCRIPTION&lt;/span>&lt;span class="cm">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> This script retrieves the Microsoft Bookings URL for a user in Exchange Online. It checks if a user has Microsoft Bookings enabled and if they have set up their personal bookings page already. If a user has not set up their personal bookings page, it will be reflected in the output.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> .&lt;/span>&lt;span class="sd">NOTES&lt;/span>&lt;span class="cm">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Author: Martin Heusser
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Link: https://heusser.pro
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> https://github.com/sponsors/mozziemozz?frequency=one-time&amp;amp;sponsor=mozziemozz
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> https://buymeacoffee.com/martin.heusser
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Version: 1.0.0
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Date: 2025-06-21
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">#&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$exoConnection&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-ConnectionInformation&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="p">(!&lt;/span>&lt;span class="nv">$exoConnection&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Connect-ExchangeOnline&lt;/span> &lt;span class="n">-ShowBanner:&lt;/span>&lt;span class="vm">$false&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$tenantId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$exoConnection&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">TenantID&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$graphSession&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-MgUser&lt;/span> &lt;span class="n">-Top&lt;/span> &lt;span class="mf">1&lt;/span> &lt;span class="n">-ErrorAction&lt;/span> &lt;span class="n">SilentlyContinue&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="p">(!&lt;/span>&lt;span class="nv">$graphSession&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Connect-MgGraph&lt;/span> &lt;span class="n">-Scopes&lt;/span> &lt;span class="s2">&amp;#34;User.Read.All&amp;#34;&lt;/span> &lt;span class="n">-NoWelcome&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">-not&lt;/span> &lt;span class="nv">$allUsers&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$allUsers&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-MgUser&lt;/span> &lt;span class="n">-Filter&lt;/span> &lt;span class="s2">&amp;#34;assignedPlans/any(s:s/servicePlanId eq 199a5c09-e0ca-4e37-8f7c-b05d533e1ea2)&amp;#34;&lt;/span> &lt;span class="n">-Property&lt;/span> &lt;span class="n">Id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">UserPrincipalName&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">DisplayName&lt;/span> &lt;span class="n">-CountVariable&lt;/span> &lt;span class="n">Count&lt;/span> &lt;span class="n">-ConsistencyLevel&lt;/span> &lt;span class="n">eventual&lt;/span> &lt;span class="n">-All&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$userPrincipalName&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$allUsers&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">DisplayName&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">UserPrincipalName&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Out-GridView&lt;/span> &lt;span class="n">-Title&lt;/span> &lt;span class="s2">&amp;#34;Select a user to get their Microsoft Bookings URL (Note: Only Bookings Licensed users are shown)&amp;#34;&lt;/span> &lt;span class="n">-PassThru&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">UserPrincipalName&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$domain&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$userPrincipalName&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Split&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;@&amp;#34;&lt;/span>&lt;span class="p">)[&lt;/span>&lt;span class="mf">1&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$exoMailBox&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-EXOMailbox&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="nv">$userPrincipalName&lt;/span> &lt;span class="n">-Properties&lt;/span> &lt;span class="n">ExchangeGUID&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mailBox&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-Mailbox&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="nv">$userPrincipalName&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$mailBox&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">PersistedCapabilities&lt;/span> &lt;span class="o">-notcontains&lt;/span> &lt;span class="s2">&amp;#34;BPOS_S_BookingsAddOn&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Write-Host&lt;/span> &lt;span class="s2">&amp;#34;User &amp;#39;&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exoMailBox&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">DisplayName&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#39; does not have Microsoft Bookings enabled in Exchange Online.&amp;#34;&lt;/span> &lt;span class="n">-ForegroundColor&lt;/span> &lt;span class="n">Red&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">else&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Write-Host&lt;/span> &lt;span class="s2">&amp;#34;User &amp;#39;&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exoMailBox&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">DisplayName&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#39; has Microsoft Bookings enabled in Exchange Online.&amp;#34;&lt;/span> &lt;span class="n">-ForegroundColor&lt;/span> &lt;span class="n">Green&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$exchangeGUIDWithHyphens&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$exoMailBox&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">ExchangeGUID&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Guid&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$exchangeGUID&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$exoMailBox&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">ExchangeGUID&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Guid&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Replace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;-&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$serviceId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">$null&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$response&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">$null&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$checkPersonalBookingsPage&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">$null&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$personalBookingsURL&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">$null&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$checkPersonalBookingsPageBody&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">$null&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$personalBookingsURL&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;https://outlook.office.com/bookwithme/user/&lt;/span>&lt;span class="nv">$exchangeGUID&lt;/span>&lt;span class="s2">%40&lt;/span>&lt;span class="nv">$domain&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">try&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$session&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">New-Object&lt;/span> &lt;span class="n">Microsoft&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">PowerShell&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Commands&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">WebRequestSession&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$session&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Cookies&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Add&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="nb">New-Object&lt;/span> &lt;span class="n">System&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Net&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Cookie&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;ClientId&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;4DB0129438C34891BDD6F2D6141584B9&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;outlook.office.com&amp;#34;&lt;/span>&lt;span class="p">)))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$session&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Cookies&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Add&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="nb">New-Object&lt;/span> &lt;span class="n">System&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Net&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Cookie&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;OIDC&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;outlook.office.com&amp;#34;&lt;/span>&lt;span class="p">)))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$response&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-WebRequest&lt;/span> &lt;span class="n">-UseBasicParsing&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://outlook.office.com/BookingsService/api/V1/bookingBusinessesc2/mbx:&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exchangeGUID&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">@&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$tenantId&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">/services&amp;#34;&lt;/span> &lt;span class="p">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">-WebSession&lt;/span> &lt;span class="nv">$session&lt;/span> &lt;span class="p">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">-Headers&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;authority&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;outlook.office.com&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;method&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;GET&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;path&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;/BookingsService/api/V1/bookingBusinessesc2/mbx:&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exchangeGUID&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">@&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$tenantId&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">/services&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;scheme&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;https&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;accept&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;*/*&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;accept-encoding&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;gzip, deflate, br, zstd&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;accept-language&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;en-US,en;q=0.9&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;prefer&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;exchange.behavior=&lt;/span>&lt;span class="se">`&amp;#34;&lt;/span>&lt;span class="s2">IncludeThirdPartyOnlineMeetingProviders&lt;/span>&lt;span class="se">`&amp;#34;&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;priority&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;u=1, i&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;sec-ch-ua-mobile&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;?0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;sec-ch-ua-platform&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="se">`&amp;#34;&lt;/span>&lt;span class="s2">Windows&lt;/span>&lt;span class="se">`&amp;#34;&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;sec-fetch-dest&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;empty&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;sec-fetch-mode&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;cors&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;sec-fetch-site&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;same-origin&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-anchormailbox&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;mbx:&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exchangeGUID&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">@&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$tenantId&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-edge-shopping-flag&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-owa-canary&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;X-OWA-CANARY_cookie_is_null_or_empty&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-owa-hosted-ux&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;false&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-req-source&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;BookWithMe&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="p">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json; charset=utf-8&amp;#34;&lt;/span> &lt;span class="n">-ErrorAction&lt;/span> &lt;span class="n">Stop&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c"># $serviceId = $response.Content | ConvertFrom-Json | Select-Object -ExpandProperty service | Where-Object { $_.isPrivate -eq $true } | Select-Object -ExpandProperty serviceId -First 1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$serviceId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$response&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Content&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ConvertFrom-Json&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">service&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">serviceId&lt;/span> &lt;span class="n">-First&lt;/span> &lt;span class="mf">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$checkPersonalBookingsPageBody&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">pscustomobject&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">staffIds&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;1c1c7887-e0fc-479b-ac7d-6983d0f026ff&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">startDateTime&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dateTime&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Get-Date&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">ToString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;yyyy-MM-ddTHH:mm:ss&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">timeZone&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Get-TimeZone&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">Id&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">endDateTime&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dateTime&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Get-Date&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">AddDays&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">1&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">ToString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;yyyy-MM-ddTHH:mm:ss&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">timeZone&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Get-TimeZone&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">Id&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">serviceId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$serviceId&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ConvertTo-Json&lt;/span> &lt;span class="n">-Depth&lt;/span> &lt;span class="mf">5&lt;/span> &lt;span class="n">-Compress&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$session&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">New-Object&lt;/span> &lt;span class="n">Microsoft&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">PowerShell&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Commands&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">WebRequestSession&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$session&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Cookies&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Add&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="nb">New-Object&lt;/span> &lt;span class="n">System&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Net&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Cookie&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;ClientId&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;09A51AD7CB19435B9DCFE57421FB3DD6&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;outlook.office.com&amp;#34;&lt;/span>&lt;span class="p">)))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$session&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Cookies&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Add&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="nb">New-Object&lt;/span> &lt;span class="n">System&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Net&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Cookie&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;OIDC&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;outlook.office.com&amp;#34;&lt;/span>&lt;span class="p">)))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$checkPersonalBookingsPage&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-WebRequest&lt;/span> &lt;span class="n">-UseBasicParsing&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://outlook.office.com/BookingsService/api/V1/bookingBusinessesc2/mbx:&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exchangeGUID&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">@&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$tenantId&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">/getStaffAvailability&amp;#34;&lt;/span> &lt;span class="p">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">-Method&lt;/span> &lt;span class="s2">&amp;#34;POST&amp;#34;&lt;/span> &lt;span class="p">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">-WebSession&lt;/span> &lt;span class="nv">$session&lt;/span> &lt;span class="p">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">-Headers&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;authority&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;outlook.office.com&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;method&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;POST&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;path&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;/BookingsService/api/V1/bookingBusinessesc2/mbx:&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exchangeGUID&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">@&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$tenantId&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">/getStaffAvailability&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;scheme&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;https&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;accept&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;*/*&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;accept-encoding&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;gzip, deflate, br, zstd&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;accept-language&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;de-CH,de;q=0.9&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;cache-control&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;no-cache&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;dnt&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;1&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;origin&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;https://outlook.office.com&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;pragma&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;no-cache&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;prefer&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;exchange.behavior=&lt;/span>&lt;span class="se">`&amp;#34;&lt;/span>&lt;span class="s2">IncludeThirdPartyOnlineMeetingProviders&lt;/span>&lt;span class="se">`&amp;#34;&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;priority&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;u=1, i&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;sec-ch-ua-mobile&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;?0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;sec-fetch-dest&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;empty&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;sec-fetch-mode&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;cors&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;sec-fetch-site&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;same-origin&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-anchormailbox&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;mbx:&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exchangeGUID&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">@&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$tenantId&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-edge-shopping-flag&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-owa-canary&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;X-OWA-CANARY_cookie_is_null_or_empty&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-owa-hosted-ux&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;false&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-req-source&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;BookWithMe&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="p">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json; charset=utf-8&amp;#34;&lt;/span> &lt;span class="p">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">-Body&lt;/span> &lt;span class="nv">$checkPersonalBookingsPageBody&lt;/span> &lt;span class="n">-ErrorAction&lt;/span> &lt;span class="n">Stop&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Write-Host&lt;/span> &lt;span class="s2">&amp;#34;User &amp;#39;&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exoMailBox&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">DisplayName&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#39; set up their Personal Bookings page already.&amp;#34;&lt;/span> &lt;span class="n">-ForegroundColor&lt;/span> &lt;span class="n">Green&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$personalBookingsPageConfigured&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">$true&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">catch&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Write-Host&lt;/span> &lt;span class="s2">&amp;#34;User &amp;#39;&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exoMailBox&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">DisplayName&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#39; didn&amp;#39;t set up their Personal Bookings page yet.&amp;#34;&lt;/span> &lt;span class="n">-ForegroundColor&lt;/span> &lt;span class="n">Yellow&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$personalBookingsPageConfigured&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">$false&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$personalBookingsPageConfigured&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$personalBookingsURLAnonymous&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$personalBookingsURL&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">?anonymous&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$personalBookingsURLAnonymous&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Set-Clipboard&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Write-Host&lt;/span> &lt;span class="s2">&amp;#34;Microsoft Bookings URL of user &amp;#39;&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exoMailBox&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">DisplayName&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#39; is &amp;#39;&lt;/span>&lt;span class="nv">$personalBookingsURL&lt;/span>&lt;span class="s2">&amp;#39;.&amp;#34;&lt;/span> &lt;span class="n">-ForegroundColor&lt;/span> &lt;span class="n">Cyan&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Write-Host&lt;/span> &lt;span class="s2">&amp;#34;Microsoft Bookings anonymous URL of user &amp;#39;&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exoMailBox&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">DisplayName&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#39;: is &amp;#39;&lt;/span>&lt;span class="nv">$personalBookingsURLAnonymous&lt;/span>&lt;span class="s2">&amp;#39;&amp;#34;&lt;/span> &lt;span class="n">-ForegroundColor&lt;/span> &lt;span class="n">Magenta&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Write-Host&lt;/span> &lt;span class="s2">&amp;#34;The URL has been copied to the clipboard.&amp;#34;&lt;/span> &lt;span class="n">-ForegroundColor&lt;/span> &lt;span class="n">Green&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="comparing-different-results-and-user-experience">Comparing Different Results and User Experience
+&lt;/h2>&lt;p>Since this is an example script, it only runs for a single user at a time. If you want this to run for every user in your organization, you&amp;rsquo;ll need to adjust the script and implement a &lt;code>foreach&lt;/code> loop on your own. The script uses &lt;code>Out-GridView -PassThru&lt;/code> to allow you to select a user. Only users which have the Microsoft Bookings service plan (199a5c09-e0ca-4e37-8f7c-b05d533e1ea2) enabled will be selectable.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-1.png"
+width="994"
+height="385"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-1_hu_c7407791c422890.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-1_hu_c26ce46e1383150b.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Out-GridView selection of Bookings licensed users."
+class="gallery-image"
+data-flex-grow="258"
+data-flex-basis="619px"
+>&lt;/p>
+&lt;h2 id="example-of-user-who-already-configured-their-bookings-page">Example of User who Already Configured their Bookings Page
+&lt;/h2>&lt;p>In the case where a user has already configured their Personal Bookings page, the script will show you both the URLs for authenticated and anonymous access.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image.png"
+width="1501"
+height="628"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image_hu_ff18067be6750738.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image_hu_a33e74574a1a9dd6.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output of the script for a user which has already configured their Personal Bookings page."
+class="gallery-image"
+data-flex-grow="239"
+data-flex-basis="573px"
+>&lt;/p>
+&lt;h2 id="example-of-user-who-didnt-already-configure-their-bookings-page">Example of User who didn&amp;rsquo;t Already Configure their Bookings Page
+&lt;/h2>&lt;p>This is what the output will look like in case a user has a Bookings license but did not yet set up their Personal Bookings page. This is the case when a user never opened the Bookings app in Outlook.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-4.png"
+width="1761"
+height="944"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-4_hu_a9afeb1954330021.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-4_hu_749e288f2cba67ce.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output of the script for a user which didn’t already set up their Personal Bookings page."
+class="gallery-image"
+data-flex-grow="186"
+data-flex-basis="447px"
+>&lt;/p>
+&lt;p>Technically, the script is able to construct the Personal Bookings URL even if a user never opened the Bookings app in Outlook before. However, when the page is accessed, there&amp;rsquo;s an error message that looks like this. Therefore, the script will not output the user&amp;rsquo;s Personal Bookings URL in this case.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-6.png"
+width="1686"
+height="1185"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-6_hu_e6cf80e4d91ca95.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-6_hu_51c8579356432d88.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Error message when a user never used Bookings before or the page isn’t provisioned yet."
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="341px"
+>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-7.png"
+width="1686"
+height="1185"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-7_hu_9c22bf4b6485b034.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-7_hu_e204f488891b060b.png 1024w"
+loading="lazy"
+decoding="async"
+alt="After the license is assigned, it takes a couple of minutes until the user is able to access their Bookings page."
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="341px"
+>&lt;/p>
+&lt;p>Once the Bookings license has been activated, a &lt;strong>Go to my booking page&lt;/strong> button will appear in the user&amp;rsquo;s calendar in Outlook on the web. Alternatively, users can also open the &lt;strong>Bookings&lt;/strong> app in Outlook (new or classic).&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-8.png"
+width="1689"
+height="1185"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-8_hu_c4a5d4bc7faf12cc.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-8_hu_df42b1836246f392.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Go to my booking page button in Outlook."
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="342px"
+>&lt;/p>
+&lt;p>At this point, the script will still report the booking page as not set up yet because the Personal Bookings page only gets activated once a user clicks on that &lt;strong>Go to my booking page&lt;/strong> link for the first time. When the link is clicked, Bookings will automatically create some meeting types for the user&amp;rsquo;s Personal Booking page.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-9.png"
+width="1689"
+height="1185"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-9_hu_7301e59d18ee2bc7.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-9_hu_ff00f9a2aa652fd9.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Personal Booking page with default meeting types."
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="342px"
+>&lt;/p>
+&lt;p>Even then, it will usually take a few minutes until the page is accessible by other users as well. Once that is the case, the script is able to detect that the page has been set up and will output the URL.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-10.png"
+width="2346"
+height="927"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-10_hu_641df795977a0d25.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-10_hu_5ca3537a20b78e7f.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output before and after a user has accessed their Personal Booking page for the first time."
+class="gallery-image"
+data-flex-grow="253"
+data-flex-basis="607px"
+>&lt;/p>
+&lt;p>All you need to do to open a user&amp;rsquo;s Personal Booking page is to click the link in Terminal.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-13.png"
+width="1686"
+height="1185"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-13_hu_540c9c590ccfd811.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-13_hu_f85640e13839f996.png 1024w"
+loading="lazy"
+decoding="async"
+alt="User’s Personal Booking page opened in browser from the URL in PowerShell output."
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="341px"
+>&lt;/p>
+&lt;h2 id="ews-capabilities">EWS Capabilities
+&lt;/h2>&lt;p>To use Bookings, the EWS (Exchange Web Services) capability &lt;strong>BPOS_S_BookingsAddOn&lt;/strong> must also be enabled. In my test tenant, this was enabled by default for all users with a Bookings service plan assigned.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Get-Mailbox&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="nv">$userPrincipalName&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">PersistedCapabilities&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Output&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">PersistedCapabilities&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">---------------------&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>&lt;span class="n">GRAPH_CONNECTORS_SEARCH_INDEX&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">BPOS_S_BookingsAddOn&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">MYANALYTICSP2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">BPOS_S_Standard&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>In my testing, one user slipped through and was included in &lt;code>Out-GridView&lt;/code> despite not having a Bookings service plan assigned. This is likely due the filter on &lt;code>assignedPlans&lt;/code> requiring the &lt;strong>eventual consistency level&lt;/strong>. In that case, or when you set the user principal name manually, the script will tell you that Bookings isn&amp;rsquo;t enabled for that user because the EWS capability is missing.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-11.png"
+width="1730"
+height="927"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-11_hu_f372f21b14d7bc30.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-11_hu_df0b068b11f9f34c.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output in case a user does not have Bookings enabled in EWS capabilities."
+class="gallery-image"
+data-flex-grow="186"
+data-flex-basis="447px"
+>&lt;/p>
+&lt;h2 id="summary-and-additional-thoughts">Summary and Additional Thoughts
+&lt;/h2>&lt;p>It took me a while to get this right. At first I thought that the &lt;code>serviceId&lt;/code> in the request body to the &lt;code>/getStaffAvailability&lt;/code> endpoint was a static value. But when I was testing with other users, I realized that the service ids are actually the ids of configured meeting types which are unique per user. Therefore, I had to implement an additional step to get the &lt;strong>services&lt;/strong> first. Services are the different bookable meeting types a user has created.&lt;/p>
+&lt;p>Since Personal Booking pages are public websites, they&amp;rsquo;re still accessible, even when a user doesn&amp;rsquo;t have any public meeting types configured.&lt;/p>
+&lt;p>Even though this user&amp;rsquo;s Personal Booking page says that no public meetings are available, the page can still be opened.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-2.png"
+width="1686"
+height="1185"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-2_hu_ae9306138220b98d.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-2_hu_7a42ae5907237a11.png 1024w"
+loading="lazy"
+decoding="async"
+alt="User with only private meeting types."
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="341px"
+>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-12.png"
+width="1686"
+height="1185"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-12_hu_b9ca53c5527e197b.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-12_hu_787be2e67b3c7fc6.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Personal Bookings page without any public meeting types."
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="341px"
+>&lt;/p>
+&lt;p>In that case, the &lt;code>service&lt;/code> property will be empty. This request is performed on lines &lt;strong>75-101&lt;/strong> in the &lt;a class="link" href="#powershell-script-example" >script&lt;/a> above. &lt;code>Invoke-WebRequest&lt;/code> is inside a &lt;code>Try-Catch&lt;/code> block and uses &lt;code>-ErrorAction Stop&lt;/code>. If a user didn&amp;rsquo;t configure their Personal Bookings page already, this request will fail. If a user doesn&amp;rsquo;t have any public meeting types configured, the request will be successful despite an empty response.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$response&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Content&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ConvertFrom-Json&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Output&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">service&lt;/span> &lt;span class="n">count&lt;/span> &lt;span class="n">nextSkipToken&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">-------&lt;/span> &lt;span class="p">-----&lt;/span> &lt;span class="p">-------------&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{}&lt;/span> &lt;span class="mf">0&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The second check to the &lt;code>/getStaffAvailability&lt;/code> endpoint happens on lines &lt;strong>119-150&lt;/strong>. In the case where no public meetings are available, the response will still include &lt;code>availabilityItems&lt;/code> but they will show as status &lt;code>BOOKINGSAVAILABILITYSTATUS_OUT_OF_OFFICE&lt;/code>. If both requests are successful, the script will deem the Personal Bookings page as active.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$checkPersonalBookingsPage&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Content&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ConvertFrom-Json&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">staffAvailabilityResponse&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">availabilityItems&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Output&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">status&lt;/span> &lt;span class="n">startDateTime&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">------&lt;/span> &lt;span class="p">-------------&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_OUT_OF_OFFICE&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">dateTime&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="mf">21.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">timeZone&lt;/span>&lt;span class="p">=(&lt;/span>&lt;span class="n">UTC&lt;/span>&lt;span class="p">+&lt;/span>&lt;span class="mf">01&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">Amsterdam&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Berlin&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Bern&lt;/span>&lt;span class="err">…&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_OUT_OF_OFFICE&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">dateTime&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="mf">22.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">timeZone&lt;/span>&lt;span class="p">=(&lt;/span>&lt;span class="n">UTC&lt;/span>&lt;span class="p">+&lt;/span>&lt;span class="mf">01&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">Amsterdam&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Berlin&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Bern&lt;/span>&lt;span class="err">…&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The behavior is the same even if all meeting types are deleted. The script is still able to detect that a booking page is set up. I don&amp;rsquo;t really have a need for it right now, but to know that it&amp;rsquo;s possible to query a users configured meeting types and to get available time slots programmatically is pretty cool.&lt;/p>
+&lt;p>Here&amp;rsquo;s an example that shows available meeting types for a user with some select properties.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$response&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Content&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ConvertFrom-Json&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">Service&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ft &lt;/span>&lt;span class="n">title&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">defaultDuration&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">serviceId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">isLocationOnline&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Output&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">title&lt;/span> &lt;span class="n">defaultDuration&lt;/span> &lt;span class="n">serviceId&lt;/span> &lt;span class="n">isLocationOnline&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">-----&lt;/span> &lt;span class="p">---------------&lt;/span> &lt;span class="p">---------&lt;/span> &lt;span class="p">----------------&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mf">60&lt;/span> &lt;span class="n">minutes&lt;/span> &lt;span class="n">meeting&lt;/span> &lt;span class="n">PT1H&lt;/span> &lt;span class="n">192c91e9&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">906c&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">44cb&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">9169&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">6dd1e4d8b5b2&lt;/span> &lt;span class="n">False&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mf">30&lt;/span> &lt;span class="n">minutes&lt;/span> &lt;span class="n">meeting&lt;/span> &lt;span class="n">PT30M&lt;/span> &lt;span class="n">8d0ddf36&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">81e4&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">4890&lt;/span>&lt;span class="n">-bc5b&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">7b59d1289970&lt;/span> &lt;span class="n">True&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mf">15&lt;/span> &lt;span class="n">minutes&lt;/span> &lt;span class="n">meeting&lt;/span> &lt;span class="n">PT15M&lt;/span> &lt;span class="n">528b7a49&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">817b&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">4351&lt;/span>&lt;span class="n">-a556&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">87de2f0d988b&lt;/span> &lt;span class="n">True&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>And here I&amp;rsquo;m checking the availability of a user programmatically. Since the script only needs &lt;strong>any&lt;/strong> &lt;code>serviceId&lt;/code>, it just uses the first one (line &lt;strong>104&lt;/strong>). The &lt;code>$checkPersonalBookingsPage&lt;/code> variable is populated when the script runs with that first &lt;code>serviceId&lt;/code>. If you want to check the availability of a specific &lt;code>serviceId&lt;/code> you&amp;rsquo;ll need to make sure to use the correct id on line &lt;strong>116&lt;/strong>. The code example below uses some custom code to format the output for better viewing and demonstration.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$checkPersonalBookingsPage&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Content&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ConvertFrom-Json&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">staffAvailabilityResponse&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">availabilityItems&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ft &lt;/span>&lt;span class="n">status&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">Name&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;startDateTime&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="n">expression&lt;/span>&lt;span class="p">={&lt;/span>&lt;span class="nv">$_&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">startDateTime&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dateTime&lt;/span>&lt;span class="p">}},&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">Name&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;endDateTime&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="n">expression&lt;/span>&lt;span class="p">={&lt;/span>&lt;span class="nv">$_&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">endDateTime&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dateTime&lt;/span>&lt;span class="p">}}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Output&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">status&lt;/span> &lt;span class="n">startDateTime&lt;/span> &lt;span class="n">endDateTime&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">------&lt;/span> &lt;span class="p">-------------&lt;/span> &lt;span class="p">-----------&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_OUT_OF_OFFICE&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">08&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_AVAILABLE&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">08&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">09&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_BUSY&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">09&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">13&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_AVAILABLE&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">13&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">14&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_BUSY&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">14&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">16&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_AVAILABLE&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">16&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">17&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_OUT_OF_OFFICE&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">17&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span> &lt;span class="mf">24.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_OUT_OF_OFFICE&lt;/span> &lt;span class="mf">24.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span> &lt;span class="mf">24.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">08&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>If we compare that with the user&amp;rsquo;s Personal Booking page, we can see that the information checks out. In other words, the web request in PowerShell returns the same information as the user&amp;rsquo;s Personal Booking page displays.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-3.png"
+width="1686"
+height="1848"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-3_hu_f602cd32d3c30707.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-3_hu_9fcf99e13f2885a1.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Available meeting times on Personal Bookings page."
+class="gallery-image"
+data-flex-grow="91"
+data-flex-basis="218px"
+>&lt;/p></description></item><item><title>Translate Microsoft 365 License GUIDs to Product Names in PowerShell</title><link>https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/</link><pubDate>Fri, 02 Jun 2023 19:57:48 +0000</pubDate><guid>https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/</guid><description>&lt;p>Working with Microsoft 365 and Azure AD licenses and understanding them can be quite the task for many system administrators. Did you know that the official &lt;a class="link" href="https://learn.microsoft.com/en-us/azure/active-directory/enterprise-users/licensing-service-plan-reference" target="_blank" rel="noopener"
+>Microsoft Learn article&lt;/a> lists more than &lt;strong>3230&lt;/strong> different SKU IDs and names as of June 1st 2023?&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/00pCCCvKg0Z8d8u1L.jpg"
+width="1024"
+height="1024"
+srcset="https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/00pCCCvKg0Z8d8u1L_hu_c250dddf0912feb8.jpg 480w, https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/00pCCCvKg0Z8d8u1L_hu_d42a5c5efffb6537.jpg 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="100"
+data-flex-basis="240px"
+>&lt;/p>
+&lt;p>The problem is that Graph or PowerShell Modules never return a product name that actually means something to an admin. The names you’ll see there are not the same ones we’re used to from the Azure or M365 Admin Portals.&lt;/p>
+&lt;p>Let’s take a look at what the &lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/subscribedsku-list?view=graph-rest-1.0&amp;amp;tabs=http" target="_blank" rel="noopener"
+>&lt;strong>subscribedSkus&lt;/strong>&lt;/a> Graph Endpoint returns. &lt;br>
+This is how we get a list of all SKUs a tenant is subscribed to.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$licenseSkus&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-RestMethod&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Get&lt;/span> &lt;span class="n">-Headers&lt;/span> &lt;span class="nv">$Header&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/subscribedSkus&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Obviously, most tenants have many different SKUs. For the sake of simplicity, I’ll just show the details of the last entry returned by Graph.&lt;/p>
+&lt;pre>&lt;code>PS C:\Temp\\GitHub\TeamsPhoneAutomation&amp;gt; $sku = $licenseSkus.value[-1]
+PS C:\Temp\\GitHub\TeamsPhoneAutomation&amp;gt; $sku
+accountName : company
+accountId : 4bffbf87-53a0-4fce-b58b-xxxxxxxxxxxx
+appliesTo : User
+capabilityStatus : Enabled
+consumedUnits : 7
+id : 4bffbf87-53a0-4fce-b58b-xxxxxxxxxxxx_18181a46-0d4e-45cd-891e-60aabd171b4e
+skuId : 18181a46-0d4e-45cd-891e-60aabd171b4e
+skuPartNumber : STANDARDPACK
+subscriptionIds : {3474312c-2333-47bc-9d87-da1cfcb75f85}
+prepaidUnits : @{enabled=9; suspended=0; warning=0}
+servicePlans : {@{servicePlanId=a82fbf69-b4d7-49f4-83a6-915b2cf354f4; servicePlanName=VIVAENGAGE_CORE; provisioningStatus=PendingProvisioning;
+appliesTo=User}, @{servicePlanId=199a5c09-e0ca-4e37-8f7c-b05d533e1ea2; servicePlanName=MICROSOFTBOOKINGS; provisioningStatus=Success;
+appliesTo=User}, @{servicePlanId=b76fb638-6ba6-402a-b9f9-83d28acb3d86; servicePlanName=VIVA_LEARNING_SEEDED; provisioningStatus=Success;
+appliesTo=User}, @{servicePlanId=db4d623d-b514-490b-b7ef-8885eee514de; servicePlanName=Nucleus; provisioningStatus=Success;
+appliesTo=Company}...}
+&lt;/code>&lt;/pre>
+&lt;p>The &lt;strong>skuPartNumber&lt;/strong> is what Microsoft calls &lt;strong>String ID&lt;/strong> on their learn article. As we all know, Microsoft is no stranger to changing or rebranding product names. I have never seen them change an skuPartNumber though. Even though we can count on that name staying the same, it most likely won’t mean much to most people. Now what the heck is a &lt;strong>STANDARDPACK!?&lt;/strong>&lt;/p>
+&lt;p>A quick search on the Microsoft Learn article will do the trick and give us the desired information. STANDARDPACK = Office 365 E1. &lt;br>
+But there’s a better way!&lt;/p>
+&lt;p>What’s really nice is that Microsoft also provides a download link to a CSV file which contains all the SKUs, Ids and names. If it can be downloaded by using a browser, it can also be downloaded by PowerShell.&lt;/p>
+&lt;p>All we need to do is &lt;code>Invoke-RestMethod&lt;/code> and use &lt;code>| ConvertFrom-CSV&lt;/code> to convert the retrieved content to a PowerShell object.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$translationTable&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-RestMethod&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Get&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://download.microsoft.com/download/e/3/e/e3e9faf2-f28b-490a-9ada-c6089a1fc5b0/Product%20names%20and%20service%20plan%20identifiers%20for%20licensing.csv&amp;#34;&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ConvertFrom-Csv&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The SKU information retrieved by graph is already in our &lt;code>$sku&lt;/code> variable. So, all that’s left to do is a simple one-liner to search the &lt;code>$translationTable.GUID&lt;/code> for a matching &lt;code>$sku.skuId&lt;/code> .&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$skuNamePretty&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$translationTable&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Where-Object&lt;/span> &lt;span class="p">{$\&lt;/span>&lt;span class="n">_&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">GUID&lt;/span> &lt;span class="o">-eq&lt;/span> &lt;span class="nv">$sku&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">skuId&lt;/span>&lt;span class="p">}&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Sort-Object&lt;/span> &lt;span class="n">Product&lt;/span>&lt;span class="p">\&lt;/span>&lt;span class="n">_Display&lt;/span>&lt;span class="p">\&lt;/span>&lt;span class="n">_Name&lt;/span> &lt;span class="n">-Unique&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="n">Product&lt;/span>&lt;span class="p">\&lt;/span>&lt;span class="n">_Display&lt;/span>&lt;span class="p">\&lt;/span>&lt;span class="n">_Name&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>This will translate the skuPartNumber to the familiar License name known from the admin portals.&lt;/p>
+&lt;pre>&lt;code>PS C:\Temp\GitHub\TeamsPhoneAutomation&amp;gt; $skuNamePretty
+Office 365 E1
+&lt;/code>&lt;/pre>
+&lt;p>I’ve put all the above code snippets together and created a little more sophisticated, yet still very basic script which will output a table with all the available license names. Please note that you’ll need an existing Azure AD App Registration/Service Principal which has at least the &lt;strong>Organization.Read.All&lt;/strong> Graph permission.&lt;/p>
+&lt;script src="https://gist.github.com/mozziemozz/174b665e5aa94cbd3c1421665032cbb0.js">&lt;/script>
+&lt;p>The output will look like this.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1wQy6obQWLE2uVOhZjoPcw.png"
+width="1014"
+height="622"
+srcset="https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1wQy6obQWLE2uVOhZjoPcw_hu_3a1802f720b13e70.png 480w, https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1wQy6obQWLE2uVOhZjoPcw_hu_cc430893832cc2a2.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="163"
+data-flex-basis="391px"
+>&lt;/p>
+&lt;p>As far as I understand, the download URL of the CSV should not be changed once a new version is uploaded. I verified this by viewing GitHubs &lt;a class="link" href="https://github.com/MicrosoftDocs/azure-docs/commit/f75ae8190c08cffd5c73088b723226ece4176fc7" target="_blank" rel="noopener"
+>commit history for that article&lt;/a>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1q9Oz2Udf4ttHNvk94SCEPQ.png"
+width="1812"
+height="799"
+srcset="https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1q9Oz2Udf4ttHNvk94SCEPQ_hu_6464ff59edccd92b.png 480w, https://heusser.pro/p/translate-microsoft-365-license-guids-to-product-names-in-powershell-e8fa373ace16/1q9Oz2Udf4ttHNvk94SCEPQ_hu_4c535eebbdf50cfe.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="226"
+data-flex-basis="544px"
+>&lt;/p>
+&lt;p>As you can see, even though the date in the note was updated, the URL stayed the same. That’s why it should be safe to assume that we won’t need to update that URL in any script where we download that list.&lt;/p>
+&lt;p>If you’re wondering what my use case for this was… I was creating an Azure runbook which monitors remaining free licenses and sends alerts to a Teams channel in case any of the licenses fall below a certain threshold. Obviously, I wanted to mention the well-known license name and not the string ID returned by Graph on the messages sent to Teams. Thanks to the CSV file hosted by Microsoft my scripts can now always grab the latest data and use that to transalte any license GUID into something more recognizable.&lt;/p>
+&lt;p>I hope that this helps you too create more robust and better scripts when you need to deal with licensing in MS Graph or PowerShell.&lt;/p></description></item><item><title>Microsoft Teams Enterprise Voice Diagnostic Tool</title><link>https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/</link><pubDate>Mon, 18 Apr 2022 15:00:30 +0000</pubDate><guid>https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/</guid><description>&lt;p>This will be a quick one. I promise. In &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0" >another blog post&lt;/a> I claimed, or rather said, that I don’t know of any other way to check if a Teams user is enterprise voice enabled via GUI than to try to add the user to a call queue.&lt;/p>
+&lt;h4 id="gui-method1">GUI Method 1
+&lt;/h4>&lt;p>If you try to add a user which is not EV enabled to a call queue, TAC will show the following error message:&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/0aWqaqGt1Or7uQVh9.png"
+width="568"
+height="101"
+srcset="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/0aWqaqGt1Or7uQVh9_hu_3d00de2b0eeb0ede.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/0aWqaqGt1Or7uQVh9_hu_d5147b98a79ebda0.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="562"
+data-flex-basis="1349px"
+>&lt;/p>
+&lt;h4 id="gui-method2">GUI Method 2
+&lt;/h4>&lt;p>When I wrote this, I totally forgot about the &lt;a class="link" href="https://docs.microsoft.com/en-us/MicrosoftTeams/troubleshoot/teams-conferencing/no-dial-pad#run-a-self-diagnostics-tool" target="_blank" rel="noopener"
+>diagnostic tool&lt;/a> which is built into the Microsoft 365 Admin Portals “Support” section. If you click the following button on Microsoft Docs, you will be redirected to the self diagnostic test tool within the Admin Portal.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1yfUuMJX9oR9GbZtad81asA.png"
+width="1022"
+height="147"
+srcset="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1yfUuMJX9oR9GbZtad81asA_hu_3944de9622349880.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1yfUuMJX9oR9GbZtad81asA_hu_87521361086ffef5.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="695"
+data-flex-basis="1668px"
+>&lt;/p>
+&lt;p>You can also use &lt;a class="link" href="https://admin.microsoft.com/AdminPortal/?searchSolutions=Diag%3A%20Teams%20Dial%20Pad%20Missing#/homepage" target="_blank" rel="noopener"
+>this&lt;/a> direct link or type “Diag: Teams Dial Pad Missing” in the search field when opening a new request.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1246GSvZbEAHamjHDwr57A.png"
+width="689"
+height="311"
+srcset="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1246GSvZbEAHamjHDwr57A_hu_9f8292d3f9547966.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1246GSvZbEAHamjHDwr57A_hu_4e96d07e8ac881b2.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="221"
+data-flex-basis="531px"
+>&lt;/p>
+&lt;p>You will then see a field where you need to enter the username of the user you’d like to check. Click on “Run Tests” to run the diagnostics.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/16lzI1o4VkniWWacOvFCBg.png"
+width="666"
+height="454"
+srcset="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/16lzI1o4VkniWWacOvFCBg_hu_8493330665c499f7.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/16lzI1o4VkniWWacOvFCBg_hu_b280fcf2661e1860.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="146"
+data-flex-basis="352px"
+>&lt;/p>
+&lt;p>This will also check if the user is enterprise voice enabled and tell you if that’s not the case.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1kAoytUHlXPzCvBpcJJtrw.png"
+width="631"
+height="640"
+srcset="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1kAoytUHlXPzCvBpcJJtrw_hu_c5a08863167521e7.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1kAoytUHlXPzCvBpcJJtrw_hu_a375590781b06cea.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="98"
+data-flex-basis="236px"
+>&lt;/p>
+&lt;p>It doesn’t seem to also check the licenses properly because this user already has a Teams Phone Standard License, but EV is not enabled yet.&lt;/p>
+&lt;p>If we run the same test for a user which is EV enabled, the diagnostics come up empty which means that there are no issues / EV is indeed enabled.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1pa39FpQQ9RyJSLfGCI5ubA.png"
+width="668"
+height="301"
+srcset="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1pa39FpQQ9RyJSLfGCI5ubA_hu_aafa4abb219c2a46.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1pa39FpQQ9RyJSLfGCI5ubA_hu_ef228c68b2ae00e8.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="221"
+data-flex-basis="532px"
+>&lt;/p>
+&lt;h4 id="other-cases">Other Cases
+&lt;/h4>&lt;p>The diagnostics tool can also help you discover other issues like check for not assigned phone numbers or voice routing policies.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1W9hcjAkup6op4l2g6H1w.png"
+width="629"
+height="586"
+srcset="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1W9hcjAkup6op4l2g6H1w_hu_966595baab8899de.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1W9hcjAkup6op4l2g6H1w_hu_e65681d00fc08d7.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="107"
+data-flex-basis="257px"
+>
+&lt;img src="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/11BKjYuP0gbcIZGdSUJSedQ.png"
+width="652"
+height="381"
+srcset="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/11BKjYuP0gbcIZGdSUJSedQ_hu_9c7904d14a109285.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/11BKjYuP0gbcIZGdSUJSedQ_hu_1844ca6e18ab8eed.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="171"
+data-flex-basis="410px"
+>&lt;/p>
+&lt;h4 id="powershell-method">PowerShell Method
+&lt;/h4>&lt;p>Of course, there’s always PowerShell. To query the information we need, we can just run the following:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Get-CsOnlineUser&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="n">user&lt;/span>&lt;span class="nv">@domain&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">com&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Format-Table&lt;/span> &lt;span class="n">DisplayName&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">EnterpriseVoiceEnabled&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">OnlineVoiceRoutingPolicy&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">LineURI&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">FeatureTypes&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>This will tell us all the interesting information like if the user is EV enabled, if it has an online voice routing policy and what kind of feature types are supported.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1rwv9JbnYmzE66PIORAWg.png"
+width="1254"
+height="126"
+srcset="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1rwv9JbnYmzE66PIORAWg_hu_2de43dc97be8435e.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1rwv9JbnYmzE66PIORAWg_hu_b8c77b4b75d2d320.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="995"
+data-flex-basis="2388px"
+>&lt;/p>
+&lt;p>Note: Microsoft recently introduced the FeatureTypes attribute in the MicrosoftTeams PowerShell module. (I’m using 4.2.0 as of writing this article). This means that there’s no need to check for a valid license via other PowerShell Modules like MSOnline, AzureAD or Microsoft.Graph anymore.&lt;/p>
+&lt;p>Users which don’t have a Teams Phone Standard license assigned, won’t show “PhoneSystem” in their supported feature types.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1WWcmQkflsk6uRrFMd0gH2Q.png"
+width="1199"
+height="133"
+srcset="https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1WWcmQkflsk6uRrFMd0gH2Q_hu_9b524688b85dc902.png 480w, https://heusser.pro/p/microsoft-teams-enterprise-voice-diagnostic-tool-9e01dbde26a0/1WWcmQkflsk6uRrFMd0gH2Q_hu_81ef78ed4b68238c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="901"
+data-flex-basis="2163px"
+>&lt;/p>
+&lt;h4 id="summary">Summary
+&lt;/h4>&lt;p>I’d still wish that TAC would reflect somewhere if a user is EV enabled or not. But at least there are some workarounds to check if a user is EV enabled if PowerShell isn’t available at a given time for any reason.&lt;/p>
+&lt;p>Even though this tool has been around for quite some time, I don’t think that many Teams Admins know about it. How about you, did you know that something like this existed?&lt;/p></description></item><item><title>Create a Dynamic Azure AD Group with all Teams Phone Standard Licensed Users</title><link>https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/</link><pubDate>Mon, 28 Mar 2022 15:01:16 +0000</pubDate><guid>https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/</guid><description>&lt;p>When it comes to Azure AD and licensing, we usually use Azure AD Groups to assign certain licenses to group members. It’s an effective way to assign different licenses to different teams within your organization. For example, you could have a group which assigns a Microsoft 365 E5 license to all the IT-Staff.&lt;/p>
+&lt;p>Is there a need to do the opposite? Add all users who have a specific service plan assigned to an Azure AD group? Although this scenario might not be as common as the first one, there’s certainly a use case for it.&lt;/p>
+&lt;p>Think about a Teams call queue in a small to mid-sized firm which distributes incoming calls to, let’s say 5–10 call agents. If none of these agents are able to answer the call within a certain time, the call is then escalated to a second call queue which contains all the company’s Teams Phone Standard enabled users. A call queue can have up to &lt;a class="link" href="https://docs.microsoft.com/en-us/microsoftteams/create-a-phone-system-call-queue#teams-channel" target="_blank" rel="noopener"
+>two hundred&lt;/a> call agents, if they’re added via a Teams Channel or a group.&lt;/p>
+&lt;p>Instead of adding all phone enabled users manually we can create an Azure AD group which uses a dynamic query to include all users which have the service plan “MCOEV” assigned.&lt;/p>
+&lt;h4 id="heres-how-to-doit">Here’s how to do it
+&lt;/h4>&lt;p>First, head over to &lt;a class="link" href="https://portal.azure.com/#blade/Microsoft_AAD_IAM/GroupsManagementMenuBlade/AllGroups" target="_blank" rel="noopener"
+>portal.azure.com&lt;/a> and go to Azure AD, Groups. Then click New group.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1gDIaXRlNKUOM1U71nGgEvg.png"
+width="1422"
+height="324"
+srcset="https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1gDIaXRlNKUOM1U71nGgEvg_hu_5a642efc89e530c0.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1gDIaXRlNKUOM1U71nGgEvg_hu_e8e3d030302e7448.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="438"
+data-flex-basis="1053px"
+>&lt;/p>
+&lt;p>You can choose between a Microsoft 365 Group or a Security Group. For the Membership type, choose Dynamic User and then Add dynamic query.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1myN3vL9tTOdiDlRKgoQdyQ.png"
+width="1035"
+height="892"
+srcset="https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1myN3vL9tTOdiDlRKgoQdyQ_hu_dd6949d0c2dbcfdc.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1myN3vL9tTOdiDlRKgoQdyQ_hu_490647f0bcb8f622.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="116"
+data-flex-basis="278px"
+>&lt;/p>
+&lt;p>Click the Edit button on Rule syntax.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1y3zKCrheFFtZhMuefUHg.png"
+width="1556"
+height="677"
+srcset="https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1y3zKCrheFFtZhMuefUHg_hu_6a9e39acd6441e70.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1y3zKCrheFFtZhMuefUHg_hu_6212931c442bbe67.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="229"
+data-flex-basis="551px"
+>&lt;/p>
+&lt;p>Now enter the following query and click OK.&lt;/p>
+&lt;p>USER.ASSIGNEDPLANS -ANY (ASSIGNEDPLAN.SERVICEPLANID -EQ &amp;ldquo;4828c8ec-dc2e-4779-b502-87ac9ce28ab7&amp;rdquo; -AND ASSIGNEDPLAN.CAPABILITYSTATUS -EQ &amp;ldquo;ENABLED&amp;rdquo;)&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1RWeLgN5BP5RFAkr7lS50Q.png"
+width="1257"
+height="447"
+srcset="https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1RWeLgN5BP5RFAkr7lS50Q_hu_3889ec287706e78f.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1RWeLgN5BP5RFAkr7lS50Q_hu_b8a6dc0381d2c9b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="281"
+data-flex-basis="674px"
+>&lt;/p>
+&lt;p>The Id we are querying is the Id for the service plan “MCOEV” which can be seen &lt;a class="link" href="https://docs.microsoft.com/en-us/azure/active-directory/enterprise-users/licensing-service-plan-reference" target="_blank" rel="noopener"
+>here&lt;/a>. Since we’re looking for the service plan Id, it doesn’t matter if the license is assigned to a user via the Teams Phone Standard add-on, E5 or even Common Area Phone SKU. With the second part of the query (-AND) we’re also making sure, that we’re only including users where the service plan is actually enabled.&lt;/p>
+&lt;p>Click Save.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1HMIASp06A45oOvCFOU4i6g.png"
+width="1549"
+height="710"
+srcset="https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1HMIASp06A45oOvCFOU4i6g_hu_95d1fc5902636d06.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1HMIASp06A45oOvCFOU4i6g_hu_3aae5a093cb74e75.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="218"
+data-flex-basis="523px"
+>&lt;/p>
+&lt;p>And finally, click Create.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1LsdWbsig2hQJzrErXoUTw.png"
+width="1026"
+height="1166"
+srcset="https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1LsdWbsig2hQJzrErXoUTw_hu_48b738d6d3ba7e2d.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1LsdWbsig2hQJzrErXoUTw_hu_6ca3f34d0befa947.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="87"
+data-flex-basis="211px"
+>&lt;/p>
+&lt;p>It will take a while until all the members have been added. We can check if our rule works by clicking on Dynamic membership rules and navigating to Validate Rules (preview). Let’s add some users and check if they meet the criteria.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1MFwrIBncdH8pWcWrwXFLw.png"
+width="1551"
+height="872"
+srcset="https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1MFwrIBncdH8pWcWrwXFLw_hu_a61a956d305eeda6.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1MFwrIBncdH8pWcWrwXFLw_hu_690bb4a53c1e9f49.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="426px"
+>&lt;/p>
+&lt;p>By clicking View details we can examine the query and see exactly why a user will be included or not.&lt;/p>
+&lt;p>Here’s an example of a user where the service plan is assigned and also enabled.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1mz1us2OGznfSo1FaVQG8qA.png"
+width="1243"
+height="467"
+srcset="https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1mz1us2OGznfSo1FaVQG8qA_hu_24e241d412bd0151.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1mz1us2OGznfSo1FaVQG8qA_hu_c0da40d7aa726ebb.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="266"
+data-flex-basis="638px"
+>&lt;/p>
+&lt;p>The user Bill has a Teams Phone Standard License but won’t be added to the group because the service plan is disabled.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1xeKYbn5MmNhGywENqNvKdw.png"
+width="1553"
+height="364"
+srcset="https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1xeKYbn5MmNhGywENqNvKdw_hu_f897fd1c468591e8.png 480w, https://heusser.pro/p/create-a-dynamic-azure-ad-group-with-all-teams-phone-standard-licensed-users-3a4194284739/1xeKYbn5MmNhGywENqNvKdw_hu_d7561235da6c2a7c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="426"
+data-flex-basis="1023px"
+>&lt;/p>
+&lt;p>Now you can use this group to assign it to a call queue. Whenever you license newly created users for the service plan MCOEV, the agent list of the call queue will automatically be updated. From my experience it can take some time until the agent lists of call queues are updated if you’re using group or channel assignments. I will write another article on how to force an agent list sync for call queues which use group assignments. So stay tuned!&lt;/p></description></item><item><title>Microsoft Teams: Activate FQDN of Online PSTN Gateway without License</title><link>https://heusser.pro/p/microsoft-teams-activate-fqdn-of-online-pstn-gateway-without-license-85e9ee4ca4cc/</link><pubDate>Tue, 08 Feb 2022 21:29:25 +0000</pubDate><guid>https://heusser.pro/p/microsoft-teams-activate-fqdn-of-online-pstn-gateway-without-license-85e9ee4ca4cc/</guid><description>&lt;p>If you’re a Microsoft Teams Admin, like me, you are probably aware that setting up a new Online PSTN Gateway in Teams Admin Center (TAC) or via PowerShell requires the domain of the SBC’s FQDN to be activated. This is done by creating at least one account using the SBC’s FQDN as the UPN Suffix.&lt;/p>
+&lt;h3 id="domains">Domains
+&lt;/h3>&lt;p>Now keep in mind that there are two ways how you can add an Online PSTN Gateway in Teams. Either you use your own Gateway in which case the domain usually has one segment less and is a subdomain of your main domain. E.g.&lt;/p>
+&lt;p>sbc.domain.com&lt;/p>
+&lt;p>In this case you don’t need to create a user to activate the domain because &lt;em>domain.com&lt;/em> is already used for other UPNs and thus already known in your tenant.&lt;/p>
+&lt;p>If you want to use Direct Routing offered by one of the various managed service providers, your FQDN might look something like this. E.g.&lt;/p>
+&lt;p>customer1.customers.domain.com&lt;/p>
+&lt;p>In this case you need to add a user with the following UPN. E.g.&lt;/p>
+&lt;p>&lt;a class="link" href="mailto:domainactivation@customer1.customers.domain.com" >domainactivation@customer1.customers.domain.com&lt;/a>&lt;/p>
+&lt;h3 id="microsoft-docs">Microsoft Docs
+&lt;/h3>&lt;p>The information on Microsoft’s &lt;a class="link" href="https://t.umblr.com/redirect?z=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fmicrosoftteams%2Fdirect-routing-sbc-multiple-tenants%23activate-the-subdomain-name&amp;amp;t=OTVkYjk5ZDBiMDNhNmNhOGIxNjY2YzlmYjZkZTdjMzA3ODkxYjk1Yiw5MmY5MzI0OTk0Y2RjZTUwZWM0N2I0YmIyOWYxNWM2YzQ2ZmY1ZmIw&amp;amp;ts=1633444148" target="_blank" rel="noopener"
+>official documentation&lt;/a> is a bit controversial. They have two sections mentioning the activation of the domain. One time for the base domain (Carrier Tenant) and one time for the subdomains (Customer Tenants).&lt;/p>
+&lt;p>As of writing this article, the information looks like this.&lt;/p>
+&lt;p>&lt;a class="link" href="https://t.umblr.com/redirect?z=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fmicrosoftteams%2Fdirect-routing-sbc-multiple-tenants%23activate-the-domain-name&amp;amp;t=OWMxYjUzYzU2ZDI3OWRiZDBkNjQ3YWJjYjZjMTBmZTJhNzg3MDVlMiwxNWQ4NjM5NjY2NzdhZDgzZGM1NTU2NTBmOGFlMGY2YzhkMjIxMjA1&amp;amp;ts=1633444148" target="_blank" rel="noopener"
+>Base Domain&lt;/a>&lt;/p>
+&lt;p>After you have registered a domain name, you need to activate it by adding at least one user with Phone System license and assigning a SIP address with the FQDN portion of the SIP address matching the created base domain.&lt;/p>
+&lt;p>Previously, Microsoft always said that this user needs an E5 License. This is still visible in their screenshots. If you want to review the change history of this particular documentation, you can always see it here on &lt;a class="link" href="https://href.li/?https://github.com/MicrosoftDocs/OfficeDocs-SkypeForBusiness/commits/live/Teams/direct-routing-sbc-multiple-tenants.md" target="_blank" rel="noopener"
+>GitHub&lt;/a>.&lt;/p>
+&lt;p>If you’re a customer and want to add a domain name assigned to you by your managed service provider, you don’t need to worry about this part. The assigned licenses will determine what voice capabilities your tenant has. You can check this by running the following in a Teams PowerShell session.&lt;/p>
+&lt;p>(Get-CsTenant).ProvisionedPlan&lt;/p>
+&lt;p>This will return an XML string containing all assigned licenses. It’s still a little weird that they only mention Phone System. Because Phone System is just an add-on which can’t be assigned without a corresponding Enterprise License (one of the SKUs which actually triggers the creation of an SfB user object), unless you use Common Area Phone.&lt;/p>
+&lt;p>Oddly enough though, for the subdomain they don’t mention licensing at all. The subdomain part describes what needs to be done in the customer tenant.&lt;/p>
+&lt;p>&lt;a class="link" href="https://t.umblr.com/redirect?z=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fmicrosoftteams%2Fdirect-routing-sbc-multiple-tenants%23activate-the-subdomain-name&amp;amp;t=OTVkYjk5ZDBiMDNhNmNhOGIxNjY2YzlmYjZkZTdjMzA3ODkxYjk1Yiw5MmY5MzI0OTk0Y2RjZTUwZWM0N2I0YmIyOWYxNWM2YzQ2ZmY1ZmIw&amp;amp;ts=1633444148" target="_blank" rel="noopener"
+>Sub Domains&lt;/a>&lt;/p>
+&lt;p>After you register a domain name, you need to activate it by adding at least one user and assign a SIP address with the FQDN portion of the SIP address matching the created subdomain in the customer tenant.&lt;/p>
+&lt;p>Here they just say that the user needs to be assigned a SIP address, which is not possible without assigning a SfB Online Plan 2 license. Unless you keep on reading…&lt;/p>
+&lt;h3 id="what-will-assigning-the-licensedo">What will assigning the license do?
+&lt;/h3>&lt;p>So why is a License needed in the first place? Assigning a user a SfB License will provision an SfB Online user object for each licensed user.&lt;/p>
+&lt;p>Once the SfB user is provisioned, the domain will also be stored in your tenants DomainUrlMap. If the FQDN of your Gateway is not present in your DomainUrlMap, you will not be able to create the gateway. MVP Luca Vitali has en excellent &lt;a class="link" href="https://href.li/?https://lucavitali.wordpress.com/2019/03/15/new-csonlinepstngateway/" target="_blank" rel="noopener"
+>Blog Post&lt;/a> about that.&lt;/p>
+&lt;h3 id="do-we-really-need-a-license-to-create-thegateway">Do we really need a license to create the Gateway?
+&lt;/h3>&lt;p>Based on my various tests, it really doesn’t matter if it’s an E1, E3, E5 or even a Business Basic License. As long as the SKU includes SfB Online Plan 2, a SIP address and an entry in the DomainUrlMap for that domain will be created.&lt;/p>
+&lt;p>So, I asked myself, is there an easier way to activate the domain? One without assigning a license which would help automate things even further? Turns out there is indeed!&lt;/p>
+&lt;p>A resource account in Teams does not need a license, unless you want to assign a phone number to it. If you create one without a license, Microsoft 365 will still provision an SfB Online object for this resource account and add its domain to your DomainUrlMap.&lt;/p>
+&lt;p>By running &lt;em>Get-CsOnlineApplicationInstance&lt;/em> we can query our resource accounts in Teams.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-activate-fqdn-of-online-pstn-gateway-without-license-85e9ee4ca4cc/0ERujVXcteQftrsYE.png"
+width="640"
+height="351"
+srcset="https://heusser.pro/p/microsoft-teams-activate-fqdn-of-online-pstn-gateway-without-license-85e9ee4ca4cc/0ERujVXcteQftrsYE_hu_30e853f80a917f42.png 480w, https://heusser.pro/p/microsoft-teams-activate-fqdn-of-online-pstn-gateway-without-license-85e9ee4ca4cc/0ERujVXcteQftrsYE_hu_a00fc7556c9f78c5.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="182"
+data-flex-basis="437px"
+>&lt;/p>
+&lt;p>After a few minutes, the account will also be visible when you run Get-CsOnlineUser. I always create my resource accounts using &lt;em>ra_aa_&lt;/em> as a UPN prefix. Another easy way of identifying resource accounts is to look for the &lt;em>Department Attribute.&lt;/em> A resource account will always have &lt;em>Microsoft Communication Application Instance&lt;/em> set as &lt;em>Department.&lt;/em>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-activate-fqdn-of-online-pstn-gateway-without-license-85e9ee4ca4cc/0yI6AyClljJe7j1X0.png"
+width="640"
+height="351"
+srcset="https://heusser.pro/p/microsoft-teams-activate-fqdn-of-online-pstn-gateway-without-license-85e9ee4ca4cc/0yI6AyClljJe7j1X0_hu_9b6c738558f6a53f.png 480w, https://heusser.pro/p/microsoft-teams-activate-fqdn-of-online-pstn-gateway-without-license-85e9ee4ca4cc/0yI6AyClljJe7j1X0_hu_8e778b9209d74db4.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="182"
+data-flex-basis="437px"
+>&lt;/p>
+&lt;h3 id="caveats">Caveats
+&lt;/h3>&lt;p>The only caveat is that you don’t usually configure the SfB Online DNS entries for a domain which you want to use for your Direct Routing Gateway domain. If the DNS records are not configured, creating a resource account using your SBC FQDN will fail. Jeff Brown over at Jeff Brown Tech also has a great &lt;a class="link" href="https://href.li/?https://jeffbrown.tech/microsoft-teams-unable-to-create-resource-accounts/" target="_blank" rel="noopener"
+>Blog Post&lt;/a> covering this topic.&lt;/p>
+&lt;p>According to my research and testing, the only record that’s needed in order to create the resource account is the &lt;a class="link" href="https://t.umblr.com/redirect?z=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2FSkypeForBusiness%2Ftroubleshoot%2Fonline-configuration%2Fdns-configuration-issue%23solution&amp;amp;t=NDY5M2UyYjRmZGZhNjdjYTJkZjFjMGQ5NDdmMzgwNjBkZGYwNjU1MCxhMjFjMmJjOTg1YWQ2Zjk2MjU2NzE0Yzc5MGNjMzE5NzllMTBmY2I4&amp;amp;ts=1633642291" target="_blank" rel="noopener"
+>SIP Federation TLS SRV Record.&lt;/a> The other three SfB records can be ignored.&lt;/p>
+&lt;p>Once this record is created you will be able to create a resource account using your SBCs FQDN as UPN suffix. Now you just have to wait for the account to be provisioned and for the domain to show up in your DomainUrlMap. This usually takes around 5–15 minutes but can take a lot longer sometimes.&lt;/p>
+&lt;p>You can check your DomainUrlMap using this command:&lt;/p>
+&lt;p>(Get-CsTenant).DomainUrlMap&lt;/p>
+&lt;p>Based on my Testing, DomainMapUrl was not available anymore in Teams PowerShell Modules above version 2.6.0. This caused my provisioning script to end up in an infinite loop because it was checking the DomainUrlMap every few minutes but always returned empty.&lt;/p>
+&lt;p>The last module I know of which returned the DomainUrlMap was 2.3.1. Since we’re now at version 3.1.1 I suggest to query the SfB users by using Get-CsOnlineUser to check if the domain is already activated. However, it might still take a few minutes before the gateway can be created. By working with Try {} Catch{} and a Do-Until loop you can keep trying to create the gateway until it succeeds.&lt;/p>
+&lt;h3 id="conclusion">Conclusion
+&lt;/h3>&lt;p>So, there you have it. It’s indeed possible to create a PSTN Online Gateway without ever assigning a license. Not every tenant even has available licenses and not every tenant has the same type of available licenses. This means that you don’t need to make sure anymore that your script is assigning the correct license or even that enough licenses are available in the first place. In scenarios where you want to automate everything using unattended scripts, this comes in quite handy.&lt;/p>
+&lt;p>Because the license and the user can be removed after you created the gateway, I see no problem in setting up a resource account without a license. Unless you’re setting up the carrier tenant. In this case you don’t usually have any other production users which means that you need to keep at minimum one license assigned. Otherwise, the tenant will lose its voice capabilities and break your Direct Routing configuration for all your customers.&lt;/p></description></item></channel></rss>

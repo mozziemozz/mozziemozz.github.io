@@ -1,0 +1,1480 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Adaptive Cards on HEUSSER.PRO</title><link>https://heusser.pro/categories/adaptive-cards/</link><description>Recent content in Adaptive Cards on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 23 Feb 2025 12:34:32 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/adaptive-cards/index.xml" rel="self" type="application/rss+xml"/><item><title>Update: Teams Shared Voicemail for Basic Call Flows (Fix Call Back Links)</title><link>https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/</link><pubDate>Sun, 23 Feb 2025 12:34:32 +0000</pubDate><guid>https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/</guid><description>&lt;img src="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/cover.png" alt="Featured image of post Update: Teams Shared Voicemail for Basic Call Flows (Fix Call Back Links)" />&lt;p>This is an update to my previous blog post &lt;a class="link" href="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju" >Teams Shared Voicemail for Basic Call Flows&lt;/a> initially published on January 17, 2024. Microsoft recently made some changes to the way in which Teams voicemails are sent to inboxes. This change was announced in &lt;a class="link" href="https://mc.merill.net/message/MC987329" target="_blank" rel="noopener"
+>MC987329&lt;/a>.&lt;/p>
+&lt;p>Previously, voicemails from unknown numbers were sent with the phone number as the sender. Now they&amp;rsquo;re sent from &lt;code>noreply@skype.voicemail.microsoft.com&lt;/code> which broke the deep links on call back buttons on the adaptive cards sent to Teams.&lt;/p>
+&lt;h2 id="flow-updates">Flow Updates
+&lt;/h2>&lt;p>I&amp;rsquo;ve updated my flow to address this change and include working deep links on the adaptive cards again. Prior to this change, all the information (From address and From name) could be accessed directly in the trigger outputs.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image.png"
+width="2154"
+height="865"
+srcset="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image_hu_40be5c0a35a32a0d.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image_hu_3125301d95bbe1dc.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Composing From Address or Number and Name in old Flow"
+class="gallery-image"
+data-flex-grow="249"
+data-flex-basis="597px"
+>&lt;/p>
+&lt;p>Since the from address is now &lt;code>noreply@skype.voicemail.microsoft.com&lt;/code> the phone number needs to be extracted from the email body. To make this work, I&amp;rsquo;m initializing two more variables at the beginning of the flow and then check if the from address matches &lt;code>noreply&lt;/code>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-1.png"
+width="2149"
+height="648"
+srcset="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-1_hu_7470b4526b3e7513.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-1_hu_cfc3e62d5fa3d66d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="New variables"
+class="gallery-image"
+data-flex-grow="331"
+data-flex-basis="795px"
+> &lt;img src="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-2.png"
+width="2149"
+height="880"
+srcset="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-2_hu_579b979fc14aa731.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-2_hu_f5d2e6eae8a5633d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="If email match noreply"
+class="gallery-image"
+data-flex-grow="244"
+data-flex-basis="586px"
+>&lt;/p>
+&lt;p>If that&amp;rsquo;s the case, the phone number and the name will be extracted from the email body and stored in the new variables. If not (in case the voicemail was left by an internal user or a known contact), the values of the trigger outputs will be written to the new variables.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-3.png"
+width="2155"
+height="1146"
+srcset="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-3_hu_8b60a1fbda16788b.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-3_hu_da3f428b3a7f9048.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Extract phone number and name from email body in new flow version"
+class="gallery-image"
+data-flex-grow="188"
+data-flex-basis="451px"
+>&lt;/p>
+&lt;p>Finally, I had to replace the &lt;code>Outputs&lt;/code> of the original compose actions with the variables in all places (i.e. in the adaptive cards) where they were referenced.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-4.png"
+width="912"
+height="947"
+srcset="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-4_hu_86d91ab0f760984c.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-4_hu_fa61671e46915f28.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Old flow"
+class="gallery-image"
+data-flex-grow="96"
+data-flex-basis="231px"
+> &lt;img src="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-5.png"
+width="913"
+height="861"
+srcset="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-5_hu_cab78c09f153cee3.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-5_hu_5fb00462ecb0ea16.png 1024w"
+loading="lazy"
+decoding="async"
+alt="New flow"
+class="gallery-image"
+data-flex-grow="106"
+data-flex-basis="254px"
+>&lt;/p>
+&lt;h2 id="download-updated-flow">Download Updated Flow
+&lt;/h2>&lt;p>You can download the updated version of the flow &lt;a class="link" href="https://raw.githubusercontent.com/mozziemozz/TeamsPhoneAutomation/main/Scripts/PowerAutomate/Flows/TeamsSharedVoicemailBasicV3%28M365GroupInbox%29_GitHub.zip" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/p></description></item><item><title>Get Missed Call Notifications for Teams Call Queues (Free Community Solution)</title><link>https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/</link><pubDate>Fri, 15 Nov 2024 17:31:43 +0000</pubDate><guid>https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/</guid><description>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/cover.png" alt="Featured image of post Get Missed Call Notifications for Teams Call Queues (Free Community Solution)" />&lt;h2 id="intro">Intro
+&lt;/h2>&lt;p>If you&amp;rsquo;re reading this, it will likely mean that you&amp;rsquo;ve noticed that Teams doesn&amp;rsquo;t show missed calls on call queues and that you&amp;rsquo;re desperately looking for a solution which doesn&amp;rsquo;t cost a fortune or requires that you give a 3rd party access to your Teams call records. If that&amp;rsquo;s the case, stay with me because I&amp;rsquo;m going to show you how you can build your own notification mechanism inside your Microsoft 365 tenant.&lt;/p>
+&lt;p>But first I&amp;rsquo;d like to point out a couple of things about the history of this issue.&lt;/p>
+&lt;h2 id="where-can-i-see-missed-calls-on-call-queues">Where Can I See Missed Calls on Call Queues?
+&lt;/h2>&lt;p>The only place where you can actually see if a call was missed on a call queue is in the iOS call history of an iPhone where a call queue agent is signed in on the Teams app on iOS. An iPhone will only show missed calls if the call was offered to the signed in agent. So, this only works with attendant routing (all agents are offered the call at the same time) and presence based routing &lt;strong>off&lt;/strong>.&lt;/p>
+&lt;h3 id="limitations-disclaimer">Limitations Disclaimer
+&lt;/h3>&lt;p>&lt;strong>Read this very carefully&lt;/strong>:&lt;/p>
+&lt;p>This solution is based on the assumption that there&amp;rsquo;s &lt;strong>always&lt;/strong> an agent (M365 User) opted into a call queue which &lt;strong>doesn&amp;rsquo;t use presence based routing&lt;/strong> and uses &lt;strong>attendant&lt;/strong> routing. &lt;strong>Any other routing method won&amp;rsquo;t work&lt;/strong> since we can&amp;rsquo;t be sure that the &lt;em>monitoring&lt;/em> user got offered the call as well.&lt;/p>
+&lt;p>This solution is primarily intended for small businesses that have simple, non-presence based attendant routing queues and don&amp;rsquo;t want to purchase a 3rd party solution to get missed call notifications on call queues. If this isn&amp;rsquo;t feasible for your scenario, you&amp;rsquo;re welcome to continue reading (my discoveries might still be very interesting to you nonetheless) but I&amp;rsquo;m sorry to tell you that this solution won&amp;rsquo;t work for you.&lt;/p>
+&lt;h3 id="tl-dr">TL; DR
+&lt;/h3>&lt;p>If you don&amp;rsquo;t care about all the details and just want to deploy this straight away, feel free to jump directly to &lt;a class="link" href="#clone-repository" >Clone Repo&lt;/a> and &lt;a class="link" href="#video-tutorial" >Video Tutorial&lt;/a>.&lt;/p>
+&lt;h3 id="missed-call-queue-calls-on-ios">Missed Call Queue Calls on iOS
+&lt;/h3>&lt;p>I actually mentioned using iOS as the closest workaround to seeing missed calls on call queues in one of the many &lt;a class="link" href="https://techcommunity.microsoft.com/t5/microsoft-teams/missed-calls-are-not-shown-on-history-that-came-through-call/m-p/1484151/highlight/true#M63193" target="_blank" rel="noopener"
+>Tech Community threads&lt;/a> back in 2020. This gives us a good idea of just how long this issue has been persisting. Sadly, a moderator of this thread just confirmed this as the best response and marked the questions as solved. (LOL?)&lt;/p>
+&lt;p>I always like to say that not being able to see missed calls on call queues is the Achilles&amp;rsquo; heel of Teams Phone and I just don&amp;rsquo;t understand why Microsoft hasn&amp;rsquo;t provided a solution yet. It&amp;rsquo;s such a basic feature after all.&lt;/p>
+&lt;p>Anyway, let&amp;rsquo;s look at some examples on how missed calls on call queues are shown on an iPhone. This won&amp;rsquo;t work on an iPad or an iPod (if that&amp;rsquo;s still a thing?) since these devices don&amp;rsquo;t have a &lt;em>phone&lt;/em> app. It only works on an iPhone and &lt;strong>Show Teams calls in call log&lt;/strong> must be enabled in the Teams app&amp;rsquo;s settings.&lt;/p>
+&lt;p>Unlike normal missed calls, missed calls from call queues won&amp;rsquo;t display a badge counter on the iPhone&amp;rsquo;s phone app and they aren&amp;rsquo;t shown in the notification center or the lock screen either. The badge counter is only shown &lt;em>within&lt;/em> the phone app on the call history icon. This is the first reason why this solution is basically useless. You&amp;rsquo;ll see why I mention it anyway later on.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184922000_iOS.png"
+width="1125"
+height="335"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184922000_iOS_hu_fbeeb652e4080180.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184922000_iOS_hu_35245e230677048d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="No Badge Counter on Phone App"
+class="gallery-image"
+data-flex-grow="335"
+data-flex-basis="805px"
+>&lt;/p>
+&lt;p>That means that someone who&amp;rsquo;s an agent in the queue that should be monitored would constantly need to go into the phone app and check if there were any missed calls. There&amp;rsquo;s also no efficient way of extracting call logs from iOS and send them somewhere. Believe me, I have tried everything from getting the data through Siri Shortcuts to getting it from an iCloud or a local backup.&lt;/p>
+&lt;p>Once you go into the call history, it&amp;rsquo;s at least possible to filter for missed calls or search for &lt;code>Teams&lt;/code> or even the call queue name, despite that being truncated and not visible at all.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184914000_iOS.png"
+width="1125"
+height="2436"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184914000_iOS_hu_69b3f687f525e35c.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_184914000_iOS_hu_5177105cb47798cd.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Missed Call Queue Call"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+> &lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185013000_iOS.png"
+width="1125"
+height="2436"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185013000_iOS_hu_81b338805b9aedd4.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185013000_iOS_hu_5e76621c271b057c.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Missed Call Queue Call Details"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+>&lt;/p>
+&lt;p>I do no need to apologize for the German screenshots. This is my main device and I didn&amp;rsquo;t want to change the language. In case it&amp;rsquo;s not clear: &lt;em>Verpasster Anruf&lt;/em> means &lt;em>Missed Call&lt;/em>.&lt;/p>
+&lt;p>Let&amp;rsquo;s look at the next example. In this case the call was answered by another agent or by the same agent on another device. In that case, the call history item won&amp;rsquo;t be &lt;em>red&lt;/em> and the details of the entry say &lt;em>Answered on another device&lt;/em> &lt;em>(Auf anderem Gerät angenommen)&lt;/em>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185055000_iOS.png"
+width="1125"
+height="2436"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185055000_iOS_hu_71a161c32be2ddb0.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185055000_iOS_hu_6acaaba2f8369802.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Answered Call Queue Call"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+> &lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185100000_iOS.png"
+width="1125"
+height="2436"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185100000_iOS_hu_ecbbcca45c21b694.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185100000_iOS_hu_e87210defe564ab4.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Answered Call Queue Call Details (Answered on Another Device)"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+>&lt;/p>
+&lt;p>For a very small company this &lt;em>might&lt;/em> be acceptable, at best. But this becomes problematic as soon as you have at least one nested (overflow) queue. In that case, the call on the first queue will be shown as missed, even when it was answered in the overflow queue. This is the second reason why this isn&amp;rsquo;t a practical solution.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185217000_iOS.png"
+width="1125"
+height="2436"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185217000_iOS_hu_856ece06f58ffc3e.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185217000_iOS_hu_ff03692214ef04df.png 1024w"
+loading="lazy"
+decoding="async"
+alt="1st Call: Answered in Overflow | 2nd Call: Missed in Top-Level Queue (Top to bottom)"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+> &lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185221000_iOS.png"
+width="1125"
+height="2436"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185221000_iOS_hu_84a967aaa95b5f84.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185221000_iOS_hu_e3c6615dc9953dc6.png 1024w"
+loading="lazy"
+decoding="async"
+alt="2nd Call in History (Top to Bottom)"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+> &lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185226000_iOS.png"
+width="1125"
+height="2436"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185226000_iOS_hu_ba6b9e5a03c5838c.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/20241021_185226000_iOS_hu_74c3953f6e6dffc3.png 1024w"
+loading="lazy"
+decoding="async"
+alt="1st Call in History (Top to Bottom)"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+>&lt;/p>
+&lt;p>A real solution needs to be able to recognize if a call was answered in an overflow queue and not report calls as missed, if nobody was able to answer in a top-level queue.&lt;/p>
+&lt;h2 id="will-microsoft-ever-add-this-feature">Will Microsoft Ever Add This Feature?
+&lt;/h2>&lt;p>I&amp;rsquo;ve got good news and bad news for you. The good part is: Yes. The bad part is, believe it or not, that this will be part of Teams Premium. This has been confirmed to me by &lt;em>Ilya Bukshteyn - VP, Microsoft Teams Calling and Devices&lt;/em> on LinkedIn.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/LinkedInComment.jpg"
+width="946"
+height="458"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/LinkedInComment_hu_2633e5fa3d7c83b2.jpg 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/LinkedInComment_hu_a9e1f65600278e66.jpg 1024w"
+loading="lazy"
+decoding="async"
+alt="LinkedIn Comment"
+class="gallery-image"
+data-flex-grow="206"
+data-flex-basis="495px"
+>&lt;/p>
+&lt;p>I&amp;rsquo;ve said before that I totally understand that Microsoft is charging for Teams Premium features like Intelligent Recap since that requires actual processing power and costs Microsoft Money to operate. But I&amp;rsquo;m keeping my stance here, something basic as missed call notification should not cost money, regardless of how this is going to be implemented. I really hope that Microsoft realizes this and will re-think that decision, especially since I&amp;rsquo;ve just proven that iOS already logs missed calls.&lt;/p>
+&lt;h3 id="the-queues-app">The Queues App
+&lt;/h3>&lt;p>&lt;a class="link" href="https://support.microsoft.com/en-us/office/use-the-queues-app-for-microsoft-teams-370ad83e-c2c1-4a9f-8a59-16c98be102e9" target="_blank" rel="noopener"
+>This&lt;/a> is the official support article for the new Queues app in Teams. There&amp;rsquo;s a section about &lt;strong>View call history&lt;/strong> which as of the time of writing this article states the following:&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;p>To view past calls, including calls or voicemails you may have missed, select Calls under Manage queue.&lt;/p>
+&lt;p>You can select any call in your history to see more detailed information and call that number back using the number associated with your call queue.&lt;/p>
+&lt;p>Currently, call history includes the past calls that you have picked up or calls that you have missed that have a voicemail.&lt;/p>
+&lt;/p>&lt;span class="cite">&lt;span>― &lt;/span>&lt;span>Microsoft Support&lt;/span>&lt;cite>&lt;/cite>&lt;/span>&lt;/blockquote>
+&lt;p>In other words, there is no shared call history yet, not even for Teams Premium customers.&lt;/p>
+&lt;h2 id="what-about-teams-on-windows">What About Teams on Windows?
+&lt;/h2>&lt;p>Even without the Queues app, it&amp;rsquo;s exactly as the support article says. Agents only see the calls they answered. They don&amp;rsquo;t see any missed calls or calls answered by other agents, not even if they&amp;rsquo;re a delegate of the user who answered a call queue call. The call from &lt;code>21:43&lt;/code> is not visible on the right because it was answered by the user on the left.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image.png"
+width="2322"
+height="1548"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image_hu_8e4e9b03d3be23fb.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image_hu_d4f36104c8f962ac.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Call History for Answered Call Queue Calls for a Specific Agent"
+class="gallery-image"
+data-flex-grow="150"
+data-flex-basis="360px"
+> &lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-1.png"
+width="2322"
+height="1548"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-1_hu_a4362acfbd67ae5a.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-1_hu_19810e59527e45cc.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Call Queue Call History for Another Agent"
+class="gallery-image"
+data-flex-grow="150"
+data-flex-basis="360px"
+>&lt;/p>
+&lt;p>The fact that the call history does show answered calls &lt;strong>and&lt;/strong> that the iOS call history includes missed calls and calls that were answered by another agent/on another device got me thinking. This data &lt;em>must&lt;/em> be available somewhere&amp;hellip;&lt;/p>
+&lt;h2 id="where-does-teams-fetch-the-call-history-from">Where Does Teams Fetch the Call History From?
+&lt;/h2>&lt;p>I opened up Teams in the browser and used the Edge Dev Tools to see what&amp;rsquo;s going on under the hood when I open a user&amp;rsquo;s call history in Teams. I was hoping that this would be a standard Graph request but of course this had to be an internal, unofficial, undocumented API. Sigh.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-rest" data-lang="rest">&lt;span class="line">&lt;span class="cl">GET&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>https://teams.microsoft.com/api/csa/emea/api/v1/chats/48%3Acalllogs/messages?messagePageSize=200&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-2.png"
+width="1041"
+height="758"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-2_hu_d92044b5846fad97.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-2_hu_50528a6bdb6dc96b.png 1024w"
+loading="lazy"
+decoding="async"
+alt="JSON Response"
+class="gallery-image"
+data-flex-grow="137"
+data-flex-basis="329px"
+>&lt;/p>
+&lt;p>Using unofficial APIs isn&amp;rsquo;t really suited for production but I&amp;rsquo;m going to show it to you anyway. The browser tools have this neat little feature that lets you copy a request for various CLIs. Of course I&amp;rsquo;m choosing PowerShell.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-3.png"
+width="1048"
+height="1073"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-3_hu_784aed2262cf9dd.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-3_hu_992c8e5e8bbbfb67.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Copy Request as PowerShell"
+class="gallery-image"
+data-flex-grow="97"
+data-flex-basis="234px"
+>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$session&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">New-Object&lt;/span> &lt;span class="n">Microsoft&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">PowerShell&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Commands&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">WebRequestSession&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$session&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">UserAgent&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 Edg/130.0.0.0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Invoke-WebRequest&lt;/span> &lt;span class="n">-UseBasicParsing&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://teams.microsoft.com/api/csa/emea/api/v1/chats/48%3Acalllogs/messages?messagePageSize=200&amp;#34;&lt;/span> &lt;span class="p">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">-WebSession&lt;/span> &lt;span class="nv">$session&lt;/span> &lt;span class="p">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">-Headers&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2">&amp;#34;x-ms-user-type&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;real-user&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;authorization&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;Bearer (Token Removed)&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;cache-control&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;no-store, no-cache&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-ms-client-type&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;cdlworker&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-ms-session-id&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;22f0ef6c-d8b7-46a8-aea2-58451d1fd722&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;Referer&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;https://teams.microsoft.com/v2/worker/precompiled-web-worker-b686ae686e2a6f80.js&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-ms-migration&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;True&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-ms-client-version&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;1415/24090101423&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-ms-request-id&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;072d879b-e316-4fd6-8c54-b02d82e8f9f6&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-ms-client-caller&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-ms-partition&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;emea01&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-ms-region&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;emea&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-ringoverride&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;general&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>All I need to do is store the outputs of line 3 in a variable to access the raw data after the request has been made in PowerShell:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$callLogs&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-WebRequest&lt;/span> &lt;span class="n">-UseBasicParsing&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://teams.microsoft.com/api/csa/emea/api/v1/chats/48%3Acalllogs/messages?messagePageSize=200&amp;#34;&lt;/span> &lt;span class="p">`&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Then I needed to convert the JSON response into a PowerShell object:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$callLogs&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$callLogs&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Content&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ConvertFrom-Json&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">messages&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>This of course, includes all call logs. To filter for call queues only, I wrote this code:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$callLogProperties&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$callLogs&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">properties&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="s1">&amp;#39;call-log&amp;#39;&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ConvertFrom-Json&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Where-Object&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nv">$_&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">callType&lt;/span> &lt;span class="o">-eq&lt;/span> &lt;span class="s2">&amp;#34;multiParty&amp;#34;&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>By inspecting the call log items, I discovered that it even lists the id of the call queue on which the call was received. Yes, the id of the call queue, not the one of the resource account associated with the call queue.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-4.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-4_hu_9df4d24602bdd8f7.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-4_hu_d91c87ec138e9d78.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Example of a Single Call Queue Call Log Entry"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;p>To get a table of all call queue calls for this user, I came up with this code:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Note: This is only displaying the first 6 items&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$callLogProperties&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mf">0&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="mf">.5&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">startTime&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">callDirection&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">callState&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">callId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">Name&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;callerNumber&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">Expression&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nv">$_&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">participants&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mf">0&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="py">replace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;4:&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">)}}&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Format-Table&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-5.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-5_hu_688ea42252713593.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-5_hu_c5683e0d15c2fb1a.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Filtered PowerShell Output of Call Queue Call History for a Specific User"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;p>Sadly, this endpoint does not return missed calls. It does however, include calls that were answered by this user, by another user or declined by this user.&lt;/p>
+&lt;p>So, the call history in iOS remains the only place where missed call queue calls are actually visible in a UI. However, if you search the Teams logs in the cache directory (&lt;code>%APPDATA%\Local\Packages\MSTeams_8wekyb3d8bbwe\LocalCache\Microsoft\MSTeams&lt;/code>) long enough, you&amp;rsquo;ll find some client logs of missed call queue calls eventually but this is purely educational.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-6.png"
+width="1614"
+height="33"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-6_hu_7161e4ea87b472b0.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-6_hu_aa843c86149e6ff.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Missed Call Reference in Teams Client Logs"
+class="gallery-image"
+data-flex-grow="4890"
+data-flex-basis="11738px"
+>&lt;/p>
+&lt;p>What&amp;rsquo;s interesting here is that it says &lt;code>callingEnableMissedCallNotification=false&lt;/code>. &lt;em>Dear Teams, why won&amp;rsquo;t you tell us about missed call queue calls!?&lt;/em> (This is a rhetorical question.)&lt;/p>
+&lt;p>Let&amp;rsquo;s get back to PowerShell. When you copy that request from the browser dev tools, it copies a JWT (JSON Web Token) with it. Obviously this token won&amp;rsquo;t live forever and will need to be renewed at some point. The token expires after roughly 24 hours which seems quite long to me. But still, nobody wants to manually refresh the token every day.&lt;/p>
+&lt;p>Just to prove the concept, I hacked together a small PowerShell script which uses bits of the &lt;a class="link" href="https://aadinternals.com/aadinternals/" target="_blank" rel="noopener"
+>AADInternals&lt;/a> PowerShell module to get a token for the &lt;code>https://chatsvcagg.teams.microsoft.com&lt;/code> audience. I was able to get a token using a call queue agent&amp;rsquo;s username and password but I couldn&amp;rsquo;t get it to work when MFA is enforced. Since we won&amp;rsquo;t need this for this solution anyway, I&amp;rsquo;m not going to publish this script here.&lt;/p>
+&lt;p>At this point I realized that I need to work with what I had. If I can get a list of all calls that were answered &lt;em>somewhere&lt;/em> by &lt;em>someone&lt;/em> I can still use that to determine if a call queue call was missed. All I need to do is get a hold of the call id and check if it&amp;rsquo;s in the call log of a user that&amp;rsquo;s an agent of the queue I want to monitor for missed calls.&lt;/p>
+&lt;p>But then there was the problem that all this data was retrieved through an internal API. When you look at the JSON response again, you&amp;rsquo;ll notice that there&amp;rsquo;s a property called &lt;strong>containerId&lt;/strong> and it&amp;rsquo;s value is &lt;code>48:calllogs&lt;/code>. That sounds interesting, doesn&amp;rsquo;t it?&lt;/p>
+&lt;h2 id="fetching-a-users-call-history-through-graph-api">Fetching a Users Call History Through Graph API
+&lt;/h2>&lt;p>My next step was to see if I can get this information &lt;em>officially&lt;/em> from Graph by signing into Graph PowerShell with the credentials of a call queue agent.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$user&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-MgUser&lt;/span> &lt;span class="n">-UserId&lt;/span> &lt;span class="s2">&amp;#34;evelyn@nocaptech.ch&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$userCallHistory&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-MgUserChatMessage&lt;/span> &lt;span class="n">-UserId&lt;/span> &lt;span class="nv">$user&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Id&lt;/span> &lt;span class="n">-ChatId&lt;/span> &lt;span class="s2">&amp;#34;48:calllogs&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Bingo. It works.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-7.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-7_hu_25fdf2d007e0878f.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-7_hu_f6d921bf4fc0ac57.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Get Teams User Call History via Graph PowerShell"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;p>But the Graph API returns much less data than the &lt;em>Chat Service Aggregator&lt;/em>. For example, I can&amp;rsquo;t see if the call was accepted, accepted elsewhere or declined by the user.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-8.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-8_hu_5cd9c3ae3a3d03a8.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-8_hu_d4285149a534df8a.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Example of Single Call Record"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;p>But when I access the &lt;code>body&lt;/code> property of an object inside the array, I can see the call id.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-9.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-9_hu_ef403532ae4f0a10.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-9_hu_ea73dfbf125ab723.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Body\Content Contains Call Id"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;p>So, now I&amp;rsquo;m able to retrieve a list of all calls that were either answered or declined by this user, or that this user was offered by the call queue but was answered by another agent. This brings us to a very important part about the limitations of this solution.&lt;/p>
+&lt;h2 id="limitations-of-this-solution">Limitations of This Solution
+&lt;/h2>&lt;p>You will either need to define a &lt;em>real&lt;/em> agent user which will always be opted-in to the queue and you must ensure that this agent will never decline a call. (If an agent declines a call, the call id will show up in their call log but when the call log is retrieved via Graph, the results don&amp;rsquo;t include the callState like &lt;code>accepted&lt;/code> or &lt;code>declined&lt;/code>.) Because you can&amp;rsquo;t really control that, I highly recommend to set up a service account and add it to the queue as an agent instead, even if that adds a small monthly license cost to it.&lt;/p>
+&lt;p>Your queue must not use presence based routing and the service account must always be signed in on a Teams device/app. I recommend signing the user in on a spare iPhone if you have one. If you don&amp;rsquo;t have one, you can also use Teams desktop, a Teams desk phone or an iPad or whatever you can spare. It just needs to be a device which is running and connected to the internet 24/7 and where the service account is signed into the Teams app persistently.&lt;/p>
+&lt;p>I made lots of test calls while my service account was signed in on the Teams app on my iPad and this worked flawlessly. The important thing is that the service user always gets offered the calls but never declines them. Since it&amp;rsquo;s not a problem if the service account answers calls, this could also be a non-personal account for a CAP (Common Area Phone) you might already have in place. If you decide to use dedicated service account for monitoring your call queues, you can also add the same service account to multiple queues, even if the different queues don&amp;rsquo;t share the same agents. Just keep in mind that there&amp;rsquo;s a limit of how many chat messages of the call logs chat Power Automate can fetch through the Graph API. This limit is &lt;strong>50&lt;/strong>. So, if you expect more than 50 calls in a window of 30 minutes, you&amp;rsquo;ll likely need a dedicated service account per queue. Again, this solution is intended for small companies which just want to see when they missed a call on their main number.&lt;/p>
+&lt;p>The service account must be licensed with a license that includes Teams, Teams Phone Standard and SharePoint/OneDrive.&lt;/p>
+&lt;p>I&amp;rsquo;ve only tested this with call queues which have Conference Mode &lt;strong>enabled&lt;/strong>.&lt;/p>
+&lt;h2 id="securing-the-credentials-to-access-the-graph-api">Securing The Credentials to Access The Graph API
+&lt;/h2>&lt;p>What I did before, to interactively sign into Graph PowerShell using the user&amp;rsquo;s credentials isn&amp;rsquo;t an ideal solution. Even if I was using a service account already. I always try to use MFA, even for service accounts. Let&amp;rsquo;s see if I can get the same result using app only authentication.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-10.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-10_hu_ef99b5a2e50f3ec9.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-10_hu_8ebe1deec63baa14.png 1024w"
+loading="lazy"
+decoding="async"
+alt="App Only Authentication Doesn’t Work"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;p>Unfortunately, it&amp;rsquo;s not possible to query the &lt;code>48:calllogs&lt;/code> chat id using application permissions, even when the app has the appropriate permission &lt;code>Chat.Read.All&lt;/code>. That meant that I had to find another way to securely get the messages in the Call Log Chat. At some point I&amp;rsquo;ll be building a Power Automate Flow to send the Adaptive Cards for the missed call notifications anyway. So why not try to get the chat messages through a Graph Request from Power Automate as well? That would certainly solve the authentication/token issue.&lt;/p>
+&lt;h2 id="high-level-solution-architecture">High-Level Solution Architecture
+&lt;/h2>&lt;p>Alright, it&amp;rsquo;s time to start architecting this whole thing. It might look a little overkill at first but that&amp;rsquo;s because I&amp;rsquo;m a perfectionist.&lt;/p>
+&lt;p>The whole process is kicked off approximately 15-30 minutes after a Teams call has ended. That&amp;rsquo;s how long it usually takes for Microsoft to make the call record available in your tenant. By using a &lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/subscription-post-subscriptions?view=graph-rest-1.0&amp;amp;tabs=http" target="_blank" rel="noopener"
+>Graph Subscription&lt;/a> I can have Graph send me a notification every time a new record is created or when an existing one is updated. Notifications can be delivered to an endpoint of your choice. I&amp;rsquo;m using an &lt;a class="link" href="https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview?pivots=programming-language-powershell" target="_blank" rel="noopener"
+>Azure Function&lt;/a> for this.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Q%20Works%20Lite%20Diagram%20V2.png"
+width="1280"
+height="720"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Q%20Works%20Lite%20Diagram%20V2_hu_a3451f55fb2e7b58.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Q%20Works%20Lite%20Diagram%20V2_hu_1126d08bae4e732.png 1024w"
+loading="lazy"
+decoding="async"
+alt="High-level Diagram"
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="426px"
+>&lt;/p>
+&lt;p>This will kick off a chain of events to determine if a call to a call queue was answered or missed and notify the Team members if it was missed.&lt;/p>
+&lt;h2 id="how-to-build-this-solution">How To Build This Solution
+&lt;/h2>&lt;p>Let&amp;rsquo;s dive into how you can build this solution in your own environment. I&amp;rsquo;ve invested quite a few additional hours to make this as easy as possible for you by writing some deployment scripts. What I didn&amp;rsquo;t script is the creation of the service account, it&amp;rsquo;s licensing or updating the group description. You&amp;rsquo;ll need to follow the instructions below to prepare everything.&lt;/p>
+&lt;h3 id="service-account">Service Account
+&lt;/h3>&lt;p>Create a new account in Entra ID and assign any combination of licenses that include:&lt;/p>
+&lt;ul>
+&lt;li>Microsoft Teams&lt;/li>
+&lt;li>Skype for Business Online Plan 2&lt;/li>
+&lt;li>Exchange Online (Plan 1 or 2)&lt;/li>
+&lt;li>SharePoint Online&lt;/li>
+&lt;li>Power Automate Free&lt;/li>
+&lt;li>Microsoft Teams Phone Standard&lt;/li>
+&lt;/ul>
+&lt;p>The account doesn&amp;rsquo;t necessarily need a phone number. If you don&amp;rsquo;t assign one, the user must be enabled for &lt;strong>Enterprise Voice&lt;/strong> through PowerShell. This is needed so that the account can be added to call queues.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Set-CsPhoneNumberAssignment&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="nv">$userId&lt;/span> &lt;span class="n">-EnterpriseVoiceEnabled&lt;/span> &lt;span class="vm">$true&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="example-scenario">Example Scenario
+&lt;/h3>&lt;p>Here we have an example call flow. The number is mapped to an auto attendant which then forwards to a call queue which has a nested call queue, in case nobody is able to answer the call in the first queue. Not all agents are opted into the &lt;em>Level 1&lt;/em> call queue because only &lt;em>Evelyn Carter&lt;/em> is primarily answering calls. If she fails to answer calls in the &lt;em>Level 1&lt;/em> queue, the calls overflows into the &lt;em>Level 2&lt;/em> queue, where all the agents are opted in. On the left you can see that the service user &lt;em>Q Works&lt;/em> hasn&amp;rsquo;t been added as an agent to the queue yet. On the right, the &lt;em>Q Works&lt;/em> user is also an agent, so that I can use the Graph API via Power Automate to check if calls were answered by other agents of the queue.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow.png"
+width="3920"
+height="16765"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow_hu_e690e45d57c26a2a.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow_hu_d732487b3aa93cf9.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Call Queue without Service Account Agent"
+class="gallery-image"
+data-flex-grow="23"
+data-flex-basis="56px"
+> &lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow-QWorksEnabled.png"
+width="3920"
+height="17605"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow-QWorksEnabled_hu_cfb0c39b78b57d4.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/Main_Number_US_AA_CallFlow-QWorksEnabled_hu_17855f875a547ace.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Call Queue with Service Account Agent"
+class="gallery-image"
+data-flex-grow="22"
+data-flex-basis="53px"
+>&lt;/p>
+&lt;p>So far, I have only tested the solution with an auto attendant and a maximum of 2 nested queues or an auto attendant with an IVR which has 2 queues as menu options. In theory, this solution should work with any amount of nested queues or IVR options.&lt;/p>
+&lt;h3 id="teams">Teams
+&lt;/h3>&lt;p>To receive alerts about missed calls on call queues, you need to map your inbound numbers of top-level call queues or queues which are nested behind a top-level auto attendant to the Teams in which you want to receive the notifications. To map a number to a Team, simply adjust the Team&amp;rsquo;s description by adding &lt;code>Q.Works Phone Number:&amp;lt;Your Phone Number&amp;gt;&lt;/code> at the very beginning of the description. Do not add any other characters after the phone number.&lt;/p>
+&lt;p>Make sure to paste the phone number exactly as it appears in Teams Admin Center on your resource account, including all the spaces. Do not add any other characters such as hyphens or dots.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-11.png"
+width="1426"
+height="767"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-11_hu_343832e626fd8bf0.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-11_hu_2a9dc06f142976d6.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Description in Entra ID Admin Center"
+class="gallery-image"
+data-flex-grow="185"
+data-flex-basis="446px"
+>&lt;/p>
+&lt;p>Q Works Lite expects only one Team to receive notifications per phone number. If you&amp;rsquo;re an owner of the Team, you can edit the description directly in the Teams App. But you can also edit the group&amp;rsquo;s description in the M365 Admin or the Entra Admin Center.&lt;/p>
+&lt;p>When the Azure function runs, it will fetch the phone number that was called and then look for the Team by searching for the matching description, so that it knows in which Team the notifications need to be posted.&lt;/p>
+&lt;h3 id="prerequisites">Prerequisites
+&lt;/h3>&lt;p>First of all, make sure that you&amp;rsquo;ve got all these tools and PowerShell modules installed on your machine.&lt;/p>
+&lt;ul>
+&lt;li>PowerShell 7&lt;/li>
+&lt;li>Azure Function Core Tools&lt;/li>
+&lt;li>Azure CLI&lt;/li>
+&lt;li>Python 3.11.9&lt;/li>
+&lt;li>Node.JS
+&lt;ul>
+&lt;li>M365 CLI&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>PowerShell Modules:
+&lt;ul>
+&lt;li>Microsoft.Graph.Applications&lt;/li>
+&lt;li>Microsoft.Graph.Users&lt;/li>
+&lt;li>Az.Accounts&lt;/li>
+&lt;li>Az.Functions&lt;/li>
+&lt;li>Az.KeyVault&lt;/li>
+&lt;li>Az.Storage&lt;/li>
+&lt;li>Az.Resources&lt;/li>
+&lt;li>Az.Websites&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="clone-repository">Clone Repository
+&lt;/h3>&lt;p>Before anything is installed/deployed you&amp;rsquo;ll need to clone my git repository or download a &lt;a class="link" href="https://github.com/mozziemozz/Q-Works-Lite-Public" target="_blank" rel="noopener"
+>zip file&lt;/a> of the code.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="n">git&lt;/span> &lt;span class="n">clone&lt;/span> &lt;span class="n">https&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="p">//&lt;/span>&lt;span class="n">github&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">mozziemozz&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="nb">Q-Works&lt;/span>&lt;span class="n">-Lite-Public&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">git&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>You can use the below scripts to install everything. Make sure that you run both scripts as administrator. After installing the tools, close PowerShell and make sure to run the second script in PowerShell 7.&lt;/p>
+&lt;ol>
+&lt;li>Run &lt;code>Install-Prerequisites-Tools.ps1&lt;/code>&lt;/li>
+&lt;li>Run &lt;code>Install-Prerequisites-Modules.ps1&lt;/code>&lt;/li>
+&lt;/ol>
+&lt;h3 id="customize-for-your-environment">Customize For Your Environment
+&lt;/h3>&lt;p>Open the Json file located at &lt;code>.\Deployment\environment.json&lt;/code> to customize the deployment for your environment. You can specify a name for the solution, your company shortname and the Azure region.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;SolutionName&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Q Works Lite V3&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;CompanyShortName&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;NCT&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;RedirectURI&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;http://localhost&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;AzureRegion&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Switzerland North&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="run-setupps1">Run Setup.ps1
+&lt;/h3>&lt;p>Once all the required tools and modules are installed, run the &lt;code>Setup.ps1&lt;/code> script located in the &lt;code>.\Deployment&lt;/code> folder of the repo. This will deploy all the resources in Azure. Your account will need global administrator permission and it needs permission to be able to create new Azure resources, including resource groups.&lt;/p>
+&lt;h3 id="enable-solution">Enable Solution
+&lt;/h3>&lt;p>To enable Q Works Lite, you will need to import the Power Automate Flow to the service user&amp;rsquo;s Power Automate environment so that you can then copy the trigger URL and paste it into the deployment script. (You&amp;rsquo;ll be prompted to paste at some point). Don&amp;rsquo;t just import the Zip file that&amp;rsquo;s located in &lt;code>.\PowerAutomate&lt;/code>. The deployment script will extract this archive, make some changes specific to your environment and repackage a new zip file which then needs to be uploaded. Finally, run the &lt;code>Renew-GraphSubscription&lt;/code> PowerShell function once from the portal or wait for it to be &lt;code>12:15&lt;/code> UTC either on this day or the next day. This function will create a new subscription the first time it runs.&lt;/p>
+&lt;p>Everything is explained in much more detail in the tutorial video. I highly recommend to watch it either while you&amp;rsquo;re deploying this yourself or before you&amp;rsquo;re getting started.&lt;/p>
+&lt;h3 id="video-tutorial">Video Tutorial
+&lt;/h3>&lt;p>Because I felt like this is too much to type, I&amp;rsquo;m trying something different this time around and I recorded a YouTube video where I run the setup myself and explain everything in detail instead.&lt;/p>
+&lt;div class="video-wrapper">
+&lt;iframe loading="lazy"
+src="https://www.youtube.com/embed/C0Y5yiOghwo"
+allowfullscreen
+title="YouTube Video"
+>
+&lt;/iframe>
+&lt;/div>
+&lt;h2 id="what-do-the-functions-and-the-flow-do">What do the Functions and the Flow do?
+&lt;/h2>&lt;p>There are four functions in total. Three of them are PowerShell functions and one of them is a Python function but all of them use the same Linux App Service Plan. One of these functions is solely used to manage and renew the Graph subscription so it doesn&amp;rsquo;t expire. The Python function uses a Python library called &lt;strong>phonenumbers&lt;/strong> to format the raw E.164 numbers into an international format which is easier to read for humans. It basically inserts spaces at the correct positions for any given phone number in the world. I&amp;rsquo;ve used and written about &lt;a class="link" href="https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/" >this&lt;/a> in an Azure Runbook before. Now I&amp;rsquo;ve created my own Azure Python Function so this can be used by the &lt;strong>Analyze-CallRecord&lt;/strong> PowerShell function. And finally, the &lt;strong>Receive-GraphNotifications&lt;/strong> function is receiving the notifications from Graph. Graph &lt;a class="link" href="https://learn.microsoft.com/en-us/graph/change-notifications-delivery-webhooks?tabs=http#http-codes-and-retry-logic" target="_blank" rel="noopener"
+>expects a response within 10 seconds&lt;/a> so this function is really minimalistic. All it does is save the call Id to a storage queue in the storage account that was created for the PowerShell Function App. A new message in the storage queue will then trigger the &lt;strong>Analyze-CallRecord&lt;/strong> function which does the actual leg-work.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-12.png"
+width="1703"
+height="1199"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-12_hu_2823b5268ebfa17.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-12_hu_6828aaa41f01492d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Azure Resources"
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="340px"
+>&lt;/p>
+&lt;p>The authentication to Graph is done through an Entra Application which uses application permissions/app only authentication with a client secret. The client secret is stored securely in an Azure Key Vault and the permissions on the Key Vault secrets are assigned to the managed identity of the PowerShell Function App.&lt;/p>
+&lt;p>The main function (Analyze-CallRecord) then checks if it was a &lt;code>groupCall&lt;/code> (call queue call) and if it was a PSTN or an internal call. The function only processes external calls to call queues, everything else is disregarded. Unfortunately, it&amp;rsquo;s not possible to create a Graph subscription only for certain types of call records so the function will be called for any new call records. That includes internal calls and Teams meetings as well. However, the free plan includes 1 million executions per month which should be plenty enough for small businesses.&lt;/p>
+&lt;p>Once the function has gathered all the details about the call, and if it was indeed a PSTN call to a call queue, the function will then trigger the Power Automate Flow.&lt;/p>
+&lt;p>The flow will fetch the &lt;a class="link" href="#fetching-a-users-call-history-through-graph-api" >call logs chat history&lt;/a> of the service account (which is also a member of the call queues) and checks if the current call id is present in the call logs or not. If the call id is found in the call logs chat history, it means that the call was answered by another agent. If the call id is not present, it means that the call was missed by all agents and it went unanswered.&lt;/p>
+&lt;p>If the call was missed, the flow will post a new adaptive card to the Teams channel and wait for a response (until a call queue agent has clicked the &lt;em>Call Back Completed&lt;/em> button).&lt;/p>
+&lt;h2 id="end-user-experience">End User Experience
+&lt;/h2>&lt;p>This is how it looks like in Teams. Once the &lt;strong>Call Completed&lt;/strong> button was clicked, the card will update for all users so everybody will be able to see, who called the customer/caller back. (Completed By: {User Name})&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-14.png"
+width="2322"
+height="1548"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-14_hu_1010be22b83e4bff.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-14_hu_5f9f074d4e807a08.png 1024w"
+loading="lazy"
+decoding="async"
+alt="New Notification"
+class="gallery-image"
+data-flex-grow="150"
+data-flex-basis="360px"
+> &lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-13.png"
+width="2322"
+height="1548"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-13_hu_da135e2f98306d6b.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-13_hu_514ed3ada36a2845.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Call Back Button"
+class="gallery-image"
+data-flex-grow="150"
+data-flex-basis="360px"
+> &lt;img src="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-16.png"
+width="2322"
+height="1548"
+srcset="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-16_hu_c577187481050811.png 480w, https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/image-16_hu_fdff43b4fd47d5ac.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Updated Card"
+class="gallery-image"
+data-flex-grow="150"
+data-flex-basis="360px"
+>&lt;/p>
+&lt;h2 id="summary">Summary
+&lt;/h2>&lt;p>My goal was to deliver a missed call notification as quickly as possible &lt;strong>but&lt;/strong> do it with close to 100% accuracy with V1 of the call records. (I purposely said &lt;em>close to 100%&lt;/em> because there could still be occasional outages with the Graph notification service etc.) That&amp;rsquo;s why I chose to go the route of having an always opted in &lt;em>monitoring&lt;/em> agent in the queue. The problem is, especially with complex call flows that have a lot of nested queues, IVRs etc. that it can take multiple hours for the call records to have enough information to determine whether a call was answered or missed. If you analyze the data too soon, you&amp;rsquo;ll get false positives and if you wait until the data is complete, it will take much longer until the agents receive the notification.&lt;/p>
+&lt;p>I may extend this solution in the future by also processing &lt;em>updated&lt;/em> call records to create a shared call history for call queues in a SharePoint list. But for now, or at least until Microsoft delivers shared call history as a feature of Teams Premium / the Queues app, I believe this is as close as we can get to quick and reliable missed call notifications for call queues today.&lt;/p>
+&lt;p>The fact that this solution needs a service account, or at least a normal agent who&amp;rsquo;s opted into the queue all the time and that it can only be used on non-presence based attendant routing queues sure is a bummer but I just can&amp;rsquo;t see any other way to deliver accurate notifications as fast as they are with this solution.&lt;/p>
+&lt;p>Even with it&amp;rsquo;s limitations, I&amp;rsquo;m very proud of my work and I&amp;rsquo;m very excited to share it with the community today. I&amp;rsquo;ve literally spent hundreds of hours developing this solution and I&amp;rsquo;ve experienced many set-backs and had to iterate through a lot of different approaches to achieve what I&amp;rsquo;ve published today. The good thing is that in the end, I got much more joy than frustration out of it.&lt;/p>
+&lt;p>Since I&amp;rsquo;ve only been using this in my lab so far, I don&amp;rsquo;t have any insights of what the Azure resources are going to cost per month but since the Function Apps are using a consumption plan (Y1) and nothing is really stored in these storage accounts, the monthly cost should be next to nothing. Of course this is also depending on your call volume since this will impact how many times your function is invoked.&lt;/p>
+&lt;p>If what I said about costs turns out to be true and you like what I&amp;rsquo;ve done for the community and Teams Phone customers, I would very much appreciate it, if you consider supporting this project with a small donation on either &lt;a class="link" href="https://buymeacoffee.com/martin.heusser" target="_blank" rel="noopener"
+>Buy me a Coffee&lt;/a> or &lt;a class="link" href="https://github.com/sponsors/mozziemozz?frequency=one-time&amp;amp;sponsor=mozziemozz" target="_blank" rel="noopener"
+>GitHub Sponsors&lt;/a>. Thank you!&lt;/p></description></item><item><title>Teams Shared Voicemail for Basic Call Flows</title><link>https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/</link><pubDate>Wed, 17 Jan 2024 19:59:21 +0000</pubDate><guid>https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/</guid><description>&lt;img src="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/cover.png" alt="Featured image of post Teams Shared Voicemail for Basic Call Flows" />&lt;p>Not too long ago I wrote &lt;a class="link" href="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc" >this&lt;/a> blog post about the ultimate Teams shared voicemail solution. This solution assumed a full blown call flow with on-call coverage and an advanced notification mechanism. Today I&amp;rsquo;m going to show you a simplified but yet optimized version of my Power Automate Flow. While the previous solution works without any issues, it&amp;rsquo;s not really scalable. If you have a lot of queues, you probably don&amp;rsquo;t want to create a dedicated shared mailbox for every queue that needs shared voicemail access via Teams and Adaptive Cards. That just adds unnecessary management overhead to your Teams phone environment.&lt;/p>
+&lt;p>I&amp;rsquo;ve got some good news for you. I found a way to do it all without the need of shared mailbox. The flow is now directly triggered by a new email to the Microsoft 365 Group instead of a new email to the shared mailbox. Furthermore, all other mail related actions in the flow have been updated to use the &lt;strong>Office 365 Groups Mail&lt;/strong> connector as well.&lt;/p>
+&lt;h2 id="call-flow-diagram">Call Flow Diagram
+&lt;/h2>&lt;p>Let&amp;rsquo;s look at the scenario first. This time around, it&amp;rsquo;s a very simple call flow which consists of an auto attendant, a call queue and a Microsoft 365 Group as shared voicemail target.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow.png"
+width="7840"
+height="7820"
+srcset="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu_260817bfe9a7390c.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu_615eefe02aa2a20a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="100"
+data-flex-basis="240px"
+>&lt;/p>
+&lt;h2 id="flow-trigger">Flow Trigger
+&lt;/h2>&lt;p>The flow is now triggered by &lt;strong>When a new email arrives to a group&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39.png"
+width="920"
+height="172"
+srcset="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu_e960f18bdafca6b5.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu_7c0e4795983a9ba4.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="534"
+data-flex-basis="1283px"
+>&lt;/p>
+&lt;h2 id="flow-actions">Flow Actions
+&lt;/h2>&lt;p>Using the Office 365 Groups Mail connector is not as straight forward as retrieving an email from a shared mailbox or a normal user mailbox. There are conversations, threads and thread posts. Everything must be queried in the correct order to receive all the data that&amp;rsquo;s needed.&lt;/p>
+&lt;p>This is how it&amp;rsquo;s done.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39.png"
+width="1104"
+height="1365"
+srcset="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hu_2cf1d40bdfce727.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hu_20c493535ae8346f.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="80"
+data-flex-basis="194px"
+>&lt;/p>
+&lt;p>Because this call flow doesn&amp;rsquo;t have an on-call option, the flow uses way less actions. However, there&amp;rsquo;s still a parallel branch needed. Once the Adaptive Card has been posted to the Teams channel, the flow waits for a reply so the &lt;code>messageId&lt;/code> of the message containing the Adaptive card is still unknown to the flow. That&amp;rsquo;s where the parallel branch comes into play. It will get the &lt;code>messageId&lt;/code> and then the &lt;code>userId&lt;/code> of each Team member. Finally, the flow will send a Teams activity feed notification for the new Adaptive Card to each Team member. By using the flow to send the notifications we don&amp;rsquo;t need to worry about users not enabling notifications for all new channel posts. They&amp;rsquo;ll have no excuse if they ever forget to call somebody back.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53.png"
+width="1944"
+height="1585"
+srcset="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu_c7ba3ead60d40c9e.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu_dda079d38fd74060.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="122"
+data-flex-basis="294px"
+>&lt;/p>
+&lt;h2 id="result-in-teams">Result in Teams
+&lt;/h2>&lt;p>This is how the notification looks like for end users in Teams. In case the audio player on the card is not working for whatever reason, I&amp;rsquo;ve also included an additional button called &lt;strong>Open MP3&lt;/strong> which will open the audio file in Microsoft Stream when it&amp;rsquo;s clicked.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17.png"
+width="2241"
+height="932"
+srcset="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu_b33b2e3438113f62.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu_58b7cfe370057bde.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="240"
+data-flex-basis="577px"
+>&lt;/p>
+&lt;h2 id="final-notes">Final Notes
+&lt;/h2>&lt;p>If you have an on-call option in your call flow but you still want to take advantage of the simplified trigger without the shared mailbox, you can just import both flows into your Power Automate Environment and build a new flow from scratch which combines the best of both worlds. The Microsoft Edge split screen feature and Power Automate&amp;rsquo;s copy/paste feature are a great help for that.&lt;/p>
+&lt;h2 id="summary">Summary
+&lt;/h2>&lt;p>The initial scenario which included the on-call notification mechanism was designed for a very specific use case. This iteration of my Teams Shared Voicemail solution should fit a lot more customer scenarios. It&amp;rsquo;s easier to understand and implement and also has less moving parts. Feel free to download the basic version of my flow from &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/raw/main/Scripts/PowerAutomate/Flows/TeamsSharedVoicemailBasicV3%28M365GroupInbox%29_GitHub.zip" target="_blank" rel="noopener"
+>here&lt;/a> and give it a try. Just make sure to replace anything that&amp;rsquo;s specific to my lab tenant with your actual values.&lt;/p>
+&lt;p>If you need help importing the flow, please read this section in the &lt;a class="link" href="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/#the-flow" >initial article&lt;/a> first.&lt;/p>
+&lt;p>If this blog provides additional value to you or your company, I want you to know that you can always show your support by donating on my &lt;a class="link" href="https://github.com/sponsors/mozziemozz?frequency=one-time" target="_blank" rel="noopener"
+>GitHub Sponsors&lt;/a> profile.&lt;/p></description></item><item><title>The Ultimate Teams Shared Voicemail Solution</title><link>https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/</link><pubDate>Wed, 06 Dec 2023 20:59:21 +0000</pubDate><guid>https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/</guid><description>&lt;p>In June last year I wrote about &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4" >handling Teams shared voicemail more efficiently&lt;/a>. Although the principle is the same today, a couple of things have changed which has allowed me to build a much more elegant version of this Power Automate flow.&lt;/p>
+&lt;p>About a year ago, I also &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1" >wrote&lt;/a> about shared voicemail now supporting not just Microsoft 365 groups but also distribution lists and mail enabled security groups. While it’s great to have more options, that doesn’t solve the issue at its core.&lt;/p>
+&lt;p>My main complaint about shared voicemail in Teams is that it’s hard to keep an overview over which voicemails have already been processed (as in the person who left the message has been called back). You either train people to regularly check their Microsoft 365 group inboxes or you enable &lt;a class="link" href="https://support.microsoft.com/en-us/office/follow-a-group-in-outlook-e147fc19-f548-4cd2-834f-80c6235b7c36#:~:text=Follow%20a%20group%3A%201%20In%20Outlook%20for%20Windows%2C,list%2C%20select%20Not%20following%20%3E%20Follow%20in%20Inbox." target="_blank" rel="noopener"
+>follow in inbox&lt;/a> for all the group&amp;rsquo;s members. Follow in inbox will make sure that no voicemail/email gets lost, but it also means that more communication is required within a team to make sure that the caller is not called back multiple times or not at all (because everybody believes that someone else will call back). My Power Automate Flow solves this issue by delivering the voicemails directly into a Teams channel.&lt;/p>
+&lt;h4 id="call-flowdiagram">Call Flow Diagram
+&lt;/h4>&lt;p>This is the example scenario. A relatively simple call flow with an auto attendant which routes calls to a call queue during business hours and redirects to a second auto attendant after hours. The second auto attendant offers callers a choice to either leave a message or get connected to the on-call service.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw.png"
+width="7840"
+height="5630"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hu_8f20dfd6747f1d83.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hu_ec119919f185c28f.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="139"
+data-flex-basis="334px"
+>&lt;/p>
+&lt;p>I purposely used a dedicated auto attendant for the after-hours so it can be re-used if the call flow is extended in the future. You can see that the after-hours call flow of the main auto attendant (PS Test EV Enabled AA) only plays the greeting &lt;em>Welcome to heusser.pro. You’re calling us outside of our business hours&lt;/em>. And &lt;strong>PS Test EV Enabled On Call AA&lt;/strong> does the actual after-hours routing. By splitting the greeting, I could also use the IVR of the second auto attendant for another call queue or for holidays configured on the main auto attendant. This way, I won’t have to build a new/the same IVR per holiday call handling which saves time and reduces management effort.&lt;/p>
+&lt;p>The second reason I built it like this is that the name of the auto attendant includes the keyword &lt;strong>On Call&lt;/strong>. Because the on-call call queue uses the same naming convention. This means that the email containing the voicemail includes the name of the voice app in which the call was sent to voicemail, which makes it easy to determine if a voicemail was left during business hours or during on-call/after hours.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w.png"
+width="2033"
+height="543"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hu_4f269ca5ccda894a.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hu_b5549786c88c9422.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="374"
+data-flex-basis="898px"
+>&lt;/p>
+&lt;h4 id="shared-voicemail">Shared Voicemail
+&lt;/h4>&lt;p>As you can see in the diagram, in every case where a call cannot be answered, it goes to the same shared voicemail group. This Microsoft 365 group is the same group that’s linked to the Team which also hosts the two voice enabled channels which are linked to the call queues.&lt;/p>
+&lt;p>Instead of relying on people either checking the group mailbox for new voicemail messages or subscribing to the group mailbox, we’re going to build a Power Automate flow to deliver voicemail messages directly into a Teams channel.&lt;/p>
+&lt;p>The first thing we need to do is to create or define a shared mailbox so we can subscribe it to new messages of the M365 group. The flow will only process emails which have attachments, and the attachments name must end with &lt;code>.mp3&lt;/code> . But I still strongly recommend to create a dedicated shared mailbox which will only receive emails from the M365 group. To keep things clean, I would also deter from sending any kind of other emails to the M365 group. If you also use a dedicated Team for your call queues, that shouldn’t be an issue.&lt;/p>
+&lt;p>Once the shared mailbox is created, we need to give the user which will own the Flow full access to it.&lt;/p>
+&lt;p>You will need the PowerShell module &lt;code>ExchangeOnlineManagement&lt;/code> and need to run &lt;code>Connect-ExchangeOnline&lt;/code> before you can run these commands.&lt;/p>
+&lt;h3 id="create-shared-mailbox">Create shared mailbox
+&lt;/h3>&lt;p>New-Mailbox -Shared -Name &amp;ldquo;PS Test EV Enabled SharedVoicemail&amp;rdquo; -DisplayName &amp;ldquo;PS Test EV Enabled SharedVoicemail&amp;rdquo; -Alias &amp;ldquo;PSTestEVEnabledSharedVoicemail&amp;rdquo;&lt;/p>
+&lt;p>Start-Sleep -Seconds 30&lt;/p>
+&lt;h4 id="grant-full-mailbox-access-to-the-flow-owner">Grant full mailbox access to the flow owner
+&lt;/h4>&lt;p>Add-MailboxPermission -Identity &amp;ldquo;PSTestEVEnabledSharedVoicemail&amp;rdquo; -User &amp;ldquo;&lt;a class="link" href="mailto:mozzie@mozzism.ch" >mozzie@mozzism.ch&lt;/a>&amp;rdquo; -AccessRights FullAccess -InheritanceType All&lt;/p>
+&lt;h4 id="subscribing-the-shared-mailbox-to-the-m365-groupinbox">Subscribing the Shared Mailbox to the M365 Group Inbox
+&lt;/h4>&lt;p>Next, we add the newly created shared mailbox as a member of the group and then also subscribe it to the group’s inbox.&lt;/p>
+&lt;h4 id="add-the-shared-mailbox-as-a-member-to-the-m365-group">Add the shared mailbox as a member to the M365 group
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Add-UnifiedGroupLinks&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="nv">$groupId&lt;/span> &lt;span class="n">-LinkType&lt;/span> &lt;span class="n">Members&lt;/span> &lt;span class="n">-Links&lt;/span> &lt;span class="s2">&amp;#34;PSTestEVEnabledSharedVoicemail&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="subscribe-the-shared-mailbox-to-the-m365-groups-emails-enable-follow-in-inbox">Subscribe the shared mailbox to the M365 group&amp;rsquo;s emails (enable follow in inbox)
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Add-UnifiedGroupLinks&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="nv">$groupId&lt;/span> &lt;span class="n">-LinkType&lt;/span> &lt;span class="n">Subscribers&lt;/span> &lt;span class="n">-Links&lt;/span> &lt;span class="s2">&amp;#34;PSTestEVEnabledSharedVoicemail&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>We can verify that the shared mailbox is indeed subscribed by using this code. (I have no idea why it says &lt;code>UserMailbox&lt;/code> though…)&lt;/p>
+&lt;p>PS V:\GitHub\TeamsPhoneAutomation&amp;gt; Get-UnifiedGroupLinks -Identity $groupId -LinkType Subscribers&lt;/p>
+&lt;pre>&lt;code>Name RecipientType
+---- -------------
+PS Test EV Enabled SharedVoicemail UserMailbox
+&lt;/code>&lt;/pre>
+&lt;p>The idea here is that only the shared mailbox gets new voicemails in its mailbox. None of the users should get the voicemails in their personal inbox because they receive them in Teams. This allows for much better and efficient collaboration.&lt;/p>
+&lt;h3 id="the-result">The Result
+&lt;/h3>&lt;p>This is the Team I created for this call flow. Channels 1 and 2 are linked to the queues which receive calls. 3 and 4 are the ones which receive the voicemails. As explained earlier in this article, the flow can easily determine at which stage in the call flow (during business hours or on-call/after hours) a voicemail was left. That’s why we have two separate voicemail channels.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw.png"
+width="1054"
+height="489"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu_2c87107b1a734ab8.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu_abe867a345c229d2.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="215"
+data-flex-basis="517px"
+>&lt;/p>
+&lt;h4 id="voicemail-during-businesshours">Voicemail During Business Hours
+&lt;/h4>&lt;p>Adaptive Cards in Teams now support &lt;a class="link" href="https://adaptivecards.io/explorer/Media.html" target="_blank" rel="noopener"
+>media&lt;/a>. This means that we can now embed an audio file which is stored on SharePoint directly on an adaptive card and we’ll get a neat little Stream powered media player inside Teams.&lt;/p>
+&lt;p>The card will include the number or the email address of the user who left the voicemail.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g.png"
+width="1382"
+height="763"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu_9d324ee456607556.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu_cb786e0a7b08ea15.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>
+&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ.png"
+width="1384"
+height="760"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu_df0b9be26b1b3310.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu_4feb3c8217f1ba70.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="182"
+data-flex-basis="437px"
+>&lt;/p>
+&lt;p>After members of the channel have listened to a voicemail, they can call the person who left a voicemail back directly from the channel.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA.png"
+width="885"
+height="232"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_hu_ececa6da711a1655.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_hu_39c5d48ac1d9d47c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="381"
+data-flex-basis="915px"
+>
+&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug.png"
+width="882"
+height="230"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu_a6b8543956033421.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu_72345325d415829b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="383"
+data-flex-basis="920px"
+>&lt;/p>
+&lt;h4 id="updated-adaptivecards">Updated Adaptive Cards
+&lt;/h4>&lt;p>Once a team member has called back, a card can be marked as completed. This will update the card so that all other team members can see that there’s no action left to take. It’s even possible to see who has marked a card as completed.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ.png"
+width="1384"
+height="481"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hu_49a699708462405f.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hu_9d38a50bef3184fb.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="287"
+data-flex-basis="690px"
+>&lt;/p>
+&lt;p>Completed cards don’t show the media player anymore. However, the &lt;strong>Voicemail Details&lt;/strong> button will reveal the original card including the audio file again. This is helpful in case somebody needs to listen to a message again or the &lt;strong>Call Completed&lt;/strong> button was clicked by accident.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA.png"
+width="1379"
+height="1003"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu_f545d5486ad946ba.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu_e67878864d57c0c0.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="137"
+data-flex-basis="329px"
+>&lt;/p>
+&lt;p>Users don’t really need to worry about this, but technically, the files get uploaded to the channel’s folder in the Teams’ SharePoint site.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA.png"
+width="1468"
+height="422"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu_3194ffe0c91e66d.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu_3869f30fe3592f9e.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="347"
+data-flex-basis="834px"
+>&lt;/p>
+&lt;p>Completed cards also feature a &lt;strong>Show Metrics&lt;/strong> button which will tell you when a voicemail was received, when it was completed and how many hours and minutes it took until it was marked as completed. Based on that, it will display a different emoji.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q.png"
+width="1385"
+height="539"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu_1751dc284ba1d809.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu_2de9e647c863a89e.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="256"
+data-flex-basis="616px"
+>&lt;/p>
+&lt;p>Less or equal 1 hour = 😊&lt;br>
+Less or equal 2 hours = 😐&lt;br>
+More than 2 hours = 😞&lt;/p>
+&lt;h4 id="voicemail-during-after-hours-oncall">Voicemail During After Hours (On Call)
+&lt;/h4>&lt;p>Voicemails which were left outside business hours will go into the &lt;strong>Voicemail On Call&lt;/strong> channel. When a voicemail is left during on-call hours, it means that the people who are on-call missed a call and should call back as soon as possible. Thus, we want to have an appropriate alerting system in place.&lt;/p>
+&lt;p>I’m using a shift which is linked to my Call Queue Team which defines which user is on call on which days.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig.png"
+width="2149"
+height="961"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu_629788c01542017f.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu_219cba109726bf0.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="223"
+data-flex-basis="536px"
+>&lt;/p>
+&lt;p>The great thing about using Shifts is that this will automatically create a Tag with the Shift name in the Team which is linked to the shift and update the members of the Tag dynamically. In other words, the tag always includes only the users which have a currently active shift assigned.&lt;/p>
+&lt;p>When a new voicemail is received in the On Call channel, all members of the On Call Shift Tag will get notified about new voicemails every 15 minutes for 4 hours if a card is not completed sooner. As soon as card is completed, the notifications stop.&lt;/p>
+&lt;p>In case of an on-call voicemail the flow will take at least 15 minutes to complete, even if the card was marked as completed sooner. This is because there’s a delay action which waits for 15 minutes before it checks again if the card has been completed.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw.png"
+width="1554"
+height="740"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu_aa64a69e905122bb.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu_57d982876e3bc0bc.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="210"
+data-flex-basis="504px"
+>&lt;/p>
+&lt;p>Because the flow is still waiting on the card to be completed in the on-call scenario, there’s no way to get the message Id of the adaptive card that was sent to the channel from a subsequent step in the flow. Instead, the flow needs to retrieve the latest message which was sent to the channel in a parallel branch.&lt;/p>
+&lt;p>Because of that, I strongly recommend turning on channel moderation and prohibit members from posting new messages to the &lt;strong>On Call Voicemail&lt;/strong> channel. This way, we can make sure that the newest message in the channel is always the adaptive card which was sent by the flow and not something posted by a user.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ.png"
+width="1025"
+height="1195"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu_ed8e1b08e26e972f.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu_6915680e687aeebb.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="85"
+data-flex-basis="205px"
+>&lt;/p>
+&lt;p>Channel members should only be allowed to reply to messages so that they can e.g. mention a team member who should carry out a call back action.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw.png"
+width="1388"
+height="846"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu_8f2fda2d7d5e8615.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu_fdcc56d5cfd2dace.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="164"
+data-flex-basis="393px"
+>&lt;/p>
+&lt;p>I changed the delay action from 15 minutes to 15 seconds for demonstration purposes. Here you can see three Teams activity feed notifications which link directly to the channel message containing the voicemail. Using a Teams activity feed notification instead of a channel message reply has two main advantages. It doesn’t clutter the channel feed and members don’t need to specifically enable notifications for all channel messages to get the alerts.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A.png"
+width="2284"
+height="961"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_hu_78eb2723b933f471.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_hu_bb545286fbe90dde.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="237"
+data-flex-basis="570px"
+>&lt;/p>
+&lt;h3 id="the-flow">The Flow
+&lt;/h3>&lt;p>The flow has become quite large and Power Automate keeps reminding me that it contains too many actions to use the new AI-powered designer. 🙃&lt;/p>
+&lt;p>To make it easier for you, I exported the flow and made it available for download &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/TeamsSharedVoicemailv2.4_GitHub.zip" target="_blank" rel="noopener"
+>here&lt;/a>. To import it, go to &lt;a class="link" href="https://make.powerautomate.com" target="_blank" rel="noopener"
+>https://make.powerautomate.com&lt;/a> and select &lt;strong>Import&lt;/strong> and then &lt;strong>Import Package (Legacy)&lt;/strong>.&lt;/p>
+&lt;p>Select an existing or set up a new connection for each of the resources listed before you click &lt;strong>Import.&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g.png"
+width="2095"
+height="1392"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hu_225c36404e438c1b.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hu_f5b553056da9b909.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="150"
+data-flex-basis="361px"
+>&lt;/p>
+&lt;p>Unfortunately, you still need to expand every action and check if you need to modify/update the values. To make it easier for you, I added a note to all the actions which need to be updated. Here are some examples.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw.png"
+width="915"
+height="351"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu_743e7f965189621d.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu_411f7983b045b97c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="260"
+data-flex-basis="625px"
+>
+&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ.png"
+width="1933"
+height="907"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hu_743b5d0b1a64f03.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hu_6591f6409bf09161.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="213"
+data-flex-basis="511px"
+>
+&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw.png"
+width="913"
+height="349"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hu_f42b60474443fa0d.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hu_83f2757fea081d92.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="261"
+data-flex-basis="627px"
+>
+&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ.png"
+width="914"
+height="1033"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_hu_665132cb22bf0eab.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_hu_972c3ea6e84eb429.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="88"
+data-flex-basis="212px"
+>
+&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw.png"
+width="916"
+height="218"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu_68cffa45d72fe459.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu_1cabe4a793d65c59.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="420"
+data-flex-basis="1008px"
+>&lt;/p>
+&lt;p>You get the gist. At least you won’t have to create all the actions manually.&lt;/p>
+&lt;h3 id="summary">Summary
+&lt;/h3>&lt;p>Even though it took me days to finally get this right, I had so much fun building this. Besides that, I also learned a lot of new stuff about Power Automate. In fact, this was the very first parallel branch I ever built. It’s awesome that Adaptive Card in Teams now support media. I think this is a really great example of how powerful Adaptive Cards can be. They not only look beautiful, but they also provide a fantastic user experience since users will be able to interact with them directly in Teams.&lt;/p>
+&lt;p>I’d be lying if I said that I wasn’t a little proud of the flow and process I built. The only thing I’m still missing with this solution is to be able to create Teams deep links which also specify which outbound caller id should be used when a call back link is clicked. Wouldn’t it just be great if we could say that users should always use the queue’s/attendant’s phone number when they call somebody back from a voicemail card?&lt;/p>
+&lt;p>What’s funny is that the Teams mobile apps actually prompt users which have multiple calling line identities assigned to select an identity before the call is made.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg.png"
+width="1125"
+height="2436"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu_2bb9d93d996b8ad1.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu_8fc425194d8f16f7.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+>&lt;/p>
+&lt;p>As you can tell, I’m pretty excited about all of this. I hope you like it too and that you can implement it for your users or customers as well.&lt;/p></description></item><item><title>Automatically Notify Users to Update Teams Holidays for Next Year</title><link>https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/</link><pubDate>Wed, 07 Sep 2022 10:19:11 +0000</pubDate><guid>https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/</guid><description>&lt;p>In my last few articles, I’ve talked about building Teams Phone self-service solutions for end users. The reason one might want to do this is quite obvious: We don’t want to give users access to Teams Admin Center but as engineers, we don’t want to take on tedious tasks like updating an Auto Attendant’s Holiday list either.&lt;/p>
+&lt;p>Even though pretty much everything that can be configured in TAC, including managing Holidays can be scripted with PowerShell, Holidays still require a fixed date and time range and can’t be renewed automatically or fetched from an external source. This results in a considerable administrative overhead for both Teams admins and end users.&lt;/p>
+&lt;p>When I need to configure Teams Holidays, I always ask users to provide a list where each holiday is noted &lt;strong>with an explicit date&lt;/strong>. I’m not going to do the work for them and go look up when exactly a Holiday takes place next year. (For Holidays which don’t have a fixed date at least.) I’ve seen some lazy users try to take a shortcut and tell me to just add “all lawful Bank Holidays” of Country/State/Canton XY. Unfortunately, that’s not how it works my dear users. I’d spend hours looking up this stuff and probably still end up with some wrong dates anyway. That’s why I set out and created a better solution. /rant&lt;/p>
+&lt;p>In this article, I’m going to show you a solution where the whole process of &lt;strong>maintaining&lt;/strong> a Holiday List can be outsourced to end users. Admins only need to set up Holidays &lt;strong>once&lt;/strong> initially.&lt;/p>
+&lt;h4 id="recap">Recap
+&lt;/h4>&lt;p>Before we dive in, let’s recap what I’ve published in my last articles to give you some context on Teams self-service solutions using Azure Automation and Adaptive Cards.&lt;/p>
+&lt;p>It all began with &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851?source=user_profile---------11----------------------------" >this article&lt;/a> where I wrote about my take on a self-service solution which lets users manually open or close an Auto Attendant. This solution builds on the work of Microsoft MVPs which are linked in the original article.&lt;/p>
+&lt;p>I then went on and published &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-self-service-call-queue-solution-part-2-ab8201157831" >this piece&lt;/a> which uses the same principle but lets users enable or disable immediate forwarding to an external number or update the external forwarding target number on a Call Queue.&lt;/p>
+&lt;p>We can use these examples and build on them to create something similar for Auto Attendant Holidays.&lt;/p>
+&lt;h4 id="how-does-itwork">How Does it Work?
+&lt;/h4>&lt;p>It’s important to understand that there needs to be an existing, initial configuration in your Tenant. This means that you as a Teams Phone admin need to sit down with the person in charge of the reception phone or whoever oversees Holidays at your company. You then need to configure either a single or multiple Holiday lists in TAC and link them to each Auto Attendant, where they’re required.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1fQcNBnDUDxER2RrRYDd3w.png"
+width="2190"
+height="315"
+srcset="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1fQcNBnDUDxER2RrRYDd3w_hu_a34ff7c20d5d1015.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1fQcNBnDUDxER2RrRYDd3w_hu_61258ed5cb342825.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Holiday Schedules in Teams Admin Center"
+class="gallery-image"
+data-flex-grow="695"
+data-flex-basis="1668px"
+>&lt;/p>
+&lt;p>My solution currently doesn’t have an option to allow users to add new Holidays to a list. When a new Holiday needs to be added, users must still request the change at IT. After it has been added to the list, there’s no additional work required for the new Holiday to also support user self-serviced updating.&lt;/p>
+&lt;p>I created an Azure Runbook which runs on a schedule. I suppose running it weekly will suffice. If you wish, you can even run it daily. The script checks if the difference between the &lt;strong>run time of the Job&lt;/strong> and the &lt;strong>end date&lt;/strong> of a Holiday is bigger than 24 hours. This is because Holiday dates/lists itself don’t have a time zone property. But Auto Attendants do have a time zone setting, thus, we need to make sure that a Holiday is not updated/deleted before the Holiday would end in an Attendant specific time zone. A buffer of 24 hours should work well considering that the largest UTC offset is +14 hours.&lt;/p>
+&lt;p>When the script runs, it will send a Teams Message Card to a Channel for each Holiday which now lies in the past. (Even though they are technically &lt;a class="link" href="https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference" target="_blank" rel="noopener"
+>Legacy Actionable Message Cards&lt;/a> I will just refer to them as &lt;a class="link" href="https://adaptivecards.io/" target="_blank" rel="noopener"
+>Adaptive Cards&lt;/a> from now on.)&lt;/p>
+&lt;p>Members of the channel will be able to see the dates, the name of the Holiday schedule as well as all linked Auto Attendants on the Adaptive Card. Furthermore, the script will add one year to the current dates and pre-fill the dates of next year as a suggested value in the date picker.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1QKq3e17FCDqQEvn5hbJzfg.png"
+width="1489"
+height="745"
+srcset="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1QKq3e17FCDqQEvn5hbJzfg_hu_8bf613fc1ff5278e.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1QKq3e17FCDqQEvn5hbJzfg_hu_26f90a362d60f3ec.png 1024w"
+loading="lazy"
+decoding="async"
+alt="en-US date format"
+class="gallery-image"
+data-flex-grow="199"
+data-flex-basis="479px"
+>&lt;/p>
+&lt;p>Because we’re using Adaptive Cards, the date format will automatically adjust to the Teams Clients display language. In this example, the Teams Client was set to German (Switzerland).&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/15exIWj45WBr92GT2Jut6UQ.png"
+width="1478"
+height="737"
+srcset="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/15exIWj45WBr92GT2Jut6UQ_hu_79a531492c2b49e1.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/15exIWj45WBr92GT2Jut6UQ_hu_ec2a6b23b084e7ef.png 1024w"
+loading="lazy"
+decoding="async"
+alt="de-CH date format"
+class="gallery-image"
+data-flex-grow="200"
+data-flex-basis="481px"
+>&lt;/p>
+&lt;p>Members can then review and accept the new dates or change them in case a Holiday falls on a different day next year.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AcxduYIh3KWZjYOITozFQ.png"
+width="1485"
+height="794"
+srcset="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AcxduYIh3KWZjYOITozFQ_hu_89ccbc147532d9f9.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AcxduYIh3KWZjYOITozFQ_hu_920ce999dd54b327.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Adaptive Card date picker"
+class="gallery-image"
+data-flex-grow="187"
+data-flex-basis="448px"
+>&lt;/p>
+&lt;p>If needed, they can also configure a start or end time, if for example, a Holiday only starts at noon.&lt;/p>
+&lt;p>Finally, they will need to select their local time zone. This is due to the fact that the Adaptive Card will submit the date and time based on the time zone which is configured on the local PC where Teams is running.&lt;/p>
+&lt;p>In early testing stages of this solution, “00:00” was always passed to the Azure Function as “23:00” because I live in UTC-1. Without this information the Function wouldn’t be able to do its magic and convert it back to the correct date.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1h3iWOIBo7n33yhjeAHKNow.png"
+width="1397"
+height="420"
+srcset="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1h3iWOIBo7n33yhjeAHKNow_hu_975584511ecf471.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1h3iWOIBo7n33yhjeAHKNow_hu_8d704648b4ac1e88.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Adaptive Card drop-down list"
+class="gallery-image"
+data-flex-grow="332"
+data-flex-basis="798px"
+>&lt;/p>
+&lt;p>I’ve included all time zones which are supported on Windows Systems.&lt;/p>
+&lt;p>Now all a user needs to do is to click “Submit New Dates”. This will pass all the information to an Azure Function, Update the card, and fire up the Runbook.&lt;/p>
+&lt;p>In other words, users won’t need to bother you to update their Holidays anymore. After each time a Holiday has passed, they will get a card which allows them to update it for next year by themselves.&lt;/p>
+&lt;h4 id="prerequisites">Prerequisites
+&lt;/h4>&lt;p>Just as with my previous articles you need to have the following things ready in Azure.&lt;/p>
+&lt;ul>
+&lt;li>An Azure Function App so that we can create a new Function&lt;/li>
+&lt;li>An Azure Automation Account so we can create 2x new Runbooks&lt;/li>
+&lt;li>Azure Automation Credentials with Teams Administrator Permissions&lt;/li>
+&lt;li>An Incoming Teams Webhook&lt;/li>
+&lt;/ul>
+&lt;p>If you struggle to set up any of these, I recommend reading my &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851" >first article&lt;/a> about this topic. I also suggest creating a dedicated Teams Channel where the webhook will be added. More on that later.&lt;/p>
+&lt;h4 id="azure-runbook-checkholidayschedules">Azure Runbook: CheckHolidaySchedules
+&lt;/h4>&lt;p>Let’s create the first Runbook. This will be the one which logs into Teams PowerShell and checks if there are any Holidays which already lie in the past compared to the time of the Runbook Job.&lt;/p>
+&lt;p>Enter your &lt;code>$teamsWebhookUrl&lt;/code> on line 2. If you like, you can change the &lt;code>$defaultLocalTimeZone&lt;/code> on line 3 to the time zone where most of your users are located. Make sure you also adjust the name of your Credential if yours has a different name.&lt;/p>
+&lt;p>Leave the &lt;code>$functionUrl&lt;/code> empty for now since we don’t have that one yet.&lt;/p>
+&lt;script src="https://gist.github.com/mozziemozz/76a5f782a129ff06c6093158f1b81004.js">&lt;/script>
+&lt;p>Save and publish the Runbook. Don’t forget to add a schedule to the Runbook. If you need a reminder on how to do that, please see &lt;a class="link" href="https://heusser.pro/p/automatically-enable-overflow-action-on-call-queues-if-no-agents-are-opted-in-f1c9bea7cb87" >here&lt;/a>.&lt;/p>
+&lt;h4 id="azure-runbook-updateholidayschedules">Azure Runbook: UpdateHolidaySchedules
+&lt;/h4>&lt;p>This Runbook will receive all the information a user has entered on the Adaptive Card. Because we also want to update the card, but Runbooks don’t support that, we will pass all the information from the card to the Function first. This includes the old date time range (so the script knows which one needs to be replaced), the newly entered dates and the time zone of the user.&lt;/p>
+&lt;p>The Function will then pass the data to the Runbook. Because the script now has both the old and new dates, it will be able to remove the old values and add the new ones to the Holiday schedule.&lt;/p>
+&lt;p>Paste your Teams Webhook URL on line 7 before you save.&lt;/p>
+&lt;script src="https://gist.github.com/mozziemozz/d871770b0f9c477d765f5ff2f391c03e.js">&lt;/script>
+&lt;p>To be able to call this Runbook from the Function, we’ll need to add a Webhook trigger to it as it’s described &lt;a class="link" href="https://www.bing.com/search?q=azure&amp;#43;runbook&amp;#43;webhook&amp;#43;docs&amp;amp;form=ANNTH1&amp;amp;refig=f6e9976ff1de4f9baa308faa7c1bbdd2" target="_blank" rel="noopener"
+>here&lt;/a>. Before you click Create, copy its URL.&lt;/p>
+&lt;h4 id="azure-function-updatecardandtriggerrunbook">Azure Function: UpdateCardAndTriggerRunbook
+&lt;/h4>&lt;p>Now we can create the Function. Set &lt;code>$runBookUrl&lt;/code> to the Runbook’s webhook URL on line 6 and save the Function.&lt;/p>
+&lt;script src="https://gist.github.com/mozziemozz/01ab601212a7bb42dc5b8257f91b8f30.js">&lt;/script>
+&lt;p>For the last step, we need to copy the URL of the Function and go back to our first Runbook “CheckHolidaySchedules”.&lt;/p>
+&lt;h4 id="runbook-checkholidayschedules-again">Runbook CheckHolidaySchedules (Again)
+&lt;/h4>&lt;p>Edit the Runbook and set the &lt;code>$functionUrl&lt;/code> variable to the copied Function URL on line 1. Save and Publish the Runbook again.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1GR5EyFfJfYB6i4K3scmjeg.png"
+width="1055"
+height="42"
+srcset="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1GR5EyFfJfYB6i4K3scmjeg_hu_81fcbf06884514bf.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1GR5EyFfJfYB6i4K3scmjeg_hu_43a598e62b692ece.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="2511"
+data-flex-basis="6028px"
+>&lt;/p>
+&lt;h4 id="test-drive">Test Drive
+&lt;/h4>&lt;p>During normal operation, we would need to wait for a Holiday to be over before anything happens. In our case, we can test by manually starting the Runbook.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1H9UkxAEL3jrTfviZvVSgg.png"
+width="1520"
+height="235"
+srcset="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1H9UkxAEL3jrTfviZvVSgg_hu_349651dd859cbae4.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1H9UkxAEL3jrTfviZvVSgg_hu_457934d2f53150b1.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Start the Runbook to test"
+class="gallery-image"
+data-flex-grow="646"
+data-flex-basis="1552px"
+>&lt;/p>
+&lt;p>After a few seconds, we should start seeing some new Adaptive Cards in our channel. Keep in mind that triggering the Runbook for the first time will post a card for each Holiday which has already passed. We can also see which Auto Attendants are affected on the card.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AYdQc3exHJ9FyyXQiVqSA.png"
+width="1480"
+height="746"
+srcset="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AYdQc3exHJ9FyyXQiVqSA_hu_2c77ee4b57fda546.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1AYdQc3exHJ9FyyXQiVqSA_hu_6be4744a8105200c.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Adaptive Card sent by the Runbook"
+class="gallery-image"
+data-flex-grow="198"
+data-flex-basis="476px"
+>&lt;/p>
+&lt;p>After new dates have been submitted by a user, the Function will update the card.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/19gmVaYLQTt48rRlAxtOv3g.png"
+width="1478"
+height="239"
+srcset="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/19gmVaYLQTt48rRlAxtOv3g_hu_5453bab8a71f0419.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/19gmVaYLQTt48rRlAxtOv3g_hu_3a5b4acc4725b224.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Adaptive Card after it has been updated by the Function"
+class="gallery-image"
+data-flex-grow="618"
+data-flex-basis="1484px"
+>&lt;/p>
+&lt;p>As soon as the Runbook has finished, it will post another card to the channel to confirm that the Holiday has been renewed for next year. For review purposes both the old and new dates are included. If anybody made a mistake, they could still contact IT to manually fix the dates.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1DTMQw26Duejt40miV2ig.png"
+width="1482"
+height="304"
+srcset="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1DTMQw26Duejt40miV2ig_hu_7bbf1ccb31f4df86.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1DTMQw26Duejt40miV2ig_hu_734dc5a9644890b7.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Adaptive Card confirmation sent by the second Runbook"
+class="gallery-image"
+data-flex-grow="487"
+data-flex-basis="1170px"
+>&lt;/p>
+&lt;p>If we switch to the Holiday list in TAC, we can see that the Runbook added the new Holiday and removed the old one.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/11Wx5wc7HVIBSgXum5COQLA.png"
+width="1290"
+height="866"
+srcset="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/11Wx5wc7HVIBSgXum5COQLA_hu_b2acddc754ba6289.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/11Wx5wc7HVIBSgXum5COQLA_hu_d0a1370be3e3724a.png 1024w"
+loading="lazy"
+decoding="async"
+alt="01. September 2023 has been added at the end of the list by the Runbook"
+class="gallery-image"
+data-flex-grow="148"
+data-flex-basis="357px"
+>&lt;/p>
+&lt;h4 id="conclusion">Conclusion
+&lt;/h4>&lt;p>Out of all the Teams self-service automation solutions I already did, I think that this is actually the coolest one. Not only does it provide a great user experience because everything can be done from within Teams, but it also makes sure nobody forgets to update the company’s Holiday list. No more last-minute support tickets just before you were about to leave for the Christmas break.&lt;/p>
+&lt;p>And the best part is that we don’t need to grant any kind of admin permission. The only thing we need to make sure is that only the people who are allowed to update the Holidays have access to the Teams Channel.&lt;/p>
+&lt;p>The whole point of using a script to automatically notify us when a Holiday has passed instead of using the &lt;strong>request a change on-demand approach&lt;/strong> like with the other two self-service examples is that nobody forgets about updating the Holidays. To make sure that users don’t miss the Adaptive Cards in Teams, I suggest using a dedicated channel and having them turn on notifications for all activity on said channel.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1VTj3UiR6hEnLHyOiYbAUQ.png"
+width="1186"
+height="398"
+srcset="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1VTj3UiR6hEnLHyOiYbAUQ_hu_5f580b2f463d81e4.png 480w, https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471/1VTj3UiR6hEnLHyOiYbAUQ_hu_bc55580031c84bb.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Channel notification Settings in Teams"
+class="gallery-image"
+data-flex-grow="297"
+data-flex-basis="715px"
+>&lt;/p>
+&lt;p>By using a dedicated channel for Holiday self-service, we don’t need to force users to turn on all notifications for channels which might have much more activity/trigger too many notifications.&lt;/p></description></item><item><title>Microsoft Teams: Handle Shared Voicemail More Efficiently</title><link>https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/</link><pubDate>Sun, 05 Jun 2022 21:06:42 +0000</pubDate><guid>https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/</guid><description>&lt;p>In this &lt;a class="link" href="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24" >article&lt;/a>, I did a pretty hefty run down of all things shared voicemail in Microsoft Teams. I also teased another article about creating a Power Automate Flow to deliver shared voicemails into a Teams channel instead of receiving them just by email. …which brings us to this article.&lt;/p>
+&lt;p>The idea behind all that is, that shared voicemails get posted as an adaptive card in a Teams channel, rather than that a few individuals receive shared voicemails by email.&lt;/p>
+&lt;h4 id="preparations">Preparations
+&lt;/h4>&lt;p>First, we need to identify or create a Microsoft 365 Group which will be configured as shared voicemail target on an auto attendant or a call queue. Next, we’ll need to enable the follow in inbox feature for this group and add a shared mailbox of choice to this M365 Group. (If you need help with this, please check the linked article at the beginning of this story.)&lt;/p>
+&lt;h4 id="building-theflow">Building the Flow
+&lt;/h4>&lt;p>Then we can start building our flow. Choose “When a new email arrives in a shared mailbox (V2)” (Office 365 Outlook) as your trigger and select the mailbox and its folder. (If this shared mailbox also receives other messages, you might want to include a subject filter under advanced options.)&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg.png"
+width="919"
+height="295"
+srcset="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg_hu_1bbc5ddff5c3c785.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1TjJaftuwTADjGZhNQJHsEg_hu_da12cc7ea4480c6e.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="311"
+data-flex-basis="747px"
+>&lt;/p>
+&lt;p>Next, we’ll need to initialize some variables.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg.png"
+width="912"
+height="285"
+srcset="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg_hu_e91aeb8f69a33cea.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1Mo4Px5HSucy8Q7gniM9KVg_hu_52515add349b3c12.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="320"
+data-flex-basis="768px"
+>&lt;/p>
+&lt;p>The value of this variable is the phone number which left the voicemail. We can get the number by splitting the from address at the “@” character and selecting the first value of the splitted string. This is done with the following expression.&lt;/p>
+&lt;p>split(triggerOutputs()?[&amp;lsquo;body/from&amp;rsquo;], &amp;lsquo;@&amp;rsquo;)[0]&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA.png"
+width="916"
+height="283"
+srcset="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA_hu_b09b3699b4186876.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1N9QkMCcHSanum0L4lJkrA_hu_b7081aeba721bbd4.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="323"
+data-flex-basis="776px"
+>&lt;/p>
+&lt;p>To avoid duplicate files, we will create a time stamp with this expression. (Adjust the name of the time zone to your own time zone. If you’re not sure how your time zone is called, just run “Get-TimeZone” in PowerShell and copy it’s Id.)&lt;/p>
+&lt;p>convertTimeZone(utcNow(),&amp;lsquo;UTC&amp;rsquo;,&amp;lsquo;W. Europe Standard Time&amp;rsquo;, &amp;lsquo;yyyy-MM-dd HH:mm:ss&amp;rsquo;)&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ.png"
+width="915"
+height="285"
+srcset="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ_hu_18502116db6c5ba8.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1wAZc48VRkLgFAsVeJyrQ_hu_2bf79537e9ac6503.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="321"
+data-flex-basis="770px"
+>&lt;/p>
+&lt;p>And in the end, we will convert the “+” sign into an URL friendly format with this expression.&lt;/p>
+&lt;p>replace(variables(&amp;lsquo;FromNumber&amp;rsquo;), &amp;lsquo;+&amp;rsquo;, &amp;lsquo;%2b&amp;rsquo;)&lt;/p>
+&lt;p>Now we have all the variables which we need. Choose “Get Attachment (V2)” (Outlook Office 365) as your next action. This will automatically add an “Apply to each” loop for this action. Let’s fill in the dynamic content of the trigger output such as “Message Id” and “Attachment Id”. To be sure that only voicemails are uploaded to SharePoint, I’ve added a condition which checks if the attachments filename ends with *.mp3.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw.png"
+width="1973"
+height="807"
+srcset="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw_hu_57af2001f222fc35.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/10Wa7BKJuUsYsSm3vdMTuw_hu_7113c9815f6bf100.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="244"
+data-flex-basis="586px"
+>&lt;/p>
+&lt;p>If it does, we’ll save the file to SharePoint. If it doesn’t, we won’t do any further processing and the flow ends there. Notice how we’ll use the previously initialized variables to construct a unique filename consisting of the received date and the caller’s number. Once the file has been saved, we’ll create a share link to later access the file.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q.png"
+width="972"
+height="962"
+srcset="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q_hu_56eca94b42dda14e.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1PtvopHOOHj77EW7S0wh1Q_hu_aa4b9b3c90ad7bc0.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="101"
+data-flex-basis="242px"
+>&lt;/p>
+&lt;p>All that’s left to do now is to post an adaptive card to a channel and wait for a reply.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg.png"
+width="832"
+height="1790"
+srcset="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg_hu_baa83b2b2440fc90.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1L1N5uzLNZkz9j00cjuldLg_hu_befb4be6458b9d4a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="111px"
+>&lt;/p>
+&lt;p>Paste the following JSON object into your flow and replace the variables with your own names if needed.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;$schema&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;http://adaptivecards.io/schemas/adaptive-card.json&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;AdaptiveCard&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;version&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;1.3&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;body&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;TextBlock&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;text&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;@{triggerOutputs()?[&amp;#39;body/subject&amp;#39;]}&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;size&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Large&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;TextBlock&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;text&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;New Voicemail from @{variables(&amp;#39;FromNumber&amp;#39;)}&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;ActionSet&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;actions&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Action.OpenUrl&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;title&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Listen to Voicemail Message&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;url&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;@{outputs(&amp;#39;Create_sharing_link_for_a_file_or_folder&amp;#39;)?[&amp;#39;body/link/webUrl&amp;#39;]}&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;ActionSet&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;actions&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Action.OpenUrl&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;title&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;@{variables(&amp;#39;FromNumber&amp;#39;)} Call Back&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;url&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;https://teams.microsoft.com/l/call/0/0?users=4:@{variables(&amp;#39;CallBackNumber&amp;#39;)}&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Action.Submit&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;title&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Call Completed&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;style&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;positive&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="the-result">The Result
+&lt;/h3>&lt;p>Let’s see how this looks from a user&amp;rsquo;s perspective. Whenever a new shared voicemail is received in the shared mailbox, the Flow will be triggered and sends an adaptive card into the channel.&lt;/p>
+&lt;p>All Team members will know that a new voicemail has been received and they can listen to it by clicking the button.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag.png"
+width="1233"
+height="396"
+srcset="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag_hu_7cf68074c4dd0eb8.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1OSUU8Q1gnJGs2jVqNeag_hu_a3cc6a17d8e4864a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="311"
+data-flex-basis="747px"
+>&lt;/p>
+&lt;p>This will open the SharePoint link and the media can be played back in the browser.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg.png"
+width="1896"
+height="1020"
+srcset="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg_hu_d47db4d4a8dc86b4.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1fLv1Wx2j4fnsIjFXgGimg_hu_2332cf660b1f53a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="185"
+data-flex-basis="446px"
+>&lt;/p>
+&lt;p>Unfortunately, playing back media on adaptive cards is not yet supported in Teams.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg.png"
+width="1240"
+height="241"
+srcset="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg_hu_5975dbe41e76d836.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1hAWYMhyLYhbgz8eG7K5gg_hu_431ee1e44e7515eb.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="514"
+data-flex-basis="1234px"
+>&lt;/p>
+&lt;p>Because we’ve inserted a &lt;a class="link" href="https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd" >calling deep link&lt;/a> on the adaptive card, users will also be able to initiate a call directly from the card.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA.png"
+width="889"
+height="228"
+srcset="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA_hu_ce0ed1ec4e44be68.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SkEKX8jDzDm0ToFqlAA_hu_e109e76e9cb75a0b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="389"
+data-flex-basis="935px"
+>&lt;/p>
+&lt;p>And finally, once the customer has been called back the adaptive card can be completed by clicking the “Call Completed” button. This will refresh the card and let all other channel members know, that there is no action needed from their side anymore. They will also be able to see, who completed the card.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA.png"
+width="1228"
+height="289"
+srcset="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA_hu_df33b29ff5c07b6f.png 480w, https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4/1SBzl3BpHLvjijG1rcX5MA_hu_3cab282b95f1799c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="424"
+data-flex-basis="1019px"
+>&lt;/p>
+&lt;p>I really hope that media cards will soon be supported to provide an even better user experience in Teams.&lt;/p>
+&lt;p>As always, I hope that you liked my article and that it helps you too, deliver a better user experience.&lt;/p></description></item></channel></rss>

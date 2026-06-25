@@ -1,0 +1,1845 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Phone Numbers on HEUSSER.PRO</title><link>https://heusser.pro/categories/phone-numbers/</link><description>Recent content in Phone Numbers on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 07 May 2025 15:16:20 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/phone-numbers/index.xml" rel="self" type="application/rss+xml"/><item><title>Get Teams User Properties (incl. Phone Number) from Microsoft Graph</title><link>https://heusser.pro/p/get-teams-user-properties-from-microsoft-graph-api-93ql20to0nr6/</link><pubDate>Wed, 07 May 2025 15:16:20 +0000</pubDate><guid>https://heusser.pro/p/get-teams-user-properties-from-microsoft-graph-api-93ql20to0nr6/</guid><description>&lt;img src="https://heusser.pro/p/get-teams-user-properties-from-microsoft-graph-api-93ql20to0nr6/cover.png" alt="Featured image of post Get Teams User Properties (incl. Phone Number) from Microsoft Graph" />&lt;p>It&amp;rsquo;s been a while since I published something. This morning, one of the members on my Teams Phone Admin Group &lt;a class="link" href="https://discord.gg/wbdAfvwRwq" target="_blank" rel="noopener"
+>Discord Server&lt;/a> posted a &lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/teamsadministration-teamsadminroot-list-userconfigurations?view=graph-rest-beta" target="_blank" rel="noopener"
+>Microsoft Learn link&lt;/a> to a new beta endpoint in Microsoft Graph.&lt;/p>
+&lt;p>The endpoint is called &lt;code>userConfigurations&lt;/code> and will allow you to query certain properties of Teams users directly via Graph API rather than using the Teams PowerShell module. To me, the most interesting thing is to be able to retrieve users assigned phone numbers through this endpoint.&lt;/p>
+&lt;h2 id="add-scopes">Add Scopes
+&lt;/h2>&lt;p>To be able to make requests to this endpoint, you&amp;rsquo;ll first need to add the scope. I&amp;rsquo;m keeping it nice and easy today and I&amp;rsquo;m doing it through &lt;a class="link" href="https://heusser.pro/p/whats-the-difference-between-an-entra-id-app-registration-and-an-enterprise-app-4yyib4g1sk5a/#delegated-vs-application-permissions" >delegated authentication&lt;/a> using the official Microsoft Graph Commandline Tools enterprise app.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Connect-MgGraph&lt;/span> &lt;span class="n">-Scopes&lt;/span> &lt;span class="s2">&amp;#34;TeamsUserConfiguration.Read.All&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="get-all-teams-user-configurations">Get all Teams User Configurations
+&lt;/h2>&lt;p>The docs only show an example for HTTP requests as of the time of writing. Therefore, I don&amp;rsquo;t believe that this has been added to the Graph Beta PowerShell modules yet. But that&amp;rsquo;s not a problem since we can just use &lt;code>Invoke-MgGraphRequest&lt;/code>. I previously wrote about this &lt;a class="link" href="https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86" >here&lt;/a>.&lt;/p>
+&lt;p>&lt;code>Invoke-MgGraphRequest&lt;/code> does not have an &lt;code>-All&lt;/code> switch so we need to make sure to fetch all users ourselves. Luckily, I also have a &lt;a class="link" href="p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a" >blog post&lt;/a> handy for this part.&lt;/p>
+&lt;p>This bit will retrieve all user configurations and store it in &lt;code>$userConfigurations&lt;/code>.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Get all user configurations in Microsoft Teams using the Graph API&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$allPages&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$userConfigurations&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">GET&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/beta//admin/teams/userConfigurations&amp;#34;&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$allPages&lt;/span> &lt;span class="p">+=&lt;/span> &lt;span class="nv">$userConfigurations&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$userConfigurations&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="s1">&amp;#39;@odata.nextLink&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">do&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$userConfigurations&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Get&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="nv">$userConfigurations&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="s1">&amp;#39;@odata.nextLink&amp;#39;&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$allPages&lt;/span> &lt;span class="p">+=&lt;/span> &lt;span class="nv">$userConfigurations&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">until&lt;/span> &lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">!&lt;/span>&lt;span class="nv">$userConfigurations&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="s1">&amp;#39;@odata.nextLink&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$userConfigurations&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$allPages&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ConvertTo-Json&lt;/span> &lt;span class="n">-Depth&lt;/span> &lt;span class="mf">99&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ConvertFrom-Json&lt;/span> &lt;span class="n">-Depth&lt;/span> &lt;span class="mf">99&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>If you&amp;rsquo;re wondering, why I&amp;rsquo;m doing &lt;code>($allPages | ConvertTo-Json -Depth 99 | ConvertFrom-Json -Depth 99)&lt;/code> on the last line, this is because sometimes, the Graph API does not return proper PowerShell objects which makes accessing and processing returned data kind of hard. This is an easy workaround for that.&lt;/p>
+&lt;h2 id="filter-for-a-user-with-a-specific-phone-number">Filter for a User with a Specific Phone Number
+&lt;/h2>&lt;p>Since figuring out the correct way to filter in Graph can sometimes be a bit tricky, I already constructed a working filter query that works with assigned phone numbers for you.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$phoneNumber&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;+41123456789&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$filterByPhoneNumber&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">GET&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/beta/admin/teams/userConfigurations?&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">filter=telephoneNumbers/any(p:p/telephoneNumber eq &amp;#39;&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$phoneNumber&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#39;)&amp;amp;&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">count=true&amp;#34;&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>While this is quite similar to what I wrote &lt;a class="link" href="p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32" >here&lt;/a> (Filtering Entra ID Users by phone number), it does add some additional complexity because &lt;code>telephoneNumbers&lt;/code> is an array of objects and not just an array of strings. The key part is to filter on the &lt;code>p:p/telephoneNumber&lt;/code> property.&lt;/p>
+&lt;p>Also note that you don&amp;rsquo;t get the typical &lt;code>tel:&lt;/code> prefix we all know from Teams PowerShell.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/get-teams-user-properties-from-microsoft-graph-api-93ql20to0nr6/image.png"
+width="1734"
+height="927"
+srcset="https://heusser.pro/p/get-teams-user-properties-from-microsoft-graph-api-93ql20to0nr6/image_hu_e4729b5db94c520d.png 480w, https://heusser.pro/p/get-teams-user-properties-from-microsoft-graph-api-93ql20to0nr6/image_hu_adf68b267a2546c5.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Example: Selected properties of userConfigurations from a user and a resource account"
+class="gallery-image"
+data-flex-grow="187"
+data-flex-basis="448px"
+>&lt;/p>
+&lt;h2 id="filter-by-enterprise-voice-enabled">Filter by Enterprise Voice Enabled
+&lt;/h2>&lt;p>If you only want to list only users which are enterprise voice enabled, you can use this code.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$filterByEnterpriseVoiceEnabled&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">GET&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/beta/admin/teams/userConfigurations?&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">filter=isEnterpriseVoiceEnabled eq true&amp;amp;&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">count=true&amp;#34;&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="other-properties">Other Properties
+&lt;/h2>&lt;p>Next to the phone number, we also get values for properties like assigned policies, feature types and enterprise voice enabled status of users.&lt;/p>
+&lt;h2 id="whats-next">Whats Next?
+&lt;/h2>&lt;p>Please keep in mind that beta endpoints are subject to change and should never be used in production.&lt;/p>
+&lt;p>The &lt;a class="link" href="https://learn.microsoft.com/en-us/graph/permissions-reference#teamstelephonenumberreadwriteall" target="_blank" rel="noopener"
+>Graph Permission Reference&lt;/a> already hints at more endpoints coming our way. The &lt;code>TeamsTelephoneNumber.ReadWrite.All&lt;/code> permissions suggests that we&amp;rsquo;ll soon be able to read and write telephone numbers of Teams users through the Graph API.&lt;/p>
+&lt;p>However, that endpoint is still in private preview. When I tried to hit it, I got an error message mentioning the private preview state of this endpoint. I&amp;rsquo;m definitely looking forward to seeing that (hopefully) becoming generally available soon though!&lt;/p></description></item><item><title>Microsoft Graph: How To Filter Users by Phone Number</title><link>https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/</link><pubDate>Thu, 04 Jul 2024 20:20:00 +0000</pubDate><guid>https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/</guid><description>&lt;p>Sometimes, something simple as writing a filter query to search for Entra ID users which have a specific phone number can take way longer than we would like. Instead of making you search through numerous Stack Overflow posts or ask ChatGPT on how to do it, I decided to write this short blog post which will give you everything you need to quickly find Entra ID users which have a specific phone number.&lt;/p>
+&lt;h2 id="number-types">Number Types
+&lt;/h2>&lt;p>The most common numbers in Entra ID are &lt;strong>Mobile phone&lt;/strong> and &lt;strong>Business Phone&lt;/strong>. While the Entra ID admin portal displays &lt;code>Business phone&lt;/code> in singular, the property is actually called &lt;code>businessPhones&lt;/code> and is a string collection.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image.png"
+width="1793"
+height="693"
+srcset="https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu_49c2b27357730239.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image_hu_361eb514353b3b4f.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Phone numbers in Entra ID"
+class="gallery-image"
+data-flex-grow="258"
+data-flex-basis="620px"
+>&lt;/p>
+&lt;h2 id="filter-queries">Filter Queries
+&lt;/h2>&lt;p>&lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#properties" target="_blank" rel="noopener"
+>This&lt;/a> page tells us which conditions are supported for which user properties. I wasn&amp;rsquo;t able to get this to work using &lt;code>Get-MgUser -Filter &amp;quot;Filter Query&amp;quot;&lt;/code> since an API request using an advanced filter query will require a special header. Not long ago, I wrote about the &lt;code>Invoke-MgGraphRequest&lt;/code> &lt;a class="link" href="https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86" >Cmdlet&lt;/a> and how that can be used to call the Graph REST API directly using the session token from &lt;code>Connect-MgGraph&lt;/code>.&lt;/p>
+&lt;p>To make it work, you&amp;rsquo;ll need to create a header with &lt;strong>ConsistencyLevel&lt;/strong>: &lt;code>eventual&lt;/code> which is then added to the Graph Request.&lt;/p>
+&lt;p>Since this is a web request, you&amp;rsquo;ll also need to url encode the &lt;code>+&lt;/code> character. A simple &lt;strong>replace&lt;/strong> with &lt;code>%2B&lt;/code> will do the trick here. It&amp;rsquo;s important to note that this will only work if the phone number is stored on the Entra user exactly the same as what&amp;rsquo;s in the filter query. For example, it won&amp;rsquo;t work if the phone number is stored without spaces in Entra but you&amp;rsquo;re querying it with spaces. If your phone numbers in Entra are a mess, I recommend to take a look at &lt;a class="link" href="https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5" >this&lt;/a> blog post. This will show you how you can format all phone numbers in the same, and most importantly in the correct way.&lt;/p>
+&lt;p>Here&amp;rsquo;s how to create the header.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$header&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ConsistencyLevel&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;eventual&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="powershell-example">PowerShell Example
+&lt;/h3>&lt;p>Here is an example script which contains all possible filter conditions for both mobile and business phone numbers. The important thing here is that the custom header is included and that the &lt;strong>Uri&lt;/strong> includes the &lt;strong>Count&lt;/strong> variable. Note that the &lt;code>businessPhones&lt;/code> property does not support the &lt;code>in&lt;/code> condition.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Connect-MgGraph&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mobileNumber&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;+41 79 456 78 90&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$businessNumber&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;+41 43 123 45 67&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mobileNumberUrlSafe&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$mobileNumber&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Replace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;+&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;%2B&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$businessNumberUrlSafe&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$businessNumber&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Replace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;+&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;%2B&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$header&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ConsistencyLevel&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;eventual&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Filter users by mobile phone number exact match (equals)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mgUserMatchesMobilePhone&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Get&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/users?&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">filter=mobilePhone eq &amp;#39;&lt;/span>&lt;span class="nv">$mobileNumberUrlSafe&lt;/span>&lt;span class="s2">&amp;#39;&amp;amp;&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">count=true&amp;#34;&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span> &lt;span class="n">-Headers&lt;/span> &lt;span class="nv">$header&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Filter users by business phone number exact match (equals)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mgUserMatchesBusinessPhone&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Get&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/users?&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">filter=businessPhones/any(p:p eq &amp;#39;&lt;/span>&lt;span class="nv">$businessNumberUrlSafe&lt;/span>&lt;span class="s2">&amp;#39;)&amp;amp;&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">count=true&amp;#34;&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span> &lt;span class="n">-Headers&lt;/span> &lt;span class="nv">$header&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Filter users by mobile phone number not equals&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mgUserMatchesMobilePhone&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Get&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/users?&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">filter=mobilePhone ne &amp;#39;&lt;/span>&lt;span class="nv">$mobileNumberUrlSafe&lt;/span>&lt;span class="s2">&amp;#39;&amp;amp;&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">count=true&amp;#34;&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span> &lt;span class="n">-Headers&lt;/span> &lt;span class="nv">$header&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Filter users by business phone number not equals&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mgUserMatchesBusinessPhone&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Get&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/users?&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">filter=not businessPhones/any(p:p eq &amp;#39;&lt;/span>&lt;span class="nv">$businessNumberUrlSafe&lt;/span>&lt;span class="s2">&amp;#39;)&amp;amp;&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">count=true&amp;#34;&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span> &lt;span class="n">-Headers&lt;/span> &lt;span class="nv">$header&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Filter users by mobile phone number starts with&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mgUserMatchesMobilePhone&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Get&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/users?&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">filter=startsWith(mobilePhone, &amp;#39;&lt;/span>&lt;span class="nv">$mobileNumberUrlSafe&lt;/span>&lt;span class="s2">&amp;#39;)&amp;amp;&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">count=true&amp;#34;&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span> &lt;span class="n">-Headers&lt;/span> &lt;span class="nv">$header&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Filter users by business phone number starts with&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mgUserMatchesBusinessPhone&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Get&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/users?&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">filter=businessPhones/any(p:startswith(p,&amp;#39;&lt;/span>&lt;span class="nv">$businessNumberUrlSafe&lt;/span>&lt;span class="s2">&amp;#39;))&amp;amp;&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">count=true&amp;#34;&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span> &lt;span class="n">-Headers&lt;/span> &lt;span class="nv">$header&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Filter users by mobile phone number greater or equal&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mgUserMatchesMobilePhone&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Get&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/users?&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">filter=mobilePhone ge &amp;#39;&lt;/span>&lt;span class="nv">$mobileNumberUrlSafe&lt;/span>&lt;span class="s2">&amp;#39;&amp;amp;&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">count=true&amp;#34;&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span> &lt;span class="n">-Headers&lt;/span> &lt;span class="nv">$header&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Filter users by business phone number greater or equal&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mgUserMatchesBusinessPhone&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Get&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/users?&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">filter=businessPhones/any(p:p ge &amp;#39;&lt;/span>&lt;span class="nv">$businessNumberUrlSafe&lt;/span>&lt;span class="s2">&amp;#39;)&amp;amp;&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">count=true&amp;#34;&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span> &lt;span class="n">-Headers&lt;/span> &lt;span class="nv">$header&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Filter users by mobile phone number less or equal&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mgUserMatchesMobilePhone&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Get&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/users?&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">filter=mobilePhone le &amp;#39;&lt;/span>&lt;span class="nv">$mobileNumberUrlSafe&lt;/span>&lt;span class="s2">&amp;#39;&amp;amp;&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">count=true&amp;#34;&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span> &lt;span class="n">-Headers&lt;/span> &lt;span class="nv">$header&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Filter users by business phone number less or equal&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mgUserMatchesBusinessPhone&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Get&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/users?&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">filter=businessPhones/any(p:p le &amp;#39;&lt;/span>&lt;span class="nv">$businessNumberUrlSafe&lt;/span>&lt;span class="s2">&amp;#39;)&amp;amp;&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">count=true&amp;#34;&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span> &lt;span class="n">-Headers&lt;/span> &lt;span class="nv">$header&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Filter users by mobile phone number in&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mobileNumberUrlSafe2&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;+41 79 456 78 91&amp;#34;&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Replace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;+&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;%2B&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mgUserMatchesMobilePhone&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Get&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/users?&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">filter=mobilePhone in [&amp;#39;&lt;/span>&lt;span class="nv">$mobileNumberUrlSafe&lt;/span>&lt;span class="s2">&amp;#39;,&amp;#39;&lt;/span>&lt;span class="nv">$mobileNumberUrlSafe2&lt;/span>&lt;span class="s2">&amp;#39;]&amp;amp;&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">count=true&amp;#34;&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span> &lt;span class="n">-Headers&lt;/span> &lt;span class="nv">$header&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="example-output">Example Output
+&lt;/h4>&lt;p>What&amp;rsquo;s a little weird is that PowerShell outputs an array with name/value pairs instead of a PS custom object.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1.png"
+width="1644"
+height="899"
+srcset="https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hu_92ff7fde5abe850d.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-1_hu_84381021b589bf20.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output from Invoke-MgGraphRequest"
+class="gallery-image"
+data-flex-grow="182"
+data-flex-basis="438px"
+>&lt;/p>
+&lt;p>While it&amp;rsquo;s possible to access properties directly, it doesn&amp;rsquo;t work in &lt;code>Format-Table&lt;/code>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4.png"
+width="1644"
+height="262"
+srcset="https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu_ca1b433299048a88.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-4_hu_bb9630fd73059695.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Format-Table does not work with specific properties"
+class="gallery-image"
+data-flex-grow="627"
+data-flex-basis="1505px"
+>&lt;/p>
+&lt;p>A simple trick to convert the &lt;strong>array&lt;/strong> returned by Graph into a &lt;strong>PS custom object&lt;/strong> I often use is to convert it &lt;strong>to&lt;/strong> Json and than convert it &lt;strong>from&lt;/strong> Json straight away again.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mgUserMatchesMobilePhone&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$mgUserMatchesMobilePhone&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ConvertTo-Json&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ConvertFrom-Json&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Obviously, you can do the same for the &lt;code>$mgUserMatchesBusinessPhone&lt;/code> variable. That will store and display the values as a proper PowerShell object.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3.png"
+width="1644"
+height="899"
+srcset="https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu_aa05bebc5e432893.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-3_hu_f4a255960b2ec256.png 1024w"
+loading="lazy"
+decoding="async"
+alt="There are no name/value pairs anymore."
+class="gallery-image"
+data-flex-grow="182"
+data-flex-basis="438px"
+>&lt;/p>
+&lt;p>Now you can work with the &lt;code>$mgUserMatchesMobilePhone&lt;/code>and &lt;code>$mgUserMatchesBusinessPhone&lt;/code> as expected and do anything you want with them.&lt;/p>
+&lt;h3 id="bonus-tip-power-automate">Bonus Tip (Power Automate)
+&lt;/h3>&lt;p>The standard action &lt;strong>Search for users (V2)&lt;/strong> from the &lt;strong>Office 365 Users&lt;/strong> connector doesn&amp;rsquo;t support to filter for phone numbers of any type.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2.png"
+width="1507"
+height="262"
+srcset="https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu_4de9e5b2909fb265.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-2_hu_e5c8b0d94d0e16f7.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Supported filters for Office 365 Users"
+class="gallery-image"
+data-flex-grow="575"
+data-flex-basis="1380px"
+>&lt;/p>
+&lt;p>Luckily, there&amp;rsquo;s also a an action called &lt;strong>Send an HTTP request&lt;/strong> within the &lt;strong>Office 365 Users&lt;/strong> connector. This will allow you to make the same kinds of advanced requests to the Graph API as I&amp;rsquo;ve shown above with PowerShell.&lt;/p>
+&lt;p>Below is an example of a simple Power Automate Flow that can also filter for Entra ID users by phone number. What&amp;rsquo;s important is that you also need to add the &lt;strong>ConsistencyLevel&lt;/strong> header and that you must remove all occurrences of the escape character &lt;code>`&lt;/code> from the Uri. Since Power Automate does not use &lt;code>$&lt;/code> to define variables, the escape character is not needed/supported here. The &lt;code>&amp;amp;$count=true&lt;/code> also needs to be included at the end of the Uri.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5.png"
+width="938"
+height="1296"
+srcset="https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_hu_15810a0c6ec70930.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-5_hu_2571de27c697ea1d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Power Automate Flow to filter for users by phone number"
+class="gallery-image"
+data-flex-grow="72"
+data-flex-basis="173px"
+>&lt;/p>
+&lt;p>Since this is just an example, the phone number used as the filter is simply stored in &lt;strong>Compose Phone Number&lt;/strong> action. The next action, &lt;strong>Compose Phone Number URL Safe&lt;/strong> will replace the &lt;code>+&lt;/code> with &lt;code>%2B&lt;/code> using an expression.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">replace(outputs(&amp;#39;Compose_Phone_Number&amp;#39;), &amp;#39;+&amp;#39;, &amp;#39;%2B&amp;#39;)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>To extract the Display Name of the result, I&amp;rsquo;m using another compose action with the following expression.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">outputs(&amp;#39;Send_an_HTTP_request&amp;#39;)?[&amp;#39;body&amp;#39;]?[&amp;#39;value&amp;#39;][0][&amp;#39;displayName&amp;#39;]
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="example-output-1">Example Output
+&lt;/h4>&lt;p>If there is a user match for the phone number, Graph will return a nice Json response to Power Automate.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6.png"
+width="960"
+height="1138"
+srcset="https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu_28f9711ae8084ce3.png 480w, https://heusser.pro/p/microsoft-graph-how-to-filter-users-by-phone-number-b659lvqwir32/image-6_hu_370e74537fcbb3f8.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output from Microsoft Graph within Power Automate"
+class="gallery-image"
+data-flex-grow="84"
+data-flex-basis="202px"
+>&lt;/p>
+&lt;h2 id="summary--download">Summary &amp;amp; Download
+&lt;/h2>&lt;p>I hope that these examples help you with whatever you&amp;rsquo;re trying to achieve. I&amp;rsquo;m certainly going to use this blog post as a cheat sheet for myself in the future. You can also download the entire script from my &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/EntraID/FilterGraphUsersByPhoneNumber.ps1" target="_blank" rel="noopener"
+>GitHub&lt;/a> profile.&lt;/p></description></item><item><title>Minimize Downtime when Porting Numbers to Microsoft Teams Calling Plans</title><link>https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/</link><pubDate>Sat, 03 Feb 2024 00:00:00 +0000</pubDate><guid>https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/</guid><description>&lt;p>Number porting can sometimes be a tedious process but Microsoft actually does a really good job with their Porting Wizard in the Microsoft Teams Admin Center (TAC). I recently had to port a lot of numbers from a previous carrier to Microsoft. As you may know, there are two main types for numbers with Calling Plans and Operator Connect: &lt;code>Subscriber&lt;/code> and &lt;code>Service&lt;/code> numbers. Subscriber numbers can be assigned to users and Service numbers are for use with voice apps (auto attendants and call queues) or dedicated conference bridges. By default, all numbers are created in your tenant as Subscriber numbers but you will be able to change the usage to Service for specific numbers during the port order creation process.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-45-03-19-45-27.png"
+width="1239"
+height="173"
+srcset="https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-45-03-19-45-27_hu_83d10b7e9a73742c.png 480w, https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-45-03-19-45-27_hu_38f235f0272a4be9.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Usages of numbers can only be changed during the initial creation of the port request."
+class="gallery-image"
+data-flex-grow="716"
+data-flex-basis="1718px"
+>&lt;/p>
+&lt;p>When you&amp;rsquo;re porting hundreds of numbers, it&amp;rsquo;s easy to forget or overlook an important number that should have been labelled as Service but unfortunately, was missed. Once the port order has been submitted, there&amp;rsquo;s no way of changing the usage anymore until the numbers have been fully ported to your tenant. I confirmed this with Microsoft through a PSTN Service Desk support request. At this point, your only two options are to either cancel the port order request and start over or accept that you can only change the usage after the numbers have been ported. Since cancelling and starting over will mean that there will be an unwelcome delay of at least a couple of days, that&amp;rsquo;s not really a viable option in most cases. Today, I&amp;rsquo;m going to show you a very easy workaround how you can make sure that your auto attendant or call queue will still be reachable by their phone number as soon as the port order has completed.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-47-03-19-47-17.png"
+width="2046"
+height="666"
+srcset="https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-47-03-19-47-17_hu_def2f7d961b19f0.png 480w, https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-47-03-19-47-17_hu_5b8199332ce612cf.png 1024w"
+loading="lazy"
+decoding="async"
+alt="User = Subscriber / Conference, Voice app = Service"
+class="gallery-image"
+data-flex-grow="307"
+data-flex-basis="737px"
+>&lt;/p>
+&lt;h2 id="workaround">Workaround
+&lt;/h2>&lt;p>When a number gets created as a Subscriber number, you won&amp;rsquo;t be able to assign it to an auto attendant or a call queue. But you can still create the resource account that&amp;rsquo;s linked to the voice app in advance. All you need to do to ensure that the voice app is reachable via it&amp;rsquo;s phone number is to create a temporary routing rule. To do so, navigate to &lt;strong>Voice\Phone numbers&lt;/strong> in TAC and switch to &lt;strong>Routing rules&lt;/strong>. Click &lt;strong>+ Add&lt;/strong> to create a new rule. Give the rule a name and fill out the description. Then choose &lt;code>Single number&lt;/code> and enter your number. Under &lt;strong>Routing options&lt;/strong> choose &lt;code>Voice application&lt;/code> and select your auto attendant or call queue from the list. If you already have other rules, set the &lt;code>Evaluation order&lt;/code> to a value that&amp;rsquo;s not already in use. If you don&amp;rsquo;t already have other rules with a lower evaluation order and which use regular expressions which could also match your number, it doesn&amp;rsquo;t really matter what you set this value to.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-56-03-19-56-02.png"
+width="541"
+height="1302"
+srcset="https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-56-03-19-56-02_hu_b56dcdda82fcb795.png 480w, https://heusser.pro/p/minimize-downtime-when-porting-numbers-to-microsoft-teams-calling-plans-ix1vcwlfjbyr/Screenshot-2024-56-03-19-56-02_hu_763a5783620f9964.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Unassigned routing rule for the number that was accidentally left on User instead of Voice app."
+class="gallery-image"
+data-flex-grow="41"
+data-flex-basis="99px"
+>&lt;/p>
+&lt;p>It&amp;rsquo;s very important that you don&amp;rsquo;t assign this number to any user. The rule is only effective for unassigned numbers. Usually, it takes a couple of hours until these rules become effective but if you do it at least one day before the porting date, you should be fine. Of course you could also set up a temporary user and forward all calls to that user to your voice app but that requires more work and more importantly a paid license.&lt;/p>
+&lt;p>If somebody calls that number before you were able to change the usage to Service and assign it to the voice app, the calls will show as &lt;code>unassigned_in&lt;/code> in the PSTN usage report in TAC. However, the calls will be routed to the voice app you specified in your routing rule without any issues. Service numbers can receive a lot more concurrent calls than subscriber numbers can. However, I made some tests and was able to establish &lt;strong>10 concurrent calls&lt;/strong> to a call queue where each call was routed through an unassigned routing rule.&lt;/p>
+&lt;p>&lt;strong>In any case, I recommend to change the usage and assign the number to a resource account as quickly as possible. Using a routing rule is only a temporary workaround.&lt;/strong>&lt;/p>
+&lt;p>Once the numbers have been ported, you can go to &lt;code>Voice\Phone numbers&lt;/code> in TAC again and search for the number in question. Sometimes you can change the usage directly from TAC. If you don&amp;rsquo;t see that option, create a new support request at the PSTN service desk. They&amp;rsquo;re usually quite fast and will change the usage within a couple of hours after creating the request.&lt;/p>
+&lt;p>When you receive confirmation from Microsoft that the usage has been changed, you can assign the number to the resource account of the voice app directly and delete the routing rule. As soon as the number is assigned to the resource account, the unassigned routing rule will not match anymore. This little workaround will allow you to keep the downtime to a minimum. In fact, you won&amp;rsquo;t have any downtime except the time it takes your old carrier to switch the routing to Microsoft.&lt;/p>
+&lt;h2 id="caveats">Caveats
+&lt;/h2>&lt;p>The only caveat you have to consider is when you want to use that number as an outgoing caller ID. Since you can&amp;rsquo;t assign it to a resource account before the usage was switched to Service, you won&amp;rsquo;t be able to configure it as caller ID for call queues or to a Caller ID policy. If you can live with the fact that you can&amp;rsquo;t use the number as outgoing caller ID for a couple of hours, there&amp;rsquo;s really no reason to panic and cancel the port request because you forgot to change the usage of some numbers.&lt;/p>
+&lt;h2 id="closing-words">Closing Words
+&lt;/h2>&lt;p>To me that was a gentle reminder that mistakes can happen to all of us. But as always, I tried to keep a clear head and look for a solution and most importantly share it with the awesome Teams community so all of you can take advantage of this knowledge as well.&lt;/p></description></item><item><title>Teams Phone Number Management List Part 3</title><link>https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/</link><pubDate>Thu, 16 Nov 2023 10:30:16 +0000</pubDate><guid>https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/</guid><description>&lt;p>I think it’s safe to say by now that this project has been a success. I’ve received lots of positive feedback about this from the community.&lt;/p>
+&lt;p>That didn’t stop me from going even further and adding more features to this project though.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1VrXnQeg6wj3KJYetSCXQ.png"
+width="1080"
+height="1080"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1VrXnQeg6wj3KJYetSCXQ_hu_e1d6baea0fece90e.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1VrXnQeg6wj3KJYetSCXQ_hu_5322f738578521d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="100"
+data-flex-basis="240px"
+>&lt;/p>
+&lt;h3 id="new-features-and-improvements">New Features and Improvements
+&lt;/h3>&lt;h4 id="localized--formatted-phonenumbers">Localized / Formatted Phone Numbers
+&lt;/h4>&lt;p>As you may know by now, I consider myself a data driven guy. What I really dig about Teams phone is the fact that every number is a full E.164 number in every case. This kind of absoluteness provides great safety because each number is unique. Just as with user principal names or GUIDs, there’s no funny business going on.&lt;/p>
+&lt;p>That safety comes at the cost of readability though. If you’ve seen &lt;a class="link" href="https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5" >this&lt;/a> article before, then you already know that I came up with a solution to format phone numbers in their local format using Python.&lt;/p>
+&lt;p>The runbook logic powering the list can now also leverage Python to store the formatted phone number in an additional column. This way you always have both, the E.164 number and a prettified version of it readily available.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1eH5p9VVDZ9zlnSfb0G9A.png"
+width="999"
+height="488"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1eH5p9VVDZ9zlnSfb0G9A_hu_7022d15e6eeaa66.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1eH5p9VVDZ9zlnSfb0G9A_hu_f4668b82a68aff8d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="204"
+data-flex-basis="491px"
+>&lt;/p>
+&lt;p>For US numbers or numbers from other countries such as Japan or Israel which typically use hyphens, you might have noticed that I’m removing the hyphens, even though they’re included after a number has been formatted using the phonenumbers library. I do this so that every number in the list contains only digits and a plus sign. Also, it’s how Teams Admin Center displays the numbers.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1eq5k3nw1Nd6nFTUTjoxFQ.png"
+width="1670"
+height="123"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1eq5k3nw1Nd6nFTUTjoxFQ_hu_bc50ccfd5441646d.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1eq5k3nw1Nd6nFTUTjoxFQ_hu_c7113618fa5125fc.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="1357"
+data-flex-basis="3258px"
+>&lt;/p>
+&lt;h4 id="write-back-teams-phone-number-to-entraid">Write back Teams Phone Number to Entra ID
+&lt;/h4>&lt;p>When you view a user’s profile card in Teams, Outlook or anywhere else in Microsoft 365, it doesn’t display the phone number which is actually configured as &lt;strong>LineURI&lt;/strong> in Teams. Instead, the information is taken from Entra ID. I’ve created a variable inside the runbook which controls if the &lt;strong>BusinessPhones&lt;/strong> property of Entra ID users should be set to the assigned &lt;strong>LineUri&lt;/strong> in Teams. I’ll explain how to turn this &lt;strong>on&lt;/strong> or &lt;strong>off&lt;/strong> later in this article.&lt;/p>
+&lt;p>With the current permissions/scopes assigned to the Entra ID App registration, this only works for users which don’t have any administrator roles assigned in Entra ID. If a user has an admin role, you’ll get an error.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1raGaYRAkmtuYw6eis0Y9A.png"
+width="1677"
+height="150"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1raGaYRAkmtuYw6eis0Y9A_hu_89f4a19b579804a0.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1raGaYRAkmtuYw6eis0Y9A_hu_8a85757495e0ae5a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="1118"
+data-flex-basis="2683px"
+>&lt;/p>
+&lt;h4 id="previous-usercolumn">Previous User Column
+&lt;/h4>&lt;p>I’ve added a new column which shows the UPN of the previous user/owner of a number after it has been removed. This is achieved by an update I made to the Power Automate Flow. Note that the flow will now also retain the value of the &lt;strong>Comment&lt;/strong> column.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1BEWqNsDCKrY0BOBbMc9tkg.png"
+width="1455"
+height="255"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1BEWqNsDCKrY0BOBbMc9tkg_hu_9420fcbe4ade5972.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1BEWqNsDCKrY0BOBbMc9tkg_hu_5cfca7fa890d7c20.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="570"
+data-flex-basis="1369px"
+>&lt;/p>
+&lt;p>The reason for this column is that you have a better overview over who has previously used a number. I’m sure you don’t want to assign the previous CEO’s number to a new intern.&lt;/p>
+&lt;h4 id="unassigned-routingrules">Unassigned Routing Rules
+&lt;/h4>&lt;p>When people leave, we sometimes want to forward their unassigned number to another person in the company or to the main number. This is done by routing rules. But do we typically remember or even know that such rules have been created in the past…? Now we do!&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1mazY1aTB8fOWSqHcKsnSrA.png"
+width="2160"
+height="518"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1mazY1aTB8fOWSqHcKsnSrA_hu_b4080f47867d04a3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1mazY1aTB8fOWSqHcKsnSrA_hu_95ed7411c80aaf45.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="416"
+data-flex-basis="1000px"
+>&lt;/p>
+&lt;p>Every number is checked against all routing rules a tenant has configured and if there are any matches, they’re reflected on the list. The name of the matching rule gets stored in the &lt;strong>User Name&lt;/strong> column. (Because this column isn’t used for the flow trigger condition.)&lt;/p>
+&lt;p>This even works if a number is reserved. In this case, the status will be changed to &lt;strong>Reserved (Routing Rule)&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1nLAAAS1BoTH5RfGGN788Q.png"
+width="1767"
+height="615"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1nLAAAS1BoTH5RfGGN788Q_hu_47c0c548165f9e87.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1nLAAAS1BoTH5RfGGN788Q_hu_2585d3cded3f7066.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="287"
+data-flex-basis="689px"
+>&lt;/p>
+&lt;h4 id="improved-number-assignment-capabilities">Improved Number Assignment Capabilities
+&lt;/h4>&lt;p>I’ve also made some improvements to assigning numbers. If a number has a status of &lt;strong>Reserved (Routing Rule)&lt;/strong> or &lt;strong>Assignment Error&lt;/strong>, the script will try to assign the number as well. In the case of an assignment error, the script will try to assign the number again with each new job. This is helpful in scenarios where e.g. a license hasn’t been assigned yet.&lt;/p>
+&lt;p>Furthermore, you can now also reserve a number and enter the user’s UPN in the &lt;strong>User Principal Name&lt;/strong> column. This is great if the account does not exist yet (so you can’t fill in the &lt;strong>User Profile&lt;/strong>) but you already know the UPN of a soon to be created user. All of these changes make it easier for you to plan ahead and have the runbook take care of everything automatically, once a user has been created and licensed.&lt;/p>
+&lt;h4 id="operator-column">Operator Column
+&lt;/h4>&lt;p>Last but not least, the list now also displays the name of the &lt;strong>Operator&lt;/strong>. This works for all types, including &lt;strong>Direct Routing&lt;/strong>. You will have to manually list the operator name for each Direct Routing number in your source CSV though.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1uGIXZRh99eE0prMLPkLnA.png"
+width="1874"
+height="612"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1uGIXZRh99eE0prMLPkLnA_hu_16931b902547c67.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1uGIXZRh99eE0prMLPkLnA_hu_ca26602676017de3.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="306"
+data-flex-basis="734px"
+>&lt;/p>
+&lt;h3 id="updating-all-the-components">Updating All the Components
+&lt;/h3>&lt;p>I will most likely update the deployment script at some point to deploy everything from scratch including all the updates. If I can find enough time, I may also create an update script to update an existing deployment.&lt;/p>
+&lt;p>But today, I’ll show you how to implement all the changes manually in an existing deployment which consists of an Azure automation account, a list, a flow and your local source files.&lt;/p>
+&lt;p>&lt;strong>To do these steps, you should have followed and deployed everything as described in&lt;/strong> &lt;a class="link" href="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf" >&lt;strong>this&lt;/strong>&lt;/a> &lt;strong>article and implemented all the updates described in&lt;/strong> &lt;a class="link" href="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a" >&lt;strong>this&lt;/strong>&lt;/a> &lt;strong>article.&lt;/strong>&lt;/p>
+&lt;h4 id="add-newcolumns">Add New Columns
+&lt;/h4>&lt;p>Add the following columns to the SharePoint list. All columns must be of type &lt;strong>text&lt;/strong>.&lt;/p>
+&lt;ul>
+&lt;li>Comment&lt;/li>
+&lt;li>Previous User&lt;/li>
+&lt;li>Operator&lt;/li>
+&lt;li>Phone Number&lt;/li>
+&lt;/ul>
+&lt;h4 id="add-the-phonenumbers-python-package-to-the-automation-account">Add the phonenumbers Python Package to the Automation Account
+&lt;/h4>&lt;p>Go to &lt;a class="link" href="https://pypi.org/project/phonenumbers/#files" target="_blank" rel="noopener"
+>this&lt;/a> website and download the built distribution (*.whl) file to your PC. Then go to your automation account in Azure Portal and upload the file under &lt;strong>Python packages&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1g7hFFDAp9c6HwdMFUIimw.png"
+width="1298"
+height="655"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1g7hFFDAp9c6HwdMFUIimw_hu_da60db5a0d3062c8.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1g7hFFDAp9c6HwdMFUIimw_hu_90f9106826f60567.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="198"
+data-flex-basis="475px"
+>&lt;/p>
+&lt;h4 id="add-automation-variables-to-automation-account">Add Automation Variables to Automation Account
+&lt;/h4>&lt;p>Add the following variables to your automation account. Since you’ll need to enter a value, just type a dot (“.”). Leave the integer value at 0.&lt;/p>
+&lt;ul>
+&lt;li>TeamsPhoneNumberOverview_AllCsOnlineNumbers (String)&lt;/li>
+&lt;li>TeamsPhoneNumberOverview_PrettyNumbers (String)&lt;/li>
+&lt;li>TeamsPhoneNumberOverview_TotalNumberCount (Integer)&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1A6uNqGeSwBjpEuMGTuhw.png"
+width="1524"
+height="842"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1A6uNqGeSwBjpEuMGTuhw_hu_50edc387662a538b.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1A6uNqGeSwBjpEuMGTuhw_hu_7f11e91cb8c7947b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="180"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;h4 id="add-operator-info-to-your-direct-routingnumbers">Add Operator info to your Direct Routing Numbers
+&lt;/h4>&lt;p>If you have direct routing numbers, you’ll need to update your source list. The old structure only had one column called &lt;strong>PhoneNumber&lt;/strong>. Now there’s &lt;strong>PhoneNumber&lt;/strong> and &lt;strong>Operator&lt;/strong>.&lt;/p>
+&lt;p>PhoneNumber;Operator&lt;br>
+4144520xxxx;Test Provider 1&lt;br>
+4144512xxxx;Test Provider 2&lt;br>
+4144512xxxx;Test Provider 3&lt;/p>
+&lt;p>Place your updated CSV in &lt;code>.\Resources\DirectRoutingNumbers-V2.csv&lt;/code> and then run &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Setup/UpdateDirectRoutingNumbers-V2.ps1" target="_blank" rel="noopener"
+>this&lt;/a> script to update your automation variable in Azure.&lt;/p>
+&lt;p>Alternatively, you can also run the below code and paste the content into your &lt;code>TeamsPhoneNumberOverview_DirectRoutingNumbers&lt;/code> automation variable.&lt;/p>
+&lt;p>&amp;ldquo;&amp;rsquo;&amp;rdquo; + (Import-Csv -Path .\Resources\DirectRoutingNumbers-V2.csv -Delimiter &amp;ldquo;;&amp;rdquo; | ConvertTo-Json | Out-String) + &amp;ldquo;&amp;rsquo;&amp;rdquo; | Set-Clipboard&lt;/p>
+&lt;h4 id="create-a-pythonrunbook">Create a Python Runbook
+&lt;/h4>&lt;p>Go to your runbooks in your automation account and click &lt;strong>Create a runbook&lt;/strong>. Name it &lt;code>Format-TeamsPhoneNumbers&lt;/code> and choose &lt;strong>Python&lt;/strong> as runbook type and &lt;strong>3.10 (preview)&lt;/strong> as runtime version.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1rgIq7gWJ29Wa9rBctif0A.png"
+width="1226"
+height="590"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1rgIq7gWJ29Wa9rBctif0A_hu_6d39c1ba538bfa2.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1rgIq7gWJ29Wa9rBctif0A_hu_1adbd065aeddfe1b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="207"
+data-flex-basis="498px"
+>&lt;/p>
+&lt;p>Grab &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Functions/Format-TeamsPhoneNumbers.py" target="_blank" rel="noopener"
+>this&lt;/a> code and paste it into the Azure portal. Save and publish the runbook.&lt;/p>
+&lt;h4 id="setup-a-managed-identity-and-permissions">Setup a Managed Identity and Permissions
+&lt;/h4>&lt;p>Every time the main runbook runs, it will check if the total number count is still the same by comparing the current count to the count of the previous job which is stored in the &lt;strong>TeamsPhoneNumberOverview_TotalNumberCount&lt;/strong> variable. If the count of numbers is different compared to the previous job, the main runbook will start the python runbook. The python runbook will use the phonenumbers library to format all your phone numbers to their localized format.&lt;/p>
+&lt;p>However, we must first allow the runbook to start another runbook job using a managed identity. In the automation account, go to &lt;strong>Identity&lt;/strong> and flip the toggle switch for &lt;strong>System assigned&lt;/strong> (managed identity) to &lt;strong>On&lt;/strong>. Then click &lt;strong>Save&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1EDBRytpBpi8HYFN2kwiLdA.png"
+width="2113"
+height="500"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1EDBRytpBpi8HYFN2kwiLdA_hu_d7e0811a4bd90c1b.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1EDBRytpBpi8HYFN2kwiLdA_hu_c36238ca86dbb4ce.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="422"
+data-flex-basis="1014px"
+>&lt;/p>
+&lt;p>Click &lt;strong>Azure role assignments&lt;/strong> and then &lt;strong>Add role assignment (Preview)&lt;/strong>. Set the scope to &lt;strong>Resource group&lt;/strong>, select your subscription and resource group and choose &lt;strong>Automation Operator&lt;/strong> as role.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1gnhE04XQSUDcagh8wASow.png"
+width="1256"
+height="504"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1gnhE04XQSUDcagh8wASow_hu_4dea5d254f3b494f.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1gnhE04XQSUDcagh8wASow_hu_596ddc1f1398854.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="249"
+data-flex-basis="598px"
+>&lt;/p>
+&lt;p>Click &lt;strong>Save&lt;/strong>.&lt;/p>
+&lt;h4 id="update-the-mainrunbook">Update the Main Runbook
+&lt;/h4>&lt;p>Replace the code in the &lt;strong>TeamsPhoneOverview&lt;/strong> runbook with &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/TeamsPhoneNumberOverview%20-V2.ps1" target="_blank" rel="noopener"
+>this&lt;/a> code. &lt;strong>Make sure to change the&lt;/strong> &lt;code>**$localTestMode**&lt;/code> &lt;strong>variable to&lt;/strong> &lt;code>**$false**&lt;/code> &lt;strong>before you save and publish the runbook. Also update the names of your automation account and resource group on lines 95–97.&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1Szx2vDwh4929HXR4DPp4MA.png"
+width="522"
+height="79"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1Szx2vDwh4929HXR4DPp4MA_hu_1f096338280888cb.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1Szx2vDwh4929HXR4DPp4MA_hu_3d29e348e84512f4.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="660"
+data-flex-basis="1585px"
+>&lt;/p>
+&lt;p>If you don’t want to write back user’s &lt;strong>LineURIs&lt;/strong> to Entra ID &lt;strong>BusinessPhones&lt;/strong>, change &lt;code>syncTeamsPhoneNumbersToEntraIdBusinessPhones&lt;/code> to &lt;code>$false&lt;/code> on line 6.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1MFWbPjRVqUjXwHAw5HdDZg.png"
+width="415"
+height="20"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1MFWbPjRVqUjXwHAw5HdDZg_hu_864f8be38dfd4cf1.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1MFWbPjRVqUjXwHAw5HdDZg_hu_b92fbcc2dcdcdffd.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="2075"
+data-flex-basis="4980px"
+>&lt;/p>
+&lt;h4 id="update-theflow">Update the Flow
+&lt;/h4>&lt;p>Finally, go to your flow and make the last small changes. In here, add the values for the new columns that we created. If you need a refresher, this is the part where the flow deletes numbers which were unassigned because there’s no way to remove the user profile. We then recreate the list entry with all the information &lt;strong>except&lt;/strong> the &lt;strong>User Profile Claims&lt;/strong>. Because the user profile stays, we can use the &lt;strong>User Profile Email&lt;/strong> and write it to the &lt;strong>Previous User&lt;/strong> column. Comments in the comment field will also be added again, once a deleted entry has been recreated.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1BvLOlUfRBHAr1IFNxm7tYg.png"
+width="929"
+height="1374"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1BvLOlUfRBHAr1IFNxm7tYg_hu_9f1ae3b393ae527b.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-3-e083a320004d/1BvLOlUfRBHAr1IFNxm7tYg_hu_8dfa75a1b319817b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="67"
+data-flex-basis="162px"
+>&lt;/p>
+&lt;h4 id="update-the-flow-trigger-condition">Update the Flow Trigger Condition
+&lt;/h4>&lt;p>The current trigger condition checks if a user’s email address is equal to the user principal name. As much as I want this to always be the case, the reality is sometimes different. Some readers have reported that their Flow gets stuck in an infinite trigger loop because of that.&lt;/p>
+&lt;p>I’ve slightly tweaked the trigger condition, so it doesn’t compare the email address to the UPN anymore. Instead, the UPN is extracted from the user profile using a split operation and then compared to the UPN from the list column. Here’s the &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Resources/FlowTriggerConditionRobustUpn.txt" target="_blank" rel="noopener"
+>updated trigger condition&lt;/a>. Make sure to update it on your flow as well as it will be more robust than the old one.&lt;/p>
+&lt;p>@or(&lt;br>
+and(&lt;br>
+not(equals(triggerOutputs()?[&amp;lsquo;body/User_x0020_Principal_x0020_Name&amp;rsquo;], &amp;lsquo;Unassigned&amp;rsquo;)),&lt;br>
+not(contains(triggerBody(), &amp;lsquo;UserProfile&amp;rsquo;))&lt;br>
+),&lt;br>
+not(equals(toLower(triggerOutputs()?[&amp;lsquo;body/User_x0020_Principal_x0020_Name&amp;rsquo;]), split(toLower(triggerOutputs()?[&amp;lsquo;body/UserProfile&amp;rsquo;][&amp;lsquo;Claims&amp;rsquo;]),&amp;rsquo;|&amp;rsquo;)[2])),&lt;br>
+and(&lt;br>
+contains(triggerBody(), &amp;lsquo;UserProfile&amp;rsquo;),&lt;br>
+not(equals(triggerOutputs()?[&amp;lsquo;body/User_x0020_Principal_x0020_Name&amp;rsquo;], &amp;lsquo;Unassigned&amp;rsquo;)),&lt;br>
+not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br>
+)&lt;br>
+)&lt;/p>
+&lt;p>That’s all. If you’ve followed all the steps, you should now be able to make use of all the new features I created. Like I said, I’ll try to find some time and create a new deployment script which deploys the version 2 from scratch. I hope you enjoy the list as much as I do.&lt;/p></description></item><item><title>PowerShell Script: Set Emergency Location for Unassigned Numbers in Teams</title><link>https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/</link><pubDate>Fri, 11 Aug 2023 16:23:20 +0000</pubDate><guid>https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/</guid><description>&lt;p>&lt;img src="https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/0rgv90To2E1EOPe.jpg"
+width="1024"
+height="1024"
+srcset="https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/0rgv90To2E1EOPe_hu_ff57815dc3ada66c.jpg 480w, https://heusser.pro/p/powershell-script-set-emergency-location-for-unassigned-numbers-in-teams-5e00c61b4246/0rgv90To2E1EOPe_hu_f75e99138d2a5f90.jpg 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="100"
+data-flex-basis="240px"
+>&lt;/p>
+&lt;p>With the MicrosoftTeams PowerShell module version &lt;strong>5.4.0.&lt;/strong> Microsoft has added the possibility to set the emergency location on unassigned numbers.&lt;/p>
+&lt;p>Typically, whenever new numbers are bought or ported to Microsoft, an admin needs to specify the emergency address which should be assigned to the new numbers. In some cases, this process can fail which means that you could end up with user/subscriber numbers which don’t have an emergency address linked to it.&lt;/p>
+&lt;p>When you try to assign a number wich does not have an emergency location assigned, you’ll get an error, and you need to assign it again, including the &lt;code>-LocationId&lt;/code> .&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Set-CsPhoneNumberAssignment&lt;/span> &lt;span class="n">-PhoneNumber&lt;/span> &lt;span class="nv">$number&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">TelephoneNumber&lt;/span> &lt;span class="n">-LocationId&lt;/span> &lt;span class="nv">$matchingEmergencyLocationId&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>This is an operational risk since scripts that may have been working fine for months suddenly stop working properly for certain numbers and new users could end up without a phone number. To mitigate this risk, it’s best to make sure that all your numbers have an emergency address linked to them from the get-go.&lt;/p>
+&lt;p>Up until now, the only way to solve this issue was to create a case for Microsoft’s PSTN service desk team and ask them to assign a location Id to your unassigned number.&lt;/p>
+&lt;p>Previously, I’ve tackled this issue by making sure that my scripts checked if the number was assigned successfully. If it wasn’t I made sure that the number got assigned again including the location Id.&lt;/p>
+&lt;p>I also thought about creating a dummy user and a script which I could (mis)use. The script would get all unassigned numbers which don’t have a location Id assigned and processes all numbers after each other. Each time, the user’s usage location would be set to the country of the current number, the number would be assigned to the dummy user including the location Id and then unassigned again. However, that sounded like a waste of time to me, so I never pursued that idea.&lt;/p>
+&lt;p>The possibilities now are much better, and the recent update allowed me to create a simple script which makes sure that all unassigned numbers also have a location Id assigned.&lt;/p>
+&lt;p>&lt;strong>Please note that the script assumes that there’s only ever 1 emergency address per city and that there’s at least 1 other number which already uses the correct emergency address.&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>If your environment does not meet the above criteria, you can’t use this script without tailoring it specifically to your needs. Use it at your own risk!&lt;/strong>&lt;/p>
+&lt;p>Also note that you need to clone or download the &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation" target="_blank" rel="noopener"
+>GitHub repo&lt;/a> since it depends on other functions present in the repo.&lt;/p>
+&lt;script src="https://gist.github.com/mozziemozz/3d750fef739c17a73832f542459fac72.js">&lt;/script>
+&lt;p>I hope this helps you in streamlining and optimizing your phone number inventory.&lt;/p></description></item><item><title>Prettify and Sync Teams Phone Numbers to Azure AD</title><link>https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/</link><pubDate>Thu, 06 Jul 2023 22:30:04 +0000</pubDate><guid>https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/</guid><description>&lt;p>I am a very data and fact driven guy. I strongly believe that clean, consistent and structured data is a tremendously important aspect of information technology.&lt;/p>
+&lt;p>An example of inconsistency to which probably most Teams Phone admins can relate is that there is no relation between a Teams user’s &lt;strong>LineURI&lt;/strong> and the &lt;strong>BusinessPhones&lt;/strong> property of the same user in Azure AD.&lt;/p>
+&lt;p>The problem is that throughout Microsoft 365 only the values in Azure AD are published on profile cards. This includes Teams and Outlook. A different phone number in Azure AD than in Teams can create all kinds of problems. Inbound calls might not get routed to a Teams user or calls may be transferred to a wrong user if a call is placed via the number available on a profile card.&lt;/p>
+&lt;p>Here’s an example of a profile card which shows the user’s phone number from Azure AD.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1qJTQBFoMOT8Ch8SBVGw9w.png"
+width="476"
+height="554"
+srcset="https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1qJTQBFoMOT8Ch8SBVGw9w_hu_db01875526f3e149.png 480w, https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1qJTQBFoMOT8Ch8SBVGw9w_hu_a6e00e9ff02cd92e.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="85"
+data-flex-basis="206px"
+>&lt;/p>
+&lt;p>If we check the same user in Teams Admin Center, we can see that he has a different LineURI.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1XgygFkOc2ljYRbuaPiZ3hA.png"
+width="1162"
+height="393"
+srcset="https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1XgygFkOc2ljYRbuaPiZ3hA_hu_b481940ff29971fd.png 480w, https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1XgygFkOc2ljYRbuaPiZ3hA_hu_b1378f39a4d8836c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="295"
+data-flex-basis="709px"
+>&lt;/p>
+&lt;p>When it comes to phone numbers in Teams, I view the LineURI as the single source of truth. Writing a simple script which mirrors the LineURI to Azure AD seemed like an easy task.&lt;/p>
+&lt;p>But then I realized that I can only get the raw value of the LineURI which doesn’t include any spaces which makes it hard to read or spell on profile cards.&lt;/p>
+&lt;p>While the phone number is displayed nicely formatted according to the local and regional format in TAC or in the Teams Client, it looks like this in PowerShell.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1QTijGX2jlRXoWNmqhMU8jg.png"
+width="1265"
+height="139"
+srcset="https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1QTijGX2jlRXoWNmqhMU8jg_hu_ea44e5ab71c2f300.png 480w, https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1QTijGX2jlRXoWNmqhMU8jg_hu_fcea3c587607f834.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="910"
+data-flex-basis="2184px"
+>&lt;/p>
+&lt;p>The Teams Client also displays the number in the correct format.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1G4CllxCII1RWb7GAPyBPQ.png"
+width="541"
+height="731"
+srcset="https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1G4CllxCII1RWb7GAPyBPQ_hu_a5749697272db881.png 480w, https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1G4CllxCII1RWb7GAPyBPQ_hu_1049f9fbafe61980.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="74"
+data-flex-basis="177px"
+>&lt;/p>
+&lt;p>I started to dig around in the browser dev tools to try and see if I could find these formatted numbers anywhere. Not luck. I could only ever find the raw values. I did some more research and learned that there are a couple of already existing and well-established libraries for various programming languages such as Python or Node.JS.&lt;/p>
+&lt;p>A few years ago, I made some attempts to learn the basics of Python but since I never really used it in real life, I kind of forgot everything. Thanks to ChatGPT I then learned that it’s actually possible to run python code inline in any PowerShell script. Good for me.&lt;/p>
+&lt;p>Now I have a neat little script which not only copies the LineURI of all Teams Phone users to Azure AD, but it also prettifies them in the same way as TAC and the Teams client do!&lt;/p>
+&lt;h3 id="the-script">The Script
+&lt;/h3>&lt;p>Note: The script has only been tested on Windows 11 using Python 3.11.1.&lt;/p>
+&lt;h4 id="prerequisties">Prerequisties
+&lt;/h4>&lt;ol>
+&lt;li>Install &lt;a class="link" href="https://www.python.org/" target="_blank" rel="noopener"
+>Python&lt;/a> on your machine&lt;/li>
+&lt;li>Run the following command to install the &lt;strong>phonenumbers&lt;/strong> library &lt;code>python -m pip install phonenumbers&lt;/code>&lt;/li>
+&lt;li>Clone the &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/tree/main" target="_blank" rel="noopener"
+>repository&lt;/a> from my GitHub account &lt;br>
+&lt;code>git clone [https://github.com](https://github.com)/mozziemozz/TeamsPhoneAutomation.git&lt;/code>&lt;/li>
+&lt;li>Make sure that the &lt;strong>MicrosoftTeams&lt;/strong> and &lt;strong>Microsoft.Graph&lt;/strong> PowerShell modules are installed&lt;/li>
+&lt;/ol>
+&lt;h4 id="code">Code
+&lt;/h4>&lt;p>This is the script. It connects to Teams and Graph, gets all Teams users with a LineURI and then prettifies each LineURI before it’s set on the user’s BuinessPhones property in Azure AD.&lt;/p>
+&lt;script src="https://gist.github.com/mozziemozz/c05ddbd07a9b102fbf94ef1c30bba490.js">&lt;/script>
+&lt;p>If you prefer connecting via Azure AD Service Principal, there’s also a &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PhoneNumberFormatting/PrettifyPhoneNumbersServicePrincipal.ps1" target="_blank" rel="noopener"
+>version&lt;/a> in the repo which supports that.&lt;/p>
+&lt;p>Keep in mind that you need to make sure that your App has all required graph scopes added and consented and that the Service Principal is also assigned the &lt;strong>Skype for Business Online Administrator&lt;/strong> role in Azure AD. For more information on how to set up and automated runbook, please refer to &lt;a class="link" href="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf" >this&lt;/a> article.&lt;/p>
+&lt;h4 id="result">Result
+&lt;/h4>&lt;p>The output of the script will look like this.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1WoHkH5WLrR9gcBGDygeDPw.png"
+width="1498"
+height="271"
+srcset="https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1WoHkH5WLrR9gcBGDygeDPw_hu_820a06a8ac62ae9c.png 480w, https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1WoHkH5WLrR9gcBGDygeDPw_hu_2b9ff669b226fde7.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="552"
+data-flex-basis="1326px"
+>&lt;/p>
+&lt;p>As we can see, the phone number of the Azure AD user object has now been changed to the same number as it is in Teams. For better readability and aesthetics, spaces have been added where users would expect them for a phone number from the respective region.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1YrjWmqbCzpnUtpqwRLjtLg.png"
+width="587"
+height="300"
+srcset="https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1YrjWmqbCzpnUtpqwRLjtLg_hu_ef19840fb8d1f7de.png 480w, https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/1YrjWmqbCzpnUtpqwRLjtLg_hu_799b84a3f3f1011d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="195"
+data-flex-basis="469px"
+>&lt;/p>
+&lt;p>Unfortunately, it can take multiple days until updated phone numbers are visible in Teams or Outlook due to heavy client-side caching.&lt;/p>
+&lt;p>I hope that this script helps you to keep LineURIs and BusinessPhones in Azure AD in sync or that you can even use it to automate that process.&lt;/p></description></item><item><title>Teams Phone Number Management List Part 2</title><link>https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/</link><pubDate>Sat, 08 Apr 2023 16:02:49 +0000</pubDate><guid>https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/</guid><description>&lt;p>This article builds on the following article.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;a class="link" href="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf" >Teams Phone Number Management on a Budget | by martin heusser | Mar, 2023 | Medium&lt;/a>&lt;/p>&lt;/blockquote>
+&lt;p>Please make sure you read that one first.&lt;/p>
+&lt;p>After I built the list initially, I quickly realized that there’s still room for improvement. Especially a feature to assign and unassign phone numbers through the list would be incredibly handy. This would allow us to delegate this task to users without Teams Admin Center access.&lt;/p>
+&lt;p>The &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation" target="_blank" rel="noopener"
+>repository&lt;/a> has been updated and already includes the code required for number assignment. If you’ve already deployed it, just delete the resource group in Azure and re-deploy. Of course, you can also replace the existing files with the new scripts and variables by hand if you know what you’re doing. But since there’s a deployment script available, I recommend deleting and re-deploying.&lt;/p>
+&lt;p>Let’s check out the new features first and go over the manual changes required later.&lt;/p>
+&lt;h3 id="new-features">New Features
+&lt;/h3>&lt;h4 id="country">Country
+&lt;/h4>&lt;p>All Calling Plan and Operator Connect phone numbers already include a country attribute. Therefore, I decided to use the property which is already known to Teams. The &lt;strong>Country&lt;/strong> column now includes the two-digit ISO code instead of the country’s full name.&lt;/p>
+&lt;p>For consistency, the &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Resources/CountryLookupTable.json" target="_blank" rel="noopener"
+>CountryLookupTable.json&lt;/a> has been updated to include the ISO codes as well. Please see the &lt;strong>Changes in V2&lt;/strong> section of this article if the Country does not always match your direct routing numbers.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1fXx1TOgZFuZVhjx1eDjUQ.png"
+width="2262"
+height="504"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1fXx1TOgZFuZVhjx1eDjUQ_hu_7987eedd010e75ba.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1fXx1TOgZFuZVhjx1eDjUQ_hu_39879f56bf6aa2ea.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="448"
+data-flex-basis="1077px"
+>&lt;/p>
+&lt;h4 id="city">City
+&lt;/h4>&lt;p>The purpose of this list is to make the management of phone numbers easier. The more information you have, the better you can filter. That’s why I added a &lt;strong>City&lt;/strong> column as well.&lt;/p>
+&lt;h4 id="number-reservation">Number Reservation
+&lt;/h4>&lt;p>The &lt;strong>Status&lt;/strong> column is now a drop-down list. Setting a number to &lt;strong>Reserved&lt;/strong> won’t do anything yet, except letting other people which use the list know that this number should not be assigned to any user or resource account.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1hCvnQlLcivK4l6aqVptQ.png"
+width="1804"
+height="266"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1hCvnQlLcivK4l6aqVptQ_hu_17ad2a280247b488.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1hCvnQlLcivK4l6aqVptQ_hu_7080d2278fa93b72.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="678"
+data-flex-basis="1627px"
+>&lt;/p>
+&lt;p>Because this is a SharePoint list, we can add a comment on that entry.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/19B3gsc94JUVpwVXhbEiLw.png"
+width="1186"
+height="498"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/19B3gsc94JUVpwVXhbEiLw_hu_53b9080a00ad6d40.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/19B3gsc94JUVpwVXhbEiLw_hu_35151cf7ecbbf80.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="238"
+data-flex-basis="571px"
+>&lt;/p>
+&lt;p>The runbook will not make any changes or updates to that entry until the number is assigned or the Status is changed by hand again.&lt;/p>
+&lt;h4 id="assign-anumber">Assign a Number
+&lt;/h4>&lt;p>To assign a number, simply set a number to &lt;strong>Reserved&lt;/strong> and choose a &lt;strong>User Profile&lt;/strong> from the people picker.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1QNTzy43yr2pBe9Ow3xAWA.png"
+width="1067"
+height="246"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1QNTzy43yr2pBe9Ow3xAWA_hu_b766eb874636bac3.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1QNTzy43yr2pBe9Ow3xAWA_hu_cbac88d374b7be2e.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="433"
+data-flex-basis="1040px"
+>&lt;/p>
+&lt;p>The list will then look like this. There’s a &lt;strong>User Profile&lt;/strong> linked but the &lt;strong>User Principal Name&lt;/strong> is still unassigned.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1xrSnRsutiS2xUJ6y4U6Lw.png"
+width="1581"
+height="266"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1xrSnRsutiS2xUJ6y4U6Lw_hu_eee5a65fe39f16fb.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1xrSnRsutiS2xUJ6y4U6Lw_hu_fc9bb1858e5ff133.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="594"
+data-flex-basis="1426px"
+>&lt;/p>
+&lt;p>The next time the runbook runs, it will try to assign the number. If the assignment fails for any reason, the Staus will change to &lt;strong>Assignment Error&lt;/strong> but the linked User Profile will be retained.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1z8KikMnOal4Oa2WxTYQ73A.png"
+width="1586"
+height="260"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1z8KikMnOal4Oa2WxTYQ73A_hu_d6d92f5a90c5df3b.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1z8KikMnOal4Oa2WxTYQ73A_hu_58f872185e3750c2.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="610"
+data-flex-basis="1464px"
+>&lt;/p>
+&lt;p>Currently, the list only reflects a generic error. The runbook output, however, does include more information.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/11OI1hJz1RuwkoEm43rU0Q.png"
+width="809"
+height="107"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/11OI1hJz1RuwkoEm43rU0Q_hu_ec2466f19ebf88ce.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/11OI1hJz1RuwkoEm43rU0Q_hu_e1ed31cbe8a879a1.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="756"
+data-flex-basis="1814px"
+>&lt;/p>
+&lt;p>The script will even assign a voice routing policy for direct routing numbers if you specify one in the CountryLookupTable.json file. I will show you how to do that at the end of this article.&lt;/p>
+&lt;p>If you really want to be on top of your game, you can also create a rule to notify you of failed assignments.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/151zUCwelWtbrDgbnzkfNQ.png"
+width="2300"
+height="1259"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/151zUCwelWtbrDgbnzkfNQ_hu_74fba7abba987dfa.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/151zUCwelWtbrDgbnzkfNQ_hu_5840c872664539b1.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="182"
+data-flex-basis="438px"
+>&lt;/p>
+&lt;h4 id="unassign-anumber">Unassign a Number
+&lt;/h4>&lt;p>To unassign a number, simply change the Status to &lt;strong>Remove Pending&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1o5Nh9gEBN07IBhByFt8Few.png"
+width="1582"
+height="267"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1o5Nh9gEBN07IBhByFt8Few_hu_eea8772a560afc0c.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1o5Nh9gEBN07IBhByFt8Few_hu_98397c55cc2126d0.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="592"
+data-flex-basis="1422px"
+>&lt;/p>
+&lt;p>The number will then be removed from the user, the next time the runbook is running.&lt;/p>
+&lt;h4 id="performance-improvements">Performance Improvements
+&lt;/h4>&lt;p>I’ve also made some changes which will improve the performance of the script dramatically. I discovered a couple of redundant Graph requests which have now been reduced to the minimum required.&lt;/p>
+&lt;h3 id="changes-inv2">Changes in V2
+&lt;/h3>&lt;h4 id="changes-to-thelist">Changes to the List
+&lt;/h4>&lt;p>Edit the &lt;strong>Status&lt;/strong> column of your list.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1P2a8Jd5iHaAPfAvS6IglA.png"
+width="1424"
+height="518"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1P2a8Jd5iHaAPfAvS6IglA_hu_f2c97fe8e728aade.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1P2a8Jd5iHaAPfAvS6IglA_hu_41b851539e45c8db.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="274"
+data-flex-basis="659px"
+>&lt;/p>
+&lt;p>Change the &lt;strong>Type&lt;/strong> from &lt;strong>Single line of Text&lt;/strong> to &lt;strong>Choice&lt;/strong> and add the following choices.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1scOs84KlwMBYFhiCNnG3Q.png"
+width="484"
+height="836"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1scOs84KlwMBYFhiCNnG3Q_hu_fe698f43eac36da.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1scOs84KlwMBYFhiCNnG3Q_hu_3d857631019ff1fd.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="57"
+data-flex-basis="138px"
+>&lt;/p>
+&lt;p>Save the changes to the &lt;strong>Status&lt;/strong> column.&lt;/p>
+&lt;p>Now add a new &lt;strong>Text&lt;/strong> column.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1cjsXM6TTXhTYVAZGMag.png"
+width="837"
+height="636"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1cjsXM6TTXhTYVAZGMag_hu_26dd21e9f5f39347.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1cjsXM6TTXhTYVAZGMag_hu_a40be6c259a7cc94.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="315px"
+>&lt;/p>
+&lt;p>Name it &lt;strong>City&lt;/strong> and choose Type &lt;strong>Single line of text.&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1QXZyFo02BJglprnd8cS4og.png"
+width="479"
+height="689"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1QXZyFo02BJglprnd8cS4og_hu_d3b5bf52ce169617.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1QXZyFo02BJglprnd8cS4og_hu_63d83db3a0c206fc.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="69"
+data-flex-basis="166px"
+>&lt;/p>
+&lt;h3 id="changes-to-theflow">Changes to the Flow
+&lt;/h3>&lt;h4 id="update-trigger-condition">Update Trigger Condition
+&lt;/h4>&lt;p>In your flow’s trigger condition, delete the existing condition and paste the following expression.&lt;/p>
+&lt;p>&lt;strong>Update 08.08.2023&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>Thanks to a community member of my Teams Phone Admin &lt;a class="link" href="https://heusser.pro/discord.html" target="_blank" rel="noopener"
+>Discord Server&lt;/a> I was made aware that the trigger condition can fail if the UPN and the email address case did not match. Below is the corrected trigger condition which includes a &lt;code>toLower()&lt;/code> expression as well.&lt;/p>&lt;/blockquote>
+&lt;p>&lt;strong>/Update&lt;/strong>&lt;/p>
+&lt;p>@or(&lt;br>
+and(&lt;br>
+not(equals(triggerOutputs()?[&amp;lsquo;body/User_x0020_Principal_x0020_Name&amp;rsquo;], &amp;lsquo;Unassigned&amp;rsquo;)),&lt;br>
+not(contains(triggerBody(), &amp;lsquo;UserProfile&amp;rsquo;))&lt;br>
+),&lt;br>
+not(equals(toLower(triggerOutputs()?[&amp;lsquo;body/User_x0020_Principal_x0020_Name&amp;rsquo;]), toLower(triggerOutputs()?[&amp;lsquo;body/UserProfile&amp;rsquo;][&amp;lsquo;Email&amp;rsquo;]))),&lt;br>
+and(&lt;br>
+contains(triggerBody(), &amp;lsquo;UserProfile&amp;rsquo;),&lt;br>
+not(equals(triggerOutputs()?[&amp;lsquo;body/User_x0020_Principal_x0020_Name&amp;rsquo;], &amp;lsquo;Unassigned&amp;rsquo;)),&lt;br>
+not(contains(triggerBody(), &amp;lsquo;TeamsAdminCenter&amp;rsquo;))&lt;br>
+)&lt;br>
+)&lt;/p>
+&lt;p>The expression is now also included in the &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Resources/FlowTriggerCondition.txt" target="_blank" rel="noopener"
+>repository&lt;/a> for better readability. The line breaks will be automatically removed once you paste it in Power Automate.&lt;/p>
+&lt;p>This will also trigger the flow, when a &lt;strong>User Profile&lt;/strong> was added manually through the list (not by the flow) which is what happens when a list user wants to assign a number to a new Teams User.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/15XzTMBRpRFoAN8QWg0wg.png"
+width="1658"
+height="257"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/15XzTMBRpRFoAN8QWg0wg_hu_384d0a12921df924.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/15XzTMBRpRFoAN8QWg0wg_hu_3d57b7770865b63b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="645"
+data-flex-basis="1548px"
+>&lt;/p>
+&lt;h4 id="add-another-condition">Add Another Condition
+&lt;/h4>&lt;p>I don’t know why it didn’t occur to me initially but instead of using the runbook to recreate items which have been deleted by the flow, we can just use the flow to do that as well. The reason why we need to delete and re-create is because setting the User Profile to &lt;strong>null&lt;/strong> did not work in Power Automate.&lt;/p>
+&lt;p>In the first &lt;strong>If yes&lt;/strong> action, we have to add another condition which checks if the &lt;strong>Status Value&lt;/strong> is equal to &lt;strong>Unassigned.&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/11borC4Preqwfg27E0VYQA.png"
+width="926"
+height="296"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/11borC4Preqwfg27E0VYQA_hu_65f998cf443c64ea.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/11borC4Preqwfg27E0VYQA_hu_b6c6ac53f28c38d1.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="312"
+data-flex-basis="750px"
+>&lt;/p>
+&lt;p>The existing &lt;strong>Delete&lt;/strong> &lt;strong>item&lt;/strong> action has to be copied to the clipboard, deleted, and then pasted inside the &lt;strong>If yes&lt;/strong> action of the second condition again.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1b0l089aKSKjnKzGhs2WLw.png"
+width="1241"
+height="125"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1b0l089aKSKjnKzGhs2WLw_hu_274f51ddd3211577.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1b0l089aKSKjnKzGhs2WLw_hu_fb6ee3d9480c04f2.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="992"
+data-flex-basis="2382px"
+>
+&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/151IVw0NFOPlwJIyS5Z6A.png"
+width="918"
+height="326"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/151IVw0NFOPlwJIyS5Z6A_hu_ff7972a07f008623.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/151IVw0NFOPlwJIyS5Z6A_hu_8b82c47929ff006f.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="281"
+data-flex-basis="675px"
+>&lt;/p>
+&lt;h4 id="add-create-itemaction">Add Create Item Action
+&lt;/h4>&lt;p>In the second &lt;strong>If yes&lt;/strong> action, add a &lt;strong>Create item&lt;/strong> action after &lt;strong>Delete&lt;/strong> item with the following dynamic values.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1KEG3uPMLbf8mXKkAHXCBw.png"
+width="964"
+height="1421"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1KEG3uPMLbf8mXKkAHXCBw_hu_bb46b78655951724.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1KEG3uPMLbf8mXKkAHXCBw_hu_b52e61bf02ad26f4.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="67"
+data-flex-basis="162px"
+>&lt;/p>
+&lt;p>Here’s a new screenshot of the complete flow with collapsed boxes.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1xF9V8IvU5ZFciYjH1fsqYg.png"
+width="3158"
+height="1242"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1xF9V8IvU5ZFciYjH1fsqYg_hu_e9dc00e1cbd2fb04.png 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/1xF9V8IvU5ZFciYjH1fsqYg_hu_1bc6b290d5e57cc4.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="254"
+data-flex-basis="610px"
+>&lt;/p>
+&lt;h3 id="changes-to-the-countrylookuptablejson">Changes to the CountryLookupTable.json
+&lt;/h3>&lt;h4 id="add-more-preciseprefixes">Add More Precise Prefixes
+&lt;/h4>&lt;p>There are some countries which use the same phone prefix. If multiple matches are found, the function always uses the last match which might be wrong in many cases. To solve this, just edit the Json file yourself.&lt;/p>
+&lt;p>For example, if you have Australian &lt;strong>+61&lt;/strong> numbers, but don’t have any numbers from Christmas Island or Cocos Islands (which also start with +61), just delete these entries from the Json.&lt;/p>
+&lt;p>In case you have e.g. numbers from Canada and USA, which both start with &lt;strong>+1,&lt;/strong> you can also extend the prefix to include all digits which are common in all your number ranges from left to right.&lt;/p>
+&lt;p>Original Entry&lt;/p>
+&lt;p>{&lt;br>
+&amp;ldquo;Prefix&amp;rdquo;: &amp;ldquo;+1&amp;rdquo;,&lt;br>
+&amp;ldquo;CountryName&amp;rdquo;: &amp;ldquo;United States&amp;rdquo;,&lt;br>
+&amp;ldquo;Country&amp;rdquo;: &amp;ldquo;US&amp;rdquo;&lt;br>
+}&lt;/p>
+&lt;p>Possible Entry Change&lt;/p>
+&lt;p>{&lt;br>
+&amp;ldquo;Prefix&amp;rdquo;: &amp;ldquo;+1206&amp;rdquo;,&lt;br>
+&amp;ldquo;CountryName&amp;rdquo;: &amp;ldquo;United States&amp;rdquo;,&lt;br>
+&amp;ldquo;Country&amp;rdquo;: &amp;ldquo;US&amp;rdquo;&lt;br>
+}&lt;/p>
+&lt;p>This example assumes that you have Canadian direct routing numbers starting with &lt;strong>+1&lt;/strong> and have US direct routing numbers which all start with &lt;strong>+1206&lt;/strong>.&lt;/p>
+&lt;p>If you have more prefixes from the same country in your number ranges, just add more entries with different prefixes but with the same country.&lt;/p>
+&lt;p>{&lt;br>
+&amp;ldquo;Prefix&amp;rdquo;: &amp;ldquo;+1206&amp;rdquo;,&lt;br>
+&amp;ldquo;CountryName&amp;rdquo;: &amp;ldquo;United States&amp;rdquo;,&lt;br>
+&amp;ldquo;Country&amp;rdquo;: &amp;ldquo;US&amp;rdquo;&lt;br>
+},&lt;br>
+{&lt;br>
+&amp;ldquo;Prefix&amp;rdquo;: &amp;ldquo;+1323&amp;rdquo;,&lt;br>
+&amp;ldquo;CountryName&amp;rdquo;: &amp;ldquo;United States&amp;rdquo;,&lt;br>
+&amp;ldquo;Country&amp;rdquo;: &amp;ldquo;US&amp;rdquo;&lt;br>
+}&lt;/p>
+&lt;h4 id="add-voice-routing-policynames">Add Voice Routing Policy Names
+&lt;/h4>&lt;p>If you want to use the list for assignment of direct routing numbers, you’ll have to add the name of your voice routing policy for each country to the &lt;strong>CountryLookupTable.json&lt;/strong> file.&lt;/p>
+&lt;p>{&lt;br>
+&amp;ldquo;Prefix&amp;rdquo;: &amp;ldquo;+41&amp;rdquo;,&lt;br>
+&amp;ldquo;CountryName&amp;rdquo;: &amp;ldquo;Switzerland&amp;rdquo;,&lt;br>
+&amp;ldquo;Country&amp;rdquo;: &amp;ldquo;CH&amp;rdquo;,&lt;br>
+&amp;ldquo;VoiceRoutingPolicy&amp;rdquo;: &amp;ldquo;Switzerland&amp;rdquo;&lt;br>
+}&lt;/p>
+&lt;p>Currently, this solution only supports one voice routing policy per country entry in the CountryLookupTable.json file.&lt;/p>
+&lt;p>If you have different voice routing policies for various locations within the same country, you’ll have to try to find a way to match them via their prefixes and add multiple entries in the Json.&lt;/p>
+&lt;p>{&lt;br>
+&amp;ldquo;Prefix&amp;rdquo;: &amp;ldquo;+4144&amp;rdquo;,&lt;br>
+&amp;ldquo;CountryName&amp;rdquo;: &amp;ldquo;Switzerland&amp;rdquo;,&lt;br>
+&amp;ldquo;Country&amp;rdquo;: &amp;ldquo;CH&amp;rdquo;,&lt;br>
+&amp;ldquo;VoiceRoutingPolicy&amp;rdquo;: &amp;ldquo;Switzerland-Zurich&amp;rdquo;&lt;br>
+},&lt;br>
+{&lt;br>
+&amp;ldquo;Prefix&amp;rdquo;: &amp;ldquo;+4131&amp;rdquo;,&lt;br>
+&amp;ldquo;CountryName&amp;rdquo;: &amp;ldquo;Switzerland&amp;rdquo;,&lt;br>
+&amp;ldquo;Country&amp;rdquo;: &amp;ldquo;CH&amp;rdquo;,&lt;br>
+&amp;ldquo;VoiceRoutingPolicy&amp;rdquo;: &amp;ldquo;Switzerland-Bern&amp;rdquo;&lt;br>
+}&lt;/p>
+&lt;h4 id="changes-to-teamsphonenumberoverviewps1">Changes to TeamsPhoneNumberOverview.ps1
+&lt;/h4>&lt;p>&lt;strong>Update 11.04.2023&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>Sorry, I totally forgot to mention that you’ll also need to specify the name of the SharePoint User Information List in your language.&lt;/p>&lt;/blockquote>
+&lt;p># Set your language or add it to the switch statement&lt;br>
+# To find the name of your user information list, go to:&lt;br>
+# https://&lt;your domain>.sharepoint.com/sites/&lt;your site name>/_catalogs/users/simple.aspx&lt;br>
+$spoLanguage = &amp;ldquo;German&amp;rdquo;&lt;/p>
+&lt;p>switch ($spoLanguage) {&lt;br>
+German {&lt;/p>
+&lt;pre>&lt;code> $localizedUserInformationList = &amp;quot;Benutzerinformationsliste&amp;quot;
+}
+English {
+$localizedUserInformationList = &amp;quot;User Information List&amp;quot;
+}
+Default {
+$localizedUserInformationList = &amp;quot;User Information List&amp;quot;
+}
+&lt;/code>&lt;/pre>
+&lt;p>}&lt;/p>
+&lt;p>I hope that you like the &lt;strong>V2&lt;/strong> upgrade of my budget number management list.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/0i9hHsRnLxMO42ePg.jpg"
+width="1024"
+height="1024"
+srcset="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/0i9hHsRnLxMO42ePg_hu_f0669dd6d37c9d5d.jpg 480w, https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a/0i9hHsRnLxMO42ePg_hu_38f1d0482eaa6fbe.jpg 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="100"
+data-flex-basis="240px"
+>&lt;/p></description></item><item><title>Teams Phone Number Management on a Budget</title><link>https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/</link><pubDate>Thu, 23 Mar 2023 13:05:11 +0000</pubDate><guid>https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/</guid><description>&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/0TNGGsjES22NTIbT.jpg"
+width="1024"
+height="1024"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/0TNGGsjES22NTIbT_hu_c6fd37b5c1ffc22.jpg 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/0TNGGsjES22NTIbT_hu_29351c288b401357.jpg 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="100"
+data-flex-basis="240px"
+>&lt;/p>
+&lt;p>&lt;strong>Update 08.04.2023&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>I’ve updated this solution to V2 which includes the capability to assign, unassign and reserve phone numbers along with other improvements.&lt;/p>&lt;/blockquote>
+&lt;blockquote>
+&lt;p>Please read &lt;a class="link" href="https://heusser.pro/p/teams-phone-number-management-list-part-2-b5385e348a3a" >this article&lt;/a> when you have finished reading this one.&lt;/p>&lt;/blockquote>
+&lt;p>&lt;strong>/Update&lt;/strong>&lt;/p>
+&lt;p>Every Teams Voice Admin that has deployed Direct Routing knows the struggle. There’s no way to manage Direct Routing numbers in Teams Admin Center. This makes it hard for us to get a clear overview of which numbers are still unassigned/free or even to see all the numbers we have.&lt;/p>
+&lt;p>Obviously, there’s a solution for anything. We can use PowerShell to export numbers and create our own lists in Excel or whatever. The challenge with that is to keep the list up to date, error free and make it centrally available for all people who need to work with it.&lt;/p>
+&lt;p>There are also lots of vendors which offer Teams phone number management platforms. Here are some of them:&lt;/p>
+&lt;p>&lt;a class="link" href="https://callroute.com/features/number-management/" target="_blank" rel="noopener"
+>Number Management for Microsoft Teams (callroute.com)&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://www.codesoftware.net/clobba-rm/" target="_blank" rel="noopener"
+>Clobba Range Manager — DID Number Management — Code Software&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://www.pure-ip.com/number-connect" target="_blank" rel="noopener"
+>Number Connect (pure-ip.com)&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://teamsboss.com/app/" target="_blank" rel="noopener"
+>TeamsBoss&lt;/a>&lt;/p>
+&lt;p>They all have powerful features — which come with a price. But what if we don’t need a full-fledged management solution and just want a simple overview which is dynamically updated?&lt;/p>
+&lt;p>That’s exactly what I’ve been building in my spare time over the last few weeks.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1bJzySshLFfuKEkIhfsSCQ.png"
+width="2789"
+height="1101"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1bJzySshLFfuKEkIhfsSCQ_hu_231c96e2be9ae68c.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1bJzySshLFfuKEkIhfsSCQ_hu_477efd58af7f58ce.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="253"
+data-flex-basis="607px"
+>&lt;/p>
+&lt;p>The final product is a SharePoint list which gets automatically updated by an Azure Automation Runbook every hour.&lt;/p>
+&lt;p>This time around, I tried to automate everything I could. This means less work for you if you want to deploy it yourself. But before we get into the technical details of it, let’s look at the list.&lt;/p>
+&lt;p>&lt;strong>TL;DR&lt;/strong>&lt;/p>
+&lt;p>If you don’t care about the details and want to deploy straight away, you can grab the code from &lt;a class="link" href="http://mozziemozz/TeamsPhoneAutomation:%20Automation%20Scripts%20for%20Microsoft%20Teams%20Phone%20%28github.com%29" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/p>
+&lt;h3 id="the-list">The List
+&lt;/h3>&lt;h4 id="the-columns">The Columns
+&lt;/h4>&lt;p>The list can be viewed in SharePoint Online, Microsoft Lists or directly in Teams through Lists. It consists of the following columns.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Title&lt;/strong> = Phone Number&lt;/li>
+&lt;li>&lt;strong>Phone Extension&lt;/strong> = Extension if there is one configured&lt;/li>
+&lt;li>&lt;strong>Status&lt;/strong> = Assigned/Unassigned&lt;/li>
+&lt;li>&lt;strong>Number Type&lt;/strong> = Direct Routing / Calling Plan / Operator Connect&lt;/li>
+&lt;li>&lt;strong>User Name&lt;/strong> = Display Name of assigned account&lt;/li>
+&lt;li>&lt;strong>User Principal Name&lt;/strong> = UPN of assigned account&lt;/li>
+&lt;li>&lt;strong>Account Type&lt;/strong> = User Account / Resource Account / Conference Bridge&lt;/li>
+&lt;li>&lt;strong>Country&lt;/strong> = The country a number belongs to&lt;/li>
+&lt;li>&lt;strong>UserId&lt;/strong> = Object Id from Azure AD&lt;/li>
+&lt;li>&lt;strong>User Profile&lt;/strong> = Profile Card&lt;/li>
+&lt;li>&lt;strong>Teams Admin Center&lt;/strong> = Link to manage the user in TAC&lt;/li>
+&lt;/ul>
+&lt;p>This should cover most of the relevant information somebody might want to know about their phone numbers.&lt;/p>
+&lt;h4 id="filtering">Filtering
+&lt;/h4>&lt;p>Having all that information available allows us to easily filter numbers which meet certain criteria. In this example, I filtered the list for all unassigned numbers from the UK.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/14bBmRV7urUrZc22NiWUVDA.png"
+width="2100"
+height="272"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/14bBmRV7urUrZc22NiWUVDA_hu_2110504dc1ae7c21.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/14bBmRV7urUrZc22NiWUVDA_hu_3d44a68a14fabb6f.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="772"
+data-flex-basis="1852px"
+>&lt;/p>
+&lt;p>Because this number is unassigned and it could be assigned to a &lt;strong>Resource Account&lt;/strong> or a &lt;strong>Conference Bridge&lt;/strong>, both types are included in the list.&lt;/p>
+&lt;p>If we compare that to an assigned service number, we can see that the &lt;strong>Account Type&lt;/strong> is shown as &lt;strong>Resource Account&lt;/strong> because the number is assigned to one.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1wZdcr9ASB2hnmRdFT5w.png"
+width="2086"
+height="269"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1wZdcr9ASB2hnmRdFT5w_hu_7a557cd109c4fffd.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1wZdcr9ASB2hnmRdFT5w_hu_1a65d2ef0b0682b0.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="775"
+data-flex-basis="1861px"
+>&lt;/p>
+&lt;p>The most common thing which people probably want to see at glance is which &lt;strong>direct routing&lt;/strong> numbers are unassigned from a specific country. This can also be achieved very easily.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1IUJX8fpDC3xi4wpcd5kfg.png"
+width="2280"
+height="520"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1IUJX8fpDC3xi4wpcd5kfg_hu_4ff2dcb2fb36f9f3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1IUJX8fpDC3xi4wpcd5kfg_hu_a3bf0e3c7030bbe1.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="438"
+data-flex-basis="1052px"
+>&lt;/p>
+&lt;p>I learned a lot during the development of this project, and I now want to share that with you. Let’s take a look at how the SharePoint list was built and how it automatically updates itself with the help of &lt;strong>Azure Automation&lt;/strong>.&lt;/p>
+&lt;h3 id="deployment">Deployment
+&lt;/h3>&lt;p>There are very few manual tasks required to get this set up. I built a deployment script which will create all the required resources in Azure for you.&lt;/p>
+&lt;h4 id="clone-the-githubrepo">Clone The GitHub Repo
+&lt;/h4>&lt;p>Start by cloning or downloading the GitHub Repo.&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation" target="_blank" rel="noopener"
+>mozziemozz/TeamsPhoneAutomation: Automation Scripts for Microsoft Teams Phone (github.com)&lt;/a>&lt;/p>
+&lt;p>If you’ve never worked with GitHub before, I highly recommend trying it instead of just downloading the repository as a zip file. All you need to do is &lt;a class="link" href="https://github.com/" target="_blank" rel="noopener"
+>sign up&lt;/a> for an account, install the &lt;a class="link" href="https://desktop.github.com/" target="_blank" rel="noopener"
+>desktop client&lt;/a> and clone the repo.&lt;/p>
+&lt;p>Once you have signed into GitHub Desktop, just head over to the &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation" target="_blank" rel="noopener"
+>repository URL&lt;/a> and open it in GitHub Desktop.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Id3QSS2WJGsTfGqGPJ55Q.png"
+width="1390"
+height="588"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Id3QSS2WJGsTfGqGPJ55Q_hu_ba81dfa996dc53d6.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Id3QSS2WJGsTfGqGPJ55Q_hu_ce5b19c4dfc3afec.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="236"
+data-flex-basis="567px"
+>&lt;/p>
+&lt;p>Then choose your local folder and click on clone. Make sure to select a folder which isn’t synchronized to any kind of cloud Storage like OneDrive. The constant syncing of files would impair your performance dramatically.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1tqEoryFHlOYEPKCBQaED6Q.png"
+width="736"
+height="446"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1tqEoryFHlOYEPKCBQaED6Q_hu_36d447bccadaffc3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1tqEoryFHlOYEPKCBQaED6Q_hu_ca1c736a4e47ba53.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="165"
+data-flex-basis="396px"
+>&lt;/p>
+&lt;p>The repo contains the following files and folders.&lt;/p>
+&lt;p>C:\TEMP\GITHUB\TEAMSPHONEAUTOMATION&lt;br>
+│ .gitignore&lt;br>
+│ Deploy.ps1&lt;br>
+│ README.md&lt;br>
+│&lt;br>
+├───Functions&lt;br>
+│ Connect-MgGraphHTTP.ps1&lt;br>
+│ Connect-MsTeamsServicePrincipal.ps1&lt;br>
+│ Get-CountryFromPrefix.ps1&lt;br>
+│ Get-CsOnlineNumbers.ps1&lt;br>
+│&lt;br>
+├───Resources&lt;br>
+│ CountryLookupTable.json&lt;br>
+│ CreateList.json&lt;br>
+│ DirectRoutingNumbers.csv&lt;br>
+│ Environment.json&lt;br>
+│&lt;br>
+├───Scripts&lt;br>
+│ TeamsPhoneNumberOverview.ps1&lt;br>
+│&lt;br>
+└───Setup&lt;br>
+Setup.ps1&lt;br>
+UpdateDirectRoutingNumbers.ps1&lt;/p>
+&lt;h4 id="environmentjson">Environment.json
+&lt;/h4>&lt;p>Before we do anything, we need to define a few things and names. In &lt;code>.\Resources&lt;/code> open the &lt;code>Environment.json&lt;/code> file and fill in your own information.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;TenantId&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;4bffbf87-53a0-4fce-b58b-xxxxxxxxxxxx&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;GroupId&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;aff7d27f-878d-422c-83bd-xxxxxxxxxxxx&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;MSListName&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Teams Phone Number Overview Demo&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;ResourceGroupName&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;mzz-rmg-001&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;AutomationAccountName&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;mzz-automation-account-001&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;AzLocation&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;West Europe&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>TenantId&lt;/strong> is your Tenant Id.&lt;/p>
+&lt;p>&lt;strong>GroupId&lt;/strong> is the Object Id of the Microsoft Teams Team which hosts the SharePoint site where the list should be created.&lt;/p>
+&lt;p>&lt;strong>MSListName&lt;/strong> will be the name of your List in SharePoint.&lt;/p>
+&lt;p>&lt;strong>ResourceGroupName&lt;/strong> will be the name of the resource group which is created in Azure.&lt;/p>
+&lt;p>&lt;strong>AutomationAccountName&lt;/strong> will be the name of the automation account which is created within the new resource group.&lt;/p>
+&lt;p>&lt;strong>AzLocation&lt;/strong> is the Azure region where you want to deploy the resources.&lt;/p>
+&lt;p>You can find a list of all available regions and their names &lt;a class="link" href="https://azure.microsoft.com/en-us/explore/global-infrastructure/geographies/#geographies" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/p>
+&lt;p>Make sure you save the file once you’ve filled in all the information.&lt;/p>
+&lt;h4 id="directroutingnumberscsv">DirectRoutingNumbers.csv
+&lt;/h4>&lt;p>Next, we need a list which contains all your direct routing numbers. This file can only contain one column called &lt;strong>PhoneNumber&lt;/strong>. All the numbers must be in &lt;strong>E.164&lt;/strong> format but without the leading &lt;code>+&lt;/code> . The plus sign will be added by the script later. It just makes things easier in Excel if we don’t need to bother about the plus.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1nnwTg3pq3UCddPisob7HqA.png"
+width="1461"
+height="969"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1nnwTg3pq3UCddPisob7HqA_hu_93be95d2178a90ba.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1nnwTg3pq3UCddPisob7HqA_hu_a2b8f8df5136a28a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="150"
+data-flex-basis="361px"
+>&lt;/p>
+&lt;p>That’s it for the preparation.&lt;/p>
+&lt;h4 id="deployps1">Deploy.ps1
+&lt;/h4>&lt;p>Disclaimer: The script has been tested on a vanilla Windows 11 virtual machine where &lt;strong>Windows Terminal&lt;/strong> is configured as default console host and sessions start in the parent process directory. No PowerShell modules were installed before the script was first executed on this system.&lt;/p>
+&lt;p>&lt;strong>You will need an account with Global Administrator rights to successfully run this script. You also need local admin rights and need to make sure that running scripts is allowed on your machine.&lt;/strong>&lt;/p>
+&lt;p>In an elevated terminal, run the following code and close the terminal session once you have done so.&lt;/p>
+&lt;p>Set-ExecutionPolicy Bypass&lt;/p>
+&lt;p>To start the deployment, you need to run the &lt;code>Deploy.ps1&lt;/code> file.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1WKugBxPGMHPFT71q8WUN1g.png"
+width="618"
+height="582"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1WKugBxPGMHPFT71q8WUN1g_hu_3857949ff8d0a6d7.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1WKugBxPGMHPFT71q8WUN1g_hu_d9a7c092679f0087.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="106"
+data-flex-basis="254px"
+>&lt;/p>
+&lt;p>This will just call the &lt;code>.\Setup\Setup.ps1&lt;/code> script which is the real deal.&lt;/p>
+&lt;h4 id="setupps1">Setup.ps1
+&lt;/h4>&lt;p>After all the module and components checks have been completed or the missing components have been installed, you will be prompted to sign into the &lt;a class="link" href="https://pnp.github.io/cli-microsoft365/" target="_blank" rel="noopener"
+>&lt;strong>M365 CLI&lt;/strong>&lt;/a>&lt;strong>.&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ZuLzxPnboF940mSkOnUFqA.png"
+width="2430"
+height="1392"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ZuLzxPnboF940mSkOnUFqA_hu_d324a6bf7b2995f5.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ZuLzxPnboF940mSkOnUFqA_hu_5fa45eb41453e037.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="174"
+data-flex-basis="418px"
+>&lt;/p>
+&lt;p>Let me explain what’s going on in the script. Our end goal is to have a SharePoint list. Since we need a script to automatically update the list anyway, we might as well just create the list through PowerShell and Microsoft Graph instead of creating it manually.&lt;/p>
+&lt;p>To provision all this stuff, we need a couple of &lt;strong>Az.*&lt;/strong> PowerShell modules. We also need &lt;strong>Node.JS&lt;/strong> so we can install the &lt;strong>CLI for Microsoft 365&lt;/strong> through &lt;strong>NPM&lt;/strong> (Node Package Manager). If you miss any of the components on your machine, they will automatically be installed, if you can provide local admin rights.&lt;/p>
+&lt;h4 id="azure-ad-app-registration--service-principal">Azure AD App Registration &amp;amp; Service Principal
+&lt;/h4>&lt;p>The M365 CLI will create a new Azure AD App Registration and a Service Principal. It will also assign the Microsoft Graph permission scopes we need to create and modify SharePoint lists and manage Microsoft Teams to the Service Principal.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1PKYwJDYOIAvgJi8us8uUMQ.png"
+width="1928"
+height="1395"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1PKYwJDYOIAvgJi8us8uUMQ_hu_a5f70cca8aacd39a.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1PKYwJDYOIAvgJi8us8uUMQ_hu_9637ae38be7cd0e.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="138"
+data-flex-basis="331px"
+>
+&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1EvALgsWAXkRfjYM5WjZMGQ.png"
+width="2616"
+height="1297"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1EvALgsWAXkRfjYM5WjZMGQ_hu_b111f7b97325c4f9.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1EvALgsWAXkRfjYM5WjZMGQ_hu_42f74ca18f69e5ca.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="201"
+data-flex-basis="484px"
+>&lt;/p>
+&lt;p>Both the App Registration and the Service Principal will use the name of the Automation Account. This way it’s easy to know where the assigned permissions are used within Azure.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1BFgrZUU3EnaOZDB1SutpQ.png"
+width="1303"
+height="115"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1BFgrZUU3EnaOZDB1SutpQ_hu_9d3563b73e82fade.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1BFgrZUU3EnaOZDB1SutpQ_hu_10971712106d607a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="1133"
+data-flex-basis="2719px"
+>&lt;/p>
+&lt;p>The script also creates a new client secret for the App Registration.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1a2XyZpLjkpZ0HOfLCL32PA.png"
+width="1950"
+height="778"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1a2XyZpLjkpZ0HOfLCL32PA_hu_f0e3c354b8cdd719.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1a2XyZpLjkpZ0HOfLCL32PA_hu_ea8218146b7a5cb8.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="250"
+data-flex-basis="601px"
+>&lt;/p>
+&lt;p>Remember, a client secret can only be viewed once, after it has been created in the portal. Because we used the CLI to create it, we can’t view it in the portal anymore. The secret is received by the script and saved in an encrypted state though. You’ll also be prompted if you want to view it in case you want to copy and store it in a safe place.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1zitK266ZKs6EST13zGeKCA.png"
+width="2207"
+height="120"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1zitK266ZKs6EST13zGeKCA_hu_89c391ed06643dd3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1zitK266ZKs6EST13zGeKCA_hu_5f15aaa392cee6cf.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="1839"
+data-flex-basis="4414px"
+>&lt;/p>
+&lt;p>You don’t have to do this if you don’t want to. You can always decrypt it again, as long as you&amp;rsquo;re using the same machine and user account which encrypted it. The secret is saved to &lt;code>.\.local\AppSecret.txt&lt;/code> .&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1tWTZ8tk39JcYjIvwgY5xeA.png"
+width="1891"
+height="825"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1tWTZ8tk39JcYjIvwgY5xeA_hu_d67c07e54af6d7bf.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1tWTZ8tk39JcYjIvwgY5xeA_hu_92cebef4ba0c4f12.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="229"
+data-flex-basis="550px"
+>&lt;/p>
+&lt;p>If you want to manually decrypt it later, you can use the following code.&lt;/p>
+&lt;p>$AppSecret = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR((Get-Content -Path .\.local\AppSecret.txt | ConvertTo-SecureString))) | Out-String&lt;/p>
+&lt;p>Again, you don’t have to if you don’t want to. The script will be able to decrypt the secret and upload it to the Azure Automation Account once it’s needed.&lt;/p>
+&lt;p>Once the permissions have been assigned to the Service Principal, the script uses the same Service Principal to connect to Microsoft Graph and assign the &lt;strong>Skype for Business Administrator&lt;/strong> role to itself.&lt;/p>
+&lt;p>This is possible because the M365 CLI previously assigned the scope &lt;strong>RoleManagement.ReadWrite.Directory&lt;/strong> to the Service Principal.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1dprD8JGRDPs2yAJnvlPlwQ.png"
+width="1927"
+height="594"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1dprD8JGRDPs2yAJnvlPlwQ_hu_592ef12e7633983.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1dprD8JGRDPs2yAJnvlPlwQ_hu_387a035ee51841cd.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="324"
+data-flex-basis="778px"
+>&lt;/p>
+&lt;p>The role is needed for the SP to be able to manage Microsoft Teams via PowerShell. I learned this from Christian Frohn’s excellent &lt;a class="link" href="https://www.christianfrohn.dk/2022/11/13/connect-to-microsoft-teams-powershell-using-azure-app-reg-service-principal/" target="_blank" rel="noopener"
+>blog article&lt;/a>.&lt;/p>
+&lt;p>In case you’re wondering why no &lt;strong>Microsoft.Graph&lt;/strong> modules are required; this is because I chose to work with PowerShell native &lt;code>Invoke-RestMethod&lt;/code> commands instead of the &lt;code>*Mg*&lt;/code> Cmdlets.&lt;/p>
+&lt;h4 id="provisioning-the-azure-resources">Provisioning the Azure Resources
+&lt;/h4>&lt;p>The previous steps complete rather fast. The next steps are going to take a bit longer. First you need to sign in with an Account which has the appropriate permissions to create Azure resources within your subscription.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1pOaJ1YELOvcHWdcLOuFeGQ.png"
+width="855"
+height="1173"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1pOaJ1YELOvcHWdcLOuFeGQ_hu_656b2f14217c3971.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1pOaJ1YELOvcHWdcLOuFeGQ_hu_d1633900ebee858f.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="72"
+data-flex-basis="174px"
+>&lt;/p>
+&lt;p>I guess it would have been possible to also assign some RBAC roles to the Service Principal which would allow us to use it to sign into Azure as well. Since the script is run locally on demand, I see no problem with using a normal user account for this part. It actually gives us time to review the created App Registration and Service Principal before the script starts to deploy any resources to Azure. Furthermore, we don’t need to worry about being aware of yet another Service Principal which has permissions to deploy or remove Azure Resources.&lt;/p>
+&lt;p>The script will create a Resource Group with the name and location defined in &lt;strong>Environment.json.&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ZZGYVP7g2uj2hi3O08RlzA.png"
+width="1536"
+height="469"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ZZGYVP7g2uj2hi3O08RlzA_hu_cc9819622a028c5c.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ZZGYVP7g2uj2hi3O08RlzA_hu_d0a421792d944e25.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="327"
+data-flex-basis="786px"
+>&lt;/p>
+&lt;p>It will also create a new Automation Account within the Resource Group, also in the same region.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1RvDl30FW8xOAHs3EUA3Q.png"
+width="1508"
+height="889"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1RvDl30FW8xOAHs3EUA3Q_hu_51ccdc4ed37c97fa.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1RvDl30FW8xOAHs3EUA3Q_hu_539d4ddfd309dc04.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="169"
+data-flex-basis="407px"
+>&lt;/p>
+&lt;h4 id="automation-account">Automation Account
+&lt;/h4>&lt;p>&lt;strong>Modules&lt;/strong>&lt;/p>
+&lt;p>The &lt;strong>MicrosoftTeams&lt;/strong> Module is not added to Automation Accounts by default. Thus, the script needs to add it. This usually takes a couple of Minutes.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1RnQgpNQ3dOLfk0aDigurUQ.png"
+width="1032"
+height="427"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1RnQgpNQ3dOLfk0aDigurUQ_hu_7d7c61a03f3a16e4.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1RnQgpNQ3dOLfk0aDigurUQ_hu_91177aacfe9cd132.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="241"
+data-flex-basis="580px"
+>&lt;/p>
+&lt;p>Once the module has finished importing, the script will continue.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1msSR1JykOc4mieC9hExE2g.png"
+width="1922"
+height="409"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1msSR1JykOc4mieC9hExE2g_hu_ab7e8314b060bc67.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1msSR1JykOc4mieC9hExE2g_hu_81ed07256b4f7475.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="469"
+data-flex-basis="1127px"
+>&lt;/p>
+&lt;p>&lt;strong>Variables&lt;/strong>&lt;/p>
+&lt;p>The main script which will create/update our SharePoint List needs access to all the data we initially defined in &lt;strong>Environment.josn&lt;/strong>. This information is stored in &lt;strong>Automation Variables&lt;/strong> which can be accessed through Azure Runbooks.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1DBUuoXrqsTiu4XcayfA.png"
+width="2456"
+height="692"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1DBUuoXrqsTiu4XcayfA_hu_cd935a30445c9f6e.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1DBUuoXrqsTiu4XcayfA_hu_63b9f76fdab62d2e.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="354"
+data-flex-basis="851px"
+>&lt;/p>
+&lt;p>The client secret is stored as an encrypted variable and cannot be viewed or edited. Its content can only be accessed by using the internal Cmdlet &lt;code>Get-AutomationVariable&lt;/code> .&lt;/p>
+&lt;p>We can also see that we have a variable called &lt;strong>TeamsPhoneNumberOverview_DirectRoutingNumbers.&lt;/strong> This variable stores all Direct Routing numbers in &lt;strong>Json&lt;/strong> format. Because I ran into some issues with storing the Json content as a string, I needed to get creative and enclose it in single quotes: &lt;code>'{&amp;quot;Json&amp;quot;: &amp;quot;Example&amp;quot;}'&lt;/code> . These get removed when the variable is imported through the Runbook so that the Json can be converted to a PowerShell object.&lt;/p>
+&lt;p>&lt;strong>TeamsPhoneNumberOverview_CountryLookupTable&lt;/strong> contains a list with all countries and prefixes to determine the country of Direct Routing Numbers. To be consistent, this is also applied to Calling Plan and Operator Connect numbers, even though this information would be available through &lt;code>Get-CsPhoneNumberAssignment&lt;/code> .&lt;/p>
+&lt;p>If you would like to learn more about these internal Cmdlets for Automation Variables or Azure Runbooks in general, I recommend this &lt;a class="link" href="https://heusser.pro/p/fix-utf-8-encoding-when-calling-azure-child-runbooks-inline-78644e6af242" >article&lt;/a> of mine.&lt;/p>
+&lt;p>&lt;strong>Runbooks&lt;/strong>&lt;/p>
+&lt;p>We also have a couple of Runbooks which were deployed by the &lt;strong>Setup.ps1&lt;/strong> script. The main script logic sits in &lt;strong>TeamsPhoneNumberOverview&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cqbLWUjMSR1NhjCXqoCIg.png"
+width="1901"
+height="609"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cqbLWUjMSR1NhjCXqoCIg_hu_d81eb0ebdc6165dc.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cqbLWUjMSR1NhjCXqoCIg_hu_8bb6c09d03afc8cc.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="312"
+data-flex-basis="749px"
+>&lt;/p>
+&lt;p>To make the solution more modular some functions, like &lt;strong>Connect-MgGraphHTTP&lt;/strong> or &lt;strong>Connect-MsTeamsServicePrincipal&lt;/strong> are stored in separate Runbooks. This makes it easier to reuse them and means less work if we want to extend the Automation Account with other scripts.&lt;/p>
+&lt;p>For example, if you have another Runbook in the same Automation Account which needs to connect to MicrosoftTeams PowerShell as well, you can just use the following code.&lt;/p>
+&lt;p>. .\Connect-MsTeamsServicePrincipal.ps1&lt;/p>
+&lt;p>$TenantId = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_TenantId&amp;rdquo;&lt;br>
+$AppId = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_AppId&amp;rdquo;&lt;br>
+$AppSecret = Get-AutomationVariable -Name &amp;ldquo;TeamsPhoneNumberOverview_AppSecret&amp;rdquo;&lt;/p>
+&lt;p>. Connect-MsTeamsServicePrincipal -TenantId $TenantId -AppId $AppId -AppSecret $AppSecret&lt;/p>
+&lt;p>And if you ever need to adjust something in the login function, you only need to change it in one script (Connect-MsTeamsServicePrincipal) and not in all your Runbooks.&lt;/p>
+&lt;p>&lt;strong>Script Logic&lt;/strong>&lt;/p>
+&lt;p>The code for the main script logic can be found here.&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/TeamsPhoneNumberOverview.ps1" target="_blank" rel="noopener"
+>TeamsPhoneAutomation/TeamsPhoneNumberOverview.ps1 at main · mozziemozz/TeamsPhoneAutomation (github.com)&lt;/a>&lt;/p>
+&lt;p>I asked ChatGPT to explain what the script does. The result is astonishing.&lt;/p>
+&lt;blockquote>
+&lt;p>This PowerShell script is designed to gather information about Microsoft Teams users who have phone numbers assigned to them, and store this information in a SharePoint list.&lt;/p>&lt;/blockquote>
+&lt;blockquote>
+&lt;p>The script starts by importing four external functions, which are used later in the script. It then sets some variables by retrieving values from Azure Automation variables. These variables include the name of the SharePoint list where the data will be stored, as well as the credentials needed to connect to the Microsoft Teams and Graph APIs.&lt;/p>&lt;/blockquote>
+&lt;blockquote>
+&lt;p>Next, the script imports Direct Routing numbers and adds a leading plus sign to all of them. It also retrieves a list of existing SharePoint lists for a specific group ID, and checks if the desired SharePoint list already exists. If it does, the script retrieves its ID. If not, a new SharePoint list is created and its ID is retrieved.&lt;/p>&lt;/blockquote>
+&lt;blockquote>
+&lt;p>The script then retrieves information about all Teams users who have a phone number assigned to them. For each user, the script determines if they are a user or resource account, and then extracts details about their phone number, such as the phone number itself, any extension, and the country associated with the number. The script also checks if the phone number is a Direct Routing number or a CsOnline number. Finally, it creates an object containing all of this information for each user, and adds this object to an array.&lt;/p>&lt;/blockquote>
+&lt;blockquote>
+&lt;p>Once all of the user information has been gathered, the script writes it to the SharePoint list. Each object in the array is written to a new row in the list.&lt;/p>&lt;/blockquote>
+&lt;p>The only thing I would have added is to mention that the script only adds new entries to the list, only updates changed entries with the new values and removes entries from the list which no longer exist.&lt;/p>
+&lt;p>&lt;strong>Schedules&lt;/strong>&lt;/p>
+&lt;p>The setup script has also created a recurring schedule which runs every hour. The schedule is automatically linked to the &lt;strong>TeamsPhoneNumberOverview&lt;/strong> Runbook by the script. This will result in the SharePoint list being updated once an hour.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Iemob3BqBPX6OWWHvggsQ.png"
+width="2217"
+height="1137"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Iemob3BqBPX6OWWHvggsQ_hu_a89080f523f91e17.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Iemob3BqBPX6OWWHvggsQ_hu_82d9977c70ebe959.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="194"
+data-flex-basis="467px"
+>&lt;/p>
+&lt;p>That’s it. These are all the resources and components we need to create and update the SharePoint List.&lt;/p>
+&lt;h4 id="running-therunbook">Running the Runbook
+&lt;/h4>&lt;p>The Runbook schedule is configured in UTC. The first start time needs to be at least 5 minutes after the schedule’s creation time. To be sure, I set the schedule to run at the next full hour + 2 hours. In case this does not work for you in your local time zone, please let me know.&lt;/p>
+&lt;p>This means that the SharePoint List won’t be created straight away. If you want to manually run the Runbook before the first scheduled start, just click on &lt;strong>Start.&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1qROsEUEs8dXdkq8CwSOaxQ.png"
+width="1597"
+height="193"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1qROsEUEs8dXdkq8CwSOaxQ_hu_30461f537b0de432.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1qROsEUEs8dXdkq8CwSOaxQ_hu_be9dfc7547ca006b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="827"
+data-flex-basis="1985px"
+>&lt;/p>
+&lt;p>The job will just take a couple of minutes to complete.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1mp22izPK5jCc85FUtfZAkQ.png"
+width="1120"
+height="188"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1mp22izPK5jCc85FUtfZAkQ_hu_298e803a602c3ad8.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1mp22izPK5jCc85FUtfZAkQ_hu_417753c9bf6b164c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="595"
+data-flex-basis="1429px"
+>&lt;/p>
+&lt;p>You should then see the newly created List in SharePoint or Microsoft Lists.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ER7l4q30cUIBaDndrjJfIQ.png"
+width="2846"
+height="1476"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ER7l4q30cUIBaDndrjJfIQ_hu_82e1468fb2f35257.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ER7l4q30cUIBaDndrjJfIQ_hu_7e82544d89b706f7.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="192"
+data-flex-basis="462px"
+>&lt;/p>
+&lt;h3 id="finishing-touches">Finishing Touches
+&lt;/h3>&lt;p>Unfortunately, the Graph API has some limitations in terms of what types of fields can be added or updated in a list. I wanted to perfect my solution by also having a User Profile column and a link to Teams Admin Center for all assigned user numbers. These types can only be added manually.&lt;/p>
+&lt;p>&lt;strong>Important:&lt;/strong> For this and the next part, it’s extremely important to follow my instructions very carefully. If the column names don’t match up with the Flow it will not work.&lt;/p>
+&lt;h4 id="add-two-additional-columns">Add Two Additional Columns
+&lt;/h4>&lt;p>Click on &lt;strong>+ Add column&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1KBxfdw50SMnsnhVzMCx5A.png"
+width="831"
+height="634"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1KBxfdw50SMnsnhVzMCx5A_hu_2be62200ecc6985d.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1KBxfdw50SMnsnhVzMCx5A_hu_dc090fd4aad9601a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="314px"
+>&lt;/p>
+&lt;p>Name the column &lt;strong>User Profile&lt;/strong> and toggle &lt;strong>Show profile photos&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1nYyOkp3UFJxGdomb1w4bDg.png"
+width="477"
+height="678"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1nYyOkp3UFJxGdomb1w4bDg_hu_c0fd6e6208ab6ace.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1nYyOkp3UFJxGdomb1w4bDg_hu_18309ecfb161f25.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="70"
+data-flex-basis="168px"
+>&lt;/p>
+&lt;p>Repeat the steps and choose &lt;strong>Hyperlink&lt;/strong> this time.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1zQUl6GTYbNQymUbAQ9IU1g.png"
+width="835"
+height="634"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1zQUl6GTYbNQymUbAQ9IU1g_hu_94bd5f690d2d31ca.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1zQUl6GTYbNQymUbAQ9IU1g_hu_5caa26b8eb757bb1.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="316px"
+>&lt;/p>
+&lt;p>Name this column &lt;strong>Teams Admin Center.&lt;/strong>&lt;/p>
+&lt;p>Now let’s create the final part of our Number Overview Solution: A Power Automate Flow.&lt;/p>
+&lt;h4 id="create-theflow">&lt;strong>Create The Flow&lt;/strong>
+&lt;/h4>&lt;p>Head over to &lt;a class="link" href="https://make.powerautomate.com/" target="_blank" rel="noopener"
+>Microsoft Power Automate&lt;/a> and create a new &lt;strong>Automated Cloud Flow&lt;/strong>. Name your flow and select &lt;strong>When an item is created or modified&lt;/strong> (SharePoint) as the trigger.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1eMzuzJ4sgXqtppTIWtTLbw.png"
+width="1334"
+height="841"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1eMzuzJ4sgXqtppTIWtTLbw_hu_5d68934f4dbba0c3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1eMzuzJ4sgXqtppTIWtTLbw_hu_ec82539f2a1bb36a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="158"
+data-flex-basis="380px"
+>&lt;/p>
+&lt;p>Select the Site/Team where your list has been created from the drop-down menu in &lt;strong>Site Address.&lt;/strong> Then choose your list from the drop-down.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ruBvckSCFoyJbi3abfZbCQ.png"
+width="929"
+height="320"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ruBvckSCFoyJbi3abfZbCQ_hu_4da5f0b01ac17af6.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ruBvckSCFoyJbi3abfZbCQ_hu_74f47b9c05e3b20c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="290"
+data-flex-basis="696px"
+>&lt;/p>
+&lt;p>Next, click on the three dots and select &lt;strong>Settings.&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Kq7ExjGCW7nsIjO5gPMw.png"
+width="1347"
+height="742"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Kq7ExjGCW7nsIjO5gPMw_hu_ca0eff5024be05a2.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Kq7ExjGCW7nsIjO5gPMw_hu_1c7748595836c798.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="435px"
+>&lt;/p>
+&lt;p>Add a &lt;strong>Trigger Condition&lt;/strong> and add the following code exactly as it is.&lt;/p>
+&lt;p>@or(and(not(equals(triggerOutputs()?[&amp;lsquo;body/User_x0020_Principal_x0020_Name&amp;rsquo;], &amp;lsquo;Unassigned&amp;rsquo;)),not(contains(triggerBody(), &amp;lsquo;UserProfile&amp;rsquo;))),not(equals(triggerOutputs()?[&amp;lsquo;body/User_x0020_Principal_x0020_Name&amp;rsquo;],triggerOutputs()?[&amp;lsquo;body/UserProfile&amp;rsquo;][&amp;lsquo;Email&amp;rsquo;])))&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1mC9t4BUoxiJfqTSIonWsA.png"
+width="920"
+height="1358"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1mC9t4BUoxiJfqTSIonWsA_hu_4c06dfb6e979b45f.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1mC9t4BUoxiJfqTSIonWsA_hu_fa3d2e5badabf1c6.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="67"
+data-flex-basis="162px"
+>&lt;/p>
+&lt;p>This is the most crucial step. Without a trigger condition, we would create an infinite trigger loop since we use &lt;strong>When an item is created or modified&lt;/strong> as trigger and our final action will be &lt;strong>Update item&lt;/strong>.&lt;/p>
+&lt;p>Add a &lt;strong>Condition&lt;/strong> where it checks if the &lt;strong>User Principal Name&lt;/strong> is equal to &lt;strong>Unassigned.&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ynIuEDsOPU7mh4mGx7VQw.png"
+width="945"
+height="331"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ynIuEDsOPU7mh4mGx7VQw_hu_d39a7bc9bf35e38d.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1ynIuEDsOPU7mh4mGx7VQw_hu_f318cf3a6611faa1.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="285"
+data-flex-basis="685px"
+>&lt;/p>
+&lt;p>If the condition is &lt;strong>True&lt;/strong> or in other words, if the value of the &lt;strong>User Principal Name&lt;/strong> field is unassigned, we want to delete the list item.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1t4gRY6Gv6nOZqhgCQ9IF7w.png"
+width="970"
+height="609"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1t4gRY6Gv6nOZqhgCQ9IF7w_hu_74b99cbb77fbe98f.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1t4gRY6Gv6nOZqhgCQ9IF7w_hu_36f3a1dc78099f22.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="159"
+data-flex-basis="382px"
+>&lt;/p>
+&lt;p>Keep in mind that the flow is only triggered if our trigger condition is met. It took me quite some time and a lot of binging to figure out a working trigger condition for this scenario. (Yes, I really found the answer on Bing without any googling!).&lt;/p>
+&lt;p>The condition consists of an &lt;strong>and&lt;/strong> operator and an &lt;strong>or&lt;/strong> operator. In English, it checks for the following:&lt;/p>
+&lt;p>The &lt;strong>User Principal Name&lt;/strong> is not &lt;strong>Unassigned&lt;/strong> and the &lt;strong>User Profile&lt;/strong> is empty.&lt;/p>
+&lt;p>This means that the flow will trigger if the number is assigned to a user, but the &lt;strong>User Profile&lt;/strong> is not populated yet.&lt;/p>
+&lt;p>or&lt;/p>
+&lt;p>The &lt;strong>User Principal Name&lt;/strong> is not the same as the &lt;strong>User Profile.&lt;/strong>&lt;/p>
+&lt;p>The flow also triggers if the &lt;strong>User Profile&lt;/strong> is already populated but it doesn’t match the &lt;strong>User Principal Name&lt;/strong>.&lt;/p>
+&lt;p>I didn’t find a way to delete the &lt;strong>User Profile&lt;/strong> if any given number changes from &lt;strong>Assigned&lt;/strong> to &lt;strong>Unassigned.&lt;/strong> Unfortunately, setting the filed to &lt;code>null&lt;/code> via the flow did not work. Because of that we just delete the list item using &lt;strong>Delete item&lt;/strong>. The number will be added back to the list with its up to date information as soon as the Runbook runs again.&lt;/p>
+&lt;p>In the &lt;strong>If no&lt;/strong> action of the condition, we need to add another condition. This time, we want to check if the &lt;strong>Account Type&lt;/strong> is equal to &lt;strong>User Account&lt;/strong>. We only want to include a link to Teams Admin Center if it’s a user account.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1KSugJSu7Fc1kD6QiBAKPg.png"
+width="1966"
+height="413"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1KSugJSu7Fc1kD6QiBAKPg_hu_e476a433ba0f8d1e.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1KSugJSu7Fc1kD6QiBAKPg_hu_fd6bdbef5f7541d2.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="476"
+data-flex-basis="1142px"
+>&lt;/p>
+&lt;p>In this condition, we only configure actions if it’s &lt;strong>True&lt;/strong>. First, we update the list item. Select your &lt;strong>Site Address&lt;/strong> and &lt;strong>List Name&lt;/strong> again. Then fill in the &lt;strong>ID&lt;/strong> and &lt;strong>Title&lt;/strong> from dynamic content. And finally, in &lt;strong>User Profile Claims&lt;/strong> select &lt;strong>Enter custom value&lt;/strong> and choose &lt;strong>User Principal Name&lt;/strong> from dynamic content. Leave all the other fields blank.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1THXkqvbzDa3lKzVmDmqHww.png"
+width="967"
+height="1245"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1THXkqvbzDa3lKzVmDmqHww_hu_774367a7f43c4fb0.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1THXkqvbzDa3lKzVmDmqHww_hu_feb4ed790a01116c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="77"
+data-flex-basis="186px"
+>&lt;/p>
+&lt;p>Add another action and choose &lt;strong>Send an HTTP request to SharePoint&lt;/strong>. The &lt;strong>Update item&lt;/strong> action only supports hyperlinks without a description so it would show the entire URL instead of a friendly name in the list. Although it’s more complicated, we can add a hyperlink with a friendly name using &lt;strong>Send an HTTP request to SharePoint&lt;/strong>.&lt;/p>
+&lt;p>Fill in your &lt;strong>Site Address&lt;/strong> again and set the &lt;strong>Method&lt;/strong> to &lt;strong>POST.&lt;/strong> The &lt;strong>Uri&lt;/strong> must look like this:&lt;/p>
+&lt;p>_api/web/lists/GetByTitle(&amp;lsquo;Teams Phone Number Overview Demo 10&amp;rsquo;)/items(@{triggerOutputs()?[&amp;lsquo;body/ID&amp;rsquo;]})&lt;/p>
+&lt;p>Make sure to adjust the list name in case your list is named differently. Spaces inside the single quotes are supported in this field.&lt;/p>
+&lt;p>Click the little icon next to the &lt;strong>Headers&lt;/strong> field to engage &lt;strong>Switch Headers to text mode&lt;/strong> and paste the following Json:&lt;/p>
+&lt;p>{&lt;br>
+&amp;ldquo;Content-Type&amp;rdquo;: &amp;ldquo;application/json;odata=verbose&amp;rdquo;,&lt;br>
+&amp;ldquo;X-HTTP-Method&amp;rdquo;: &amp;ldquo;MERGE&amp;rdquo;,&lt;br>
+&amp;ldquo;IF-MATCH&amp;rdquo;: &amp;ldquo;*&amp;rdquo;&lt;br>
+}&lt;/p>
+&lt;p>Then paste the following Json content in the &lt;strong>Body&lt;/strong>:&lt;/p>
+&lt;p>{&lt;br>
+&amp;ldquo;__metadata&amp;rdquo;: {&lt;br>
+&amp;ldquo;type&amp;rdquo;: &amp;ldquo;SP.Data.Teams_x0020_Phone_x0020_Number_x0020_Demo_x0020_10ListItem&amp;rdquo;&lt;br>
+},&lt;br>
+&amp;ldquo;TeamsAdminCenter&amp;rdquo;: {&lt;br>
+&amp;ldquo;Description&amp;rdquo;: &amp;ldquo;Teams Admin Center&amp;rdquo;,&lt;br>
+&amp;ldquo;Url&amp;rdquo;: &amp;ldquo;&lt;a class="link" href="https://admin.teams.microsoft.com/users/@%7btriggerOutputs%28%29" target="_blank" rel="noopener"
+>https://admin.teams.microsoft.com/users/@{triggerOutputs()&lt;/a>?[&amp;lsquo;body/UserId&amp;rsquo;]}/account&amp;rdquo;&lt;br>
+}&lt;br>
+}&lt;/p>
+&lt;p>Again, make sure to adjust the list name to your own. There is no space or any other character between the end of the list name and &lt;code>ListItem&lt;/code> . All spaces in the list name must be replaced by &lt;code>_x0020_&lt;/code> .&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cfiipG861HDIM3jYlRBIVA.png"
+width="964"
+height="1381"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cfiipG861HDIM3jYlRBIVA_hu_ee6448debccf2de8.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cfiipG861HDIM3jYlRBIVA_hu_4a95096f07331ad2.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="69"
+data-flex-basis="167px"
+>&lt;/p>
+&lt;p>If you look at the trigger condition again, you might have noticed that the field names like &lt;strong>User Principal Name&lt;/strong> are all written like this: &lt;strong>User_x0020_Principal_x0020_Name.&lt;/strong> I noticed that all columns which contain spaces and have been created via the Graph API are named this way. &lt;strong>Teams Admin Center&lt;/strong> on the other hand has been created manually via SharePoint Online. This column&amp;rsquo;s reference name is now &lt;strong>TeamsAdminCenter&lt;/strong> as you can see in the screenshot above.&lt;/p>
+&lt;p>That’s it, we finished building our flow. For reference, here’s the complete layout of the flow without expanded actions.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/131pEBoBjwrnmLnXAWpI1fw.png"
+width="3004"
+height="1558"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/131pEBoBjwrnmLnXAWpI1fw_hu_628e3e9f0038b731.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/131pEBoBjwrnmLnXAWpI1fw_hu_8c232f68be2f5294.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="192"
+data-flex-basis="462px"
+>&lt;/p>
+&lt;h3 id="force-sync-thelist">Force Sync the List
+&lt;/h3>&lt;p>The only problem now is that it won’t be triggered unless the &lt;strong>User Principal Name&lt;/strong> field changes on any of the list entries. The easiest way to get these fields populated is to just delete all list entries of assigned user numbers and re-run the Runbook.&lt;/p>
+&lt;p>Filter the list by &lt;strong>Assigned&lt;/strong> numbers and Account Type: &lt;strong>User Account&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1oy8uFABozWsg4AIlK3vuaA.png"
+width="2748"
+height="410"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1oy8uFABozWsg4AIlK3vuaA_hu_164cad1b81ac35.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1oy8uFABozWsg4AIlK3vuaA_hu_76a14c0f2ca543ce.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="670"
+data-flex-basis="1608px"
+>&lt;/p>
+&lt;p>Then delete all the entries and wait for the action to complete.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1MlCWdIO1Y8DSyWObydkRFw.png"
+width="955"
+height="530"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1MlCWdIO1Y8DSyWObydkRFw_hu_92ea612c6b8ee6c5.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1MlCWdIO1Y8DSyWObydkRFw_hu_8ddddc888b6cbbcd.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="180"
+data-flex-basis="432px"
+>&lt;/p>
+&lt;p>Now start the Runbook again or wait for the next scheduled job. Once the job has completed, wait another few minutes for the flow to be triggered.&lt;/p>
+&lt;p>In the flow’s run history, you should then be able to see a couple of successful flow runs. One for each assigned user number which was previously deleted from the list.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1f5SBjLNb00UmmWwtZCQ.png"
+width="1604"
+height="360"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1f5SBjLNb00UmmWwtZCQ_hu_18347b99fb048ca8.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1f5SBjLNb00UmmWwtZCQ_hu_81d5f5d23948e80b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="445"
+data-flex-basis="1069px"
+>&lt;/p>
+&lt;p>In the details of the flow run, we can see that both the item was updated, and that the HTTP request was made to SharePoint.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Gf3bQf6h3rT6dZtQNarGw.png"
+width="2995"
+height="1322"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Gf3bQf6h3rT6dZtQNarGw_hu_22b20a70985d8af.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1Gf3bQf6h3rT6dZtQNarGw_hu_f6cf1ed18cf5c18f.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="226"
+data-flex-basis="543px"
+>&lt;/p>
+&lt;p>In our SharePoint List, we can now see that both the &lt;strong>User Profile&lt;/strong> and the link to &lt;strong>Teams Admin Center&lt;/strong> have been populated.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cBT73cmZmnoEZNRofNOWaQ.png"
+width="2750"
+height="393"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cBT73cmZmnoEZNRofNOWaQ_hu_fd94c5f4e9da41c4.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1cBT73cmZmnoEZNRofNOWaQ_hu_e98b0993faf5cc63.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="699"
+data-flex-basis="1679px"
+>&lt;/p>
+&lt;h4 id="updating-the-direct-routing-numbers-inazure">Updating the Direct Routing Numbers in Azure
+&lt;/h4>&lt;p>Chances are that you’re going to have more/new Direct Routing numbers at some point. For that scenario, I created another script in &lt;code>.\Setup\UpdateDirectRoutingNumbers.ps1&lt;/code> . This script will compare the contents of the local &lt;strong>DirectRoutingNumbers.csv&lt;/strong> with what’s stored in the Azure Automation Variable. If the content is not the same, the script will &lt;strong>overwrite&lt;/strong> the content of the Automation Variable with your new local source list. This means that you will always need to include all your Direct Routing numbers in the local CSV file, not just new numbers. If you remove numbers from the local source, they will also be removed from the Automation Variable. Hopefully, you won’t have to do this too often.&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Setup/UpdateDirectRoutingNumbers.ps1" target="_blank" rel="noopener"
+>TeamsPhoneAutomation/UpdateDirectRoutingNumbers.ps1 at main · mozziemozz/TeamsPhoneAutomation (github.com)&lt;/a>&lt;/p>
+&lt;h3 id="conclusion">Conclusion
+&lt;/h3>&lt;p>While this may be a read-only solution and it doesn’t have any management capabilities such as assigning or unassigning phone numbers, I still believe that there’s tremendous value in this. I think that this could be an interesting approach for smaller companies or non-profit organizations which might not have the cash to purchase an expensive number management solution. The costs for running a Runbook job every now and then should be fairly low. According to &lt;a class="link" href="https://azure.microsoft.com/en-us/pricing/details/automation/" target="_blank" rel="noopener"
+>this website&lt;/a> 500 minutes of Job run time is free every month.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/109Skrvola5ZGSYdJONlA.png"
+width="1952"
+height="656"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/109Skrvola5ZGSYdJONlA_hu_e27289196e613dd3.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/109Skrvola5ZGSYdJONlA_hu_4dd92e0ddb1a0644.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="297"
+data-flex-basis="714px"
+>&lt;/p>
+&lt;p>Of course, this depends on the amount of numbers you have. The more numbers you have, the longer it will take for a job to complete. If we assume that each job requires 5 minutes to run, that would be about $ 6.5 per month if the job runs every hour every day of a month.&lt;/p>
+&lt;p>With this, we can finally have a complete, dynamically updated list of all our phone numbers and their state regarding their type. On top of that, we can make it accessible easily for all users or admins who need to work with this kind of information. For example, we could also add the list as a Tab in a Microsoft Teams Channel.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1pmmbdHeT9HfnoslqhEkrQ.png"
+width="3454"
+height="1117"
+srcset="https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1pmmbdHeT9HfnoslqhEkrQ_hu_acb2017dc2527324.png 480w, https://heusser.pro/p/teams-phone-number-management-on-a-budget-e25d53f65caf/1pmmbdHeT9HfnoslqhEkrQ_hu_50d2d78ed683570b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="309"
+data-flex-basis="742px"
+>&lt;/p>
+&lt;h4 id="final-notes">Final Notes
+&lt;/h4>&lt;p>I invested a lot of time to perfect this project and I’m incredibly happy to be finally able to share it with the community and my readers on Medium. I tested both the deployment to Azure and the Runbook logic quite a few times so I’m fairly confident that this should work in other Tenants as well. Since I don’t have any Operator Connect numbers available, I couldn’t test that yet. If you are an Operator Connect customer and want to try this solution, feel free to let me know if it worked for you.&lt;/p>
+&lt;p>I mainly tested populating and updating the list with about forty numbers of mixed types. I did make some quick tests (and adjustments) with a list of about 1000 Direct Routing numbers and that has worked well for me so far. If you manage a lot of phone numbers and want to try the solution yourself, I’m also happy if you can provide feedback on how it performs with even more numbers.&lt;/p>
+&lt;p>As always, I hope you like what I’ve been up to!&lt;/p></description></item></channel></rss>

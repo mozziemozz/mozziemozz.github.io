@@ -1,0 +1,1500 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Exchange Online on HEUSSER.PRO</title><link>https://heusser.pro/categories/exchange-online/</link><description>Recent content in Exchange Online on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 21 Jun 2025 14:14:50 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/exchange-online/index.xml" rel="self" type="application/rss+xml"/><item><title>Find Personal Bookings URL of Any User in Your Tenant</title><link>https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/</link><pubDate>Sat, 21 Jun 2025 14:14:50 +0000</pubDate><guid>https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/</guid><description>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/Cover.png" alt="Featured image of post Find Personal Bookings URL of Any User in Your Tenant" />&lt;p>Usually you can only get a hold of someone&amp;rsquo;s &lt;a class="link" href="https://www.microsoft.com/en-us/microsoft-365/business/scheduling-and-booking-app?msockid=156099a91c0364cb0c448c191da96578" target="_blank" rel="noopener"
+>Microsoft Personal Bookings&lt;/a> URL if the owner of a Personal Bookings page shares their URL with you. However, as an administrator, you might want to find someone&amp;rsquo;s Personal Bookings URL without asking them for it. Or maybe you already asked them but didn&amp;rsquo;t get a response from the user.&lt;/p>
+&lt;p>Why would you want to find the Personal Bookings URL of users if they didn&amp;rsquo;t explicitly share it with you anyway? I can think of a couple of uses cases.&lt;/p>
+&lt;ol>
+&lt;li>You want to automatically populate users signatures with their Bookings URL&lt;/li>
+&lt;li>You want to check if a user has successfully set up their bookable meeting types&lt;/li>
+&lt;li>You want to create a report of users who have configured the service and users who didn&amp;rsquo;t bother to configure their Personal Bookings page.&lt;/li>
+&lt;/ol>
+&lt;p>Obviously solution Nr. 1 requires additional work but there is a great example from &lt;a class="link" href="https://www.loryanstrant.com/2022/10/04/automatically-populate-staff-signatures-with-their-bookings-with-me-public-page/" target="_blank" rel="noopener"
+>Loryan Strant&lt;/a> on that topic. His blog post explains that the bookings with me URL consists of a user&amp;rsquo;s Exchange GUID and the email domain. So naturally, my script is using the same technique.&lt;/p>
+&lt;p>However, my example script goes one step further and makes additional requests and actually tries to fetch available services and available times for a specific user. If the response includes services and time slots, it means that the user has already accessed their Bookings page at least once. When a user accessed the Bookings app in Outlook for the first time, some default meeting types are created automatically.&lt;/p>
+&lt;p>I want to point out that I didn&amp;rsquo;t do any additional research if there are better ways to report on whether users are utilizing Personal Bookings or at least have configured their page. This blog post simply shows the result of my research on the topic.&lt;/p>
+&lt;h2 id="powershell-script-example">PowerShell Script Example
+&lt;/h2>&lt;p>The script below allows you to display the Personal Bookings URL for any user that has used Bookings in your tenant.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt"> 10
+&lt;/span>&lt;span class="lnt"> 11
+&lt;/span>&lt;span class="lnt"> 12
+&lt;/span>&lt;span class="lnt"> 13
+&lt;/span>&lt;span class="lnt"> 14
+&lt;/span>&lt;span class="lnt"> 15
+&lt;/span>&lt;span class="lnt"> 16
+&lt;/span>&lt;span class="lnt"> 17
+&lt;/span>&lt;span class="lnt"> 18
+&lt;/span>&lt;span class="lnt"> 19
+&lt;/span>&lt;span class="lnt"> 20
+&lt;/span>&lt;span class="lnt"> 21
+&lt;/span>&lt;span class="lnt"> 22
+&lt;/span>&lt;span class="lnt"> 23
+&lt;/span>&lt;span class="lnt"> 24
+&lt;/span>&lt;span class="lnt"> 25
+&lt;/span>&lt;span class="lnt"> 26
+&lt;/span>&lt;span class="lnt"> 27
+&lt;/span>&lt;span class="lnt"> 28
+&lt;/span>&lt;span class="lnt"> 29
+&lt;/span>&lt;span class="lnt"> 30
+&lt;/span>&lt;span class="lnt"> 31
+&lt;/span>&lt;span class="lnt"> 32
+&lt;/span>&lt;span class="lnt"> 33
+&lt;/span>&lt;span class="lnt"> 34
+&lt;/span>&lt;span class="lnt"> 35
+&lt;/span>&lt;span class="lnt"> 36
+&lt;/span>&lt;span class="lnt"> 37
+&lt;/span>&lt;span class="lnt"> 38
+&lt;/span>&lt;span class="lnt"> 39
+&lt;/span>&lt;span class="lnt"> 40
+&lt;/span>&lt;span class="lnt"> 41
+&lt;/span>&lt;span class="lnt"> 42
+&lt;/span>&lt;span class="lnt"> 43
+&lt;/span>&lt;span class="lnt"> 44
+&lt;/span>&lt;span class="lnt"> 45
+&lt;/span>&lt;span class="lnt"> 46
+&lt;/span>&lt;span class="lnt"> 47
+&lt;/span>&lt;span class="lnt"> 48
+&lt;/span>&lt;span class="lnt"> 49
+&lt;/span>&lt;span class="lnt"> 50
+&lt;/span>&lt;span class="lnt"> 51
+&lt;/span>&lt;span class="lnt"> 52
+&lt;/span>&lt;span class="lnt"> 53
+&lt;/span>&lt;span class="lnt"> 54
+&lt;/span>&lt;span class="lnt"> 55
+&lt;/span>&lt;span class="lnt"> 56
+&lt;/span>&lt;span class="lnt"> 57
+&lt;/span>&lt;span class="lnt"> 58
+&lt;/span>&lt;span class="lnt"> 59
+&lt;/span>&lt;span class="lnt"> 60
+&lt;/span>&lt;span class="lnt"> 61
+&lt;/span>&lt;span class="lnt"> 62
+&lt;/span>&lt;span class="lnt"> 63
+&lt;/span>&lt;span class="lnt"> 64
+&lt;/span>&lt;span class="lnt"> 65
+&lt;/span>&lt;span class="lnt"> 66
+&lt;/span>&lt;span class="lnt"> 67
+&lt;/span>&lt;span class="lnt"> 68
+&lt;/span>&lt;span class="lnt"> 69
+&lt;/span>&lt;span class="lnt"> 70
+&lt;/span>&lt;span class="lnt"> 71
+&lt;/span>&lt;span class="lnt"> 72
+&lt;/span>&lt;span class="lnt"> 73
+&lt;/span>&lt;span class="lnt"> 74
+&lt;/span>&lt;span class="lnt"> 75
+&lt;/span>&lt;span class="lnt"> 76
+&lt;/span>&lt;span class="lnt"> 77
+&lt;/span>&lt;span class="lnt"> 78
+&lt;/span>&lt;span class="lnt"> 79
+&lt;/span>&lt;span class="lnt"> 80
+&lt;/span>&lt;span class="lnt"> 81
+&lt;/span>&lt;span class="lnt"> 82
+&lt;/span>&lt;span class="lnt"> 83
+&lt;/span>&lt;span class="lnt"> 84
+&lt;/span>&lt;span class="lnt"> 85
+&lt;/span>&lt;span class="lnt"> 86
+&lt;/span>&lt;span class="lnt"> 87
+&lt;/span>&lt;span class="lnt"> 88
+&lt;/span>&lt;span class="lnt"> 89
+&lt;/span>&lt;span class="lnt"> 90
+&lt;/span>&lt;span class="lnt"> 91
+&lt;/span>&lt;span class="lnt"> 92
+&lt;/span>&lt;span class="lnt"> 93
+&lt;/span>&lt;span class="lnt"> 94
+&lt;/span>&lt;span class="lnt"> 95
+&lt;/span>&lt;span class="lnt"> 96
+&lt;/span>&lt;span class="lnt"> 97
+&lt;/span>&lt;span class="lnt"> 98
+&lt;/span>&lt;span class="lnt"> 99
+&lt;/span>&lt;span class="lnt">100
+&lt;/span>&lt;span class="lnt">101
+&lt;/span>&lt;span class="lnt">102
+&lt;/span>&lt;span class="lnt">103
+&lt;/span>&lt;span class="lnt">104
+&lt;/span>&lt;span class="lnt">105
+&lt;/span>&lt;span class="lnt">106
+&lt;/span>&lt;span class="lnt">107
+&lt;/span>&lt;span class="lnt">108
+&lt;/span>&lt;span class="lnt">109
+&lt;/span>&lt;span class="lnt">110
+&lt;/span>&lt;span class="lnt">111
+&lt;/span>&lt;span class="lnt">112
+&lt;/span>&lt;span class="lnt">113
+&lt;/span>&lt;span class="lnt">114
+&lt;/span>&lt;span class="lnt">115
+&lt;/span>&lt;span class="lnt">116
+&lt;/span>&lt;span class="lnt">117
+&lt;/span>&lt;span class="lnt">118
+&lt;/span>&lt;span class="lnt">119
+&lt;/span>&lt;span class="lnt">120
+&lt;/span>&lt;span class="lnt">121
+&lt;/span>&lt;span class="lnt">122
+&lt;/span>&lt;span class="lnt">123
+&lt;/span>&lt;span class="lnt">124
+&lt;/span>&lt;span class="lnt">125
+&lt;/span>&lt;span class="lnt">126
+&lt;/span>&lt;span class="lnt">127
+&lt;/span>&lt;span class="lnt">128
+&lt;/span>&lt;span class="lnt">129
+&lt;/span>&lt;span class="lnt">130
+&lt;/span>&lt;span class="lnt">131
+&lt;/span>&lt;span class="lnt">132
+&lt;/span>&lt;span class="lnt">133
+&lt;/span>&lt;span class="lnt">134
+&lt;/span>&lt;span class="lnt">135
+&lt;/span>&lt;span class="lnt">136
+&lt;/span>&lt;span class="lnt">137
+&lt;/span>&lt;span class="lnt">138
+&lt;/span>&lt;span class="lnt">139
+&lt;/span>&lt;span class="lnt">140
+&lt;/span>&lt;span class="lnt">141
+&lt;/span>&lt;span class="lnt">142
+&lt;/span>&lt;span class="lnt">143
+&lt;/span>&lt;span class="lnt">144
+&lt;/span>&lt;span class="lnt">145
+&lt;/span>&lt;span class="lnt">146
+&lt;/span>&lt;span class="lnt">147
+&lt;/span>&lt;span class="lnt">148
+&lt;/span>&lt;span class="lnt">149
+&lt;/span>&lt;span class="lnt">150
+&lt;/span>&lt;span class="lnt">151
+&lt;/span>&lt;span class="lnt">152
+&lt;/span>&lt;span class="lnt">153
+&lt;/span>&lt;span class="lnt">154
+&lt;/span>&lt;span class="lnt">155
+&lt;/span>&lt;span class="lnt">156
+&lt;/span>&lt;span class="lnt">157
+&lt;/span>&lt;span class="lnt">158
+&lt;/span>&lt;span class="lnt">159
+&lt;/span>&lt;span class="lnt">160
+&lt;/span>&lt;span class="lnt">161
+&lt;/span>&lt;span class="lnt">162
+&lt;/span>&lt;span class="lnt">163
+&lt;/span>&lt;span class="lnt">164
+&lt;/span>&lt;span class="lnt">165
+&lt;/span>&lt;span class="lnt">166
+&lt;/span>&lt;span class="lnt">167
+&lt;/span>&lt;span class="lnt">168
+&lt;/span>&lt;span class="lnt">169
+&lt;/span>&lt;span class="lnt">170
+&lt;/span>&lt;span class="lnt">171
+&lt;/span>&lt;span class="lnt">172
+&lt;/span>&lt;span class="lnt">173
+&lt;/span>&lt;span class="lnt">174
+&lt;/span>&lt;span class="lnt">175
+&lt;/span>&lt;span class="lnt">176
+&lt;/span>&lt;span class="lnt">177
+&lt;/span>&lt;span class="lnt">178
+&lt;/span>&lt;span class="lnt">179
+&lt;/span>&lt;span class="lnt">180
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="cm">&amp;lt;#
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> .&lt;/span>&lt;span class="sd">SYNOPSIS&lt;/span>&lt;span class="cm">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Get the Microsoft Bookings URL of a user in Exchange Online.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> .&lt;/span>&lt;span class="sd">DESCRIPTION&lt;/span>&lt;span class="cm">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> This script retrieves the Microsoft Bookings URL for a user in Exchange Online. It checks if a user has Microsoft Bookings enabled and if they have set up their personal bookings page already. If a user has not set up their personal bookings page, it will be reflected in the output.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> .&lt;/span>&lt;span class="sd">NOTES&lt;/span>&lt;span class="cm">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Author: Martin Heusser
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Link: https://heusser.pro
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> https://github.com/sponsors/mozziemozz?frequency=one-time&amp;amp;sponsor=mozziemozz
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> https://buymeacoffee.com/martin.heusser
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Version: 1.0.0
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Date: 2025-06-21
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">#&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$exoConnection&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-ConnectionInformation&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="p">(!&lt;/span>&lt;span class="nv">$exoConnection&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Connect-ExchangeOnline&lt;/span> &lt;span class="n">-ShowBanner:&lt;/span>&lt;span class="vm">$false&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$tenantId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$exoConnection&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">TenantID&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$graphSession&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-MgUser&lt;/span> &lt;span class="n">-Top&lt;/span> &lt;span class="mf">1&lt;/span> &lt;span class="n">-ErrorAction&lt;/span> &lt;span class="n">SilentlyContinue&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="p">(!&lt;/span>&lt;span class="nv">$graphSession&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Connect-MgGraph&lt;/span> &lt;span class="n">-Scopes&lt;/span> &lt;span class="s2">&amp;#34;User.Read.All&amp;#34;&lt;/span> &lt;span class="n">-NoWelcome&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">-not&lt;/span> &lt;span class="nv">$allUsers&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$allUsers&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-MgUser&lt;/span> &lt;span class="n">-Filter&lt;/span> &lt;span class="s2">&amp;#34;assignedPlans/any(s:s/servicePlanId eq 199a5c09-e0ca-4e37-8f7c-b05d533e1ea2)&amp;#34;&lt;/span> &lt;span class="n">-Property&lt;/span> &lt;span class="n">Id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">UserPrincipalName&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">DisplayName&lt;/span> &lt;span class="n">-CountVariable&lt;/span> &lt;span class="n">Count&lt;/span> &lt;span class="n">-ConsistencyLevel&lt;/span> &lt;span class="n">eventual&lt;/span> &lt;span class="n">-All&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$userPrincipalName&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$allUsers&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">DisplayName&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Id&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">UserPrincipalName&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Out-GridView&lt;/span> &lt;span class="n">-Title&lt;/span> &lt;span class="s2">&amp;#34;Select a user to get their Microsoft Bookings URL (Note: Only Bookings Licensed users are shown)&amp;#34;&lt;/span> &lt;span class="n">-PassThru&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">UserPrincipalName&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$domain&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$userPrincipalName&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Split&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;@&amp;#34;&lt;/span>&lt;span class="p">)[&lt;/span>&lt;span class="mf">1&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$exoMailBox&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-EXOMailbox&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="nv">$userPrincipalName&lt;/span> &lt;span class="n">-Properties&lt;/span> &lt;span class="n">ExchangeGUID&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mailBox&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-Mailbox&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="nv">$userPrincipalName&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$mailBox&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">PersistedCapabilities&lt;/span> &lt;span class="o">-notcontains&lt;/span> &lt;span class="s2">&amp;#34;BPOS_S_BookingsAddOn&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Write-Host&lt;/span> &lt;span class="s2">&amp;#34;User &amp;#39;&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exoMailBox&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">DisplayName&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#39; does not have Microsoft Bookings enabled in Exchange Online.&amp;#34;&lt;/span> &lt;span class="n">-ForegroundColor&lt;/span> &lt;span class="n">Red&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">else&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Write-Host&lt;/span> &lt;span class="s2">&amp;#34;User &amp;#39;&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exoMailBox&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">DisplayName&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#39; has Microsoft Bookings enabled in Exchange Online.&amp;#34;&lt;/span> &lt;span class="n">-ForegroundColor&lt;/span> &lt;span class="n">Green&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$exchangeGUIDWithHyphens&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$exoMailBox&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">ExchangeGUID&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Guid&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$exchangeGUID&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$exoMailBox&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">ExchangeGUID&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Guid&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Replace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;-&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$serviceId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">$null&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$response&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">$null&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$checkPersonalBookingsPage&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">$null&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$personalBookingsURL&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">$null&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$checkPersonalBookingsPageBody&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">$null&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$personalBookingsURL&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;https://outlook.office.com/bookwithme/user/&lt;/span>&lt;span class="nv">$exchangeGUID&lt;/span>&lt;span class="s2">%40&lt;/span>&lt;span class="nv">$domain&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">try&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$session&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">New-Object&lt;/span> &lt;span class="n">Microsoft&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">PowerShell&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Commands&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">WebRequestSession&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$session&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Cookies&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Add&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="nb">New-Object&lt;/span> &lt;span class="n">System&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Net&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Cookie&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;ClientId&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;4DB0129438C34891BDD6F2D6141584B9&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;outlook.office.com&amp;#34;&lt;/span>&lt;span class="p">)))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$session&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Cookies&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Add&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="nb">New-Object&lt;/span> &lt;span class="n">System&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Net&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Cookie&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;OIDC&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;outlook.office.com&amp;#34;&lt;/span>&lt;span class="p">)))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$response&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-WebRequest&lt;/span> &lt;span class="n">-UseBasicParsing&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://outlook.office.com/BookingsService/api/V1/bookingBusinessesc2/mbx:&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exchangeGUID&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">@&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$tenantId&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">/services&amp;#34;&lt;/span> &lt;span class="p">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">-WebSession&lt;/span> &lt;span class="nv">$session&lt;/span> &lt;span class="p">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">-Headers&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;authority&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;outlook.office.com&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;method&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;GET&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;path&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;/BookingsService/api/V1/bookingBusinessesc2/mbx:&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exchangeGUID&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">@&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$tenantId&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">/services&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;scheme&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;https&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;accept&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;*/*&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;accept-encoding&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;gzip, deflate, br, zstd&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;accept-language&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;en-US,en;q=0.9&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;prefer&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;exchange.behavior=&lt;/span>&lt;span class="se">`&amp;#34;&lt;/span>&lt;span class="s2">IncludeThirdPartyOnlineMeetingProviders&lt;/span>&lt;span class="se">`&amp;#34;&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;priority&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;u=1, i&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;sec-ch-ua-mobile&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;?0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;sec-ch-ua-platform&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="se">`&amp;#34;&lt;/span>&lt;span class="s2">Windows&lt;/span>&lt;span class="se">`&amp;#34;&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;sec-fetch-dest&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;empty&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;sec-fetch-mode&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;cors&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;sec-fetch-site&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;same-origin&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-anchormailbox&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;mbx:&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exchangeGUID&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">@&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$tenantId&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-edge-shopping-flag&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-owa-canary&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;X-OWA-CANARY_cookie_is_null_or_empty&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-owa-hosted-ux&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;false&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-req-source&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;BookWithMe&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="p">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json; charset=utf-8&amp;#34;&lt;/span> &lt;span class="n">-ErrorAction&lt;/span> &lt;span class="n">Stop&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c"># $serviceId = $response.Content | ConvertFrom-Json | Select-Object -ExpandProperty service | Where-Object { $_.isPrivate -eq $true } | Select-Object -ExpandProperty serviceId -First 1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$serviceId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$response&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Content&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ConvertFrom-Json&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">service&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">serviceId&lt;/span> &lt;span class="n">-First&lt;/span> &lt;span class="mf">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$checkPersonalBookingsPageBody&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">pscustomobject&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">staffIds&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;1c1c7887-e0fc-479b-ac7d-6983d0f026ff&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">startDateTime&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dateTime&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Get-Date&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">ToString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;yyyy-MM-ddTHH:mm:ss&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">timeZone&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Get-TimeZone&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">Id&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">endDateTime&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dateTime&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Get-Date&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">AddDays&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">1&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">ToString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;yyyy-MM-ddTHH:mm:ss&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">timeZone&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Get-TimeZone&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">Id&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">serviceId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$serviceId&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ConvertTo-Json&lt;/span> &lt;span class="n">-Depth&lt;/span> &lt;span class="mf">5&lt;/span> &lt;span class="n">-Compress&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$session&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">New-Object&lt;/span> &lt;span class="n">Microsoft&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">PowerShell&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Commands&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">WebRequestSession&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$session&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Cookies&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Add&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="nb">New-Object&lt;/span> &lt;span class="n">System&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Net&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Cookie&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;ClientId&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;09A51AD7CB19435B9DCFE57421FB3DD6&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;outlook.office.com&amp;#34;&lt;/span>&lt;span class="p">)))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$session&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Cookies&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Add&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="nb">New-Object&lt;/span> &lt;span class="n">System&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Net&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Cookie&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;OIDC&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;outlook.office.com&amp;#34;&lt;/span>&lt;span class="p">)))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$checkPersonalBookingsPage&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-WebRequest&lt;/span> &lt;span class="n">-UseBasicParsing&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://outlook.office.com/BookingsService/api/V1/bookingBusinessesc2/mbx:&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exchangeGUID&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">@&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$tenantId&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">/getStaffAvailability&amp;#34;&lt;/span> &lt;span class="p">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">-Method&lt;/span> &lt;span class="s2">&amp;#34;POST&amp;#34;&lt;/span> &lt;span class="p">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">-WebSession&lt;/span> &lt;span class="nv">$session&lt;/span> &lt;span class="p">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">-Headers&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;authority&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;outlook.office.com&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;method&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;POST&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;path&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;/BookingsService/api/V1/bookingBusinessesc2/mbx:&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exchangeGUID&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">@&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$tenantId&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">/getStaffAvailability&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;scheme&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;https&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;accept&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;*/*&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;accept-encoding&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;gzip, deflate, br, zstd&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;accept-language&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;de-CH,de;q=0.9&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;cache-control&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;no-cache&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;dnt&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;1&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;origin&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;https://outlook.office.com&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;pragma&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;no-cache&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;prefer&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;exchange.behavior=&lt;/span>&lt;span class="se">`&amp;#34;&lt;/span>&lt;span class="s2">IncludeThirdPartyOnlineMeetingProviders&lt;/span>&lt;span class="se">`&amp;#34;&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;priority&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;u=1, i&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;sec-ch-ua-mobile&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;?0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;sec-fetch-dest&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;empty&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;sec-fetch-mode&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;cors&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;sec-fetch-site&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;same-origin&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-anchormailbox&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;mbx:&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exchangeGUID&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">@&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$tenantId&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-edge-shopping-flag&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-owa-canary&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;X-OWA-CANARY_cookie_is_null_or_empty&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-owa-hosted-ux&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;false&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;x-req-source&amp;#34;&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;BookWithMe&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="p">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json; charset=utf-8&amp;#34;&lt;/span> &lt;span class="p">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">-Body&lt;/span> &lt;span class="nv">$checkPersonalBookingsPageBody&lt;/span> &lt;span class="n">-ErrorAction&lt;/span> &lt;span class="n">Stop&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Write-Host&lt;/span> &lt;span class="s2">&amp;#34;User &amp;#39;&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exoMailBox&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">DisplayName&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#39; set up their Personal Bookings page already.&amp;#34;&lt;/span> &lt;span class="n">-ForegroundColor&lt;/span> &lt;span class="n">Green&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$personalBookingsPageConfigured&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">$true&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">catch&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Write-Host&lt;/span> &lt;span class="s2">&amp;#34;User &amp;#39;&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exoMailBox&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">DisplayName&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#39; didn&amp;#39;t set up their Personal Bookings page yet.&amp;#34;&lt;/span> &lt;span class="n">-ForegroundColor&lt;/span> &lt;span class="n">Yellow&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$personalBookingsPageConfigured&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">$false&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$personalBookingsPageConfigured&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$personalBookingsURLAnonymous&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$personalBookingsURL&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">?anonymous&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$personalBookingsURLAnonymous&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Set-Clipboard&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Write-Host&lt;/span> &lt;span class="s2">&amp;#34;Microsoft Bookings URL of user &amp;#39;&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exoMailBox&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">DisplayName&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#39; is &amp;#39;&lt;/span>&lt;span class="nv">$personalBookingsURL&lt;/span>&lt;span class="s2">&amp;#39;.&amp;#34;&lt;/span> &lt;span class="n">-ForegroundColor&lt;/span> &lt;span class="n">Cyan&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Write-Host&lt;/span> &lt;span class="s2">&amp;#34;Microsoft Bookings anonymous URL of user &amp;#39;&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$exoMailBox&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">DisplayName&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#39;: is &amp;#39;&lt;/span>&lt;span class="nv">$personalBookingsURLAnonymous&lt;/span>&lt;span class="s2">&amp;#39;&amp;#34;&lt;/span> &lt;span class="n">-ForegroundColor&lt;/span> &lt;span class="n">Magenta&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Write-Host&lt;/span> &lt;span class="s2">&amp;#34;The URL has been copied to the clipboard.&amp;#34;&lt;/span> &lt;span class="n">-ForegroundColor&lt;/span> &lt;span class="n">Green&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="comparing-different-results-and-user-experience">Comparing Different Results and User Experience
+&lt;/h2>&lt;p>Since this is an example script, it only runs for a single user at a time. If you want this to run for every user in your organization, you&amp;rsquo;ll need to adjust the script and implement a &lt;code>foreach&lt;/code> loop on your own. The script uses &lt;code>Out-GridView -PassThru&lt;/code> to allow you to select a user. Only users which have the Microsoft Bookings service plan (199a5c09-e0ca-4e37-8f7c-b05d533e1ea2) enabled will be selectable.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-1.png"
+width="994"
+height="385"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-1_hu_c7407791c422890.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-1_hu_c26ce46e1383150b.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Out-GridView selection of Bookings licensed users."
+class="gallery-image"
+data-flex-grow="258"
+data-flex-basis="619px"
+>&lt;/p>
+&lt;h2 id="example-of-user-who-already-configured-their-bookings-page">Example of User who Already Configured their Bookings Page
+&lt;/h2>&lt;p>In the case where a user has already configured their Personal Bookings page, the script will show you both the URLs for authenticated and anonymous access.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image.png"
+width="1501"
+height="628"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image_hu_ff18067be6750738.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image_hu_a33e74574a1a9dd6.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output of the script for a user which has already configured their Personal Bookings page."
+class="gallery-image"
+data-flex-grow="239"
+data-flex-basis="573px"
+>&lt;/p>
+&lt;h2 id="example-of-user-who-didnt-already-configure-their-bookings-page">Example of User who didn&amp;rsquo;t Already Configure their Bookings Page
+&lt;/h2>&lt;p>This is what the output will look like in case a user has a Bookings license but did not yet set up their Personal Bookings page. This is the case when a user never opened the Bookings app in Outlook.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-4.png"
+width="1761"
+height="944"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-4_hu_a9afeb1954330021.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-4_hu_749e288f2cba67ce.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output of the script for a user which didn’t already set up their Personal Bookings page."
+class="gallery-image"
+data-flex-grow="186"
+data-flex-basis="447px"
+>&lt;/p>
+&lt;p>Technically, the script is able to construct the Personal Bookings URL even if a user never opened the Bookings app in Outlook before. However, when the page is accessed, there&amp;rsquo;s an error message that looks like this. Therefore, the script will not output the user&amp;rsquo;s Personal Bookings URL in this case.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-6.png"
+width="1686"
+height="1185"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-6_hu_e6cf80e4d91ca95.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-6_hu_51c8579356432d88.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Error message when a user never used Bookings before or the page isn’t provisioned yet."
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="341px"
+>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-7.png"
+width="1686"
+height="1185"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-7_hu_9c22bf4b6485b034.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-7_hu_e204f488891b060b.png 1024w"
+loading="lazy"
+decoding="async"
+alt="After the license is assigned, it takes a couple of minutes until the user is able to access their Bookings page."
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="341px"
+>&lt;/p>
+&lt;p>Once the Bookings license has been activated, a &lt;strong>Go to my booking page&lt;/strong> button will appear in the user&amp;rsquo;s calendar in Outlook on the web. Alternatively, users can also open the &lt;strong>Bookings&lt;/strong> app in Outlook (new or classic).&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-8.png"
+width="1689"
+height="1185"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-8_hu_c4a5d4bc7faf12cc.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-8_hu_df42b1836246f392.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Go to my booking page button in Outlook."
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="342px"
+>&lt;/p>
+&lt;p>At this point, the script will still report the booking page as not set up yet because the Personal Bookings page only gets activated once a user clicks on that &lt;strong>Go to my booking page&lt;/strong> link for the first time. When the link is clicked, Bookings will automatically create some meeting types for the user&amp;rsquo;s Personal Booking page.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-9.png"
+width="1689"
+height="1185"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-9_hu_7301e59d18ee2bc7.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-9_hu_ff00f9a2aa652fd9.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Personal Booking page with default meeting types."
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="342px"
+>&lt;/p>
+&lt;p>Even then, it will usually take a few minutes until the page is accessible by other users as well. Once that is the case, the script is able to detect that the page has been set up and will output the URL.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-10.png"
+width="2346"
+height="927"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-10_hu_641df795977a0d25.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-10_hu_5ca3537a20b78e7f.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output before and after a user has accessed their Personal Booking page for the first time."
+class="gallery-image"
+data-flex-grow="253"
+data-flex-basis="607px"
+>&lt;/p>
+&lt;p>All you need to do to open a user&amp;rsquo;s Personal Booking page is to click the link in Terminal.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-13.png"
+width="1686"
+height="1185"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-13_hu_540c9c590ccfd811.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-13_hu_f85640e13839f996.png 1024w"
+loading="lazy"
+decoding="async"
+alt="User’s Personal Booking page opened in browser from the URL in PowerShell output."
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="341px"
+>&lt;/p>
+&lt;h2 id="ews-capabilities">EWS Capabilities
+&lt;/h2>&lt;p>To use Bookings, the EWS (Exchange Web Services) capability &lt;strong>BPOS_S_BookingsAddOn&lt;/strong> must also be enabled. In my test tenant, this was enabled by default for all users with a Bookings service plan assigned.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Get-Mailbox&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="nv">$userPrincipalName&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">PersistedCapabilities&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Output&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">PersistedCapabilities&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">---------------------&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>&lt;span class="n">GRAPH_CONNECTORS_SEARCH_INDEX&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">BPOS_S_BookingsAddOn&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">MYANALYTICSP2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">BPOS_S_Standard&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>In my testing, one user slipped through and was included in &lt;code>Out-GridView&lt;/code> despite not having a Bookings service plan assigned. This is likely due the filter on &lt;code>assignedPlans&lt;/code> requiring the &lt;strong>eventual consistency level&lt;/strong>. In that case, or when you set the user principal name manually, the script will tell you that Bookings isn&amp;rsquo;t enabled for that user because the EWS capability is missing.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-11.png"
+width="1730"
+height="927"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-11_hu_f372f21b14d7bc30.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-11_hu_df0b068b11f9f34c.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output in case a user does not have Bookings enabled in EWS capabilities."
+class="gallery-image"
+data-flex-grow="186"
+data-flex-basis="447px"
+>&lt;/p>
+&lt;h2 id="summary-and-additional-thoughts">Summary and Additional Thoughts
+&lt;/h2>&lt;p>It took me a while to get this right. At first I thought that the &lt;code>serviceId&lt;/code> in the request body to the &lt;code>/getStaffAvailability&lt;/code> endpoint was a static value. But when I was testing with other users, I realized that the service ids are actually the ids of configured meeting types which are unique per user. Therefore, I had to implement an additional step to get the &lt;strong>services&lt;/strong> first. Services are the different bookable meeting types a user has created.&lt;/p>
+&lt;p>Since Personal Booking pages are public websites, they&amp;rsquo;re still accessible, even when a user doesn&amp;rsquo;t have any public meeting types configured.&lt;/p>
+&lt;p>Even though this user&amp;rsquo;s Personal Booking page says that no public meetings are available, the page can still be opened.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-2.png"
+width="1686"
+height="1185"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-2_hu_ae9306138220b98d.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-2_hu_7a42ae5907237a11.png 1024w"
+loading="lazy"
+decoding="async"
+alt="User with only private meeting types."
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="341px"
+>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-12.png"
+width="1686"
+height="1185"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-12_hu_b9ca53c5527e197b.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-12_hu_787be2e67b3c7fc6.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Personal Bookings page without any public meeting types."
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="341px"
+>&lt;/p>
+&lt;p>In that case, the &lt;code>service&lt;/code> property will be empty. This request is performed on lines &lt;strong>75-101&lt;/strong> in the &lt;a class="link" href="#powershell-script-example" >script&lt;/a> above. &lt;code>Invoke-WebRequest&lt;/code> is inside a &lt;code>Try-Catch&lt;/code> block and uses &lt;code>-ErrorAction Stop&lt;/code>. If a user didn&amp;rsquo;t configure their Personal Bookings page already, this request will fail. If a user doesn&amp;rsquo;t have any public meeting types configured, the request will be successful despite an empty response.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$response&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Content&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ConvertFrom-Json&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Output&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">service&lt;/span> &lt;span class="n">count&lt;/span> &lt;span class="n">nextSkipToken&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">-------&lt;/span> &lt;span class="p">-----&lt;/span> &lt;span class="p">-------------&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{}&lt;/span> &lt;span class="mf">0&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The second check to the &lt;code>/getStaffAvailability&lt;/code> endpoint happens on lines &lt;strong>119-150&lt;/strong>. In the case where no public meetings are available, the response will still include &lt;code>availabilityItems&lt;/code> but they will show as status &lt;code>BOOKINGSAVAILABILITYSTATUS_OUT_OF_OFFICE&lt;/code>. If both requests are successful, the script will deem the Personal Bookings page as active.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$checkPersonalBookingsPage&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Content&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ConvertFrom-Json&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">staffAvailabilityResponse&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">availabilityItems&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Output&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">status&lt;/span> &lt;span class="n">startDateTime&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">------&lt;/span> &lt;span class="p">-------------&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_OUT_OF_OFFICE&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">dateTime&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="mf">21.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">timeZone&lt;/span>&lt;span class="p">=(&lt;/span>&lt;span class="n">UTC&lt;/span>&lt;span class="p">+&lt;/span>&lt;span class="mf">01&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">Amsterdam&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Berlin&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Bern&lt;/span>&lt;span class="err">…&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_OUT_OF_OFFICE&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">dateTime&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="mf">22.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">timeZone&lt;/span>&lt;span class="p">=(&lt;/span>&lt;span class="n">UTC&lt;/span>&lt;span class="p">+&lt;/span>&lt;span class="mf">01&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">Amsterdam&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Berlin&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Bern&lt;/span>&lt;span class="err">…&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The behavior is the same even if all meeting types are deleted. The script is still able to detect that a booking page is set up. I don&amp;rsquo;t really have a need for it right now, but to know that it&amp;rsquo;s possible to query a users configured meeting types and to get available time slots programmatically is pretty cool.&lt;/p>
+&lt;p>Here&amp;rsquo;s an example that shows available meeting types for a user with some select properties.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$response&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Content&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ConvertFrom-Json&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">Service&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ft &lt;/span>&lt;span class="n">title&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">defaultDuration&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">serviceId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">isLocationOnline&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Output&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">title&lt;/span> &lt;span class="n">defaultDuration&lt;/span> &lt;span class="n">serviceId&lt;/span> &lt;span class="n">isLocationOnline&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">-----&lt;/span> &lt;span class="p">---------------&lt;/span> &lt;span class="p">---------&lt;/span> &lt;span class="p">----------------&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mf">60&lt;/span> &lt;span class="n">minutes&lt;/span> &lt;span class="n">meeting&lt;/span> &lt;span class="n">PT1H&lt;/span> &lt;span class="n">192c91e9&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">906c&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">44cb&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">9169&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">6dd1e4d8b5b2&lt;/span> &lt;span class="n">False&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mf">30&lt;/span> &lt;span class="n">minutes&lt;/span> &lt;span class="n">meeting&lt;/span> &lt;span class="n">PT30M&lt;/span> &lt;span class="n">8d0ddf36&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">81e4&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">4890&lt;/span>&lt;span class="n">-bc5b&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">7b59d1289970&lt;/span> &lt;span class="n">True&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mf">15&lt;/span> &lt;span class="n">minutes&lt;/span> &lt;span class="n">meeting&lt;/span> &lt;span class="n">PT15M&lt;/span> &lt;span class="n">528b7a49&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">817b&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">4351&lt;/span>&lt;span class="n">-a556&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">87de2f0d988b&lt;/span> &lt;span class="n">True&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>And here I&amp;rsquo;m checking the availability of a user programmatically. Since the script only needs &lt;strong>any&lt;/strong> &lt;code>serviceId&lt;/code>, it just uses the first one (line &lt;strong>104&lt;/strong>). The &lt;code>$checkPersonalBookingsPage&lt;/code> variable is populated when the script runs with that first &lt;code>serviceId&lt;/code>. If you want to check the availability of a specific &lt;code>serviceId&lt;/code> you&amp;rsquo;ll need to make sure to use the correct id on line &lt;strong>116&lt;/strong>. The code example below uses some custom code to format the output for better viewing and demonstration.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$checkPersonalBookingsPage&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Content&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ConvertFrom-Json&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">staffAvailabilityResponse&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">availabilityItems&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ft &lt;/span>&lt;span class="n">status&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">Name&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;startDateTime&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="n">expression&lt;/span>&lt;span class="p">={&lt;/span>&lt;span class="nv">$_&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">startDateTime&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dateTime&lt;/span>&lt;span class="p">}},&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">Name&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="s2">&amp;#34;endDateTime&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="n">expression&lt;/span>&lt;span class="p">={&lt;/span>&lt;span class="nv">$_&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">endDateTime&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">dateTime&lt;/span>&lt;span class="p">}}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Output&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">status&lt;/span> &lt;span class="n">startDateTime&lt;/span> &lt;span class="n">endDateTime&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">------&lt;/span> &lt;span class="p">-------------&lt;/span> &lt;span class="p">-----------&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_OUT_OF_OFFICE&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">08&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_AVAILABLE&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">08&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">09&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_BUSY&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">09&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">13&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_AVAILABLE&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">13&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">14&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_BUSY&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">14&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">16&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_AVAILABLE&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">16&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">17&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_OUT_OF_OFFICE&lt;/span> &lt;span class="mf">23.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">17&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span> &lt;span class="mf">24.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">BOOKINGSAVAILABILITYSTATUS_OUT_OF_OFFICE&lt;/span> &lt;span class="mf">24.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span> &lt;span class="mf">24.06&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">2025&lt;/span> &lt;span class="mf">08&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">00&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>If we compare that with the user&amp;rsquo;s Personal Booking page, we can see that the information checks out. In other words, the web request in PowerShell returns the same information as the user&amp;rsquo;s Personal Booking page displays.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-3.png"
+width="1686"
+height="1848"
+srcset="https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-3_hu_f602cd32d3c30707.png 480w, https://heusser.pro/p/find-personal-bookings-url-of-any-user-in-your-tenant-ckkfqljmc3jo/image-3_hu_9fcf99e13f2885a1.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Available meeting times on Personal Bookings page."
+class="gallery-image"
+data-flex-grow="91"
+data-flex-basis="218px"
+>&lt;/p></description></item><item><title>iOS Deep Link to Open Specific Email in Outlook App</title><link>https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/</link><pubDate>Tue, 10 Dec 2024 09:36:29 +0000</pubDate><guid>https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/</guid><description>&lt;img src="https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/cover.png" alt="Featured image of post iOS Deep Link to Open Specific Email in Outlook App" />&lt;p>I cannot believe that the day on which I&amp;rsquo;m finally able to write &lt;em>this&lt;/em> blog post has finally come. I&amp;rsquo;m not exaggerating. I have been trying to solve this and find a way to open specific emails (using the message id) in Outlook for more than &lt;strong>five&lt;/strong> years.&lt;/p>
+&lt;p>This may seem like a very small thing to most but to me, this is really big. And based on various forum posts online, I know that other people were looking for a way to do this as well. Of course, one of these &lt;a class="link" href="https://stackoverflow.com/questions/60339181/open-link-to-specific-email-message-directly-in-outlook-for-ios-uri-scheme-de" target="_blank" rel="noopener"
+>forum posts&lt;/a> is from myself, from 4 years and 9 months ago.&lt;/p>
+&lt;p>When ChatGPT was released, I tried to search for a solution again but all that happened was that I was let down by an over confident AI generated answer that turned out to do exactly nothing for me.&lt;/p>
+&lt;p>So, today, I felt like it&amp;rsquo;s time to try my luck again. I guess if I had a middle name, it would be &lt;em>Determination&lt;/em>. I found this other Stack Overflow &lt;a class="link" href="https://stackoverflow.com/questions/64214137/open-received-email-via-ms-outlook-emails-uri-scheme" target="_blank" rel="noopener"
+>post&lt;/a>, on which I apparently also commented coincidentally exactly (on the day) 1 year ago!&lt;/p>
+&lt;blockquote>
+&lt;p>Can you please try to decompile the Microsoft To Do APK? If an email is flagged and there&amp;rsquo;s a task for it in To Do Flagged Emails, there&amp;rsquo;s a button to open the email in Outlook. I think To Do holds the answer how you can open an Email by id in Outlook&amp;hellip;&lt;/p>&lt;span class="cite">&lt;span>― &lt;/span>&lt;span>Myself&lt;/span>&lt;cite>&lt;/cite>&lt;/span>&lt;/blockquote>
+&lt;p>The next thing I know was that I downloaded the To Do APK, decompiled it using an online tool and when I searched for &lt;code>ms-outlook://&lt;/code> I found this line:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">(Uri.parse(&amp;#34;ms-outlook://emails/message/open?restID=&amp;#34; + str + &amp;#34;&amp;amp;immutableID=&amp;#34; + str2 + &amp;#34;&amp;amp;account=&amp;#34; + str3))
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>There you have it Ladies and Gentlemen, this is how you link to a specific email using the message id in Outlook on iOS.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">ms-outlook://emails/message/open?restID=&amp;lt;messageId&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Now I can finally link to an email and open it directly in Outlook on iOS from wherever I want. I mostly use this for notifications sent through Power Automate but it works from any app which supports links.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/image.png"
+width="1902"
+height="1191"
+srcset="https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/image_hu_b36dc70247d05532.png 480w, https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/image_hu_a2a742cca7a62104.png 1024w"
+loading="lazy"
+decoding="async"
+alt="iOS Deep Link for Specific Email in Power Automate"
+class="gallery-image"
+data-flex-grow="159"
+data-flex-basis="383px"
+> &lt;img src="https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/20241210_103309094_iOS.gif"
+width="443"
+height="960"
+loading="lazy"
+decoding="async"
+alt="Open Specific Email Demo"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+>&lt;/p>
+&lt;p>For what it&amp;rsquo;s worth, this is much easier with the iOS stock &lt;strong>Mail&lt;/strong> app. There you just have to create a link with &lt;code>message:&amp;lt;messageId&amp;gt;&lt;/code>. But of course it&amp;rsquo;s much nicer to directly open the email in Outlook as many companies don&amp;rsquo;t allow anything else than Outlook.&lt;/p>
+&lt;p>I haven&amp;rsquo;t tested this on Android but given that I got the link from the APK, I&amp;rsquo;m quite sure that this will work on Android as well.&lt;/p>
+&lt;p>I hope this made your day as well!&lt;/p></description></item><item><title>Microsoft Forms Data Recovery: Going Down The Rabbit Hole</title><link>https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/</link><pubDate>Sat, 18 May 2024 09:07:35 +0000</pubDate><guid>https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/</guid><description>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/cover.png" alt="Featured image of post Microsoft Forms Data Recovery: Going Down The Rabbit Hole" />&lt;h2 id="intro">Intro
+&lt;/h2>&lt;p>Let me start by saying, that hopefully you&amp;rsquo;ll never need to go down this rabbit hole. But if you&amp;rsquo;re like me, you may be interested in the content anyway.&lt;/p>
+&lt;p>A couple of weeks ago, I worked on a support request from a user who needed to recover some accidentally deleted responses of a Microsoft Form. The first place I was looking for answers was the Forms recycle bin. This however will only include your deleted forms but unfortunately it doesn&amp;rsquo;t contain deleted responses of active forms.&lt;/p>
+&lt;p> &lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/6131e543-e1b1-4f9f-871e-70d0aaddd728.png"
+width="780"
+height="811"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/6131e543-e1b1-4f9f-871e-70d0aaddd728_hu_ffca4a01f32614d0.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/6131e543-e1b1-4f9f-871e-70d0aaddd728_hu_655e0a51bc1ff1f4.png 1024w"
+loading="lazy"
+decoding="async"
+alt="The good thing is that the restore process will also bring back the responses."
+class="gallery-image"
+data-flex-grow="96"
+data-flex-basis="230px"
+>&lt;/p>
+&lt;h3 id="how-would-you-even-know-if-responses-of-a-form-got-deleted">How would you even know if responses of a form got deleted?
+&lt;/h3>&lt;p>I have a test form with 3 responses. On first sight, there&amp;rsquo;s no indication that some of the responses were actually deleted.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/02421d0f-c2c9-42b9-b187-f0a1e50f7819.png"
+width="1294"
+height="499"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/02421d0f-c2c9-42b9-b187-f0a1e50f7819_hu_71b8e0f6f5e851e9.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/02421d0f-c2c9-42b9-b187-f0a1e50f7819_hu_1fab24e292c8ca1c.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Forms will only display responses which haven’t been deleted."
+class="gallery-image"
+data-flex-grow="259"
+data-flex-basis="622px"
+>&lt;/p>
+&lt;p>But once I click on &lt;strong>View results&lt;/strong> I can see that the number of the first respondent that is shown is actually &lt;strong>2&lt;/strong> and not &lt;strong>1&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/d15a45af-ed02-4433-ada2-7161d03c788b.png"
+width="1197"
+height="321"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/d15a45af-ed02-4433-ada2-7161d03c788b_hu_ace5700abbfcc1ee.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/d15a45af-ed02-4433-ada2-7161d03c788b_hu_6b4ccdffa7916594.png 1024w"
+loading="lazy"
+decoding="async"
+alt="This is how you know if a form has deleted responses."
+class="gallery-image"
+data-flex-grow="372"
+data-flex-basis="894px"
+>&lt;/p>
+&lt;p>The response IDs will also be visible if you download a copy of the responses as an Excel file.&lt;/p>
+&lt;h4 id="how-can-responses-be-deleted">How can responses be deleted?
+&lt;/h4>&lt;p>In most cases, responses are deleted unintentionally by accident. Responses can be deleted from the &lt;strong>View results&lt;/strong> menu in &lt;strong>Responses&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/image.png"
+width="1301"
+height="431"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/image_hu_528bf2ae5450f31d.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/image_hu_47396ba6676caee1.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Click the three dots ()…) and then Delete response to delete a specific response."
+class="gallery-image"
+data-flex-grow="301"
+data-flex-basis="724px"
+>&lt;/p>
+&lt;p>There will be a warning that the response will be permanently deleted.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/image-1.png"
+width="1113"
+height="217"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/image-1_hu_6beb944b71fbdd8f.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/image-1_hu_40c714ca383c0426.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Spoiler alert: That’s not 100% true…"
+class="gallery-image"
+data-flex-grow="512"
+data-flex-basis="1230px"
+>&lt;/p>
+&lt;h2 id="sync-responses-to-excel">Sync Responses to Excel
+&lt;/h2>&lt;p>At the time I had to recover the responses for the user, the option to sync responses to Excel wasn&amp;rsquo;t available yet, as this feature was only introduced recently in the fashion of a public preview. Even if it was already available, it would have only saved me all of the trouble and investigation work, if the user had clicked it before the responses were deleted.&lt;/p>
+&lt;p>From your form&amp;rsquo;s responses, you can either download a copy of a static Excel file or you can &lt;strong>Open results in Excel&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/a2fa3d9a-6e0c-4355-a1ee-68bf78ff01fd.png"
+width="1306"
+height="418"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/a2fa3d9a-6e0c-4355-a1ee-68bf78ff01fd_hu_9e3691265939a97d.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/a2fa3d9a-6e0c-4355-a1ee-68bf78ff01fd_hu_14b64b60b0a1f5fa.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Previously, Forms only allowed us to download a static copy of the current data."
+class="gallery-image"
+data-flex-grow="312"
+data-flex-basis="749px"
+>&lt;/p>
+&lt;p>Downloading a copy will only include the current responses but obviously not add any new responses. To view new responses in Excel, you had to download a new copy after more respondents filled out your form.&lt;/p>
+&lt;p>A common workaround was to create a Power Automate flow to automatically save all responses to either an Excel file or a SharePoint list. With the most recent update to Forms, that&amp;rsquo;s not necessary anymore. At least not for basic scenarios.&lt;/p>
+&lt;p>Opening the results in Excel will automatically create an Excel file in your OneDrive which is then also automatically updated every time somebody submits a new response to your form.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/6f819493-d240-406c-8ff8-cde512e4e4fe.png"
+width="1048"
+height="534"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/6f819493-d240-406c-8ff8-cde512e4e4fe_hu_97aa9319bc9fd307.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/6f819493-d240-406c-8ff8-cde512e4e4fe_hu_f19419442b3cffaa.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Each user will only see this message once."
+class="gallery-image"
+data-flex-grow="196"
+data-flex-basis="471px"
+>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/f9384969-369e-426f-94c0-6911733b95f8.png"
+width="765"
+height="490"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/f9384969-369e-426f-94c0-6911733b95f8_hu_fd4bf0f88b6b7822.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/f9384969-369e-426f-94c0-6911733b95f8_hu_10f5bef6c784d2b8.png 1024w"
+loading="lazy"
+decoding="async"
+alt="A new tab will open with the newly created Excel sheet."
+class="gallery-image"
+data-flex-grow="156"
+data-flex-basis="374px"
+>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/705e56cb-a2ba-41cc-a7ab-81629ec2fb4d.png"
+width="1310"
+height="259"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/705e56cb-a2ba-41cc-a7ab-81629ec2fb4d_hu_a95d51340473ace.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/705e56cb-a2ba-41cc-a7ab-81629ec2fb4d_hu_8ea1f29fa5a4f5cd.png 1024w"
+loading="lazy"
+decoding="async"
+alt="The Excel file will include all responses and also show a hint that this workbook is synced with Forms."
+class="gallery-image"
+data-flex-grow="505"
+data-flex-basis="1213px"
+>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/d79564be-c589-465c-b5a5-bb58e0226328.png"
+width="1292"
+height="367"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/d79564be-c589-465c-b5a5-bb58e0226328_hu_be37936c6fcc1cea.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/d79564be-c589-465c-b5a5-bb58e0226328_hu_e348a4c703d4a0e5.png 1024w"
+loading="lazy"
+decoding="async"
+alt="After setting up the sync, the form will show the linked Excel file instead of the button Open results in Excel."
+class="gallery-image"
+data-flex-grow="352"
+data-flex-basis="844px"
+>&lt;/p>
+&lt;p>Based on my testing, only newly added responses will be synced to the Excel file. If you delete a response from Forms, it will stay in Excel, which is not necessarily a bad thing. But even if deleted responses would be removed from the Excel as well, we could still get the data back through OneDrive&amp;rsquo;s version history.&lt;/p>
+&lt;p>Therefore, I advise every form creator to start syncing the responses to Excel Online immediately after the form has been created. This will ensure that no response data can get lost.&lt;/p>
+&lt;p>Now let&amp;rsquo;s look at your options in case you or a user didn&amp;rsquo;t sync or download a static copy of the responses before they were deleted.&lt;/p>
+&lt;h2 id="where-are-form-responses-stored">Where are Form responses stored?
+&lt;/h2>&lt;p>You might think that they&amp;rsquo;re stored in OneDrive or SharePoint but that&amp;rsquo;s not the case. Form responses are stored in the Exchange Online Mailbox of the user who created the form. I was only able to find all of this information because of &lt;a class="link" href="https://www.linkedin.com/feed/update/urn:li:activity:7173720646349123584?utm_source=share&amp;amp;utm_medium=member_desktop" target="_blank" rel="noopener"
+>this&lt;/a> LinkedIn post by Andrew Chomik. The post includes another link which leads &lt;a class="link" href="https://learn.microsoft.com/en-us/purview/ediscovery-what-is-stored-in-a-mailbox" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/p>
+&lt;p>This is what it says in the Microsoft Learn article:&lt;/p>
+&lt;p>&lt;em>Forms and responses to a form are stored in files that are attached to email messages and stored in a hidden folder in the mailbox of the user who created the form.
+Forms created before April 2020 are stored as a PDF file. Forms created after 2020 are stored as a JSON file. Responses to a form are stored in a CSV file.
+When you export content from Forms in a PST file, this data is located in the &lt;strong>ApplicationDataRoot&lt;/strong> folder in a subfolder named with the following globally unique identified (GUID): &lt;strong>c9a559d2-7aab-4f13-a6ed-e7e9c52aec87&lt;/strong>.&lt;/em>&lt;/p>
+&lt;h2 id="how-do-we-access-the-forms-data-stored-in-exchange-online">How do we access the forms data stored in Exchange Online?
+&lt;/h2>&lt;p>At first I tried to get the data by using Exchange Online PowerShell but that turned into a dead end rather quickly. Since this all happened a couple of weeks ago, I don&amp;rsquo;t remember exactly how I discovered the tool &lt;a class="link" href="https://github.com/microsoft/mfcmapi" target="_blank" rel="noopener"
+>MFCMAPI&lt;/a> but somehow I found this and it helped me solve my issue.&lt;/p>
+&lt;p>This tool only works if Outlook is installed on the same system you&amp;rsquo;re running it from. Furthermore, the user who created the form for which you want to restore responses needs to be signed into Outlook (Classic). Outlook doesn&amp;rsquo;t need to be running for MFCMAPI to work though.&lt;/p>
+&lt;p>If you don&amp;rsquo;t want to perform this task on an end user&amp;rsquo;s machine, you can grant yourself temporary full access to the user&amp;rsquo;s mailbox so that you can use MFCMAPI on your own machine.&lt;/p>
+&lt;h3 id="use-mfcmapi-to-export-form-responses">Use MFCMAPI to export form responses
+&lt;/h3>&lt;p>To be able to see the forms data in a mailbox, you need to enable two options in MFCMAPI first. Click on &lt;strong>Tools&lt;/strong> and then &lt;strong>Options&lt;/strong> to open the settings.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/image-2.png"
+width="1048"
+height="828"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/image-2_hu_6798d4d18537b6fd.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/image-2_hu_6ec6b39c574463da.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Open MFCMAPI settings"
+class="gallery-image"
+data-flex-grow="126"
+data-flex-basis="303px"
+>&lt;/p>
+&lt;p>Scroll down and make sure that &lt;strong>Use the MDB_ONLINE flag when calling OpenMsgStore&lt;/strong> and &lt;strong>Use the MAPI_NO_CACHE flag when calling OpenEntry&lt;/strong> are both enabled.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/c9d5cc19-b03a-40b8-b12e-bd513b424228.png"
+width="718"
+height="547"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/c9d5cc19-b03a-40b8-b12e-bd513b424228_hu_f7a757a267e7f1a4.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/c9d5cc19-b03a-40b8-b12e-bd513b424228_hu_5240a54afdc0a5ce.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Without these options enabled you won’t see forms data."
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="315px"
+>&lt;/p>
+&lt;p>You can find more info on how to use MFCMAPI &lt;a class="link" href="https://office365concepts.com/how-to-use-mfcmapi/" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/p>
+&lt;p>Next, click on &lt;strong>Session&lt;/strong> and then &lt;strong>Logon&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/ac9717fa-b74e-4eed-962d-15444d1c7f98.png"
+width="1048"
+height="828"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/ac9717fa-b74e-4eed-962d-15444d1c7f98_hu_b6eac50eed218bd9.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/ac9717fa-b74e-4eed-962d-15444d1c7f98_hu_b7be868f86f99f8d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="MFCMAPI Session Logon"
+class="gallery-image"
+data-flex-grow="126"
+data-flex-basis="303px"
+>&lt;/p>
+&lt;p>Select the correct Outlook profile.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/da558d8c-f98e-4848-b797-58d231378757.png"
+width="429"
+height="163"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/da558d8c-f98e-4848-b797-58d231378757_hu_82ec9f1066abb562.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/da558d8c-f98e-4848-b797-58d231378757_hu_cca9b343d6421eeb.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Select the correct Outlook profile"
+class="gallery-image"
+data-flex-grow="263"
+data-flex-basis="631px"
+>&lt;/p>
+&lt;p>In my case, I&amp;rsquo;m signed into Outlook using the account called &lt;strong>Olivia&lt;/strong> but the Forms data is actually stored in &lt;strong>Emma Dupont&amp;rsquo;s&lt;/strong>* mailbox. Olivia has full access to Emma&amp;rsquo;s Mailbox and can thus use MFCMAPI on her machine.&lt;/p>
+&lt;p>Double click the mailbox to open it. This will open a new window.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/6f156165-0434-4e0d-a017-be82ebff2865.png"
+width="1048"
+height="828"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/6f156165-0434-4e0d-a017-be82ebff2865_hu_460d4ba3906466b9.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/6f156165-0434-4e0d-a017-be82ebff2865_hu_f62d772b89a90d3e.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Open mailbox in MFCMAPI"
+class="gallery-image"
+data-flex-grow="126"
+data-flex-basis="303px"
+>&lt;/p>
+&lt;p>Expand the &lt;strong>Root Container&lt;/strong> and then expand &lt;strong>ApplicationDataRoot&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/44e07eba-187f-4217-9c99-ec3ab9fadcc3.png"
+width="1048"
+height="828"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/44e07eba-187f-4217-9c99-ec3ab9fadcc3_hu_e8def961dd8bae48.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/44e07eba-187f-4217-9c99-ec3ab9fadcc3_hu_8ce5b361cca9d3aa.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Find the ApplicationDataRoot folder"
+class="gallery-image"
+data-flex-grow="126"
+data-flex-basis="303px"
+>&lt;/p>
+&lt;p>Look for the folder &lt;strong>c9a559d2-7aab-4f13-a6ed-e7e9c52aec87&lt;/strong> and expand it as well. In there, you will see the IDs of the user&amp;rsquo;s Forms. Identify the Form Id by comparing it to the one shown in the URL on &lt;strong>forms.office.com&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/78f1a696-68a3-4018-9e92-371667941783.png"
+width="1866"
+height="821"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/78f1a696-68a3-4018-9e92-371667941783_hu_d263961979a052c9.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/78f1a696-68a3-4018-9e92-371667941783_hu_73e2ef71dc1d2c24.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Find the correct form Id"
+class="gallery-image"
+data-flex-grow="227"
+data-flex-basis="545px"
+>&lt;/p>
+&lt;p>Once you&amp;rsquo;ve identified the correct form, double click the Id to open it in a new window.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/8b7a81f5-af28-4a27-bfff-cd91debfd604.png"
+width="2023"
+height="891"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/8b7a81f5-af28-4a27-bfff-cd91debfd604_hu_c18093c3bbacc45a.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/8b7a81f5-af28-4a27-bfff-cd91debfd604_hu_bffb879958c62e2b.png 1024w"
+loading="lazy"
+decoding="async"
+alt="This will display all data linked to the selected form."
+class="gallery-image"
+data-flex-grow="227"
+data-flex-basis="544px"
+>&lt;/p>
+&lt;p>Remember that in the beginning of this blog post I mentioned, that the first response which is available in Forms had the Id 2? The other two responses which are available in Forms are 3 and 5. This means that 1 and 4 are missing from Forms because they were deleted.&lt;/p>
+&lt;p>Let&amp;rsquo;s see if we can find them in MFCMAPI&amp;hellip;&lt;/p>
+&lt;h3 id="export-deleted-form-responses">Export deleted form responses
+&lt;/h3>&lt;p>In the bottom half of MFCMAPI, sort the &lt;strong>Name&lt;/strong> column ascending and look for the name &lt;strong>0x3662001F&lt;/strong> and select it. Then click on any of the items in the top half of the window. Now you can use the arrow keys to cycle through all items. For all items which store a form response, the value in 0x3662001F will hold a number, which corresponds to the response Id. In this case, I&amp;rsquo;ve found the response &lt;strong>4&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/5019dd67-b8a2-4770-9561-5ba6b284dd16.png"
+width="2023"
+height="891"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/5019dd67-b8a2-4770-9561-5ba6b284dd16_hu_d6c56927c3d35c39.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/5019dd67-b8a2-4770-9561-5ba6b284dd16_hu_511bcf8aba7582d8.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Identify the deleted form response"
+class="gallery-image"
+data-flex-grow="227"
+data-flex-basis="544px"
+>&lt;/p>
+&lt;p>To export the response data, select the entry in the upper half of the window and right-click to select &lt;strong>Attachments&lt;/strong>, &lt;strong>Save all attachments&amp;hellip;&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/2efe93ab-b990-4e1b-89a9-fdc83d5f7284.png"
+width="2023"
+height="891"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/2efe93ab-b990-4e1b-89a9-fdc83d5f7284_hu_1dfc1524f0599c1e.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/2efe93ab-b990-4e1b-89a9-fdc83d5f7284_hu_b9c2c7577bdb6501.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Save the attachment"
+class="gallery-image"
+data-flex-grow="227"
+data-flex-basis="544px"
+>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/e374301a-3a5d-484e-bf0d-6ece8d0b30c9.png"
+width="1419"
+height="864"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/e374301a-3a5d-484e-bf0d-6ece8d0b30c9_hu_db7bf5b13cfd9472.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/e374301a-3a5d-484e-bf0d-6ece8d0b30c9_hu_80eb839a52ba8138.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Save the CSV file to your PC in a folder of your choice."
+class="gallery-image"
+data-flex-grow="164"
+data-flex-basis="394px"
+>&lt;/p>
+&lt;p>Now you can open and view the response in Excel.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/31b52ebd-43d7-4f10-9755-2dc40a8872ba.png"
+width="1606"
+height="98"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/31b52ebd-43d7-4f10-9755-2dc40a8872ba_hu_f2b9ec5dbacbf9de.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/31b52ebd-43d7-4f10-9755-2dc40a8872ba_hu_22f5d6104182f75d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Forms response recovered through MFCMAPI in Excel"
+class="gallery-image"
+data-flex-grow="1638"
+data-flex-basis="3933px"
+>&lt;/p>
+&lt;p>Repeat these steps for all the deleted response Ids that you need to recover.&lt;/p>
+&lt;h2 id="summary">Summary
+&lt;/h2>&lt;p>It&amp;rsquo;s noteworthy that you can also create a support request at Microsoft if you really need to recover deleted responses of Forms. The experience I had with that approach wasn&amp;rsquo;t the greatest. It took me weeks of emailing back and forth with the support engineer until they were finally able to restore the data. I also had to provide a UTC timestamp for the point in time as well as a written and signed consent letter to confirm that Microsoft is allowed to perform the restore. The fact that the restore was performed by a backend engineer and the support engineer only acted as a middleman didn&amp;rsquo;t help either.&lt;/p>
+&lt;p>If you go down that route, it also means that all responses that were submitted after the restore point will be lost. If you want to keep all the responses, you&amp;rsquo;&amp;rsquo;ll have to wait for Microsoft to perform the restore, download a copy of the restored data and then ask them to restore the form a second time to the most recent version before the initial restore was performed.&lt;/p>
+&lt;p>I&amp;rsquo;m not a 100% certain anymore but I believe that they can only perform a restore if the data was deleted less than 30 days ago.&lt;/p>
+&lt;p>The response I recovered through MFCMAPI in this blog post was submitted/received/deleted on March 25th, 2024. So, even though the response was deleted almost 2 months ago, it&amp;rsquo;s still available in mailbox. I also spot-checked some mailboxes of other users and they all seemed to contain all the data of all forms ever created by these users. Because of this, I&amp;rsquo;m fairly confident that all Forms related data is stored in a user&amp;rsquo;s mailbox forever.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/image-4.png"
+width="2016"
+height="164"
+srcset="https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/image-4_hu_c8040b8ff81617b3.png 480w, https://heusser.pro/p/microsoft-forms-data-recovery-going-down-the-rabbit-hole-dgohztjppz49/image-4_hu_170a9b29b33c36f7.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Timestamp of the deleted/recovered response"
+class="gallery-image"
+data-flex-grow="1229"
+data-flex-basis="2950px"
+>&lt;/p>
+&lt;p>Because the process to get Microsoft to restore the Forms data took so long, I started my own investigation in parallel and actually managed to restore the data myself before Microsoft was able to complete the restore. That being said, if you need to restore a lot of deleted responses it will be a lot of additional work to export all the responses one by one from MFCMAPI and then merge all the recovered CSV files with the rest of your responses again. If Microsoft performs the restore, you can simply download a copy of the restored data from Forms again.&lt;/p>
+&lt;p>In case of data loss in Forms, taking a look through MFCMAPI is a great way of quickly recovering the data yourself. Especially if you only need to restore a handful of responses. I only recommend to contact Microsoft support in a last resort type of scenario.&lt;/p>
+&lt;p>To avoid a situation like this, I recommend to make users aware of the new &amp;ldquo;Sync results to Excel&amp;rdquo; feature and train them to always start syncing any new form right after it has been created. After all, this feature is a huge improvement to Forms as it&amp;rsquo;s not necessary to create your own Power Automate flow to achieve a similar result anymore.&lt;/p>
+&lt;p>If this blog post has made your day because you were able to recover some precious Forms data, please consider supporting my work by making a donation on my &lt;a class="link" href="https://github.com/sponsors/mozziemozz?frequency=one-time&amp;amp;sponsor=mozziemozz" target="_blank" rel="noopener"
+>GitHub Sponsors Profile&lt;/a>.&lt;/p></description></item><item><title>Everything You Ever Wanted to Know About Creating Teams and Microsoft 365 Groups</title><link>https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/</link><pubDate>Mon, 07 Aug 2023 13:10:37 +0000</pubDate><guid>https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/</guid><description>&lt;p>Did you know that you can create new Microsoft 365 Group in &lt;strong>six&lt;/strong> and a new Microsoft Teams Team in &lt;strong>four&lt;/strong> different places? And I’m not even counting PowerShell…&lt;/p>
+&lt;p>Today, I’m going to show you the differences in default settings when a Group/Team is created from a different place and what impact it could have.&lt;/p>
+&lt;p>Let’s start with all the different admin portals and clients a Microsoft 365 Group can be created in.&lt;/p>
+&lt;ol>
+&lt;li>Entra ID Admin Center&lt;/li>
+&lt;li>&lt;strong>M365 Admin Center&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>Exchange Admin Center&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>Teams Admin Center&lt;/strong>&lt;/li>
+&lt;li>SharePoint Admin Center&lt;/li>
+&lt;li>&lt;strong>Teams Client&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;p>The bold ones are the ones where we can also create a Team alongside the Group.&lt;/p>
+&lt;p>As we all know, every Team includes a “surrounding” Microsoft 365 Group to manage access to the Team. &lt;strong>You can have a Microsoft 365 Group without a Team, but you can’t have a Team without an associated Microsoft 365 Group.&lt;/strong>&lt;/p>
+&lt;h4 id="entra-id-admincenter">Entra ID Admin Center
+&lt;/h4>&lt;p>If you create a new M365 Group in Entra ID, you won’t have the option to add a Team to the group during the creation process. The only reason why you’d want to use Entra ID to add an M365 Group with a Team is if you want to use a dynamic group. Entra ID is the only GUI where you can create dynamic M365 Groups. Also, you can’t configure the group’s visibility upon creation of the group. It has to be manually changed in M365 Admin Center after the group has been created in Entra ID.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1Ks0QQyarwoK0HLpIQYw.png"
+width="1036"
+height="1091"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1Ks0QQyarwoK0HLpIQYw_hu_d962ad55756d05b3.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1Ks0QQyarwoK0HLpIQYw_hu_b2fb96e287c964.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="94"
+data-flex-basis="227px"
+>&lt;/p>
+&lt;h4 id="m365-admincenter">M365 Admin Center
+&lt;/h4>&lt;p>If you create the M365 Group from the M365 Admin Center, the group’s visibility will default to &lt;strong>PUBLIC,&lt;/strong> and you’ll need to provide the group’s email address manually. The checkbox for &lt;strong>Create a team for this group&lt;/strong> is enabled by default.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1OLo4fcAatonsKKHC8fCIA.png"
+width="1134"
+height="909"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1OLo4fcAatonsKKHC8fCIA_hu_8cc38413ff5be589.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1OLo4fcAatonsKKHC8fCIA_hu_ce119eda9ca6a18b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="124"
+data-flex-basis="299px"
+>&lt;/p>
+&lt;h4 id="exchange-admincenter">Exchange Admin Center
+&lt;/h4>&lt;p>Creating the group from the Exchange Online Admin Center does essentially the same thing as creating it from the M365 Admin Center. The only difference is that you’ll be able to create a &lt;strong>Dynamic distribution&lt;/strong> group from Exchange. This option is not available in M365 Admin. However, M365 Admin Center allows you to create &lt;strong>Security&lt;/strong> groups while the Exchange Admin Center won’t.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1yv8Aumuzx6q5H4zhrbRkqg.png"
+width="1139"
+height="836"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1yv8Aumuzx6q5H4zhrbRkqg_hu_64f748114f4e8014.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1yv8Aumuzx6q5H4zhrbRkqg_hu_383489b8075d91e2.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="136"
+data-flex-basis="326px"
+>&lt;/p>
+&lt;h4 id="teams-admincenter">Teams Admin Center
+&lt;/h4>&lt;p>In Teams Admin Center, the default visibility/privacy is set to &lt;strong>Private&lt;/strong>. Like in Entra ID, the email address of the M365 Group is also created for you with no option to change it during the creation process.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1FZlDNoVcf0Axd57QQFeyw.png"
+width="523"
+height="697"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1FZlDNoVcf0Axd57QQFeyw_hu_95e84aa1697be1ae.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1FZlDNoVcf0Axd57QQFeyw_hu_d940cc467cba6615.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="75"
+data-flex-basis="180px"
+>&lt;/p>
+&lt;h4 id="sharepoint-admincenter">SharePoint Admin Center
+&lt;/h4>&lt;p>When you create a new Team Site in SharePoint Admin Center, a new Microsoft 365 Group is created as well. The group’s email address is set automatically and the default option for the visibility is private. In this case, you can adjust the group’s email address, if you want to.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1IfhZCo2ZFn01uwgpBqepw.png"
+width="1331"
+height="1486"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1IfhZCo2ZFn01uwgpBqepw_hu_5372a793fb4474f7.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1IfhZCo2ZFn01uwgpBqepw_hu_d167427cb6fae478.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="89"
+data-flex-basis="214px"
+>&lt;/p>
+&lt;p>Creating the group from SharePoint Admin Center does not create a Team automatically. A Team can be added to the group in the Microsoft 365 Admin Center after the Team Site has been created.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1kE1YtLVIL7lk8iKSDJWngg.png"
+width="1334"
+height="459"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1kE1YtLVIL7lk8iKSDJWngg_hu_a70cc96bdef490c5.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1kE1YtLVIL7lk8iKSDJWngg_hu_b20dbe5a9804d62b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="290"
+data-flex-basis="697px"
+>&lt;/p>
+&lt;h4 id="teams-client">Teams Client
+&lt;/h4>&lt;p>In Teams Client, things look a little bit different. First, you need to decide whether you want to start from scratch or from another group or team. There are also some basic templates available.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1fijm1R7xxa5ngZp8vnbA.png"
+width="860"
+height="859"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1fijm1R7xxa5ngZp8vnbA_hu_99003d8ad86fd6ce.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1fijm1R7xxa5ngZp8vnbA_hu_b898c1ca80c06c49.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="100"
+data-flex-basis="240px"
+>&lt;/p>
+&lt;p>I chose &lt;strong>From scratch&lt;/strong> for this blog post. Next, you’ll be asked if you want to create a Private, Public or Org-wide Team. I tested all 3 types and all of them created a new M365 Group with the same settings. The group is always assigned, not even the Org-wide Team is created as dynamic group. The email address is derived from the Team name too, without the option to customize it during the creation process. The most important thing to note here is that if you create a Team from Teams itself, the group will be hidden in Outlook clients by default.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1j8BsmyfTxNnOhJOlbeeuQ.png"
+width="812"
+height="659"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1j8BsmyfTxNnOhJOlbeeuQ_hu_5b36de55cb9cda01.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1j8BsmyfTxNnOhJOlbeeuQ_hu_d032329a71507e37.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="123"
+data-flex-basis="295px"
+>&lt;/p>
+&lt;h4 id="comparison-chart">Comparison Chart
+&lt;/h4>&lt;p>I’ve created a table which tells you what settings/defaults are applied for Teams created in each location.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1f1t0FfEjhgy1Q3X2gSmeIw.png"
+width="1719"
+height="321"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1f1t0FfEjhgy1Q3X2gSmeIw_hu_8d54fb8340343be5.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1f1t0FfEjhgy1Q3X2gSmeIw_hu_f0b78a96ab378f8a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="535"
+data-flex-basis="1285px"
+>&lt;/p>
+&lt;p>I think all the above except &lt;strong>OwnerAddedAsMember&lt;/strong> and &lt;strong>OwnerIsPartOfTeamWhileNotAMember&lt;/strong> should be self-explanatory.&lt;/p>
+&lt;p>Every group has owners and members. Owners are typically also members, but members don’t necessarily have to be owners as well.&lt;/p>
+&lt;p>If you add certain users only as an owner, they won’t be added to the group&amp;rsquo;s members unless you create the Team from Teams Admin Center or from the Teams Client. (OwnerAddedAsMember).&lt;/p>
+&lt;p>However, even if they’re just owners, they can still see the Team in Teams (OwnerIsPartOfTeamWhileNotAMember).&lt;/p>
+&lt;p>Example: Team Created in M365 Admin Center&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1sKnTcPvGMPXSOxzurQkzA.png"
+width="1022"
+height="454"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1sKnTcPvGMPXSOxzurQkzA_hu_b497cc8f0137eac9.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1sKnTcPvGMPXSOxzurQkzA_hu_c2e39299003812d0.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="225"
+data-flex-basis="540px"
+>
+&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1Tc27AG8fYx7IyLNlH4Cmw.png"
+width="1250"
+height="453"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1Tc27AG8fYx7IyLNlH4Cmw_hu_421a90570f04085.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1Tc27AG8fYx7IyLNlH4Cmw_hu_928372f68d401d29.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="275"
+data-flex-basis="662px"
+>
+&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1HjfYRrvTHStUi1kDVBSjdg.png"
+width="1587"
+height="479"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1HjfYRrvTHStUi1kDVBSjdg_hu_8e362a1994ffdb.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1HjfYRrvTHStUi1kDVBSjdg_hu_71f43ce4e8d3786b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="331"
+data-flex-basis="795px"
+>&lt;/p>
+&lt;p>If we compare this Team to one created in Teams Admin Center, we can see that it looks exactly the same in Teams.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1NKi2Pdxdqd30yavHOg8GA.png"
+width="1652"
+height="511"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1NKi2Pdxdqd30yavHOg8GA_hu_65e6564eab1d5ea8.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1NKi2Pdxdqd30yavHOg8GA_hu_8f537e27d53f1f22.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="323"
+data-flex-basis="775px"
+>&lt;/p>
+&lt;p>However, in M365 Admin Center we can see that the user is both an owner and a member of the group.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1MvFKN9z4vrC6q1nILilHmQ.png"
+width="1036"
+height="639"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1MvFKN9z4vrC6q1nILilHmQ_hu_bf21a9b320035e1e.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1MvFKN9z4vrC6q1nILilHmQ_hu_9b25ba6a7e7131fe.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+>&lt;/p>
+&lt;p>Teams will display each user only once, under the highest privilege a user has while M365 Groups list owners and members separately, even if it’s the same user account.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1Jw5pIMkgJDtaYwnPmGyQbQ.png"
+width="1040"
+height="377"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1Jw5pIMkgJDtaYwnPmGyQbQ_hu_3b41e1d12149720f.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1Jw5pIMkgJDtaYwnPmGyQbQ_hu_dff8ba05e16e4243.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="275"
+data-flex-basis="662px"
+>&lt;/p>
+&lt;h4 id="voice-enabled-channelscaveat">Voice Enabled Channels Caveat
+&lt;/h4>&lt;p>For normal Teams usage, it shouldn’t be a problem if an owner is not also a member. However, there is one important thing to mention. &lt;strong>If an owner is not also a member and the owner is part of a Team which is used for a Voice Enabled Channel in Teams, the owner won’t be added to the queue’s agent list, unless the owner is added explicitly as a member too.&lt;/strong>&lt;/p>
+&lt;p>I’ve linked a Team which I created from M365 Admin Center to this call queue. During the creation, I’ve only added 1 owner and no members.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1cCSpNYnw92CDChAB4vXdQ.png"
+width="1377"
+height="421"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1cCSpNYnw92CDChAB4vXdQ_hu_ce8e14ba2cd80d73.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1cCSpNYnw92CDChAB4vXdQ_hu_21cc38e1c546eca0.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="327"
+data-flex-basis="784px"
+>&lt;/p>
+&lt;p>When we check the call agents of this queue, we can see that it says &lt;strong>zero&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1WxLllnbtYMltwNBa8Ymb6Q.png"
+width="1286"
+height="250"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1WxLllnbtYMltwNBa8Ymb6Q_hu_f9cde674a4f4b2c2.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1WxLllnbtYMltwNBa8Ymb6Q_hu_39d3c7aad6c22dec.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="514"
+data-flex-basis="1234px"
+>&lt;/p>
+&lt;p>When I add the owner also as a member of the group in M365 Admin Center and save the queue again, we can see that it now has &lt;strong>one&lt;/strong> call agent.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1tko8IXwu7Fec7LztJ1UqQ.png"
+width="1295"
+height="258"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1tko8IXwu7Fec7LztJ1UqQ_hu_c0f92fc929495186.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-creating-teams-and-microsoft-365-groups-cc069d920d43/1tko8IXwu7Fec7LztJ1UqQ_hu_a62c6f84733e0664.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="501"
+data-flex-basis="1204px"
+>&lt;/p>
+&lt;p>You can read more about Voice Enabled Channels and Call Queue Agent Lists &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0" >here&lt;/a> and &lt;a class="link" href="https://heusser.pro/p/manage-microsoft-teams-call-queues-with-powershell-force-sync-9919e2939552" >here&lt;/a>.&lt;/p>
+&lt;h4 id="where-to-create-newteams">Where to Create New Teams?
+&lt;/h4>&lt;p>So where is it best to create new Teams? Sadly, the answer is: It depends. The first question you should ask yourself is if the membership needs to be assigned or dynamic. If it should be dynamic, you must create it from Entra ID. Otherwise, there is no clear winner here. Each portal does it slightly different which creates unwanted and most likely also unnoticed differences in M365 Group settings. If you want to be consistent across all your Teams and Groups, I recommend defining one or multiple standards and then creating a PowerShell script which creates new Teams and Groups according to your needs.&lt;/p>
+&lt;h3 id="powershell-cheat-sheet-for-m365groups">PowerShell Cheat-Sheet for M365 Groups
+&lt;/h3>&lt;p>Since we’ve now learned that creating Groups or Teams from different Admin Centers can have different effects, I put together a little PowerShell cheat-sheet containing some handy one-lineres to help you quickly adjust M365 Group settings. Since these settings are applied to the M365 Group and not to the Team, they all require the Exchange Online PowerShell Module which can be installed using this code.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Install Module &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Install-Module&lt;/span> &lt;span class="n">-Name&lt;/span> &lt;span class="n">ExchangeOnlineManagement&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Connect to Exchange Online &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Connect-ExchangeOnline&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">To&lt;/span> &lt;span class="n">store&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="nb">group &lt;/span>&lt;span class="n">object&lt;/span> &lt;span class="k">in&lt;/span> &lt;span class="p">`$&lt;/span>&lt;span class="n">group&lt;/span>&lt;span class="p">`&lt;/span> &lt;span class="n">we&lt;/span> &lt;span class="n">simply&lt;/span> &lt;span class="n">need&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">query&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="nb">group &lt;/span>&lt;span class="n">like&lt;/span> &lt;span class="n">this&lt;/span>&lt;span class="p">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Get group properties &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$group&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-UnifiedGroup&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="n">TeamCreatedinTACPublic&lt;/span>&lt;span class="nv">@mvplab&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">ch&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">To&lt;/span> &lt;span class="n">disable&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">welcome&lt;/span> &lt;span class="n">email&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">which&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="n">sent&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">new&lt;/span> &lt;span class="nb">group &lt;/span>&lt;span class="n">members&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">use&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">code&lt;/span>&lt;span class="p">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Disable welcome message for new group members &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Set-UnifiedGroup&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="nv">$group&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Identity&lt;/span> &lt;span class="n">-UnifiedGroupWelcomeMessageEnabled&lt;/span> &lt;span class="vm">$false&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">If&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">Team&lt;/span> &lt;span class="n">has&lt;/span> &lt;span class="n">been&lt;/span> &lt;span class="n">created&lt;/span> &lt;span class="k">in&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">Teams&lt;/span> &lt;span class="n">Client&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">you&lt;/span> &lt;span class="n">can&lt;/span> &lt;span class="n">use&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">code&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">unhide&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="nb">group &lt;/span>&lt;span class="n">from&lt;/span> &lt;span class="n">Outlook&lt;/span>&lt;span class="p">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Unhide group from Outlook clients &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Set-UnifiedGroup&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="nv">$group&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Identity&lt;/span> &lt;span class="n">-HiddenFromExchangeClientsEnabled:&lt;/span>&lt;span class="vm">$false&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">To&lt;/span> &lt;span class="n">allow&lt;/span> &lt;span class="n">external&lt;/span> &lt;span class="n">email&lt;/span> &lt;span class="n">addresses&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">send&lt;/span> &lt;span class="n">emails&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="nb">group &lt;/span>&lt;span class="n">email&lt;/span> &lt;span class="n">address&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">use&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">code&lt;/span>&lt;span class="p">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Enable let people outside this organization email this group &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Set-UnifiedGroup&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="nv">$group&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Identity&lt;/span> &lt;span class="n">-RequireSenderAuthenticationEnabled:&lt;/span>&lt;span class="vm">$false&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">To&lt;/span> &lt;span class="n">change&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">privacy&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="nb">group &lt;/span>&lt;span class="n">use&lt;/span> &lt;span class="n">either&lt;/span> &lt;span class="p">**&lt;/span>&lt;span class="n">Private&lt;/span>&lt;span class="p">**&lt;/span> &lt;span class="n">or&lt;/span> &lt;span class="p">**&lt;/span>&lt;span class="n">Public&lt;/span>&lt;span class="p">**&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">value&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="p">`-&lt;/span>&lt;span class="n">AccessType&lt;/span>&lt;span class="p">`&lt;/span> &lt;span class="nb">parameter&lt;/span>&lt;span class="p">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Change access type to private &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Set-UnifiedGroup&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="nv">$group&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Identity&lt;/span> &lt;span class="n">-AccessType&lt;/span> &lt;span class="s2">&amp;#34;Private&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">To&lt;/span> &lt;span class="n">keep&lt;/span> &lt;span class="n">owners&lt;/span> &lt;span class="n">and&lt;/span> &lt;span class="n">members&lt;/span> &lt;span class="k">in&lt;/span> &lt;span class="n">sync&lt;/span> &lt;span class="n">or&lt;/span> &lt;span class="n">rather&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">make&lt;/span> &lt;span class="n">sure&lt;/span> &lt;span class="n">that&lt;/span> &lt;span class="n">all&lt;/span> &lt;span class="n">owners&lt;/span> &lt;span class="n">are&lt;/span> &lt;span class="n">added&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">members&lt;/span> &lt;span class="n">too&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">you&lt;/span> &lt;span class="n">can&lt;/span> &lt;span class="n">use&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">code&lt;/span>&lt;span class="p">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Add group owners to group members if not already there &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Connect-MgGraph&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$group&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-MgGroup&lt;/span> &lt;span class="n">-GroupId&lt;/span> &lt;span class="s2">&amp;#34;&amp;lt;GUID&amp;gt;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$groupOwners&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-MgGroupOwner&lt;/span> &lt;span class="n">-All&lt;/span> &lt;span class="n">-GroupId&lt;/span> &lt;span class="nv">$group&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Id&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$groupMembers&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-MgGroupMember&lt;/span> &lt;span class="n">-All&lt;/span> &lt;span class="n">-GroupId&lt;/span> &lt;span class="nv">$group&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Id&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">foreach&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$groupOwner&lt;/span> &lt;span class="k">in&lt;/span> &lt;span class="nv">$groupOwners&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Where-Object&lt;/span> &lt;span class="p">{$\&lt;/span>&lt;span class="n">_&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Id&lt;/span> &lt;span class="n">-notin&lt;/span> &lt;span class="nv">$groupMembers&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">Id&lt;/span>&lt;span class="p">})&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">New-MgGroupMember&lt;/span> &lt;span class="n">-GroupId&lt;/span> &lt;span class="nv">$group&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Id&lt;/span> &lt;span class="n">-DirectoryObjectId&lt;/span> &lt;span class="nv">$groupOwner&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Id&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Note: This uses the &lt;strong>Microsoft.Graph.Groups&lt;/strong> PowerShell module and not &lt;strong>ExchangeOnlineManagement&lt;/strong>.&lt;/p>
+&lt;h3 id="closing-words">Closing Words
+&lt;/h3>&lt;p>I hope that this article and the comparison chart help you to better understand why some groups might have different settings than others. I also recommend to always add all owners as explicit members too, whenever you assign owners to a group. Hopefully, the last code snippet will make things easier for you to accomplish this.&lt;/p></description></item><item><title>Microsoft Teams Shared Voicemail Now Supports Distribution Lists and Mail Enabled Security Groups</title><link>https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/</link><pubDate>Fri, 27 Jan 2023 21:57:19 +0000</pubDate><guid>https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/</guid><description>&lt;p>Today I discovered that there has been an update to Microsoft Teams Auto Attendants and Call Queues Shared Voicemail. In the past it was only possible to configure a Microsoft 365 Group as the transfer target of shared voicemail, as it’s described in &lt;a class="link" href="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24" >this&lt;/a> article.&lt;/p>
+&lt;p>Now the search box in Auto Attendant or Call Queue Wizards also return Distribution Lists and Mail Enabled Security Groups.&lt;/p>
+&lt;p>I don’t know when this change was implemented but there’s evidence out there that it has been around for at least some time or even since shared voicemail has been rolled out.&lt;/p>
+&lt;p>Since all the official Microsoft documentation I could find (then and now) only mentioned Microsoft 365 Groups, I honestly never even tried to search for another group type.&lt;/p>
+&lt;blockquote class="twitter-tweet">&lt;p lang="en" dir="ltr">I feel like it’s been like this for a bit but I couldn’t tell you when.&lt;/p>&amp;mdash; Robert Schoneman (@rschoneman) &lt;a href="https://x.com/rschoneman/status/1618980759829905408?ref_src=twsrc%5Etfw">January 27, 2023&lt;/a>&lt;/blockquote>
+&lt;script async src="https://platform.x.com/widgets.js" charset="utf-8">&lt;/script>
+&lt;blockquote class="twitter-tweet">&lt;p lang="en" dir="ltr">A customer insisted on trying it 2 years ago and to my surprise it worked&lt;/p>&amp;mdash; Dario Woitasen 🇦🇷🇮🇹🇪🇸 (@dariomws) &lt;a href="https://x.com/dariomws/status/1619090730412118017?ref_src=twsrc%5Etfw">January 27, 2023&lt;/a>&lt;/blockquote>
+&lt;script async src="https://platform.x.com/widgets.js" charset="utf-8">&lt;/script>
+&lt;blockquote class="twitter-tweet">&lt;p lang="en" dir="ltr">Has always worked since shared voicemail was an option, could never understand why one would create a m365 group to route voicemail. The search exposed it the first time I went to set it.&lt;/p>&amp;mdash; Michael LaMontagne (@RealTimeUC) &lt;a href="https://x.com/RealTimeUC/status/1619202283383980033?ref_src=twsrc%5Etfw">January 28, 2023&lt;/a>&lt;/blockquote>
+&lt;script async src="https://platform.x.com/widgets.js" charset="utf-8">&lt;/script>
+&lt;p>The &lt;a class="link" href="https://learn.microsoft.com/en-us/powershell/module/skype/set-cscallqueue?view=skype-ps#-overflowactiontarget" target="_blank" rel="noopener"
+>documentation&lt;/a> is not updated yet. Better yet, it still says Office 365 instead of Microsoft 365 group.&lt;/p>
+&lt;blockquote>
+&lt;p>The OverflowActionTarget parameter represents the target of the overflow action. If the OverFlowAction is set to Forward, this parameter must be set to a Guid or a telephone number with a mandatory ‘tel:’ prefix. If the OverflowAction is set to SharedVoicemail, this parameter must be set to an Office 365 Group ID. Otherwise, this parameter is optional.&lt;/p>&lt;/blockquote>
+&lt;p>The description in the Auto Attendant and Call Queue Wizard also still references Microsoft 365 Groups only. But it does return Distribution Lists and Mail Enabled Security Groups when we search for them.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/13YB1Og9yfkOkiNZKbDKg.png"
+width="876"
+height="616"
+srcset="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/13YB1Og9yfkOkiNZKbDKg_hu_64c175cd1f9efd75.png 480w, https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/13YB1Og9yfkOkiNZKbDKg_hu_85a68d61ac363012.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="341px"
+>&lt;/p>
+&lt;p>It does not find security groups, which makes sense, since they’re not capable of receiving emails.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1M5usMrSDeoKiOqNGRlgNGw.png"
+width="951"
+height="357"
+srcset="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1M5usMrSDeoKiOqNGRlgNGw_hu_7867e2c18dcabac8.png 480w, https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1M5usMrSDeoKiOqNGRlgNGw_hu_b55af706446d2c57.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="266"
+data-flex-basis="639px"
+>&lt;/p>
+&lt;h3 id="testing">Testing
+&lt;/h3>&lt;p>This begs the question: is it only possible to choose these new group types or are shared voicemails actually delivered to Distribution Lists too?&lt;/p>
+&lt;p>Let’s find out…&lt;/p>
+&lt;p>It seems to be working just fine. Here’s a screenshot of the email received in Outlook.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1ZLo1CQSHUDNCnguoMCCP2w.png"
+width="701"
+height="323"
+srcset="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1ZLo1CQSHUDNCnguoMCCP2w_hu_d127f423812f4cfd.png 480w, https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1ZLo1CQSHUDNCnguoMCCP2w_hu_7421d2e082e9803b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="217"
+data-flex-basis="520px"
+>&lt;/p>
+&lt;p>When hovering over the recipient&amp;rsquo;s address, we can see what type of group it is.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1TPAYZAcYUwiaSscVCws4A.png"
+width="756"
+height="371"
+srcset="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1TPAYZAcYUwiaSscVCws4A_hu_f7fb613390a8df4e.png 480w, https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1TPAYZAcYUwiaSscVCws4A_hu_e9c2e6d486ce7ffe.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="203"
+data-flex-basis="489px"
+>
+&lt;img src="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1PzGe2QO2fRKCMmnwmYOOjw.png"
+width="728"
+height="367"
+srcset="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1PzGe2QO2fRKCMmnwmYOOjw_hu_bb950a693427838d.png 480w, https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1PzGe2QO2fRKCMmnwmYOOjw_hu_47e7106a0f92db91.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="198"
+data-flex-basis="476px"
+>&lt;/p>
+&lt;p>Note that shared voicemail emails to Distribution Lists and Mail Enabled Security Groups look exactly the same in Outlook. Both are labeled as “Distribution list”, even though they are technically of different group types.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/14C4zaaKVkpfl2CXVpnoRw.png"
+width="945"
+height="144"
+srcset="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/14C4zaaKVkpfl2CXVpnoRw_hu_c79595d64da3e7ad.png 480w, https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/14C4zaaKVkpfl2CXVpnoRw_hu_ba572070857c9074.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="656"
+data-flex-basis="1575px"
+>
+&lt;img src="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1myvn5NVYxFzjQVDYpzKzGA.png"
+width="927"
+height="132"
+srcset="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1myvn5NVYxFzjQVDYpzKzGA_hu_d34f2d7d677b1bf1.png 480w, https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1myvn5NVYxFzjQVDYpzKzGA_hu_bfcbfef0ed94a875.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="702"
+data-flex-basis="1685px"
+>&lt;/p>
+&lt;h4 id="powershell">PowerShell
+&lt;/h4>&lt;p>Nothing has changed on the PowerShell side of things. The &lt;code>OverflowAction&lt;/code> is still called &lt;strong>“SharedVoicemail”&lt;/strong> and the &lt;code>OverflowActionTarget.Type&lt;/code> is still &lt;strong>“Mailbox”&lt;/strong> while &lt;code>OverflowActionTarget.Id&lt;/code> remains the group’s Object Id.&lt;/p>
+&lt;pre>&lt;code>PS V:\GitHub\M365CallFlowVisualizer&amp;gt; $cq.OverflowAction
+SharedVoicemail
+PS V:\GitHub\M365CallFlowVisualizer&amp;gt; $cq.OverflowActionTarget
+Id Type
+-- ----
+413a7c2e-e359-4424-b2f7-xxxxxxxxxxxx MailBox
+&lt;/code>&lt;/pre>
+&lt;p>The Auto Attendant properties also remain unchanged.&lt;/p>
+&lt;pre>&lt;code>PS V:\GitHub\\M365CallFlowVisualizer&amp;gt; $aa.DefaultCallFlow.Menu.MenuOptions
+Action : TransferCallToTarget
+DtmfResponse : Automatic
+VoiceResponses : {}
+CallTarget : Type = SharedVoicemail
+Id = 413a7c2e-e359-4424-b2f7-xxxxxxxxxxxx
+Prompt :
+&lt;/code>&lt;/pre>
+&lt;p>Luckily, this means that I don’t have to update the &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer" target="_blank" rel="noopener"
+>M365 Call Flow Visualizer&lt;/a> and everything continues to work like it did before.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1NuirKnHyD9ADHTxl4nnAiw.png"
+width="249"
+height="768"
+srcset="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1NuirKnHyD9ADHTxl4nnAiw_hu_c8a20f38ee36f645.png 480w, https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1NuirKnHyD9ADHTxl4nnAiw_hu_c02cb9fb461e85d4.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="32"
+data-flex-basis="77px"
+>&lt;/p>
+&lt;h4 id="configuring-via-powershell">Configuring via PowerShell
+&lt;/h4>&lt;p>What’s a bit worrisome is that I was able to set the Id of a Security Group as the Shared Voicemail Target for a Call Queue through PowerShell. It doesn’t look like PowerShell is evaluating the group type when the queue is saved.&lt;/p>
+&lt;p>Once the queue has been updated through PowerShell, TAC will even display the name of the Security Group in the Wizard. As long as we don’t remove the Security group from the Shared Voicemail Target, it’s even possible to edit and save the queue through TAC. The invalid group remains.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1PwAoySn5n1VQ6glOIAmBrA.png"
+width="755"
+height="117"
+srcset="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1PwAoySn5n1VQ6glOIAmBrA_hu_dbac97c492b8f2e6.png 480w, https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1PwAoySn5n1VQ6glOIAmBrA_hu_58b9b8880f2a08a7.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="645"
+data-flex-basis="1548px"
+>&lt;/p>
+&lt;p>When I delete the group and search for it again, nothing is returned anymore, as it should be.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1ycvEqbDKWYKbNSDYQI8Q.png"
+width="924"
+height="198"
+srcset="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1ycvEqbDKWYKbNSDYQI8Q_hu_1d1668a67867a265.png 480w, https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1/1ycvEqbDKWYKbNSDYQI8Q_hu_517877306aa42f1e.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="466"
+data-flex-basis="1120px"
+>&lt;/p>
+&lt;p>To test this, I made a call to the queue. In this case, my overflow threshold was set to zero, so the call failed immediately with a busy tone.&lt;/p>
+&lt;p>I then did the same for the timeout action target and called the queue again. As soon as the timeout was reached, I could hear the transfer beep and then the call failed with a busy tone too.&lt;/p>
+&lt;p>Luckily, it’s a different story with Auto Attendants. When I tried the same thing there, an error was returned, like I expected for Call Queues in the first place.&lt;/p>
+&lt;p>Microsoft.Teams.ConfigAPI.Cmdlets.internal\Set-CsAutoAttendant :&lt;br>
+A mail-enabled group with Id (da027ae9-467b-4334-829c-xxxxxxxxxxxx)&lt;br>
+could not be found. Please give correct parameter value.&lt;/p>
+&lt;h4 id="conclusion">Conclusion
+&lt;/h4>&lt;p>While I wouldn’t implement this in a production environment until the official documentation is updated and we know for sure, that this is working as Microsoft intended, I think it’s a great feature update for Teams Phone. Only being able to just use Microsoft 365 Groups, also meant that we always had to make sure that users are subscribed to receive all group emails or enabled the &lt;a class="link" href="https://support.microsoft.com/en-us/office/follow-a-group-in-outlook-e147fc19-f548-4cd2-834f-80c6235b7c36" target="_blank" rel="noopener"
+>Follow in Inbox&lt;/a> feature for themselves.&lt;/p>
+&lt;p>I will report the missing group type validation for &lt;code>Set-CsCallQueue&lt;/code> to Microsoft and hope that they fix it soon. In the mean time, make sure that you’re extra careful and only configure Group Ids of M365 Groups, Distribution Lists or Mail Enabled Security Groups.&lt;/p>
+&lt;p>I’ll also see if I can update the Visualizer to include group type for shared voicemail in the diagrams.&lt;/p></description></item></channel></rss>

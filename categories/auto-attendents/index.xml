@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Auto Attendents on HEUSSER.PRO</title><link>https://heusser.pro/categories/auto-attendents/</link><description>Recent content in Auto Attendents on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 22 Jan 2023 23:52:58 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/auto-attendents/index.xml" rel="self" type="application/rss+xml"/><item><title>What’s Up with Teams Auto Attendants Suddenly Using a Male Voice for TTS?</title><link>https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/</link><pubDate>Sun, 22 Jan 2023 23:52:58 +0000</pubDate><guid>https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/</guid><description>&lt;p>If you’re reading this article; it probably means that you’re wondering why suddenly some of your auto attendants are using male voices in greetings. Just as I was. You might also have noticed, that Microsoft introduced a few new supported languages for Teams auto attendant and call queue text-to-speech (TTS) greetings a couple of months ago.&lt;/p>
+&lt;p>Which is very nice — in theory. But in reality, they messed up, at least to some exent. All newly created or any existing auto attendant where you change the language will now default to a male voice in TTS greetings for many languages. Before that it was female for at least all the languages I had worked with in the past.&lt;/p>
+&lt;h4 id="why-is-that-aproblem">Why Is That a Problem?
+&lt;/h4>&lt;p>There’s no option to change the &lt;strong>VoiceId&lt;/strong> (female/male) from Teams Admin Center for either auto attendants or call queues. Call Queues still default to a female VoiceId while auto attendants now default to a male voice for most major languages. This means that if your call flow uses both, attendants and queues (like most call flows do), you will face a rather unpleasant inconsistency. In one part of the call flow, your callers will hear male voices and in other parts they will hear female voices in greetings and announcements. This is not a good user experience.&lt;/p>
+&lt;h4 id="what-about-powershell">What About PowerShell?
+&lt;/h4>&lt;p>While it’s possible to change the voice (female/male) on an auto attendant with PowerShell, it’s not possible to do the same for call queues.&lt;/p>
+&lt;p>This means that greetings of call queues will always be synthesized by a female voice. There’s not even a &lt;strong>VoiceId&lt;/strong> property returned by PowerShell, only &lt;strong>LanguageId&lt;/strong>. The only way to verify this is to actually call the queue and listen to the announcements.&lt;/p>
+&lt;p>I did just that. I created a new call queue with &lt;strong>en-US&lt;/strong> set as it’s language and configured a TTS welcome greeting. Once I called the number, I was indeed greeted by a female voice, like it’s always been.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1Ru2MOHg0zn9BLAreKRV5PQ.png"
+width="1719"
+height="559"
+srcset="https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1Ru2MOHg0zn9BLAreKRV5PQ_hu_da5a622e1a589c56.png 480w, https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1Ru2MOHg0zn9BLAreKRV5PQ_hu_cc80baf6de0666.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="307"
+data-flex-basis="738px"
+>&lt;/p>
+&lt;p>Welcome greetings are not the only greetings a caller can hear when interacting with a call queue though. Other scenarios are shared voicemail on timeout or overflow. The funny thing with the welcome TTS greeting is that as of the time of drafting this article, there’s still no option to set or even view this property in PowerShell. Not even in Teams PowerShell 4.9.1.&lt;/p>
+&lt;p>If you’re using TTS welcome greetings on your call queues in production, please read the following section very carefully. &lt;strong>Because there’s no PowerShell support for TTS welcome greetings on call queues yet, any configured TTS welcome greeting will be deleted from your queues, every time you save a queue using PowerShell!&lt;/strong>&lt;/p>
+&lt;p>Don’t believe me? I’m going to show you. Notice how I only changed the overflow threshold. This doesn’t even remotely have anything to do with greetings or language settings.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1XOkmcCdXA0ImkELMcYqjQ.gif"
+width="3819"
+height="1761"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="216"
+data-flex-basis="520px"
+>&lt;/p>
+&lt;p>After the queue has been updated by PowerShell, the TTS welcome greeting is gone. For Teams Voice Admins, this means that we either can’t use TTS welcome greetings, if we frequently use PS to update our queues, we can only use TAC to update queues or that we have to think about setting the greeting in TAC again, every time a change was made via PowerShell. None of them are good options and the last of them certainly defeats the purpose of PowerShell entirely. The only real option here is to use an audio file as welcome greeting until Microsoft has fixed this.&lt;/p>
+&lt;h4 id="what-about-auto-attendants">What About Auto Attendants?
+&lt;/h4>&lt;p>So far, we’ve established that call queues always use a female voice for TTS greetings. On auto attendants it’s actually possible to change the VoiceId by PowerShell.&lt;/p>
+&lt;p>Here’s a newly created auto attendant with en-US language.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">$aa = Get-CsAutoAttendant -Identity 77b1706a-59a8-4832-9f49-f7ff80e0da97
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$aa
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Identity : 77b1706a-59a8-4832-9f49-f7ff80e0da97
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">TenantId : 4bffbf87-53a0-4fce-b58b-4179cb3a3b7d
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Name : Test Voice
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">LanguageId : en-US
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">VoiceId : Male
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">DefaultCallFlow : Test Voice Default call flow
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Operator :
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">TimeZoneId : W. Europe Standard Time
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">VoiceResponseEnabled : False
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">CallFlows : Test Voice After hours call flow
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Schedules : After hours Test Voice
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">CallHandlingAssociations : AfterHours(1)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Status :
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">DialByNameResourceId :
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">DirectoryLookupScope :
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ApplicationInstances : {}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">AuthorizedUsers : {}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>To change the VoiceId we can use the following code.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$aa&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">VoiceId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;Female&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Set-CsAutoAttendant&lt;/span> &lt;span class="n">-Instance&lt;/span> &lt;span class="nv">$aa&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>This will return the following output. Notice how the VoiceId changed to Female.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">Identity : 77b1706a-59a8-4832-9f49-f7ff80e0da97
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">TenantId : 4bffbf87-53a0-4fce-b58b-4179cb3a3b7d
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Name : Test Voice
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">LanguageId : en-US
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">VoiceId : Female
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">DefaultCallFlow : Test Voice Default call flow
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Operator :
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">TimeZoneId : W. Europe Standard Time
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">VoiceResponseEnabled : False
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">CallFlows : Test Voice After hours call flow
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Schedules : After hours Test Voice
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">CallHandlingAssociations : AfterHours(1)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Status :
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">DialByNameResourceId :
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">DirectoryLookupScope :
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ApplicationInstances : {}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">AuthorizedUsers : {}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>When I initially discovered this a couple of months ago, I could have sworn that every time I changed something in TAC, that the VoiceId was reset to male. While writing this article I did some further tests, and I was not able to reproduce this 100% or recognize a pattern anymore. Sometimes, it defaulted back to male, sometimes it stayed on female, no matter which setting I changed in TAC. Therefore, I’m going to leave it like that and just tell you to be extra careful, when updating auto attendants through TAC, if you want to keep a female voice. You definitely shouldn’t count on TAC preserving your configured VoiceId.&lt;/p>
+&lt;p>One thing is for sure though, every time you change the language of an auto attendant through TAC, it will default to male for all the affected languages. We’re going to see which they are in a bit.&lt;/p>
+&lt;p>Again, this is very bad news for Teams Voice Admins as this basically restricts us to either using TAC only (if we’re fine with male voices even though call queues use female voices) or using PowerShell only, if we want to make sure that we’re always using a female voice.&lt;/p>
+&lt;h4 id="why-has-this-happened">Why Has This Happened?
+&lt;/h4>&lt;p>Auto attendants and call queues use the Azure Cognitive Services TTS API, which is actually available to all Azure customers. You can try the different voices &lt;a class="link" href="https://azure.microsoft.com/en-us/products/cognitive-services/text-to-speech/#features" target="_blank" rel="noopener"
+>here&lt;/a>. Many of them are also used by Teams. Over time, some of these voices get imporved or some languages even get entirely new voices. I don’t know when it happend exactly, but Microsoft added support for new voices a couple of months ago. For example, there’s an option for my native language, Swiss German available now.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1QTgYIJQa3uUyIBBUwF0elA.png"
+width="1125"
+height="253"
+srcset="https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1QTgYIJQa3uUyIBBUwF0elA_hu_ef1505d7a198bdf5.png 480w, https://heusser.pro/p/whats-up-with-teams-auto-attendants-suddenly-using-a-male-voice-for-tts-5c6f717d60a/1QTgYIJQa3uUyIBBUwF0elA_hu_b2493ac3c2964fa2.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="444"
+data-flex-basis="1067px"
+>&lt;/p>
+&lt;p>Available voices on Teams auto attendants are not particularly easy to find. There’s &lt;a class="link" href="https://learn.microsoft.com/en-us/powershell/module/skype/new-csautoattendant?view=skype-ps#-voiceid" target="_blank" rel="noopener"
+>this&lt;/a> Learn article which has some info on it though.&lt;/p>
+&lt;p>By using this code, we can get all the available voices for e.g., en-US.&lt;/p>
+&lt;p>PS C:\Temp&amp;gt; (Get-CsAutoAttendantSupportedLanguage -Identity &amp;ldquo;en-US&amp;rdquo;).Voices&lt;/p>
+&lt;p>Name : GuyNeural&lt;br>
+Id : Male&lt;/p>
+&lt;p>Name : JessaNeural&lt;br>
+Id : Female&lt;/p>
+&lt;p>Name : AriaNeural&lt;br>
+Id : Female&lt;/p>
+&lt;p>Name : JennyNeural&lt;br>
+Id : Female&lt;/p>
+&lt;p>Let’s do the same for Swiss German, which is a newly supported language.&lt;/p>
+&lt;p>PS C:\Temp&amp;gt; (Get-CsAutoAttendantSupportedLanguage -Identity &amp;ldquo;de-CH&amp;rdquo;).Voices&lt;/p>
+&lt;p>Name : JanNeural&lt;br>
+Id : Male&lt;/p>
+&lt;p>Name : LeniNeural&lt;br>
+Id : Female&lt;/p>
+&lt;p>The docs say that we can retrieve the default voice used for any language by using this code.&lt;/p>
+&lt;p>PS C:\Temp&amp;gt; (Get-CsAutoAttendantSupportedLanguage -Identity &amp;ldquo;en-US&amp;rdquo;).Voices.Id[0]&lt;br>
+Male&lt;/p>
+&lt;p>I can’t say for sure, but I’m fairly confident that TAC just reads the array of supported languages and uses whichever comes first as the default voice. That’s why en-US or de-CH now have male voices by default now.&lt;/p>
+&lt;p>Here’s a little script I wrote to extract the default VoiceId for all the supported languages and export them to CSV.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Connect-MicrosoftTeams&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$allLanguages&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-CsAutoAttendantSupportedLanguage&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$languageVoiceTable&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">foreach&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$language&lt;/span> &lt;span class="k">in&lt;/span> &lt;span class="nv">$allLanguages&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$currentLanguageVoice&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">New-Object&lt;/span> &lt;span class="n">-TypeName&lt;/span> &lt;span class="n">psobject&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$currentLanguageVoice&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Add-Member&lt;/span> &lt;span class="n">-MemberType&lt;/span> &lt;span class="n">NoteProperty&lt;/span> &lt;span class="n">-Name&lt;/span> &lt;span class="s2">&amp;#34;LanguageId&amp;#34;&lt;/span> &lt;span class="n">-Value&lt;/span> &lt;span class="nv">$language&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Id&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$currentLanguageVoice&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Add-Member&lt;/span> &lt;span class="n">-MemberType&lt;/span> &lt;span class="n">NoteProperty&lt;/span> &lt;span class="n">-Name&lt;/span> &lt;span class="s2">&amp;#34;LanguageName&amp;#34;&lt;/span> &lt;span class="n">-Value&lt;/span> &lt;span class="nv">$language&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">DisplayName&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$currentLanguageVoice&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Add-Member&lt;/span> &lt;span class="n">-MemberType&lt;/span> &lt;span class="n">NoteProperty&lt;/span> &lt;span class="n">-Name&lt;/span> &lt;span class="s2">&amp;#34;VoiceId&amp;#34;&lt;/span> &lt;span class="n">-Value&lt;/span> &lt;span class="nv">$language&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">Voices&lt;/span>&lt;span class="p">\[&lt;/span>&lt;span class="mf">0&lt;/span>&lt;span class="p">\].&lt;/span>&lt;span class="py">Id&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$languageVoiceTable&lt;/span> &lt;span class="p">+=&lt;/span> &lt;span class="nv">$currentLanguageVoice&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$languageVoiceTable&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Export-Csv&lt;/span> &lt;span class="n">-Path&lt;/span> &lt;span class="n">C:&lt;/span>&lt;span class="p">\\&lt;/span>&lt;span class="n">Temp&lt;/span>&lt;span class="p">\\&lt;/span>&lt;span class="n">autoAttendantLanguageVoiceTable&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">csv&lt;/span> &lt;span class="n">-Delimiter&lt;/span> &lt;span class="s2">&amp;#34;;&amp;#34;&lt;/span> &lt;span class="n">-NoTypeInformation&lt;/span> &lt;span class="n">-Encoding&lt;/span> &lt;span class="n">UTF8&lt;/span> &lt;span class="n">-Force&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Here’s the full list which should help you identify if you’re using any affected languages.&lt;/p>
+&lt;p>LanguageId LanguageName VoiceId&lt;br>
+ar-EG Arabic (Egypt) Female&lt;br>
+ar-SA Arabic (Saudi Arabia) Female&lt;br>
+bg-BG Bulgarian (Bulgaria) Female&lt;br>
+ca-ES Catalan (Spain) Female&lt;br>
+cs-CZ Czech (Czech) &lt;strong>Male&lt;/strong>&lt;br>
+cy-GB Welsh (United Kingdom) Female&lt;br>
+da-DK Danish (Denmark) Female&lt;br>
+de-AT German (Austria) Female&lt;br>
+de-CH German (Switzerland) &lt;strong>Male&lt;/strong>&lt;br>
+de-DE German (Germany) Female&lt;br>
+el-GR Greek (Greek) Female&lt;br>
+en-AU English (Australia) &lt;strong>Male&lt;/strong>&lt;br>
+en-CA English (Canada) &lt;strong>Male&lt;/strong>&lt;br>
+en-GB English (United Kingdom) &lt;strong>Male&lt;/strong>&lt;br>
+en-IE English (Ireland) &lt;strong>Male&lt;/strong>&lt;br>
+en-IN English (India) &lt;strong>Male&lt;/strong>&lt;br>
+en-PH English (Philippines) &lt;strong>Male&lt;/strong>&lt;br>
+en-US English (United States) &lt;strong>Male&lt;/strong>&lt;br>
+en-ZA English (South Africa) Female&lt;br>
+es-ES Spanish (Spain) Female&lt;br>
+es-MX Spanish (Mexico) Female&lt;br>
+et-EE Estonian (Estonia) Female&lt;br>
+fi-FI Finnish (Finland) Female&lt;br>
+fr-BE French (Belgium) Female&lt;br>
+fr-CA French (Canada) Female&lt;br>
+fr-CH French (Switzerland) Female&lt;br>
+fr-FR French (France) Female&lt;br>
+he-IL Hebrew (Israel) &lt;strong>Male&lt;/strong>&lt;br>
+hi-IN Hindi (India) Female&lt;br>
+hr-HR Croatian (Croatia) Female&lt;br>
+hu-HU Hungarian (Hungary) Female&lt;br>
+id-ID Indonesian (Indonesia) Female&lt;br>
+it-IT Italian (Italy) Female&lt;br>
+lt-LT Lithuanian (Lithuania) &lt;strong>Male&lt;/strong>&lt;br>
+lv-LV Latvian (Latvia) Female&lt;br>
+ja-JP Japanese (Japan) Female&lt;br>
+ko-KR Korean (Korea) Female&lt;br>
+nb-NO Norwegian, Bokmål (Norway) Female&lt;br>
+nl-BE Dutch (Belgium) Female&lt;br>
+nl-NL Dutch (Netherlands) Female&lt;br>
+pl-PL Polish (Poland) Female&lt;br>
+pt-BR Portuguese (Brazil) Female&lt;br>
+pt-PT Portuguese (Portugal) Female&lt;br>
+ro-RO Romanian (Romania) Female&lt;br>
+ru-RU Russian (Russia) Female&lt;br>
+sk-SK Slovak (Slovakia) &lt;strong>Male&lt;/strong>&lt;br>
+sl-SI Slovenian (Slovenia) Female&lt;br>
+sv-SE Swedish (Sweden) Female&lt;br>
+th-TH Thai (Thai) Female&lt;br>
+tr-TR Turkish (Turkey) Female&lt;br>
+vi-VN Vietnamese (Vietnam) Female&lt;br>
+zh-CN Chinese (Simplified, PRC) Female&lt;br>
+zh-HK Chinese (Traditional, Hong Kong S.A.R.) Female&lt;br>
+zh-TW Chinese (Traditional, Taiwan) Female&lt;/p>
+&lt;p>You can use this one-liner to check if any of your existing auto attendants are currently using a male voice.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Get-CsAutoAttendant&lt;/span> &lt;span class="n">-First&lt;/span> &lt;span class="mf">1000&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">ft &lt;/span>&lt;span class="n">Name&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">LanguageId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">VoiceId&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>I really hope that Microsofts recognizes that this is a major annoyance and that they fix it rather sooner than later. In the meantime, I hope that I was able to provide you with some useful insight and hope that it helps you keeping the problem in check.&lt;/p></description></item></channel></rss>
