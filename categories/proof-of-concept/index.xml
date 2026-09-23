@@ -1,0 +1,1283 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Proof of Concept on HEUSSER.PRO</title><link>https://heusser.pro/categories/proof-of-concept/</link><description>Recent content in Proof of Concept on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Fri, 14 Jun 2024 16:48:53 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/proof-of-concept/index.xml" rel="self" type="application/rss+xml"/><item><title>Microsoft Teams: Change Call Queue Opt In Status on Behalf of Other User</title><link>https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/</link><pubDate>Fri, 14 Jun 2024 16:48:53 +0000</pubDate><guid>https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/</guid><description>&lt;p>&lt;strong>Update 29.09.2024&lt;/strong> This post features a proof of concept and was an experimental project leveraging not supported ways of achieving what was presented. It looks like Microsoft has made changes to the &lt;strong>Send an HTTP request to SharePoint&lt;/strong> and tightened the security around it. Some of the actions outlined in this blog post are no longer possible and now throw an &lt;strong>Unauthorized&lt;/strong> error. While it was nice to be able to do these things, I fully believe that Microsoft is doing the right thing by adding more security to their services. If you want to be able to opt in/out another user on their behalf, I recommend to use the now available &lt;strong>Queues&lt;/strong> app in Teams.&lt;/p>
+&lt;h2 id="history-lesson">History Lesson
+&lt;/h2>&lt;p>Up until now, it hasn&amp;rsquo;t been possible for a queue manager to opt in or opt out other agents on their behalf. Opting in or out of a queue was always an action that had to be done by agents themselves. This changes with the &lt;strong>Queues&lt;/strong> app which is currently still in private preview. If you&amp;rsquo;re reading this blog, I doubt that this is the first time that you&amp;rsquo;re hearing of this but nevertheless, I&amp;rsquo;m still going to add a couple of links to this blog post.&lt;/p>
+&lt;p>You can read the official announcement of the Queues app &lt;a class="link" href="https://techcommunity.microsoft.com/t5/microsoft-teams-blog/introducing-the-queues-app-enabling-customer-engagement-in/ba-p/4095971" target="_blank" rel="noopener"
+>here&lt;/a> and you&amp;rsquo;ll find the official support article &lt;a class="link" href="https://support.microsoft.com/en-us/office/use-the-queues-app-for-microsoft-teams-370ad83e-c2c1-4a9f-8a59-16c98be102e9" target="_blank" rel="noopener"
+>here&lt;/a>. On &lt;a class="link" href="https://regale.cloud/Microsoft/viewer/2963/queues-app/index.html" target="_blank" rel="noopener"
+>this&lt;/a> page you can see an interactive demo of the queues app.&lt;/p>
+&lt;p>While this will finally make it possible to change the opt in status on someone else&amp;rsquo;s behalf, it comes at a price. The Queues app will be part of Teams Premium and thus increase your monthly license costs. At this point, I don&amp;rsquo;t think it&amp;rsquo;s confirmed if only a supervisor can have a Teams Premium license and still be able to change the opt in status of others, or if all the members of a queue will require a Teams Premium license. My best guess is that every member of the queue will require an additional license but please don&amp;rsquo;t take my word for it.&lt;/p>
+&lt;p>Since this was one of the most requested features of Teams Phone customers, I already experimented with creating something that would allow somebody to change an agent&amp;rsquo;s opt in statuses remotely in the past. I blogged about this &lt;a class="link" href="https://heusser.pro/p/opt-in-or-opt-out-teams-call-queue-agents-remotely-59fe6147f50d" >here&lt;/a>. I don&amp;rsquo;t think that this method still works today but it did work at the time. However, this never made it past a proof of concept because it required the username, password and potentially an MFA secret for the user account for which the opt in status needed to be changed.&lt;/p>
+&lt;p>Today, I&amp;rsquo;m presenting a different solution. It&amp;rsquo;s still very much a proof of concept and not very scalable but at least it doesn&amp;rsquo;t need user credentials anymore. But most importantly, it doesn&amp;rsquo;t need any additional licenses.&lt;/p>
+&lt;h2 id="inspiration-from-the-community">Inspiration from the Community
+&lt;/h2>&lt;p>I initially got the idea from fellow MVP &lt;a class="link" href="https://www.loryanstrant.com/2023/06/05/automatically-change-your-microsoft-teams-working-location-with-home-assistant/" target="_blank" rel="noopener"
+>Loryan Strant&lt;/a>. In this blog post, he explains how you can leverage the &lt;strong>Send an HTTP request to SharePoint&lt;/strong> in Power Automate to make web requests to other end points. In his case, he&amp;rsquo;s targeting the endpoint which is used to update a user&amp;rsquo;s work location. Unknowingly at that time, I worked on &lt;a class="link" href="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d" >my own way&lt;/a> of programmatically setting my work location using PowerShell and AADInternals. I&amp;rsquo;ll soon be writing something new about this too but today&amp;rsquo;s issue is all about call queues and changing opt in statuses.&lt;/p>
+&lt;p>My next step was to look at the browser dev tools in Edge to see if anything had changed in how the Teams web client handles an opt in change. I already used this method in my first proof of concept over two years ago and I learned how you can effectively use the browser dev tools to see what&amp;rsquo;s going on under the hood from Alexander Holmeset in &lt;a class="link" href="https://alexholmeset.blog/2021/02/28/teams-network-planner-automated/" target="_blank" rel="noopener"
+>this&lt;/a> blog post. On that note I want to point out that I&amp;rsquo;ll forever be grateful for that post. Acquiring this skill has helped me achieve something so many times already!&lt;/p>
+&lt;p>In V1 of this PoC the request used to update an agent&amp;rsquo;s opt in status looked like this and the call queue Id was referenced in the payload.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Invoke-RestMethod&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://api.interfaces.records.teams.microsoft.com/Teams.VoiceApps/cq-agents/{User Id}&amp;#34;&lt;/span> &lt;span class="n">-Body&lt;/span> &lt;span class="nv">$payload&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Put&lt;/span> &lt;span class="n">-Headers&lt;/span> &lt;span class="nv">$Headers&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Today, this request looks like this and the call queue Id is now part of the URI:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Invoke-RestMethod&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://api.interfaces.records.teams.microsoft.com/Teams.DLX/optinsettings/callqueues/{Call Queue Id}/agents/{User Id}&amp;#34;&lt;/span> &lt;span class="n">-Body&lt;/span> &lt;span class="s1">&amp;#39;{&amp;#34;optIn&amp;#34;: {true/false}&amp;#39;&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Put&lt;/span> &lt;span class="n">-Headers&lt;/span> &lt;span class="nv">$Headers&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>I have no idea what &lt;strong>DLX&lt;/strong> stands for. The only thing I could find was &lt;a class="link" href="https://learn.microsoft.com/en-us/openspecs/office_protocols/ms-dlx/fa0e41cd-2b34-4081-b3cf-59ecdad7a5da" target="_blank" rel="noopener"
+>this&lt;/a> reference.&lt;/p>
+&lt;p>The challenge with these web requests is that you still need to provide a valid access token in the authorization header. In PowerShell, there&amp;rsquo;s no way around user credentials to obtain a token. This is different in Power Automate though.&lt;/p>
+&lt;h2 id="setting-up-the-prerequisites">Setting up the Prerequisites
+&lt;/h2>&lt;p>Before we build the Flow, we&amp;rsquo;ll need something to trigger it. The best and easiest thing I could think of was to create a SharePoint list and add it as a tab to the Teams channel that&amp;rsquo;s linked to the call queue. If you don&amp;rsquo;t already know how to do that, follow the steps below.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1.png"
+width="2108"
+height="1191"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1_hu_763bad1306e732c0.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-1_hu_ce8a67ed6527e6d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Click the &amp;#43; to add a tab."
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="424px"
+> &lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2.png"
+width="2108"
+height="1191"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2_hu_125eeccbef5e5279.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-2_hu_34f0998b7753546f.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Search for ‘Lists’ and click on it."
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="424px"
+> &lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3.png"
+width="2108"
+height="1191"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3_hu_df774a1b8c9e92ec.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-3_hu_ab98990638826702.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Click Save."
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="424px"
+> &lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4.png"
+width="2108"
+height="1191"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4_hu_4cb286772d89b4c7.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-4_hu_ae7d551129868a7a.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Select Create a list."
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="424px"
+> &lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5.png"
+width="2108"
+height="1191"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5_hu_614a7c26a408719f.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-5_hu_f1ee6a73bd8686e.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Click on Blank list."
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="424px"
+> &lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6.png"
+width="2108"
+height="1191"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6_hu_3b77dd866f18a75a.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-6_hu_cc68201dc3af55d6.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Give your list a name and select a color and an icon. Then click create."
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="424px"
+>&lt;/p>
+&lt;p>Now that the tab shows your list, we&amp;rsquo;ll need to add the columns. Start by clicking &lt;strong>+ Add column&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8.png"
+width="2108"
+height="1191"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8_hu_1e4468a24bb032dd.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-8_hu_e284bf7ccd2c0230.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Select Person and click Next."
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="424px"
+> &lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7.png"
+width="2108"
+height="1191"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7_hu_7ef5ad1f0a176dad.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-7_hu_2607eef89ad073f8.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Enter ‘Agent’ as column name and toggle Show profile photos to Yes."
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="424px"
+> &lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9.png"
+width="2108"
+height="1191"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9_hu_e3e10171d06fbe17.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-9_hu_e944876ee0a48f19.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Add another column and choose Yes/No as type."
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="424px"
+> &lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10.png"
+width="2108"
+height="1191"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10_hu_124a8db043c07947.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-10_hu_5594ac8f5c48030.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Name it ‘Opt In’ and click Save."
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="424px"
+> &lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11.png"
+width="2108"
+height="1191"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11_hu_7f7898356c469be0.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-11_hu_d3815f09bdb2dfb.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Add another Yes/No column called ‘Updated by Power Automate’ and set the default value to No."
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="424px"
+>&lt;/p>
+&lt;p>Next, hide the &lt;strong>Title&lt;/strong> column from the view. We don&amp;rsquo;t need it.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12.png"
+width="2108"
+height="1191"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12_hu_84251706f79dc0c9.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-12_hu_4d6af6dc197c6d46.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Click on the column, then select Column settings, Show/hide columns."
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="424px"
+> &lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13.png"
+width="2108"
+height="1191"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13_hu_1f2ce508e48559ad.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-13_hu_740b876607f059d7.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Uncheck Title and click Apply."
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="424px"
+>&lt;/p>
+&lt;p>Now select &lt;strong>Edit in grid view&lt;/strong> and add your call queue agents to the list.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14.png"
+width="2108"
+height="1191"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14_hu_426e8c933604526.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-14_hu_678d6cb004eb2bd5.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Add all call queue agents to the Agent column."
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="424px"
+>&lt;/p>
+&lt;p>Once you&amp;rsquo;re done, click &lt;strong>Exit grid view&lt;/strong> to save the list. It should look something like this:&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18.png"
+width="2108"
+height="1216"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18_hu_d457242dc34800d5.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-18_hu_43af90f6b183424.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Tip: You can reorder tabs by dragging. I’ve put my List tab next to the Calls tab."
+class="gallery-image"
+data-flex-grow="173"
+data-flex-basis="416px"
+>&lt;/p>
+&lt;h2 id="the-power-of-power-automate">The Power of Power Automate
+&lt;/h2>&lt;p>In Power Automate, Flows are able to leverage connections for which Power Automate will automatically obtain a token for the user that&amp;rsquo;s running the Flow. While you can&amp;rsquo;t view the token, you can certainly use it to make web requests. The principle is quite simple. Each user needs to set up a Power Automate Flow which will update their opt in status when the Flow is triggered.&lt;/p>
+&lt;p>The downside is that a Flow needs to be set up for each user and for each call queue where you want to leverage this custom solution. So, if a user is part of multiple queues, there also need to be multiple Flows per user. To be fair, I did say that this is a PoC at the beginning.&lt;/p>
+&lt;p>The good thing about this is that I&amp;rsquo;ve built the Flow in a way, in which it will work for any user. A queue supervisor or an IT admin can just create Flow and then share it with all the agents. Each of the agents can then access the Flow using their own account and save a copy of the Flow to their own Flows. If they&amp;rsquo;ve never worked with Power Automate before, they might need help doing that but sharing and saving a copy is still the quickest way to set it all up.&lt;/p>
+&lt;h3 id="flow-for-each-agent">Flow For Each Agent
+&lt;/h3>&lt;p>Let&amp;rsquo;s look at the first Flow. I&amp;rsquo;ll call this the &lt;strong>User-Flow&lt;/strong> from now on.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image.png"
+width="2064"
+height="1823"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image_hu_4aca9d6c122e1f79.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image_hu_f5906340bd5d3fa1.png 1024w"
+loading="lazy"
+decoding="async"
+alt="This is the Power Automate Flow in all it’s glory."
+class="gallery-image"
+data-flex-grow="113"
+data-flex-basis="271px"
+>&lt;/p>
+&lt;p>The Flow will trigger any time the SharePoint list which is now a tab in Teams is updated.&lt;/p>
+&lt;h4 id="import-the-flow-package">Import the Flow Package
+&lt;/h4>&lt;p>Start by downloading the Flow from &lt;a class="link" href="#download-flow-packages" >here&lt;/a> and then import it in Power Automate with a user that is part of the call queue, for which you want to add the functionality.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21.png"
+width="876"
+height="242"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21_hu_3b7de55b599cf749.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-21_hu_24cefe900990c434.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Click on Import Package (Legacy)."
+class="gallery-image"
+data-flex-grow="361"
+data-flex-basis="868px"
+>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22.png"
+width="2233"
+height="431"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22_hu_27ac99c260aa551a.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-22_hu_664837d80fefbed9.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Next, select and upload the Zip file."
+class="gallery-image"
+data-flex-grow="518"
+data-flex-basis="1243px"
+>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23.png"
+width="1847"
+height="1147"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23_hu_d08c18c70536136c.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-23_hu_fdc2496f6bf6ce48.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Click the first Wrench Icon to update the name of the Flow."
+class="gallery-image"
+data-flex-grow="161"
+data-flex-basis="386px"
+>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24.png"
+width="1895"
+height="1326"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24_hu_e80da065e04a8a8.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-24_hu_82d41f487b9d4ccc.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Click the Wrench Icon for both connections and choose an existing connection or set up a new one."
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="342px"
+>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25.png"
+width="1856"
+height="1326"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25_hu_a45ba4f7b1a63a3b.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-25_hu_8bbe9b7603cad842.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Finally, click Import."
+class="gallery-image"
+data-flex-grow="139"
+data-flex-basis="335px"
+>&lt;/p>
+&lt;p>After successfully importing the Flow, it will be disabled at first. Navigate to &lt;strong>My flows&lt;/strong> and click on the imported Flow to enable it.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26.png"
+width="1439"
+height="515"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26_hu_408378babf9ac085.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-26_hu_c15b1bc333f303ff.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Click Trun on"
+class="gallery-image"
+data-flex-grow="279"
+data-flex-basis="670px"
+>&lt;/p>
+&lt;p>Then, click &lt;strong>Edit&lt;/strong>. Now you need to update the trigger and select the correct Team/Site and List for the trigger. This will be the SharePoint site of the Team in which you created the list tab.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15.png"
+width="933"
+height="330"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15_hu_8d4da9d08e3a4ab6.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-15_hu_4694cb13c9cc3013.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Set the Flow trigger to your Site and List."
+class="gallery-image"
+data-flex-grow="282"
+data-flex-basis="678px"
+>&lt;/p>
+&lt;p>In the third step &lt;strong>Initialize CallQueueId&lt;/strong> fill in the Id of your call queue. The easiest way to obtain the Id is to edit the queue in Teams Admin Center and copy the Id from the URL.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16.png"
+width="937"
+height="298"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16_hu_c585637524f351e3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-16_hu_a76c81a1b6609569.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Set the call queue Id"
+class="gallery-image"
+data-flex-grow="314"
+data-flex-basis="754px"
+>&lt;/p>
+&lt;p>These are the only two things you need to adjust. Because the Flow uses the action &lt;strong>Get my profile (V2)&lt;/strong> you don&amp;rsquo;t need to set anything that&amp;rsquo;s user specific. That action will always get the details of the user that is running the Flow.&lt;/p>
+&lt;h4 id="share-the-flow-with-all-the-other-agents">Share the Flow with all the other Agents
+&lt;/h4>&lt;p>Now that you have the Flow imported to your account, share it with all agents of the call queue.&lt;/p>
+&lt;p>Go back to &lt;strong>My flows&lt;/strong> and select the Flow again to share it with your team.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27.png"
+width="1440"
+height="422"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27_hu_586ea062b4215b68.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-27_hu_ca0fbe7ed24a004e.png 1024w"
+loading="lazy"
+decoding="async"
+alt="From there, click Share."
+class="gallery-image"
+data-flex-grow="341"
+data-flex-basis="818px"
+>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28.png"
+width="1716"
+height="470"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28_hu_f23f91783b719686.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-28_hu_d31bd19c823dc4eb.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Search for another call queue agent and select them from the drop-down menu."
+class="gallery-image"
+data-flex-grow="365"
+data-flex-basis="876px"
+>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29.png"
+width="1039"
+height="734"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29_hu_8ed9050a690eb506.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-29_hu_c31db2ea6ded8104.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Confirm by clicking Ok."
+class="gallery-image"
+data-flex-grow="141"
+data-flex-basis="339px"
+>&lt;/p>
+&lt;p>Now ask the user you shared the Flow with to sing in to &lt;a class="link" href="https://make.powerautomate.com" target="_blank" rel="noopener"
+>Power Automate&lt;/a> and navigate to &lt;strong>My flows&lt;/strong> and switch to the &lt;strong>Shared with me&lt;/strong> tab.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30.png"
+width="1403"
+height="955"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30_hu_2a07896dfbb0fc3d.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-30_hu_8ed2f0e76eb181eb.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Instruct them to click the three dots and select Save as."
+class="gallery-image"
+data-flex-grow="146"
+data-flex-basis="352px"
+>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31.png"
+width="1030"
+height="472"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31_hu_5cd1ba5dd912abb9.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-31_hu_dbfcc3c28ecb29ba.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Instruct them to create the connections by clicking Continue."
+class="gallery-image"
+data-flex-grow="218"
+data-flex-basis="523px"
+>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32.png"
+width="1038"
+height="420"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32_hu_bf04447320b9d52a.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-32_hu_24b7e18963320438.png 1024w"
+loading="lazy"
+decoding="async"
+alt="They can rename the Flow before saving."
+class="gallery-image"
+data-flex-grow="247"
+data-flex-basis="593px"
+>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33.png"
+width="1057"
+height="947"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33_hu_e7168c50945fa66c.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-33_hu_5de16586c7e6c50b.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Finally, they’ll need to go to My flows again and turn on the copied Flow using the menu behind the three dots."
+class="gallery-image"
+data-flex-grow="111"
+data-flex-basis="267px"
+>&lt;/p>
+&lt;p>Repeat these steps for all the other call queue agents. Each agent needs to have this Flow in their own Power Automate environment since the Flow will need to run with their credentials to be able to change their opt in status.&lt;/p>
+&lt;h3 id="flow-to-keep-the-list-in-sync">Flow to keep the List in Sync
+&lt;/h3>&lt;p>Obviously the agents will still be able to change their opt in status on their own using their Teams clients. In that case, we want to keep the SharePoint list updated as well and reflect changes to opt in status made outside of the list. For this, I&amp;rsquo;ve created another Flow. I&amp;rsquo;ll call that one the &lt;strong>Sync-Flow&lt;/strong>. This Flow will update the list for all agents and it will need to be created only once. In my Lab, I&amp;rsquo;ve configured this Flow with a recurring trigger every 15 minutes.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17.png"
+width="1428"
+height="1835"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17_hu_e8f80b80c0f62e88.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-17_hu_ba5466081c459b2.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Flow to update the List if CQ Agents opt in/out via Teams clients."
+class="gallery-image"
+data-flex-grow="77"
+data-flex-basis="186px"
+>&lt;/p>
+&lt;p>This Flow will send an HTTP Get request via the &lt;strong>Send an HTTP request to SharePoint&lt;/strong> to the call queue endpoint used to read and write the opt in states of agents. This is basically the same as what I&amp;rsquo;m using to update the opt in states but this time, I&amp;rsquo;m only reading from it. The JSON response will include a list of each agent&amp;rsquo;s Object Id and their current opt in state. Then it uses the &lt;strong>Get user profile (V2)&lt;/strong> action to find the email address of the current user by Object Id. This is needed so that the Flow can query the list item of each agent.&lt;/p>
+&lt;p>Once the Flow knows both values, the actual opt in state and what&amp;rsquo;s currently stored in the list, it will compare the values. If they&amp;rsquo;re the same, nothing happens. If they&amp;rsquo;re not the same, the Flow will update the SharePoint list with the actual value.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19.png"
+width="2108"
+height="1216"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19_hu_f92b2030c82ceed3.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-19_hu_afcc35e23a8b9c40.png 1024w"
+loading="lazy"
+decoding="async"
+alt="The List tab after it’s been updated by Power Automate."
+class="gallery-image"
+data-flex-grow="173"
+data-flex-basis="416px"
+>&lt;/p>
+&lt;p>If an opt in status was updated by Power Automate, it will also set the value in &lt;strong>Updated by Power Automate&lt;/strong> to &lt;code>True&lt;/code> (Checkmark). By doing it like this, we can avoid an infinite trigger loop on the User-Flows. Since they use &lt;strong>When an item is created or modified&lt;/strong> as their trigger, they would be triggered any time the List is updated. That will include updates made by the recurring Sync-Flow.&lt;/p>
+&lt;p>Since we definitely don&amp;rsquo;t want that, I&amp;rsquo;ve added a trigger condition to the User-Flows. A trigger condition is an expression, which must evaluate to &lt;code>True&lt;/code> for the Flow to be triggered.&lt;/p>
+&lt;p>This expression will check if the &lt;strong>Updated by Power Automate&lt;/strong> checkbox is not checked. So, whenever the list is updated by the Sync-Flow, the user Flows won&amp;rsquo;t be triggered.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">@equals(triggerOutputs()?[&amp;#39;body/UpdatedByPowerAutomate&amp;#39;], false)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20.png"
+width="917"
+height="1395"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20_hu_c507a8b7b58ddf83.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-20_hu_249ba26a2a550cdc.png 1024w"
+loading="lazy"
+decoding="async"
+alt="The trigger condition will prevent infinite trigger loops."
+class="gallery-image"
+data-flex-grow="65"
+data-flex-basis="157px"
+>&lt;/p>
+&lt;p>It&amp;rsquo;s important to note that when you or somebody else wants to change the opt in status of an agent again from the list, the &lt;strong>Updated by Power Automate&lt;/strong> checkbox must be unchecked again. Otherwise the User-Flows won&amp;rsquo;t run and the opt in status won&amp;rsquo;t be changed.&lt;/p>
+&lt;h4 id="import-the-flow-package-1">Import the Flow Package
+&lt;/h4>&lt;p>You can download this Flow from &lt;a class="link" href="#download-flow-packages" >here&lt;/a>. Use the same process to import the Flow package as you already did with the User-Flow and don&amp;rsquo;t forget to turn it as well on once you&amp;rsquo;re done. In this Flow, you will need to do the following adjustments.&lt;/p>
+&lt;p>Replace the value of the &lt;strong>CallQueueId&lt;/strong> variable with your call queue Id.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35.png"
+width="923"
+height="410"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35_hu_ee5cfbae98c25340.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-35_hu_222bb534c8265752.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Set the CallQueueId variable."
+class="gallery-image"
+data-flex-grow="225"
+data-flex-basis="540px"
+>&lt;/p>
+&lt;p>Then expand all the action boxes and select your &lt;strong>Site Address&lt;/strong> and &lt;strong>List Name&lt;/strong> in the action &lt;strong>Get items&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36.png"
+width="939"
+height="446"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36_hu_b583d297032db823.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-36_hu_421dab11de7df7cf.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Replace Site Address and List Name."
+class="gallery-image"
+data-flex-grow="210"
+data-flex-basis="505px"
+>&lt;/p>
+&lt;p>Finally, do the same for the &lt;strong>Update item&lt;/strong> action inside the &lt;strong>If yes&lt;/strong> condition.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37.png"
+width="969"
+height="717"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37_hu_3b2bf93755b3c569.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-37_hu_d690148f27dd27ea.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Replace Site Address and List Name."
+class="gallery-image"
+data-flex-grow="135"
+data-flex-basis="324px"
+>&lt;/p>
+&lt;p>That&amp;rsquo;s it for the set up part. Let&amp;rsquo;s take a look at the user experience!&lt;/p>
+&lt;h2 id="user-experience">User Experience
+&lt;/h2>&lt;p>Here you can see how it works. Anyone that has access to the list, can simply edit the list and change the opt in status of another colleague.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/TeamsCQOptIn.gif"
+width="1195"
+height="672"
+loading="lazy"
+decoding="async"
+alt="Note: The Flow was in test mode to speed up the demo. In real life, it will usually take a few minutes to change an opt in status."
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="426px"
+>&lt;/p>
+&lt;p>Bonus tip: If you switch to the new designer in Power Automate you can change how often it checks for updated list items in the trigger configuration.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34.png"
+width="1488"
+height="1090"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34_hu_8401168aed3180ff.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/image-34_hu_85953db063fcd0d8.png 1024w"
+loading="lazy"
+decoding="async"
+alt="The default polling interval is 5 minutes."
+class="gallery-image"
+data-flex-grow="136"
+data-flex-basis="327px"
+>&lt;/p>
+&lt;h2 id="additional-benefits">Additional Benefits
+&lt;/h2>&lt;p>As you may know, the &lt;strong>Calls&lt;/strong> tab in channels is not supported on the Teams mobile app. The call queue agents and their opt in status can only be viewed in the Teams desktop or web client. At this point I want to clarify again, that mobile clients can still receive calls from a call queue, even when the call queue is linked to a voice enabled channel. It&amp;rsquo;s only the view/tab that&amp;rsquo;s not supported on Teams mobile apps.&lt;/p>
+&lt;p>But since this solution uses a SharePoint list, it will actually give you the ability to view and change the opt in status of other agents from a mobile device too. This can be done by either opening the list tab in Teams mobile or by accessing the list directly in the Lists mobile app.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS.png"
+width="1125"
+height="2436"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS_hu_a073311d5d98549f.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_184713000_iOS_hu_a605fa63a0bc13d4.png 1024w"
+loading="lazy"
+decoding="async"
+alt="List tab in Teams mobile."
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+> &lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS.png"
+width="1125"
+height="2436"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS_hu_9b077990a18128c2.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185305000_iOS_hu_976efe11209dcabc.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Editing a list item in Teams mobile."
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+> &lt;img src="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS.png"
+width="1125"
+height="2436"
+srcset="https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS_hu_4c78dee4407e037f.png 480w, https://heusser.pro/p/microsoft-teams-change-call-queue-opt-in-status-on-behalf-of-other-user-without-teams-premium-ztd1ry6tt6ml/20240619_185536000_iOS_hu_ca698d77c737eeeb.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Toggle switches in Lists app."
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+>&lt;/p>
+&lt;p>The list app will even give you toggle switches which not only looks better but is also easier to edit compared to the experience within the Teams mobile app.&lt;/p>
+&lt;h2 id="summary">Summary
+&lt;/h2>&lt;p>While Teams Premium provides a lot of benefits over the Standard license, the additional $10 per user per month can make quite the difference in your monthly license cost. I fully understand the price tag since Teams Premium also includes AI generated notes which use a lot of computing resources and thus cost Microsoft more money to run their services in the backend.&lt;/p>
+&lt;p>However, if you&amp;rsquo;re only looking for a way to opt in/out other call queue agents on their behalf and don&amp;rsquo;t want to spend another $10 PUPM, I think this solution can be a suitable workaround. Especially for small companies which don&amp;rsquo;t have a lot of call queues with a lot of agents. Of course there is some work to be done by admins and the end users (agents) but it should be manageable for small teams. And let&amp;rsquo;s not forget the fact this will even allow you to change the opt in status for other agents on mobile platforms too!&lt;/p>
+&lt;h3 id="download-flow-packages">Download Flow Packages
+&lt;/h3>&lt;p>You can download both Flow packages for free from &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/UpdateCallQueueOptInStatus_20240614215253.zip" target="_blank" rel="noopener"
+>here&lt;/a> and &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/SyncOptInStatustoList_20240614215356.zip" target="_blank" rel="noopener"
+>here&lt;/a>. If you like what I&amp;rsquo;ve presented in this blog post and if it will save you the money you would have otherwise spent on Teams Premium licenses, you can still choose to support me by &lt;a class="link" href="https://buymeacoffee.com/martin.heusser" target="_blank" rel="noopener"
+>buying me a coffee&lt;/a> or by sponsoring me on &lt;a class="link" href="https://github.com/sponsors/mozziemozz?frequency=one-time&amp;amp;sponsor=mozziemozz" target="_blank" rel="noopener"
+>GitHub&lt;/a>.&lt;/p></description></item><item><title>Microsoft Graph: Get an Access Token from a PowerShell Session</title><link>https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/</link><pubDate>Wed, 05 Jun 2024 19:24:44 +0000</pubDate><guid>https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/</guid><description>&lt;p>Authentication with the Microsoft Graph PowerShell SDK is pretty easy. All you have to do to establish a session is to run &lt;code>Connect-MgGraph&lt;/code>. After that, you can use all Cmdlets for which you&amp;rsquo;ve installed the necessary modules. It&amp;rsquo;s no secret that not all Cmdlets are as well documented as the REST API itself and in rare cases, the PowerShell Cmdlets might even have some limitations compared to their REST counterparts. In such cases, you can usually just use the universal &lt;a class="link" href="https://learn.microsoft.com/en-us/powershell/module/microsoft.graph.authentication/invoke-mggraphrequest?view=graph-powershell-1.0" target="_blank" rel="noopener"
+>&lt;code>Invoke-MgGraphRequest&lt;/code>&lt;/a> Cmdlet without providing your own access token. This Cmdlet will use the same authentication like any other &lt;strong>&lt;code>Mg*&lt;/code>&lt;/strong> Cmdlet.&lt;/p>
+&lt;p>This is how Microsoft describes the &lt;code>Invoke-MgGraphRequest&lt;/code> Cmdlet on Microsoft Learn:&lt;/p>
+&lt;p>&lt;em>Invoke-MgGraphRequest issues REST API requests to the Graph API. It works for any Graph API if you know the REST URI, method, and optional body parameter. This command is especially useful for accessing APIs for which there isn&amp;rsquo;t an equivalent cmdlet yet.&lt;/em>&lt;/p>
+&lt;p>Note that there is also an alias called &lt;code>Invoke-GraphRequest&lt;/code> for this Cmdlet. A perfect example of where you would need &lt;code>Invoke-MgGraphRequest&lt;/code> is uploading a small file to SharePoint. I recently published a script example making use of this method &lt;a class="link" href="https://heusser.pro/p/powershell-script-example-upload-small-files-via-microsoft-graph-z45tbunyoa85" >here&lt;/a>.&lt;/p>
+&lt;h2 id="what-is-mgcontext">What is MgContext?
+&lt;/h2>&lt;p>By running &lt;code>Get-MgContext&lt;/code> you can get some information about the current session. Unfortunately, this doesn&amp;rsquo;t reveal any kind of tokens used for requests to the Graph API. Then again, this is most likely by design, because tokens should always be handled with care.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image_hu_47ba1663556a2ad5.png 480w, https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image_hu_fa5f3458713001be.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output of Get-MgContext"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;h2 id="what-if-you-need-a-token-anyway">What if you need a token anyway?
+&lt;/h2>&lt;p>One option is to provide a client Id and a client secret and make a request to &lt;strong>&lt;a class="link" href="https://login.microsoftonline.com/%7bYour" target="_blank" rel="noopener"
+>https://login.microsoftonline.com/{Your&lt;/a> Tenant Name}/oauth2/v2.0/token&lt;/strong>. If I want to do that, I always come back to this blog post on &lt;a class="link" href="https://adamtheautomator.com/powershell-graph-api/" target="_blank" rel="noopener"
+>adamtheautomator.com&lt;/a>. But when I do that, I also want to call the REST API directly for all requests that the script I&amp;rsquo;m working on is doing. In my case, I &lt;strong>want&lt;/strong> to use the SDK and only &lt;strong>need&lt;/strong> to call the API directly for one specific request.&lt;/p>
+&lt;p>I recently was working on something where neither the &lt;code>Get-Mg*&lt;/code> nor the &lt;code>Invoke-MgGraphRequest&lt;/code> were working. I wanted to fetch a profile picture of an Entra ID user but wanted to keep the image in memory and not save it to disk. Both the Cmdlets, &lt;code>Get-MgUserPhotoContent&lt;/code> and &lt;code>Invoke-MgGraphRequest&lt;/code> expected a value for an output file though. I know I could have just used a temporary file but if I had given up this easily, I wouldn&amp;rsquo;t have discovered how to get an access token from a Microsoft Graph PowerShell session.&lt;/p>
+&lt;p>When I was testing the &lt;code>Invoke-MgGraphRequest&lt;/code> Cmdlet, I noticed that there were different accepted values for the parameter &lt;code>-OutputType&lt;/code>. One of the accepted values is &lt;strong>HttpResponseMessage&lt;/strong> and if you select this, Graph will return the access token in the HTTP response.&lt;/p>
+&lt;p>This is the Graph URI/endpoint that I was using:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mgRequest&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/users/&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$userId&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">/photo/&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">value&amp;#34;&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;image/jpeg&amp;#34;&lt;/span> &lt;span class="n">-OutputType&lt;/span> &lt;span class="n">HttpResponseMessage&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1_hu_de24c5ca676d4f59.png 480w, https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-1_hu_bc7d332996866ea2.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Graph access token retrieved using Invoke-MgGraphRequest"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;p>To access the token directly, you can use: &lt;code>$mgRequest.RequestMessage.Headers.Authorization.Parameter&lt;/code>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2_hu_65217b8859c27daf.png 480w, https://heusser.pro/p/microsoft-graph-get-an-access-token-from-an-established-powershell-session-zv37e1xmxr86/image-2_hu_7ed5f848593d0277.png 1024w"
+loading="lazy"
+decoding="async"
+alt="The access token is now stored in a variable"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;p>If you want to build your own Authorization header to call the API directly without first requesting a dedicated token from &lt;strong>&lt;a class="link" href="https://login.microsoftonline.com" target="_blank" rel="noopener"
+>https://login.microsoftonline.com&lt;/a>&lt;/strong> you can use this code:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$authHeader&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Authorization&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$mgRequest&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">RequestMessage&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Headers&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Authorization&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">Scheme&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2"> &lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$mgRequest&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">RequestMessage&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Headers&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Authorization&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nb">Parameter&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$profilePhoto&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Invoke-WebRequest&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/users/&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$userId&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">/photo/&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">value&amp;#34;&lt;/span> &lt;span class="n">-Headers&lt;/span> &lt;span class="nv">$authHeader&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">Content&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>This allowed me to retrieve the profile photo as a byte array without saving it to disk first.&lt;/p>
+&lt;h2 id="summary">Summary
+&lt;/h2>&lt;p>This is a very niche use case but I&amp;rsquo;m glad that I discovered how to get an access token from an already authenticated Microsoft Graph PowerShell session. I&amp;rsquo;m sure that this will come in handy again some day and I hope that it will come in handy for you some day as well. I also published the entire example script including helpful comments in one of my GitHub &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/Authentication/Get-AccessTokenFromEstablishedMgSession.ps1" target="_blank" rel="noopener"
+>repositories&lt;/a>.&lt;/p></description></item><item><title>Automate Setting Work Location in Teams/Outlook [PoC]</title><link>https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/</link><pubDate>Sat, 08 Jul 2023 08:50:29 +0000</pubDate><guid>https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/</guid><description>&lt;p>Warning: This is another one of those proof of concept &lt;em>“because I can”&lt;/em> kind of things. I’m going to do some things which shouldn’t be done in production. It was just for the fun of it.&lt;/p>
+&lt;p>Microsoft recently released the new &lt;strong>Work location&lt;/strong> feature in Teams and the new Outlook/Outlook on the web. This allows users to set their work location so co-workers can see if their colleagues are working in the &lt;strong>office&lt;/strong> or &lt;strong>remotely&lt;/strong> on any specific day. You can find more information &lt;a class="link" href="https://techcommunity.microsoft.com/t5/microsoft-365-blog/coordination-is-the-key-to-spontaneity-with-these-features-in/ba-p/3814143" target="_blank" rel="noopener"
+>here&lt;/a> and &lt;a class="link" href="https://support.microsoft.com/en-au/office/show-your-hybrid-work-location-availability-to-meet-work-hours-and-more-c861198d-f82e-41d7-88ec-c2e716be5ede" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/p>
+&lt;p>I was extremely disappointed when I learned that there is no support for Microsoft Graph or Power Automate yet, so we could automatically set this each day based on e.g., an IP address or even through geo-fencing on a mobile device.&lt;/p>
+&lt;p>Off I went to try and find a way to do it anyway. First, I opened Teams in Microsoft Edge and used the browser dev tools to see what kind of requests are sent to which APIs when the work location is changed.&lt;/p>
+&lt;p>Here we can see that a &lt;strong>PUT&lt;/strong> request is made to &lt;code>https://presence.teams.microsoft.com/v1/me/workLocation&lt;/code> when the location is edited.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1Ylwjq2bqJUws0kO0nI6SA.png"
+width="1435"
+height="902"
+srcset="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1Ylwjq2bqJUws0kO0nI6SA_hu_7e71fa45b85c8195.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1Ylwjq2bqJUws0kO0nI6SA_hu_d5e70905dbc9f12e.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="159"
+data-flex-basis="381px"
+>&lt;/p>
+&lt;p>In this case the location was cleared with the following JSON payload.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1TUd3bgXiIp7hyKQIWLDTdA.png"
+width="975"
+height="278"
+srcset="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1TUd3bgXiIp7hyKQIWLDTdA_hu_9ee1d59560961f4.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1TUd3bgXiIp7hyKQIWLDTdA_hu_14dccec72bd80590.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="350"
+data-flex-basis="841px"
+>&lt;/p>
+&lt;p>The value &lt;strong>0&lt;/strong> clears the location. &lt;strong>1&lt;/strong> is used to set it to &lt;strong>Office&lt;/strong> and &lt;strong>2&lt;/strong> will map to &lt;strong>Remote.&lt;/strong>&lt;/p>
+&lt;p>Next, I inspected the token needed for this request with the help of &lt;a class="link" href="https://jwt.ms" target="_blank" rel="noopener"
+>jwt.ms&lt;/a>.&lt;/p>
+&lt;pre>&lt;code>{
+&amp;quot;typ&amp;quot;: &amp;quot;JWT&amp;quot;,
+&amp;quot;nonce&amp;quot;: &amp;quot;xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;,
+&amp;quot;alg&amp;quot;: &amp;quot;RS256&amp;quot;,
+&amp;quot;x5t&amp;quot;: &amp;quot;-xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;,
+&amp;quot;kid&amp;quot;: &amp;quot;-xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;
+}.{
+&amp;quot;aud&amp;quot;: &amp;quot;https://presence.teams.microsoft.com/&amp;quot;,
+&amp;quot;iss&amp;quot;: &amp;quot;https://sts.windows.net/4bffbf87-53a0-4fce-b58b-4179cb3a3b7d/&amp;quot;,
+&amp;quot;iat&amp;quot;: 1688763565,
+&amp;quot;nbf&amp;quot;: 1688763565,
+&amp;quot;exp&amp;quot;: 1688841846,
+&amp;quot;acr&amp;quot;: &amp;quot;1&amp;quot;,
+&amp;quot;aio&amp;quot;: &amp;quot;xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;,
+&amp;quot;amr&amp;quot;: [
+&amp;quot;pwd&amp;quot;,
+&amp;quot;mfa&amp;quot;
+],
+&amp;quot;appid&amp;quot;: &amp;quot;5e3ce6c0-2b1f-4285-8d4b-75ee78787346&amp;quot;,
+&amp;quot;appidacr&amp;quot;: &amp;quot;0&amp;quot;,
+&amp;quot;family_name&amp;quot;: &amp;quot;Mozz&amp;quot;,
+&amp;quot;given_name&amp;quot;: &amp;quot;Mozzie&amp;quot;,
+&amp;quot;ipaddr&amp;quot;: &amp;quot;xxx.xxx.xxx.xxx&amp;quot;,
+&amp;quot;name&amp;quot;: &amp;quot;Mozzism Admin&amp;quot;,
+&amp;quot;oid&amp;quot;: &amp;quot;xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx&amp;quot;,
+&amp;quot;puid&amp;quot;: &amp;quot;10032000330C6A66&amp;quot;,
+&amp;quot;rh&amp;quot;: &amp;quot;xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;,
+&amp;quot;scp&amp;quot;: &amp;quot;user_impersonation&amp;quot;,
+&amp;quot;sub&amp;quot;: &amp;quot;xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;,
+&amp;quot;tid&amp;quot;: &amp;quot;xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx&amp;quot;,
+&amp;quot;unique_name&amp;quot;: &amp;quot;mozzie@mozzism.ch&amp;quot;,
+&amp;quot;upn&amp;quot;: &amp;quot;mozzie@mozzism.ch&amp;quot;,
+&amp;quot;uti&amp;quot;: &amp;quot;xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;,
+&amp;quot;ver&amp;quot;: &amp;quot;1.0&amp;quot;,
+&amp;quot;xms_cc&amp;quot;: [
+&amp;quot;CP1&amp;quot;
+],
+&amp;quot;xms_ssm&amp;quot;: &amp;quot;1&amp;quot;
+}.[Signature]
+&lt;/code>&lt;/pre>
+&lt;h4 id="aadinternals">AADInternals
+&lt;/h4>&lt;p>Copying the token from the browser and using it to make a web request with PowerShell is easy. The hard thing was to figure out how I can obtain that token programmatically. Luckily, there’s this awesome PowerShell module called &lt;a class="link" href="https://www.powershellgallery.com/packages/AADInternals/0.9.0" target="_blank" rel="noopener"
+>&lt;strong>AADInternals&lt;/strong>&lt;/a> by one Dr. Nestori Syynimaa. This is an amazing resource to test almost anything related to Azure AD and Graph authentication.&lt;/p>
+&lt;p>The documentation for this module can be found &lt;a class="link" href="https://aadinternals.com/aadinternals/" target="_blank" rel="noopener"
+>here&lt;/a>. I discovered that the following command would give me a token for Teams.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$teamsToken&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-AADIntAccessTokenForTeams&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>What’s really cool is that now, with PowerShell 7 the whole login process can be done through the CLI without any browser pop-ups! Even MFA is supported!&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1dsPmfR9rFSmCsWYKlb5mA.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1dsPmfR9rFSmCsWYKlb5mA_hu_6cfc710016dcf843.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1dsPmfR9rFSmCsWYKlb5mA_hu_6dbf596e2e933e61.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;p>Even though the audience for this token is &lt;a class="link" href="https://api.spaces.skype.com" target="_blank" rel="noopener"
+>https://api.spaces.skype.com&lt;/a> and not &lt;a class="link" href="https://presence.teams.microsoft.com/" target="_blank" rel="noopener"
+>https://presence.teams.microsoft.com&lt;/a> it still works to change the work location in Teams.&lt;/p>
+&lt;p>Because everything can be done through the CLI I wondered if I could pass the credentials and the MFA secret to the AADInternals functions so that the login process could be automated to be 100% unattended.&lt;/p>
+&lt;p>After some trial and error, I had that figured out too. Not all functions of the AADInternals module are exposed to the user so the key is to make them available to your current PowerShell session by dot sourcing some of the *.ps1 files included in the module.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$functions&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-ChildItem&lt;/span> &lt;span class="n">-Path&lt;/span> &lt;span class="s2">&amp;#34;C:\\Program Files\\WindowsPowerShell\\Modules\\AADInternals\\0.9.0&amp;#34;&lt;/span> &lt;span class="n">-Filter&lt;/span> &lt;span class="s2">&amp;#34;\*.ps1&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$functions&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$functions&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Where-Object&lt;/span> &lt;span class="p">{$\&lt;/span>&lt;span class="n">_&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Name&lt;/span> &lt;span class="o">-match&lt;/span> &lt;span class="s2">&amp;#34;Teams&amp;#34;&lt;/span> &lt;span class="o">-or&lt;/span> &lt;span class="p">$\&lt;/span>&lt;span class="n">_&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Name&lt;/span> &lt;span class="o">-match&lt;/span> &lt;span class="s2">&amp;#34;AccessToken&amp;#34;&lt;/span> &lt;span class="o">-or&lt;/span> &lt;span class="p">$\&lt;/span>&lt;span class="n">_&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Name&lt;/span> &lt;span class="o">-match&lt;/span> &lt;span class="s2">&amp;#34;CommonUtils&amp;#34;&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">foreach&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$function&lt;/span> &lt;span class="k">in&lt;/span> &lt;span class="nv">$functions&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span> &lt;span class="nv">$function&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">FullName&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>By executing this code which uses some of the not exposed functions from AADInternals, we can pass a credential object (and MFA secret) and then get an access token to write Teams presence.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$teamsPresenceToken&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Prompt-Credentials&lt;/span> &lt;span class="n">-ClientId&lt;/span> &lt;span class="nv">$ClientId&lt;/span> &lt;span class="n">-Resource&lt;/span> &lt;span class="s2">&amp;#34;https://presence.teams.microsoft.com&amp;#34;&lt;/span> &lt;span class="n">-Credentials&lt;/span> &lt;span class="nv">$secureCreds&lt;/span> &lt;span class="n">-OTPSecretKey&lt;/span> &lt;span class="nv">$passwordDecrypted&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="credentials">Credentials
+&lt;/h4>&lt;p>I’ve put together a script which does everything for you. However, you must install the AADInternals module first and you also need to clone the repo from my &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation" target="_blank" rel="noopener"
+>GitHub&lt;/a> account since it has dependencies on other functions.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="n">git&lt;/span> &lt;span class="n">clone&lt;/span> &lt;span class="n">https&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="p">//&lt;/span>&lt;span class="n">github&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">mozziemozz&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">TeamsPhoneAutomation&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">git&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Even though this was all part of some good Friday night hacking, we obviously don’t want to store the credentials and especially the MFA secret as plain text on our machines. Therefore, I’ve added a couple of &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Modules/SecureCredsMgmt.ps1" target="_blank" rel="noopener"
+>functions&lt;/a> to help handle encrypted credentials. We want to be better than &lt;a class="link" href="https://www.theverge.com/2022/9/16/23356213/uber-hack-teen-slack-google-cloud-credentials-powershell" target="_blank" rel="noopener"
+>UBER&lt;/a>.&lt;/p>
+&lt;p>When encrypted credentials are stored on a Windows PC, they can only be decrypted using the same &lt;strong>account&lt;/strong> and the same &lt;strong>machine&lt;/strong> because of &lt;a class="link" href="https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/understand-security-identifiers" target="_blank" rel="noopener"
+>security identifiers&lt;/a> (SID).&lt;/p>
+&lt;p>If you don’t trust me, see for yourself. Here’ I’m retrieving the password I encrypted on my main PC using my user account.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1W628X8LBOfnUCpplMXMj4w.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1W628X8LBOfnUCpplMXMj4w_hu_4940aeddf6c6f64d.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1W628X8LBOfnUCpplMXMj4w_hu_fc9aea1ed352f4d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;p>I copied the file to a virtual machine where I’m logged in with the same user. This code will let you decrypt the password if the key matches.&lt;br>
+(I found this code years ago, unfortunately I don’t have the source anymore…)&lt;/p>
+&lt;pre>&lt;code>[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR((Get-Content -Path .\.local\SecureCreds\mozzie@mozzism.ch.txt | ConvertTo-SecureString))) | Out-String
+&lt;/code>&lt;/pre>
+&lt;p>When I run this on another machine with the same logged in user, I get an error that the Key is invalid. Which is good.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1xHjGlNGoWxiJ3qTkRNsxBQ.png"
+width="1758"
+height="928"
+srcset="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1xHjGlNGoWxiJ3qTkRNsxBQ_hu_127b3d13f3483a6c.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1xHjGlNGoWxiJ3qTkRNsxBQ_hu_da6928d12bcda226.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="189"
+data-flex-basis="454px"
+>&lt;/p>
+&lt;p>My Function &lt;code>Get-MzzSecureCreds&lt;/code> will automatically create a PS Credential Object when &lt;code>-AdminUser &amp;quot;user@domain.com&amp;quot;&lt;/code> is specified. The username will be set as file name, and it will also be used as the username of the credential object.&lt;/p>
+&lt;h4 id="the-finalscript">The Final Script
+&lt;/h4>&lt;p>Here’s the script to change your work location in Teams.&lt;/p>
+&lt;script src="https://gist.github.com/mozziemozz/bd60e4c77623b516333e329660e39142.js">&lt;/script>
+&lt;p>If you run it for the first time, you’ll need to provide the username and password and possibly the MFA secret of the user for which you want to change the work location.&lt;/p>
+&lt;p>&lt;strong>At this point I want to make clear again that this is a proof of concept. Even though the credentials are encrypted, you should not store production passwords on the device and most importantly, you shouldn’t store the MFA secret in the same place as the password.&lt;/strong>&lt;/p>
+&lt;p>You can determine if you’re working remotely or in the office by specifying either your local or public home/remote IP address.&lt;/p>
+&lt;p>Since my private IP is &lt;strong>192.168.127.117&lt;/strong>, and I specified &lt;strong>192.168.1.10&lt;/strong> my work location is set to &lt;strong>Office.&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1H9Jn0x3GNJ1gglcfYmRg.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1H9Jn0x3GNJ1gglcfYmRg_hu_aa046d479c47679a.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1H9Jn0x3GNJ1gglcfYmRg_hu_265b830b583962c3.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;p>When I change the IP address to &lt;strong>192.168.127.117&lt;/strong> the work location is set to remote because that matches my local subnet.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1JCJNuJqCHz2FvGnYBkB0A.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1JCJNuJqCHz2FvGnYBkB0A_hu_e9a0d6f3e4d647b3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1JCJNuJqCHz2FvGnYBkB0A_hu_c1345709df7142fe.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;p>In case your office and your home network both use the same private address space, you can use &lt;code>-IpType Public&lt;/code> and specify your home/remote public IP.&lt;/p>
+&lt;h4 id="the-result">The Result
+&lt;/h4>&lt;p>The updated work location is then visible in both Teams and Outlook.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1rgszjARcTFdFADtwPT9bUg.png"
+width="490"
+height="396"
+srcset="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1rgszjARcTFdFADtwPT9bUg_hu_b81a6c2aa1eb804.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1rgszjARcTFdFADtwPT9bUg_hu_f381a482b49f4f87.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="123"
+data-flex-basis="296px"
+>
+&lt;img src="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/16wcOq4ZGJ4e9Oy2J80Nyw.png"
+width="686"
+height="351"
+srcset="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/16wcOq4ZGJ4e9Oy2J80Nyw_hu_4bfed16fa82d11c1.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/16wcOq4ZGJ4e9Oy2J80Nyw_hu_f372c65f866c96a0.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="195"
+data-flex-basis="469px"
+>&lt;/p>
+&lt;p>Even though I won’t be using this in production, I had great fun developing this and I also learned a thing or two about AADInternals, Json Web Tokens and encrypted credentials in PowerShell.&lt;/p></description></item><item><title>Use Siri Shortcuts to make Microsoft Graph Requests</title><link>https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/</link><pubDate>Sat, 16 Jul 2022 11:46:03 +0000</pubDate><guid>https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/</guid><description>&lt;p>Just two days ago I published &lt;a class="link" href="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6" >Set your Teams Status to In a Call when using other Calling &amp;amp; Meeting Apps on iOS&lt;/a>. In this article, I explained how we can leverage Siri Shortcuts on iOS to call an Azure Function which then executes web requests against the Microsoft Graph API.&lt;/p>
+&lt;p>Today I wanted to see if I’m able to get it working without the use of an Azure Function as a middleman. Spoiler alert: I totally was.&lt;/p>
+&lt;p>You can import the Siri Shortcut from &lt;a class="link" href="https://www.icloud.com/shortcuts/0c59afb62e5d401f80341e86e0492ad6" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/p>
+&lt;p>Of course, you need to have an Azure App Registration with the desired permissions ready to use this. Once you’ve imported the shortcut, just fill in the required information in the text fileds. We need the App Id, the App secret and the name (domain) or Id of the tenant.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1e3EoKpzxjpK6m0Ii7Wsw.png"
+width="750"
+height="1334"
+srcset="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1e3EoKpzxjpK6m0Ii7Wsw_hu_d1b2b5fd48f1c5aa.png 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1e3EoKpzxjpK6m0Ii7Wsw_hu_ed9404ac97cf98c5.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="134px"
+>&lt;/p>
+&lt;p>Let’s take a detailed look of what’s going on inside the Shortcut.&lt;/p>
+&lt;p>First, an http POST request is made to request the access token. Client_id and client_secret are passed to the request body as variables from the Text fields you populated at the top of the Shortcut.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1QlYK0AE2DSj3SKPpfSJaug.jpeg"
+width="750"
+height="917"
+srcset="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1QlYK0AE2DSj3SKPpfSJaug_hu_b04b071bb1e0dacc.jpeg 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1QlYK0AE2DSj3SKPpfSJaug_hu_9d631585e7688229.jpeg 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="81"
+data-flex-basis="196px"
+>&lt;/p>
+&lt;p>The Microsoft authentication endpoint returns a JSON string which is similar to what you get when you use &lt;code>Invoke-WebRequest&lt;/code> instead of &lt;code>Invoke-RestMethod&lt;/code> in PowerShell.&lt;/p>
+&lt;p>{&amp;ldquo;token_type&amp;rdquo;:&amp;ldquo;Bearer&amp;rdquo;,&amp;ldquo;expires_in&amp;rdquo;:3599,&amp;ldquo;ext_expires_in&amp;rdquo;:3599,&amp;ldquo;access_token&amp;rdquo;:&amp;ldquo;eyJ0eXAixboxOiJKV1QiLCJub25jZSI6ITUROWEtpblE4THcwNVN1Z1JMOU1aUUpwdXlqedasd1VpQXNjU3ciLseriesCJhbGciOiJSUzI1NiIsIng1dCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSIsImtpZCI6IXjJaUXBKM1VBWVhZR2FYRUp&amp;rdquo;}&lt;/p>
+&lt;p>This means that we’ll have to get the &lt;code>value&lt;/code> of both the &lt;code>keys&lt;/code> “token_type” and “access_token”.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1VKksWkNAJ7ESWUEjkQWd7Q.jpeg"
+width="750"
+height="850"
+srcset="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1VKksWkNAJ7ESWUEjkQWd7Q_hu_ccf255239ae94f5.jpeg 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1VKksWkNAJ7ESWUEjkQWd7Q_hu_79176f4ff4cee612.jpeg 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="88"
+data-flex-basis="211px"
+>&lt;/p>
+&lt;p>The access token is now stored in the variables &lt;code>token_type&lt;/code> (Bearer ) and &lt;code>access_token&lt;/code> (Actual token) and available to use in this Shortcut and subsequent web requests. To see if it’s working, we’re just going to make a GET request and return some Azure AD Users.&lt;/p>
+&lt;p>Here you can see that we use both variables to include the access token in the &lt;code>Authorization&lt;/code> Header.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1RCYyCinwNHAg14Dd1DKWUw.jpeg"
+width="750"
+height="562"
+srcset="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1RCYyCinwNHAg14Dd1DKWUw_hu_5d9968cdf9f44a09.jpeg 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1RCYyCinwNHAg14Dd1DKWUw_hu_f79dfd3a65a566ff.jpeg 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>&lt;/p>
+&lt;p>Because this is an OData query, the values will be stored in the &lt;code>value&lt;/code> key. So we need to get the value of the &lt;code>value&lt;/code> key one more time to see some results.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/12rVXLaYUXZyyNAMla6kjGA.png"
+width="750"
+height="1334"
+srcset="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/12rVXLaYUXZyyNAMla6kjGA_hu_bb9bcbd4116ecfbd.png 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/12rVXLaYUXZyyNAMla6kjGA_hu_32b4cbb6c69808cc.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="134px"
+>&lt;/p>
+&lt;p>Of course, this is just an example to prove that the authentication is working without an Azure Function or any PowerShell code. Everything is running on an iOS device. Receiving data from Graph on an iPhone is probably not what people want to use this for, but it was the easiest example.&lt;/p>
+&lt;p>Using Shortcuts to make http Post requests is much more interesting. Think about all the possibilities here for a second. We could basically do any Post request we want. And then, we can add Shortcuts to the iPhone Homescreen, ask Siri to run Shortcuts or even launch them from an Apple Watch. Amazing.&lt;/p></description></item><item><title>Set your Teams Status to In a Call when using other Calling &amp; Meeting Apps on iOS</title><link>https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/</link><pubDate>Thu, 14 Jul 2022 21:59:48 +0000</pubDate><guid>https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/</guid><description>&lt;p>Hello everybody. I try my best to blog about new and unique Microsoft Teams related stuff at least once a month. If you’re new to my stories, feel free to check out my previous articles &lt;a class="link" href="https://heusser.pro/p" >here&lt;/a>.&lt;/p>
+&lt;p>Today we’re going to take a look at something very cool. A few months ago, I wrote this little code snippet which lets you change a Teams user’s presence by using PowerShell and the Microsoft Graph API. The API endpoint is documented &lt;a class="link" href="https://docs.microsoft.com/en-us/graph/api/presence-setpresence?view=graph-rest-1.0&amp;amp;tabs=http" target="_blank" rel="noopener"
+>here&lt;/a>. You might be asking yourself: why would we want to do this in the first place? Teams already updates our presence if we’re in a call, a meeting or just busy because of an Outlook appointment, right?&lt;/p>
+&lt;h4 id="use-cases">Use Cases
+&lt;/h4>&lt;p>Setting the presence of a user can be very useful if for example not all your users are on Teams yet. Let’s say that we’ve still got a legacy PBX system with SIP devices registered to it, but we use Teams for internal calls. There’s no way to know that a user is already on the phone unless the user specifically updates his status to Busy or Do not disturb. A user can’t set his own status to “In a call” or “In a meeting” though.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ.png"
+width="548"
+height="680"
+srcset="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ_hu_648f9c40fc984f87.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ_hu_edce78d7f28f910d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="80"
+data-flex-basis="193px"
+>&lt;/p>
+&lt;p>If we’re using an &lt;a class="link" href="https://www.anynode.de/supervision/" target="_blank" rel="noopener"
+>anynode SBC&lt;/a> for example, we could implement a Route Supervision which calls an Azure Function, whenever a user receives or starts a call on a legacy PBX system. The Azure Function would then send an http POST request to the Graph API to change the presence status of the user.&lt;/p>
+&lt;p>Since Microsoft has now released the &lt;a class="link" href="https://docs.microsoft.com/en-us/microsoftteams/sip-gateway-plan" target="_blank" rel="noopener"
+>SIP Gateway&lt;/a> the need for such a solution has significantly decreased because the SIP Gateway already handles Teams presence out of the box. If you’re interested in learning more about the SIP Gateway for Teams, please check out this session from Commsverse from my colleague &lt;a class="link" href="https://twitter.com/tpickhan" target="_blank" rel="noopener"
+>Thorsten Pickhan&lt;/a>.&lt;/p>
+&lt;h4 id="what-about-other-usecases">What about other use cases?
+&lt;/h4>&lt;p>I know, we all love Teams but sometimes we do need to use other calling and meeting apps such as Skype, Zoom, WhatsApp, or Discord. Don’t you just hate it that Teams doesn’t know when you’re already on a call in another app? Today, we’re going to change that!&lt;/p>
+&lt;h4 id="the-power-ofsiri">The Power of Siri
+&lt;/h4>&lt;p>If you have an iPhone or iPad you probably know about Siri Shortcuts and Automations. If you don’t know them already, I highly recommend checking them out. Shortcuts and automations are like local Power Automate Flows which are created and executed on your iOS device. Today I discovered that you can actually do http POST requests with Shortcuts. How cool is that?&lt;/p>
+&lt;p>Granted, coding or building shortcuts is quite a hassle on such a small screen but there’s an easy workaround for that. We’re just using the Shortcut to call an Azure Function and let the Function do all the work for us.&lt;/p>
+&lt;h4 id="creating-an-azure-ad-app-registration">Creating an Azure AD App Registration
+&lt;/h4>&lt;p>First, we need an Azure AD App where we can grant the required permissions to set and clear the Teams presence. There’s an exceptional tutorial &lt;a class="link" href="https://adamtheautomator.com/powershell-graph-api/" target="_blank" rel="noopener"
+>here&lt;/a>. (I also used the example code to acquire the token from this website.)&lt;/p>
+&lt;p>“Presence.ReadWrite.All” is the permission we need.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA.png"
+width="851"
+height="537"
+srcset="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA_hu_1d751e4de83ced88.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA_hu_15724bde0f579e68.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="158"
+data-flex-basis="380px"
+>&lt;/p>
+&lt;h4 id="create-an-azurefunction">Create an Azure Function
+&lt;/h4>&lt;p>Next, we create an Azure Function. If you’re not familiar with Azure Functions, please read this &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851" >article&lt;/a>. The creating of a Function App and a Function is described under “Create the Refresh Card Function”.&lt;/p>
+&lt;p>Copy and paste the following code into your function. Populate the variables on lines 10–14 with your tenant specific information.&lt;/p>
+&lt;script src="https://gist.github.com/mozziemozz/5b08518eff2dd7c579c61cab23e25e95.js">&lt;/script>
+&lt;h4 id="create-the-sirishortcut">Create the Siri Shortcut
+&lt;/h4>&lt;p>Now, we’ll create a new Siri Shortcut. Choose “Get contents of URL” as your first action. Now go back to your Azure Function and copy its URL.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g.png"
+width="1840"
+height="247"
+srcset="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g_hu_a0bc7eac5c8b078a.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g_hu_12a7a185baa80efc.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="744"
+data-flex-basis="1787px"
+>&lt;/p>
+&lt;p>Paste the URL into the Shortcut. I always use Sticky Notes to quickly synchronize text between my Windows PC and my iPhone.&lt;/p>
+&lt;p>Next, expand the action by clicking on the circled arrow which points right. This will reveal additional options. Change the Method to POST and add a key and a value (Text) to the Request Body. I used “Name”: “Azure”.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1JPlHNIr6mVHsBIA1HLoOqA.jpeg"
+width="750"
+height="1334"
+srcset="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1JPlHNIr6mVHsBIA1HLoOqA_hu_a763cccb72152ed2.jpeg 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1JPlHNIr6mVHsBIA1HLoOqA_hu_5614208e557998af.jpeg 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="134px"
+>&lt;/p>
+&lt;p>That’s it for the shortcut. You should now be able to run the shortcut. Every time you do so, your iOS device will call the Azure Function which will request a token and then set the defined user&amp;rsquo;s presence to In a Call.&lt;/p>
+&lt;p>By now, I hope you can understand why I didn’t bother to try and also build the authentication flow using only Shortcuts.&lt;/p>
+&lt;h4 id="building-the-siri-automation">Building the Siri Automation
+&lt;/h4>&lt;p>The last piece we need to do is to create an Automation which will trigger the Shortcut. Unfortunately, there aren’t as many triggers as I had wished but using “When an App is opened” does the trick, sort of.&lt;/p>
+&lt;p>In Shortcuts, switch from My Shortcuts to Automation on the bottom. Click + to create a new Automation. You want to create a Personal Automation.&lt;/p>
+&lt;p>Select “App” as your trigger and then select one or multiple calling Apps.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA.png"
+width="750"
+height="1334"
+srcset="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA_hu_2f64e433906efd87.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA_hu_eea79e627e5dd85c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="134px"
+>&lt;/p>
+&lt;p>Then, add an action and search for “Run Shortcut”. Click on Shortcut and select the previously created Shortcut from the list.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA.png"
+width="750"
+height="1334"
+srcset="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA_hu_275816a54e453ee.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA_hu_df1303d254abdb04.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="134px"
+>&lt;/p>
+&lt;p>Click Next and then Done. Leave “Ask Before Running” enabled. This way you’ll be asked if you want to update your Teams presence each time you open one of the selected Apps. If you’re not making a call, you can just ignore or close the notification banner.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg.png"
+width="750"
+height="1334"
+srcset="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg_hu_15b0f625b2f294b3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg_hu_dabc1e1de634dce5.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="134px"
+>&lt;/p>
+&lt;p>Now you’re all set. Every time you open one of your selected Apps (just Skype in my case) the automation will be triggered and ask you, if you want to set your Teams presence to In a call.&lt;/p>
+&lt;p>If you like, you can repeat all the steps and create another Function, Shortcut and Automation to clear the presence again, if you’re done with your call on the other App.&lt;/p>
+&lt;p>In this case, just replace line 42–51 with this code in the “Clear Presence Function” and choose “When an App is closed” as the Siri Automation trigger.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$Body&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="sh">@&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh">{
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;sessionId&amp;#34;: &amp;#34;bf3cbc08-e5b0-47bb-a4f0-89e3e3f7adac&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh">}
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh">&amp;#34;@&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Invoke-RestMethod&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Post&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/users/&lt;/span>&lt;span class="nv">$UserId&lt;/span>&lt;span class="s2">/presence/clearPresence&amp;#34;&lt;/span> &lt;span class="n">-Headers&lt;/span> &lt;span class="nv">$Header&lt;/span> &lt;span class="n">-Body&lt;/span> &lt;span class="nv">$Body&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="demo">Demo
+&lt;/h4>&lt;p>Here you can see the Automation in Action. At first, the user’s Teams presence is “Available”. When Skype is opened, the Automation is triggered and confirmed by the user. When Teams is opened again, we can see that the status has changed from “Available” to “In a call”. Because Skype was closed/minimized when Teams was opened, the second Automation, which clears the Teams presence again is triggered and allowed to run. This resets the Teams presence to its original state. Teams is closed and opened again to force a refresh of the presence.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1WA9VV3zTsQF3ov8DnQGfog.gif"
+width="600"
+height="1067"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="134px"
+>&lt;/p>
+&lt;p>What’s cool is that this even works when you’re getting an incoming call in an App like Skype, WhatsApp etc. When you accept the call, the App is opened and thus triggers the automation. I can’t record that on video because iOS screen recording is stopped if an incoming call gets accepted and the notification does not show up, when screen sharing through AirPlay is active.&lt;/p>
+&lt;h4 id="bonus">Bonus
+&lt;/h4>&lt;p>Because we now have Shortcuts to set our Teams presence to “In a call” or clear the presence again, we can also use Siri to execute these Shortcuts. All we have to say is Hey Siri, followed by the name of the Shortcut. E.g. “Hey Siri, Set Teams Presence” or “Hey Siri, Clear Teams Presence”.&lt;/p></description></item><item><title>Sync Local Outlook Contacts to a Teams Desk Phone</title><link>https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/</link><pubDate>Thu, 07 Apr 2022 21:44:54 +0000</pubDate><guid>https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/</guid><description>&lt;p>This blog post is now obsolete. Microsoft has &lt;a class="link" href="https://techcommunity.microsoft.com/t5/microsoft-teams-blog/what-s-new-in-microsoft-teams-april-2022/ba-p/3297881#devices" target="_blank" rel="noopener"
+>now added Outlook Contacts&lt;/a> to Teams Desk Phones.&lt;/p>
+&lt;p>Outlook Contacts finally do show up on Teams Desk Phones!&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1pP3r1oOQebJ2upO4HvWQ.png"
+width="1894"
+height="1020"
+srcset="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1pP3r1oOQebJ2upO4HvWQ_hu_7aa0da0b007010a1.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1pP3r1oOQebJ2upO4HvWQ_hu_b73f3086b203a68f.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="185"
+data-flex-basis="445px"
+>
+&lt;img src="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1QmgTr14RlgASVngE8T5cw.jpeg"
+width="800"
+height="480"
+srcset="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1QmgTr14RlgASVngE8T5cw_hu_c9d82d6a87a22cbb.jpeg 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1QmgTr14RlgASVngE8T5cw_hu_c72e5333edc3dd0e.jpeg 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="166"
+data-flex-basis="400px"
+>&lt;/p>
+&lt;h3 id="original-story">Original Story
+&lt;/h3>&lt;p>Since the second generation of &lt;a class="link" href="https://www.microsoft.com/en-us/microsoft-teams/across-devices/devices/category/desk-phones-teams-displays/34" target="_blank" rel="noopener"
+>Teams certified desk phones&lt;/a> have been released, many things have been improved. They’re now much faster and also got a lot of software updates. They still have one major flaw though. They’re only able to show your “native Teams contacts” instead of all contacts which are synchronized from Outlook to Teams.&lt;/p>
+&lt;p>&lt;a class="link" href="https://support.microsoft.com/en-us/office/what-s-new-in-microsoft-teams-devices-eabf4d81-acdd-4b23-afa1-9ee47bb7c5e2#ID0EBD=Desk_phones" target="_blank" rel="noopener"
+>This&lt;/a> article states the following for a previous software update:&lt;/p>
+&lt;blockquote>
+&lt;p>Contacts whose numbers are saved in Outlook will be available in the &lt;strong>People&lt;/strong> section of the Teams phones with read-only access. You’ll still need to manually dial the number&lt;/p>&lt;/blockquote>
+&lt;p>No matter what I tried, I was not able to get any contacts which are synchronized by Outlook to Teams to show up on my desk phone.&lt;/p>
+&lt;p>Let’s take a look at our contacts in the Teams client. Contacts which have been added using the Teams clients can be edited. Contacts which have been synchronized by outlook, can’t. You can see that the three dots are greyed out on the first entry while they’re not on the second entry.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1w2ezI7rEfC4GDVDAttluBA.png"
+width="1734"
+height="400"
+srcset="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1w2ezI7rEfC4GDVDAttluBA_hu_669c6258130f5b8c.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1w2ezI7rEfC4GDVDAttluBA_hu_2071179ec7ecfcb9.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="433"
+data-flex-basis="1040px"
+>&lt;/p>
+&lt;p>On my desk phone, I can’t see the first contact (synchronized one) anywhere.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1Je3mptWlwbVu1YNpExazNQ.png"
+width="1197"
+height="718"
+srcset="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1Je3mptWlwbVu1YNpExazNQ_hu_18f18b7d6585cd94.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1Je3mptWlwbVu1YNpExazNQ_hu_181c9d056922c545.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="166"
+data-flex-basis="400px"
+>&lt;/p>
+&lt;p>I’m still not sure what that quoted sentence above means but I have an idea. Since they specifically say that numbers must be dialed manually, I believe that what they actually mean is that if you have synchronized contacts from outlook, their names (instead of their number) will be displayed if a saved contact calls your desk phone.&lt;/p>
+&lt;p>A quick test confirmed this hunch. I created a contact with my work and my mobile number. I purposely set my work number as mobile and my mobile number as home phone. When synchronizing contacts from Outlook to Teams, Teams will always use the mobile number for the number shown in its contact list. If you’d like to learn more about this, Mark Vale has a great article covering this over at the &lt;a class="link" href="https://www.commsverse.com/microsoft-teams-contacts-list/" target="_blank" rel="noopener"
+>Commsverse Blog&lt;/a>.&lt;/p>
+&lt;p>Here you can see the Outlook contact.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wNLpmLyJGuePpk2TcX0QA.png"
+width="1392"
+height="763"
+srcset="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wNLpmLyJGuePpk2TcX0QA_hu_3e5cddaab3b1ea9a.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wNLpmLyJGuePpk2TcX0QA_hu_11403628ea0404d0.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="182"
+data-flex-basis="437px"
+>&lt;/p>
+&lt;p>The number which is declared as Mobile will be showed in the Teams client.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wyoq4EijSDIHOquVsqyXNg.png"
+width="1788"
+height="110"
+srcset="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wyoq4EijSDIHOquVsqyXNg_hu_4e223c4d20505fa0.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wyoq4EijSDIHOquVsqyXNg_hu_ce04846febeb9eac.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="1625"
+data-flex-basis="3901px"
+>&lt;/p>
+&lt;p>If we right-click the call icon, the other numbers from the Outlook contact will also show up.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1ErWpGEhYOAvefoYxf1f0vQ.png"
+width="1834"
+height="486"
+srcset="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1ErWpGEhYOAvefoYxf1f0vQ_hu_16198f2a0533ec0f.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1ErWpGEhYOAvefoYxf1f0vQ_hu_41de70fb09b957c5.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="377"
+data-flex-basis="905px"
+>&lt;/p>
+&lt;p>So, when I used my mobile to call my desk phone, the name of the Outlook contact indeed showed up on the desk phone, even though that contact is not visible anywhere on the desk phone. This also means that despite Teams is only showing, or at least preferring the mobile number of an Outlook contact in the contact list, it will still use numbers which are hidden behind a right-click for display name lookups.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/10ydaPFAkcIRQ4nfxCFpJQ.jpeg"
+width="800"
+height="480"
+srcset="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/10ydaPFAkcIRQ4nfxCFpJQ_hu_f06bf543244dd130.jpeg 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/10ydaPFAkcIRQ4nfxCFpJQ_hu_8535c991ce7e9779.jpeg 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="166"
+data-flex-basis="400px"
+>&lt;/p>
+&lt;p>That’s why I assume that that’s what Microsoft actually meant by that vague statement.&lt;/p>
+&lt;h4 id="synchronize-outlook-contacts-toteams">Synchronize Outlook Contacts to Teams
+&lt;/h4>&lt;p>That’s nice and all but it still doesn’t let us select and call our contacts directly from our Teams desk phones. Depending on the number of contacts we need on our phone, manually adding them is not an option either.&lt;/p>
+&lt;p>If Alexander Holmeset is able to &lt;a class="link" href="https://alexholmeset.blog/2021/12/13/microsoft-teams-speed-dial-contacts-provisioning/" target="_blank" rel="noopener"
+>add contacts to a user&amp;rsquo;s speed dial list&lt;/a> by using PowerShell, why not use his method to read all our local contacts from Outlook and add them as native Teams contacts?&lt;/p>
+&lt;p>With a little help from &lt;a class="link" href="http://squareclouds.net/exporting-outlook-contacts-with-powershell" target="_blank" rel="noopener"
+>this article,&lt;/a> I was able to get all the users local Outlook contacts and then add them to Teams programmatically.&lt;/p>
+&lt;p>Since our contacts might have multiple number types like Business, Mobile, Home etc. stored in one object, but Teams contacts support only one number, the script will create one contact for each number type. The number type will then be added as a suffix enclosed in square brackets.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1KJYS5xwbIuZf7dXtl9A.png"
+width="890"
+height="554"
+srcset="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1KJYS5xwbIuZf7dXtl9A_hu_2bba979e2ee26289.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1KJYS5xwbIuZf7dXtl9A_hu_9d9a52f860c4e7c5.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="160"
+data-flex-basis="385px"
+>&lt;/p>
+&lt;p>To reduce dependencies, I’m not using the AAD Internals modules to get the user token which is needed to add the contacts. I slightly modified the example from &lt;a class="link" href="https://heusser.pro/p/opt-in-or-opt-out-teams-call-queue-agents-remotely-59fe6147f50d" >this post&lt;/a>. Instead of requesting the token for the Call Queue Opt In / Opt Out service, we’re just requesting a token for normal access to the Teams Web Client. For this to work, you or another user needs to enter his credentials once the login prompt appears. You also need to specify your Teams region by Read-Host. In my case that’s “emea”.&lt;/p>
+&lt;h4 id="the-script">The Script
+&lt;/h4>&lt;p>The script will only add a contact to Teams, if the phone number or the name is not already saved to another Teams contact. It will only look for contacts stored in a user&amp;rsquo;s Contacts folder inside the personal mailbox.&lt;/p>
+&lt;script src="https://gist.github.com/mozziemozz/c3057fba9da212578601e0b12b0a95bf.js">&lt;/script>
+&lt;h4 id="the-result">The Result
+&lt;/h4>&lt;p>Once the script has done its work. We can see that we now have editable contacts in Teams for all our local Outlook contacts. The downside is that there now are multiple entries because of the different sources.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1xaTcZzkZ4uGKdUWHiOujjA.png"
+width="1842"
+height="741"
+srcset="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1xaTcZzkZ4uGKdUWHiOujjA_hu_47d330a830677c72.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1xaTcZzkZ4uGKdUWHiOujjA_hu_b4eb6588ad8b47c7.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="248"
+data-flex-basis="596px"
+>&lt;/p>
+&lt;p>The upside is that a Teams contact will always take precedent over a synchronized contact for incoming call notifications. This means that you’ll always see the number type a person is calling you from.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1zmrbJ9B7lyVzowWGS47yQ.jpeg"
+width="800"
+height="480"
+srcset="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1zmrbJ9B7lyVzowWGS47yQ_hu_5a447cd391aa9e6.jpeg 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1zmrbJ9B7lyVzowWGS47yQ_hu_d6053539d198c982.jpeg 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="166"
+data-flex-basis="400px"
+>&lt;/p>
+&lt;p>And of course, the biggest upside is that you’ll finally have the comfort to use your desk phone to quickly call a contact from the tips of your fingers without manually entering the number first.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wEwlj71A3dFKMlZEIGnEpA.png"
+width="1194"
+height="719"
+srcset="https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wEwlj71A3dFKMlZEIGnEpA_hu_1a47b76bdd2b3efc.png 480w, https://heusser.pro/p/sync-local-outlook-contacts-to-a-teams-desk-phone-7f5dc2717d3/1wEwlj71A3dFKMlZEIGnEpA_hu_d2d23a4030c5aefd.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="166"
+data-flex-basis="398px"
+>&lt;/p>
+&lt;p>I hope that this script helps you improve the experience for your end users of Teams certified desk phones until Microsoft provides a better contact management solution.&lt;/p></description></item><item><title>Opt In or Opt Out Teams Call Queue Agents Remotely</title><link>https://heusser.pro/p/opt-in-or-opt-out-teams-call-queue-agents-remotely-59fe6147f50d/</link><pubDate>Thu, 24 Mar 2022 21:10:13 +0000</pubDate><guid>https://heusser.pro/p/opt-in-or-opt-out-teams-call-queue-agents-remotely-59fe6147f50d/</guid><description>&lt;p>This is an interesting one. First of all, let’s give credits where they’re due. This blog post is inspired by &lt;a class="link" href="https://alexholmeset.blog/2021/12/13/microsoft-teams-speed-dial-contacts-provisioning/" target="_blank" rel="noopener"
+>this post&lt;/a> by the great &lt;a class="link" href="https://twitter.com/AlexHolmeset" target="_blank" rel="noopener"
+>Alexander Holmeset.&lt;/a>&lt;/p>
+&lt;p>The PowerShell code to generate the TOTP is forked from this &lt;a class="link" href="https://github.com/ecspresso/TOTPPowerShellModule" target="_blank" rel="noopener"
+>repo&lt;/a>. And the code from this repo is from this &lt;a class="link" href="https://gist.github.com/jonfriesen/234c7471c3e3199f97d5" target="_blank" rel="noopener"
+>gist&lt;/a>.&lt;/p>
+&lt;p>The code to create the interactive sign in window and to get the token is based of &lt;a class="link" href="https://docs.microsoft.com/en-us/answers/questions/491498/invoke-webrequest-to-get-access-token.html" target="_blank" rel="noopener"
+>this example&lt;/a>.&lt;/p>
+&lt;h4 id="disclaimer">Disclaimer
+&lt;/h4>&lt;p>Before we get into it, I should probably add a disclaimer that this is a proof of concept, at best. You should not use it in production as it uses some bad security practices (like sharing a user&amp;rsquo;s password). For real. Don’t say I didn’t warn you.&lt;/p>
+&lt;h4 id="whats-this-aboutagain">What’s this about again?
+&lt;/h4>&lt;p>However, being able to remotely change the opt in status of call queue agents seems to be quite a big ask from several Microsoft Teams admins and customers, so I decided to publish this piece anyway.&lt;/p>
+&lt;h4 id="changing-opt-in-status-as-auser">Changing opt in status as a user
+&lt;/h4>&lt;p>Can the opt in status of a user be changed as an admin? The answer is both yes and no. You can’t do it in any delegated way if that’s what you’re asking. You will need the user’s credentials.&lt;/p>
+&lt;p>If you’re a Teams User which is also a call queue agent, there are numerous ways to change your own opt in status for call queues. That is, if your admin allows opting out of queues of course. Let’s go through them.&lt;/p>
+&lt;ul>
+&lt;li>From Teams Desktop Client Settings&lt;/li>
+&lt;li>From a Teams Voice Enabled Channel&lt;/li>
+&lt;li>From Teams Web Client Settings&lt;/li>
+&lt;li>From Teams Certified Desk Phones&lt;/li>
+&lt;li>From Teams Mobile Apps (Android / iOS)&lt;/li>
+&lt;li>From the good old &lt;a class="link" href="https://aka.ms/cqsettings" target="_blank" rel="noopener"
+>https://aka.ms/cqsettings&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h4 id="im-an-admin-why-cant-i-change-the-damn-opt-instatus">I’m an Admin, why can’t I change the damn opt in status?
+&lt;/h4>&lt;p>From a Teams PowerShell session, we can only view the opt in status of a queue’s agents but not change it.&lt;/p>
+&lt;p>(Get-CsCallQueue -Identity xxxxxxxx-f74b-46bb-9743-xxxxxxxxxxxx).Agents&lt;/p>
+&lt;p>This will spit out something like this.&lt;/p>
+&lt;p>ObjectId OptIn&lt;br>
+-&amp;mdash;&amp;mdash;- &amp;mdash;&amp;ndash;&lt;br>
+xxxxxxxx-4d28-4246-9c08-xxxxxxxxxxxx True&lt;br>
+xxxxxxxx-8bae-419d-a4eb-xxxxxxxxxxxx True&lt;br>
+xxxxxxxx-49db-40ee-9d05-xxxxxxxxxxxx False&lt;/p>
+&lt;p>Every attempt to change the returned PowerShell object failed. Miserably.&lt;/p>
+&lt;h3 id="how-can-we-at-least-do-it-as-the-user-but-remotely">How can we at least do it as the user, but remotely?
+&lt;/h3>&lt;p>Similar to Alex’s approach of creating Teams Contacts from CLI we also have to acquire a user token to be able to change the opt in status of a user by CLI.&lt;/p>
+&lt;p>In his scenario, he’s mainly thinking about new users or even accounts which are used to sign into common area phones which might not be MFA enabled yet. In our case this might look different because we want to be able to alter the opt in state of already working staff.&lt;/p>
+&lt;p>At first, I also tried to use the AAD Internals PowerShell Module to receive a user token. In this case, however, it turned out to be much more complicated. When a user opens the Calls settings page in Teams, another token is requested from a different issuing service than the one which is used to access all the other features in Teams.&lt;/p>
+&lt;p>After a long night of googling and binging (yes, I was this desperate) I finally was able to get a working token by modifying the example from the Docs Q&amp;amp;A which is linked in the intro of this article.&lt;/p>
+&lt;h4 id="prerequisites">Prerequisites
+&lt;/h4>&lt;p>&lt;strong>Let’s get one thing straight. This approach ONLY works if you know the password of the user and / or the user agrees to share their password or even an MFA secret with you.&lt;/strong>&lt;/p>
+&lt;p>I’m thinking of the following scenario: we want to be able to automatically and remotely opt in and opt out agents of call queues based on various criteria such as working schedules etc.&lt;/p>
+&lt;p>To have at least some kind of security, my script is encrypting the password and the MFA secret before it’s saved to the disk. Once they’re encrypted, they can only be decrypted by the same user account and the same Windows system which was used to encrypt them.&lt;/p>
+&lt;p>Why do we need to save the password to disk, when it’s an interactive login process anyway? Well, if you want to automate it by any means, we can use SendKeys to emulate a user&amp;rsquo;s keystrokes. To be completely honest, I only went so far because I wanted to see for myself if I can get it working…&lt;/p>
+&lt;h4 id="how-the-scriptworks">How the script works
+&lt;/h4>&lt;p>The script needs a few parameters to work. We need to provide a user principal name, a user object Id and a call queue Id.&lt;/p>
+&lt;p>It will then check the current directory for two or three files depending on whether the -MFA switch is used.&lt;/p>
+&lt;p>You will be prompted to enter the password and the MFA secret if these files do not already exist. The token will be saved to a file once you’ve successfully logged in and acquired one. If the token is expired (happens every few hours or so), you will be prompted for credentials again and the token inside the file will be replaced with the new one. Since we also saved the password to disk, you do not need to enter the password again. The script will decrypt and enter the password by emulating automated keystrokes automatically.&lt;/p>
+&lt;h4 id="script-modes">Script modes
+&lt;/h4>&lt;p>The script features a -QueryStatusOnly switch, which will only check if the user is opted in or out of a queue. This will not change anything.&lt;/p>
+&lt;p>For the sake of simplicity, I’ve already stored the values of $UserId, $CallQueueId and $UserName as default values for the parameters. Of course, you can pass your own values if you call the script yourself.&lt;/p>
+&lt;p>In this video, you can see how the username and password are automatically entered, which will ultimately get us the token we need to call the API and query the user’s opt in status.&lt;/p>
+&lt;p>If we run the same thing again, we will already have a valid token.&lt;/p>
+&lt;p>Now let’s take a look at an MFA enabled user. For this, we use the optional -MFA switch. Besides the password, this will also prompt us for the MFA secret. The script then pulls down the PowerShell Script from GitHub and uses it’s code to do some magic and generate the TOTP from the secret.&lt;/p>
+&lt;h4 id="okbut-how-do-we-opt-a-userout">Ok — But how do we opt a user out!?
+&lt;/h4>&lt;p>Since we can already see the opt in status of members either in Voice Enabled Channels or via PowerShell this is nothing new. Let’s opt a user out already!&lt;/p>
+&lt;h4 id="script">Script
+&lt;/h4>&lt;p>Here’s the script. Please notice that sometimes, activating the AAD Login Window does not always work, so you might have to cancel and run it again. For me, it usually worked the second time I ran the script.&lt;/p>
+&lt;script src="https://gist.github.com/mozziemozz/ce70f39f720bf17632f60a3d6b1be110.js">&lt;/script>
+&lt;p>Here’s an example of running the script with parameters.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="p">.\&lt;/span>&lt;span class="n">CallQueueOptInOptOutGist&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">ps1&lt;/span> &lt;span class="n">-UserId&lt;/span> &lt;span class="s2">&amp;#34;xxxxxxxx-8bae-419d-a4eb-xxxxxxxxxxxx&amp;#34;&lt;/span> &lt;span class="n">-UserName&lt;/span> &lt;span class="s2">&amp;#34;user@domain.com&amp;#34;&lt;/span> &lt;span class="n">-CallQueueId&lt;/span> &lt;span class="s2">&amp;#34;xxxxxxxx-f74b-46bb-9743-xxxxxxxxxxxx&amp;#34;&lt;/span> &lt;span class="n">-Action&lt;/span> &lt;span class="n">OptOut&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="conclusion">Conclusion
+&lt;/h4>&lt;p>Even though this method uses some real dirty tricks it still get’s the job done. Well, kind of, at least. I really hope that Microsoft will add the functionality to allow Queue managers to remotely opt in or opt out their agents in a more practical way. It’s a real pity that not even the new &lt;a class="link" href="https://docs.microsoft.com/en-us/powershell/module/teams/set-csusercallingsettings?view=teams-ps" target="_blank" rel="noopener"
+>Set-CsUserCallingSettings&lt;/a> or the Boss/Admin feature can do this!&lt;/p></description></item></channel></rss>

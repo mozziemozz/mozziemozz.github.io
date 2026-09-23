@@ -1,0 +1,662 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Call Settings on HEUSSER.PRO</title><link>https://heusser.pro/categories/call-settings/</link><description>Recent content in Call Settings on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 18 Sep 2023 08:28:01 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/call-settings/index.xml" rel="self" type="application/rss+xml"/><item><title>Pick Up Held and Join Active Calls for Boss/Delegate Scenarios in Microsoft Teams</title><link>https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/</link><pubDate>Mon, 18 Sep 2023 08:28:01 +0000</pubDate><guid>https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/</guid><description>&lt;p>Microsoft recently introduced a big update to call delegation in Microsoft Teams. The last substantial change was when Microsoft rolled out &lt;code>Set-CsUserCallingSettings&lt;/code> and the possibility to change a Teams user’s call forwarding settings through Teams Admin Center.&lt;/p>
+&lt;p>The new features include the ability for delegates or delegators to pick up held calls or join active calls. There’s a small catch though. When a new delegate is added through TAC or PowerShell, permission to join active calls can’t be granted. It needs to be granted by the delegator itself or through the workaround I will teach you in this blog.&lt;/p>
+&lt;p>In TAC, it’s only possible to flip a toggle switch for &lt;strong>Allow changing call settings.&lt;/strong> There’s no specific option for join or pickup calls yet.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1jDMcHylHOX8704yzYzNuBA.png"
+width="1534"
+height="1086"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1jDMcHylHOX8704yzYzNuBA_hu_e214e62b7084d80.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1jDMcHylHOX8704yzYzNuBA_hu_3f9d6ab69aed79d8.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="141"
+data-flex-basis="339px"
+>&lt;/p>
+&lt;p>It’s the same in PowerShell unfortunately.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1G9MQGdfTpyLsScrMP1iDw.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1G9MQGdfTpyLsScrMP1iDw_hu_2f216d85004c8534.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1G9MQGdfTpyLsScrMP1iDw_hu_f553aaa90bc44345.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;h3 id="test-scenario">Test Scenario
+&lt;/h3>&lt;p>I’ve added the user &lt;strong>Bill Stearn&lt;/strong> as a delegate of &lt;strong>Mike Wagner&lt;/strong> in this case. As Bill, I can view the granted permissions in his Teams client.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1PiILqDdHXeVHnsQG47xVyA.png"
+width="1156"
+height="474"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1PiILqDdHXeVHnsQG47xVyA_hu_7ef722423b4f0ad9.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1PiILqDdHXeVHnsQG47xVyA_hu_b76285d7bfc8b1da.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="243"
+data-flex-basis="585px"
+>&lt;/p>
+&lt;p>Here we can see that &lt;strong>Join active calls&lt;/strong> is disabled and greyed out because the delegate permissions were granted by an admin through TAC and not by the delegator himself.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1TZ7zQhnEfpTyWlZj3p9zg.png"
+width="650"
+height="815"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1TZ7zQhnEfpTyWlZj3p9zg_hu_93e4fb0fe9314608.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1TZ7zQhnEfpTyWlZj3p9zg_hu_d0a3b2a988e05725.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="79"
+data-flex-basis="191px"
+>&lt;/p>
+&lt;p>Mike has set up &lt;strong>Wendy Rhoades&lt;/strong> as an additional delegate. This delegate was added through TAC as well, so her permissions look exactly the same and she can’t enable &lt;strong>Join active calls&lt;/strong> either.&lt;/p>
+&lt;p>Let’s take a look at Mike’s call settings in Teams. From there, he would be able to enable the &lt;strong>Join active calls&lt;/strong> permission for his delegates.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/19PL9m1NtORRcFXPHtg6w.png"
+width="655"
+height="969"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/19PL9m1NtORRcFXPHtg6w_hu_5abcb9cfbf5854ce.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/19PL9m1NtORRcFXPHtg6w_hu_a4600d376242d2db.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="67"
+data-flex-basis="162px"
+>&lt;/p>
+&lt;p>Here’s the thing though. Because both delegates were granted the &lt;strong>Allow changing call settings&lt;/strong> permission through TAC, they’re both allowed to change Mike’s call settings, which does in fact allow them to set the delegate permissions as well.&lt;/p>
+&lt;p>If you want to do &lt;em>Ninja IT&lt;/em> and set up full delegate permissions without bothering Mike at all, you’ll need to set up two delegates and they’ll need to enable the missing permission of each other.&lt;/p>
+&lt;p>Let’s see how Wendy would enable Bill to join Mike’s active calls. From &lt;strong>Manage delegates&lt;/strong> she’ll need to click on the three dots on Mike’s entry and select &lt;strong>Change delegates.&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1vWd26yJKv2WY6Djkr1lvSQ.png"
+width="1154"
+height="563"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1vWd26yJKv2WY6Djkr1lvSQ_hu_3711f1d1558c5664.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1vWd26yJKv2WY6Djkr1lvSQ_hu_b7a4a7ed6bd11743.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="204"
+data-flex-basis="491px"
+>&lt;/p>
+&lt;p>In Mike’s delegate settings, she then has to click the three dots on Bill’s entry and select &lt;strong>Edit permissions&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1KwYgPYD4gnIDjkBYrKBK9A.png"
+width="1160"
+height="416"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1KwYgPYD4gnIDjkBYrKBK9A_hu_c68458cbe58c296b.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1KwYgPYD4gnIDjkBYrKBK9A_hu_b39715fd1697e361.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="278"
+data-flex-basis="669px"
+>&lt;/p>
+&lt;p>This will allow Wendy to enable &lt;strong>Join active calls&lt;/strong> on Mike’s delegate permissions for Bill.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1TjdJa5vFr7d7UTtbtC6qWA.png"
+width="639"
+height="872"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1TjdJa5vFr7d7UTtbtC6qWA_hu_613427bc64bf7597.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1TjdJa5vFr7d7UTtbtC6qWA_hu_5d5da328cd344790.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="73"
+data-flex-basis="175px"
+>&lt;/p>
+&lt;p>If Bill now goes back to view his delegate permissions for Mike, he can see that &lt;strong>Join active calls&lt;/strong> was enabled.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1EcDgPRLMjYe6z3XJEwgldw.png"
+width="650"
+height="816"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1EcDgPRLMjYe6z3XJEwgldw_hu_79b8cd559b7bebac.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1EcDgPRLMjYe6z3XJEwgldw_hu_896dcdf98f63c0ab.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="79"
+data-flex-basis="191px"
+>&lt;/p>
+&lt;p>As you can see, multiple delegates can help each other set up full delegate permissions for their shared boss without bothering them as long as at least one delegate is added by an admin through TAC.&lt;/p>
+&lt;p>&lt;strong>If there’s only going to be one delegate, you can temporarily add your own Teams account as a delegate through TAC. Then you can use your own Teams client to add the real delegate with full permissions and remove your own account through TAC again.&lt;/strong>&lt;/p>
+&lt;p>I hope that Microsoft will soon update TAC so that the new permission can be granted without the need of my workaround.&lt;/p>
+&lt;h3 id="new-delegate-user-interface">New Delegate User Interface
+&lt;/h3>&lt;p>Finally, here are some screenshots of how the new UI for call delegation works. Mike’s call settings are configured to also ring his delegates for these example calling scenarios.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1UZcfAKqnO1FJhbS9Mirxsw.png"
+width="799"
+height="606"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1UZcfAKqnO1FJhbS9Mirxsw_hu_db1f66e2b8613d54.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1UZcfAKqnO1FJhbS9Mirxsw_hu_8aab2eb4c62a9634.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="316px"
+>&lt;/p>
+&lt;p>The new delegate tabs in the Calls app are available in both the new and the old Teams client.&lt;/p>
+&lt;p>Delegates can also see other people supporting the same person. In this case, Wendy can see that Bill is supporting Mike as well.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1NiQ6zHfGQ4rxW1PmjXAg.png"
+width="2004"
+height="1176"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1NiQ6zHfGQ4rxW1PmjXAg_hu_1d685bae3107893e.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1NiQ6zHfGQ4rxW1PmjXAg_hu_962ba1c6fa1c9c97.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="170"
+data-flex-basis="408px"
+>&lt;/p>
+&lt;p>An inbound call which is intended for a delegator but forwarded to delegates will look like this.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1m2B6ebHrfMX34ckn1Yn6hQ.png"
+width="541"
+height="417"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1m2B6ebHrfMX34ckn1Yn6hQ_hu_5e666f28b75865ae.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1m2B6ebHrfMX34ckn1Yn6hQ_hu_5250f65716a6e5d7.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="129"
+data-flex-basis="311px"
+>&lt;/p>
+&lt;p>For the record, this is how it looked in the old Teams client.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1lMmaHnyIl0angFvf7VXw.png"
+width="452"
+height="438"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1lMmaHnyIl0angFvf7VXw_hu_4696ecbdf24fe4f9.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1lMmaHnyIl0angFvf7VXw_hu_76b17c8316e2b1.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="103"
+data-flex-basis="247px"
+>&lt;/p>
+&lt;p>The new Teams client will also show an indicator for missed calls on a delegator’s line.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1vvSkRWSA2Clu1XIZoLw4w.png"
+width="718"
+height="91"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1vvSkRWSA2Clu1XIZoLw4w_hu_541587ee0149dc5a.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1vvSkRWSA2Clu1XIZoLw4w_hu_247e54b3d7308f6b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="789"
+data-flex-basis="1893px"
+>&lt;/p>
+&lt;h3 id="join-and-pick-upcalls">Join and Pick Up Calls
+&lt;/h3>&lt;p>In this example, Mike (the delegator) accepted the call himself. Wendy can see that there’s an active call in Mike’s call tab. She can also see that the call is managed by Mike himself. If need be, she could join the call too.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1ahR0QvgKAIaJF2pt493tg.png"
+width="2004"
+height="1176"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1ahR0QvgKAIaJF2pt493tg_hu_f9d51d585cb5386.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1ahR0QvgKAIaJF2pt493tg_hu_6a7b85fd282e9781.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="170"
+data-flex-basis="408px"
+>&lt;/p>
+&lt;p>If Mike puts the call on hold, Wendy can see that, and the &lt;strong>Join&lt;/strong> button changes to a &lt;strong>Resume&lt;/strong> button.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1b1TGVydKd4Uvdde1BvJpQ.png"
+width="2004"
+height="1176"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1b1TGVydKd4Uvdde1BvJpQ_hu_53ff6f575465227f.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1b1TGVydKd4Uvdde1BvJpQ_hu_546b1730b0c20e67.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="170"
+data-flex-basis="408px"
+>&lt;/p>
+&lt;p>Of course, the call cannot just be picked up by Wendy but by all of Mike’s delegates who have that permission. Or he could just resume the call himself.&lt;/p>
+&lt;p>In this example, Bill who is another delegate picked up the call and Wendy can see that Mike’s call is connected to Bill now.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1iBbYB6G1CEbUYGn1YjYWA.png"
+width="2004"
+height="1176"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1iBbYB6G1CEbUYGn1YjYWA_hu_b953811cb440aa4c.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1iBbYB6G1CEbUYGn1YjYWA_hu_3793360ef2a6ddac.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="170"
+data-flex-basis="408px"
+>&lt;/p>
+&lt;p>If Mike decides to Join the call with the external caller and Bill, Wendy will be able to see that too, and she still has the option to join the three people who are already on the call.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1oux26xT5AHEV3mLaIarpzA.png"
+width="2004"
+height="1176"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1oux26xT5AHEV3mLaIarpzA_hu_313f7de8f9cb6545.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1oux26xT5AHEV3mLaIarpzA_hu_7d3aea44f9cf1954.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="170"
+data-flex-basis="408px"
+>
+&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1lNACYe4LWgltcvxRxthbig.png"
+width="2004"
+height="1176"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1lNACYe4LWgltcvxRxthbig_hu_2d5933b7dbc7e81c.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/1lNACYe4LWgltcvxRxthbig_hu_d5080388e9df904d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="170"
+data-flex-basis="408px"
+>&lt;/p>
+&lt;p>This works in the opposite direction too. If Wendy answers a call which was forwarded to her by Mike and puts that call on hold, Mike will be able to pick up the call.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/17fiLpMRJ8LxJy0XNpvLoQ.png"
+width="2004"
+height="1169"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/17fiLpMRJ8LxJy0XNpvLoQ_hu_5acc27a5885517d0.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/17fiLpMRJ8LxJy0XNpvLoQ_hu_efa4a92426fe6e5d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="171"
+data-flex-basis="411px"
+>&lt;/p>
+&lt;p>And last but not least, delegates can also see the call history of their delegators and for example see when another delegate answered a call of their shared delegator.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/16eqh8GUuZO2ZL0ffXqiaHg.png"
+width="2004"
+height="1169"
+srcset="https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/16eqh8GUuZO2ZL0ffXqiaHg_hu_aeba3a2ecc817fa7.png 480w, https://heusser.pro/p/pick-up-held-and-join-active-calls-for-boss-delegate-scenarios-in-microsoft-teams-4cb1d4965424/16eqh8GUuZO2ZL0ffXqiaHg_hu_5168017c2529298a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="171"
+data-flex-basis="411px"
+>&lt;/p>
+&lt;h4 id="wrapping-up">Wrapping Up
+&lt;/h4>&lt;p>The new delegate features are a huge improvement and finally fill a big void in Microsoft Teams Phone. Everything is super easy and intuitive. The new Teams client is looking great as well, and I really like the style of the new calling notifications. The fact that missed calls on a delegator line are only visible in the new Teams client makes me believe that we’re going to see lots of calling related improvements in the new Teams over the next coming months. Exciting times lie ahead. The only thing that remains a little cumbersome is that you can’t grant the &lt;strong>Join active calls&lt;/strong> permission through TAC or PowerShell yet. However, the workaround outlined in this article should do the trick until Microsoft adds official support in TAC and PowerShell.&lt;/p></description></item><item><title>Simultaneously Forward Calls to Multiple Numbers in Teams</title><link>https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/</link><pubDate>Sun, 14 May 2023 08:23:26 +0000</pubDate><guid>https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/</guid><description>&lt;p>When configuring call flows in Microsoft Teams, one question I hear a lot is if a call can be forwarded to multiple external numbers at the same time.&lt;/p>
+&lt;p>This most likely applies to after-hours on-call scenarios where it’s absolutely crucial that somebody will eventually answer the call.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/0rL2fJDRh74kKQK7Z.jpg"
+width="1024"
+height="1024"
+srcset="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/0rL2fJDRh74kKQK7Z_hu_5a3eaf8bc6c9c4a4.jpg 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/0rL2fJDRh74kKQK7Z_hu_75186815f37b0f8f.jpg 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="100"
+data-flex-basis="240px"
+>&lt;/p>
+&lt;p>Currently, this is impossible with Teams call queues. However, this is by design. The purpose of a queue is that the call stays within the queue and the company has control over the call for the entire flow of the call. In other words, the queue makes sure that the call stays within company boundaries by ignoring all user configured call answering rules. So, if a user has configured his calls to immediately forward to a personal cell phone, the queue simply doesn’t care and will present the call to the user in Teams anyway.&lt;/p>
+&lt;p>If you must forward the call to multiple numbers at the same time, you can use regular Teams (Microsoft 365) users. I always suggest using dedicated, generic accounts for this, even though it’s an additional license cost. This will make management easier and ensures that no user is able to change the forwarding settings and mess with the call flow on their own.&lt;/p>
+&lt;p>Since I did this in my lab, I used the users I already had to demonstrate this. This means that they have real sounding names and are not generically named accounts like I would use in a real-world scenario.&lt;/p>
+&lt;h4 id="how-to-configure-it">How To Configure It
+&lt;/h4>&lt;p>To configure forwarding to multiple external numbers simultaneously, identify where in your auto attendant or call queue the call must be forwarded.&lt;/p>
+&lt;p>Next, think about to how many numbers the call must be forwarded. Create one Teams enterprise voice enabled user for each external target number. Then create one more Teams voice enabled user. On this user, configure a call group and add all the users which forward to external numbers immediately.&lt;/p>
+&lt;p>Set this user’s call forwarding settings to either immediately forward to or also ring the call group.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1GFWLa0rX87G1PIvrBqX0jg.png"
+width="1251"
+height="640"
+srcset="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1GFWLa0rX87G1PIvrBqX0jg_hu_c92b3a18fdc4c3e6.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1GFWLa0rX87G1PIvrBqX0jg_hu_c46428d6cb3edf07.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="195"
+data-flex-basis="469px"
+>
+&lt;img src="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1Y70lmU10yu9gbNH8JZeJaQ.png"
+width="1248"
+height="787"
+srcset="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1Y70lmU10yu9gbNH8JZeJaQ_hu_52073134cd6b0231.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1Y70lmU10yu9gbNH8JZeJaQ_hu_147b7a241b540f2f.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="158"
+data-flex-basis="380px"
+>&lt;/p>
+&lt;p>The accounts which are members of the call group must all be configured like this.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1XH5BluccXOhJiCrPyMkDQ.png"
+width="1243"
+height="650"
+srcset="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1XH5BluccXOhJiCrPyMkDQ_hu_d751e17c601d8a3.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1XH5BluccXOhJiCrPyMkDQ_hu_7894773101ec806a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="191"
+data-flex-basis="458px"
+>&lt;/p>
+&lt;p>While the first user can be configured to either also ring or immediately forward to the call group, the call group members must be configured to &lt;strong>immediately forward&lt;/strong>. If they’re set to also ring to an external number, it will not work.&lt;/p>
+&lt;h4 id="call-flowdiagram">Call Flow Diagram
+&lt;/h4>&lt;p>I updated the M365 Call Flow Visualizer and added two new parameters.&lt;/p>
+&lt;pre>&lt;code>-ShowNestedUserCallGroups
+Specifies if call groups of users should be expanded and included into the diagram.
+Required: false
+Type: boolean
+Default value: false
+-ShowNestedUserDelegates
+Specifies if delegates s of users should be expanded and included into the diagram.
+Required: false
+Type: boolean
+Default value: false
+&lt;/code>&lt;/pre>
+&lt;p>This allows us to indefinitely expand and display the user calling settings of call group members and delegates in the diagrams as well.&lt;/p>
+&lt;p>Please note that these features are currently only available in the &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer/tree/dev" target="_blank" rel="noopener"
+>DEV&lt;/a> branch of the GitHub repo. I did my best to thoroughly test this but since there are basically unlimited possibilities of how users are interlinked within user call groups and delegates this is quite hard. There may still be some bugs, if you encounter any, please let me know.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1dgXzEKcsD0wZF74b5qg.png"
+width="674"
+height="1694"
+srcset="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1dgXzEKcsD0wZF74b5qg_hu_a6cc687aa00630b6.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1dgXzEKcsD0wZF74b5qg_hu_9beaba2cb0ef2a5.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="39"
+data-flex-basis="95px"
+>
+&lt;img src="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1R6tSs1eHHGO255tRCxAkg.png"
+width="637"
+height="1694"
+srcset="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1R6tSs1eHHGO255tRCxAkg_hu_6250c28e0d894104.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1R6tSs1eHHGO255tRCxAkg_hu_d95be82c760fbb33.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="37"
+data-flex-basis="90px"
+>&lt;/p>
+&lt;h4 id="other-options">Other Options
+&lt;/h4>&lt;p>This also works if you use call delegation instead of a call group with both immediately forward and also ring on the first user. I tested it with Microsoft Calling Plans, but it should work with Direct Routing or Operator Connect as well. The maximum amount of simultaneous external forwards via call group I tested was three and that still worked as expected.&lt;/p>
+&lt;p>I recommend using a call group over delegates because this gives you a little more flexibility. While delegates will always simultaneously ring all delegates, a call group can be configured for serial ring as well. In this case, it will always ring for &lt;strong>20 seconds&lt;/strong> per call group member before the next one is tried. This time out cannot be changed as of today.&lt;/p>
+&lt;h4 id="caveats">Caveats
+&lt;/h4>&lt;p>When you do this, you need to be aware of issues that might occur. At the beginning of this article, I briefly mentioned that the purpose of a queue is to stay in control of the call for the entire time. That’s not the case when using external forwarding on user calling settings. For example, if one of the external targets is not reachable by e.g. having a rather short voicemail timeout, is in flight mode or just has no reception, calls might get lost on personal voicemail boxes outside of a company’s control. Once a call hits any voicemail box, the call is technically connected and will stop ringing the other targets, even if parallel ringing is configured on the call group. This also applies to call groups configured in serial ring. If e.g. the first target is not reachable, and the call goes to voicemail the other targets won’t even be tried anymore.&lt;/p>
+&lt;p>It’s also noteworthy that user configured calling settings can become extremely complex and it’s easy for users (or admins for that matter) to build loops or enable forwards without knowing about it.&lt;/p>
+&lt;p>The same goes for the M365 Call Flow Visualizer, I don’t think that it’s possible to accurately display everything that’s configured in nested user calling settings. I tried my best to render call flows where a serial ring is configured on a user configured call group though. As an example, I configured the same call group which was already shown in the above diagram for serial ring. Now all the call group targets are displayed in chronological order, and you can see how the call trickles down to the next target after 20 seconds.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/14omtG0AeKdTOD4TzNItlA.png"
+width="690"
+height="2971"
+srcset="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/14omtG0AeKdTOD4TzNItlA_hu_21b2714bedecc897.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/14omtG0AeKdTOD4TzNItlA_hu_cd0e4d7fbd1af96d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="23"
+data-flex-basis="55px"
+>&lt;/p>
+&lt;p>Unlike with call queues and auto attendants, where the M365 Call Flow Visualizer does a fantastic job displaying things as they are, please take complicated nested user call groups and delegate flows with a grain of salt. At least for now.&lt;/p>
+&lt;p>Look at this call flow for example. When the call gets to &lt;strong>Bill Stearn&lt;/strong> it will also ring his call group in serial order. Thus, it will ring the mobile number &lt;strong>+4178857****&lt;/strong> for 20 seconds. Because there is an unanswered timeout of 20s configured for &lt;strong>Bill&lt;/strong> the call will then be forwarded to his delegates where the call will be forwarded to &lt;strong>Bobby&lt;/strong> and &lt;strong>Mike&lt;/strong> and they have an immediate forwarding configured to their mobiles.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1cZyXiLxV40aMOM5YsXkbUw.png"
+width="882"
+height="3730"
+srcset="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1cZyXiLxV40aMOM5YsXkbUw_hu_2b0545fc8ba5ed0.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1cZyXiLxV40aMOM5YsXkbUw_hu_220bb95abada4b62.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="23"
+data-flex-basis="56px"
+>&lt;/p>
+&lt;p>All the users who are members of the call group are linked after each other because the call group is configured in serial ring. The links which point from the delegate sub graph (which is always parallel ring) to the delegate users are still linked to the correct user but it’s not very easy to understand what’s going on.&lt;/p>
+&lt;p>When we think about the delegate flow, the chaining from &lt;strong>Bobby’s&lt;/strong> time out of 20s doesn’t actually apply anymore and the call won’t be forwarded to &lt;strong>Mike&lt;/strong> because that part of the diagram only applies to the serial order of &lt;strong>Bill’s&lt;/strong> call group.&lt;/p>
+&lt;p>Last but not least, &lt;strong>Wendy&lt;/strong> is also included in the call flow even though a call could never go this far in that specific call flow because of the applied time outs.&lt;/p>
+&lt;p>Unfortunately, I currently don’t see any way I could solve this with the visualizer script.&lt;/p>
+&lt;p>I’d like to point out that configuring both a call group and delegates on the same user seems extremely unlikely and is something I would generally refrain from.&lt;/p>
+&lt;h4 id="conclusion">Conclusion
+&lt;/h4>&lt;p>Although it’s not an ideal solution, using generic user accounts and call groups for certain scenarios is for sure a creative one. In some cases, this might help you solve a very specific niche scenario which previously seemed impossible.&lt;/p>
+&lt;p>I do recommend using auto attendants and call queues to build your call flows whenever possible. If you must use call groups, I advise you to keep it simple and create generic accounts to which only Teams admins have access to. Otherwise, it’s free-for-all kind of situation and users can mess with your configuration as they please.&lt;/p>
+&lt;p>If you stick with simple scenarios (like shown in the first three diagrams in this article) and avoid building call group loops or timeouts which cancel each other out, I don’t see any issues why you shouldn’t do this if you really need to.&lt;/p></description></item><item><title>Automatically Render Diagrams of Teams User Calling Settings</title><link>https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/</link><pubDate>Sun, 17 Apr 2022 10:38:04 +0000</pubDate><guid>https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/</guid><description>&lt;p>Hello friends.&lt;/p>
+&lt;p>A few weeks ago, Microsoft made a lot of Teams admins happy by rolling out a new feature which allows admins to change (or view) a Teams user’s calling settings directly from the Teams admin center. Gone are the days were we admins needed to be delegates of users to change these kinds of settings.&lt;/p>
+&lt;p>Those of you who know me a little better might know that I don’t have much experience with Skype for Business and thus only ever heard stories about SEFAUtil (secondary extension feature activation). From what I can see, this new feature is basically SEFAUtil for Teams.&lt;/p>
+&lt;p>I won’t go into detail about the functionalities in TAC as these has been covered plenty by other community bloggers already. As it’s often the case, this functionality has been available with PowerShell before it has made its way to the TAC. But anyways, here’s how it looks like in TAC.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/161NOVj8fF2bSwiLrlp2BHA.png"
+width="1799"
+height="1279"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/161NOVj8fF2bSwiLrlp2BHA_hu_db94adbb6af8cd0f.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/161NOVj8fF2bSwiLrlp2BHA_hu_41711bc22bba82c3.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="337px"
+>&lt;/p>
+&lt;p>I haven’t used it much yet but one time I urgently needed to change a user’s forwarding settings, TAC was repeatedly throwing errors at me. I had no choice than to fall back to PowerShell.&lt;/p>
+&lt;h4 id="reading-user-calling-settings-with-powershell">Reading User Calling Settings with PowerShell
+&lt;/h4>&lt;p>Of course, we can not only set them by PS but also read them:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Get-CsUserCallingSettings&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="n">user&lt;/span>&lt;span class="nv">@domain&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">com&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Since I’ve already done much more complex things by &lt;a class="link" href="https://heusser.pro/p/automatically-render-microsoft-teams-call-flow-diagrams-607b89df4154" >generating a diagram of huge Auto Attendant and Call Queue call flows&lt;/a>, I figured why not leverage PowerShell to also draw diagrams from user calling settings?&lt;/p>
+&lt;p>I must admit that it turned out a little more complex than I anticipated. During final testing, I generated a diagram for each possible scenario, and I counted no less than 64 different ways an enterprise voice enabled user can configure his calling settings. This also includes simultaneous and serial ring for call groups. At least I already had a lot of practice on how to structure the code and how to draw the diagrams.&lt;/p>
+&lt;h4 id="user-calling-settings-diagramexamples">User Calling Settings Diagram Examples
+&lt;/h4>&lt;p>Here are some examples, including the corresponding Teams client settings.&lt;/p>
+&lt;p>In this example, “Also ring” and “If unanswered” are the same. Call group is the only forwarding target which supports this scenario.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1TlJx5ucG8YIsZDtamLyzjw.png"
+width="639"
+height="544"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1TlJx5ucG8YIsZDtamLyzjw_hu_6d52d223158760d5.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1TlJx5ucG8YIsZDtamLyzjw_hu_1550536024958d5.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="117"
+data-flex-basis="281px"
+>
+&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/13oEWK0gZhI7y34lBQ40sQ.png"
+width="951"
+height="1747"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/13oEWK0gZhI7y34lBQ40sQ_hu_ff23f3656a977ed.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/13oEWK0gZhI7y34lBQ40sQ_hu_d29c8fb2bc47ae0e.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="54"
+data-flex-basis="130px"
+>&lt;/p>
+&lt;p>Here’s one where immediate forwarding is enabled:&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/174NDGhlNdC2jWmfcns2gA.png"
+width="637"
+height="527"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/174NDGhlNdC2jWmfcns2gA_hu_d69f14535fb7cf19.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/174NDGhlNdC2jWmfcns2gA_hu_9ba7f408ece701d0.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="120"
+data-flex-basis="290px"
+>
+&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1en6dkpg1L1BeJJCVH3lrA.png"
+width="909"
+height="1612"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1en6dkpg1L1BeJJCVH3lrA_hu_8c84ed61d0b9f7bd.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1en6dkpg1L1BeJJCVH3lrA_hu_7f99ef02f1b3a6d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="135px"
+>&lt;/p>
+&lt;p>When immediately forwarding to delegates, an “If unanswered target is required”. “Do nothing” is not available in this case.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1kMUtWPH8Sg9kq0ZXqnvBug.png"
+width="632"
+height="571"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1kMUtWPH8Sg9kq0ZXqnvBug_hu_9a02a6e867b8effa.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1kMUtWPH8Sg9kq0ZXqnvBug_hu_4d477815b1f68d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="110"
+data-flex-basis="265px"
+>&lt;/p>
+&lt;p>In this case, only “Also ring” is configured and “If unanswered” is set to “Do nothing”.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1X0hbtVapj1mEJsp8HHaNJQ.png"
+width="635"
+height="535"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1X0hbtVapj1mEJsp8HHaNJQ_hu_edad5819689aef25.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1X0hbtVapj1mEJsp8HHaNJQ_hu_21e4412ea21a2a92.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="118"
+data-flex-basis="284px"
+>
+&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1gbiySQUKuer0byUExkceg.png"
+width="526"
+height="491"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1gbiySQUKuer0byUExkceg_hu_5a42405200ed9b2a.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1gbiySQUKuer0byUExkceg_hu_f9627ab11aac155b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="107"
+data-flex-basis="257px"
+>&lt;/p>
+&lt;p>And here, “Also ring” is set to “No one else” but “If unanswered” is set to an external phone number with a timeout of 50 seconds.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1poPeDhcPwlEdO1KRPojg.png"
+width="638"
+height="544"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1poPeDhcPwlEdO1KRPojg_hu_1b8ee69f9b7e4a15.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1poPeDhcPwlEdO1KRPojg_hu_7187a16c9c88e615.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="117"
+data-flex-basis="281px"
+>
+&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1XRyPWHckC3MglldUVHgw.png"
+width="633"
+height="1138"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1XRyPWHckC3MglldUVHgw_hu_300feafc0faded31.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1XRyPWHckC3MglldUVHgw_hu_291e5d7b5466c40b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="55"
+data-flex-basis="133px"
+>&lt;/p>
+&lt;p>If you like, you can check out all the examples &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer/tree/main/Examples/UserCallingSettings" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/p>
+&lt;h4 id="render-and-export-diagrams-like-apro">Render and Export Diagrams like a Pro!
+&lt;/h4>&lt;p>Or you can head over to my &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer" target="_blank" rel="noopener"
+>GitHub Repo&lt;/a> to clone it from there to try it for yourself. For now, the function is intended for standalone usage. Meaning, it’s not yet implemented into the M365 Call Flow Visualizer.&lt;/p>
+&lt;p>Once the repo is cloned, you can import the function by dot sourcing it in your terminal:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="p">.&lt;/span> &lt;span class="p">.\\&lt;/span>&lt;span class="n">Functions&lt;/span>&lt;span class="p">\\&lt;/span>&lt;span class="nb">Get-TeamsUserCallFlow&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">ps1&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>After that, you can just run the function by either using the &lt;code>-UserPrincipalName&lt;/code> or the &lt;code>-UserId&lt;/code> parameter where &lt;code>-UserId&lt;/code> expects an Azure AD User Object Id from your tenant.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Get-TeamsUserCallFlow&lt;/span> &lt;span class="n">-UserPrincipalName&lt;/span> &lt;span class="n">user&lt;/span>&lt;span class="nv">@domain&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">com&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>There are a few parameters to play with. By default, the function will generate an SVG image of the diagram and opens it in your default browser by leveraging the &lt;a class="link" href="https://mermaid.ink/" target="_blank" rel="noopener"
+>mermaid.ink&lt;/a> service. It will also save the diagram to&lt;code>.\Output\UserCallingSettings&lt;/code> by default. You can change this by specifying the &lt;code>-CustomFilePath&lt;/code> parameter.&lt;/p>
+&lt;p>Although it has cost me a lot of time, I was finally able to pull off directly exporting an SVG image without using any additional, local dependencies. I’m doing this by encoding the diagram in Base64 and calling mermaid.ink. During testing I noticed that mermaid.ink is quite picky when it comes to these base 64 encoded URLs. At first, a lot of my diagrams failed due to illegal padding characters and so on. I believe that I was able to fix most of that. If any of your diagrams fail to render on mermaid ink, please let me know.&lt;/p>
+&lt;h4 id="create-a-diagram-for-all-yourusers">Create a Diagram for all your users
+&lt;/h4>&lt;p>I’ve also included an example of how to draw a diagram for each enabled user in your tenant. You can copy it from this gist or run it directly from the root of the cloned repo.&lt;/p>
+&lt;script src="https://gist.github.com/mozziemozz/2687f5fe0a2fae48739d71bbd5a86909.js">&lt;/script>
+&lt;h4 id="some-notes-on-recursive-user-callingsettings">Some Notes on Recursive User Calling Settings
+&lt;/h4>&lt;p>I do not support recursive user calling settings in my first release. I’m not sure if there is a strong enough need for it too. I know that some teams like to forward calls to each other if they’re not available. It would certainly be handy for troubleshooting purposes as we could detect infinite forwarding loops created by users much faster. On the other hand, diagrams could get huge and hard to read. What do you think, should I work on recursive diagrams for a future release? Let me know!&lt;/p>
+&lt;h4 id="whats-next">What’s next
+&lt;/h4>&lt;p>There are a couple of changes planned for this project. If you pay close attention, you can see that I already moved some functions like “Connect-M365CFV” out of the main script and import it by dot sourcing instead. Since the main script still has more than 3000 lines of code (including carriage returns) I’m planning to move most of the functions to separate files and dot source them as well.&lt;/p>
+&lt;p>When I get the time, I will also implement user calling settings into the main script. As an example, a call flow which forwards calls to a user will then render like this.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1cje7dY50wNOdeup0F1EQ.png"
+width="938"
+height="1639"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1cje7dY50wNOdeup0F1EQ_hu_cc992eaa5625f1b.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1cje7dY50wNOdeup0F1EQ_hu_ae5b30257124471b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="57"
+data-flex-basis="137px"
+>&lt;/p>
+&lt;p>Whereas it currently “stops” at the users and looks like this:&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1VLbdHmPHHCI0WpnbAhXGYw.png"
+width="1529"
+height="1605"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1VLbdHmPHHCI0WpnbAhXGYw_hu_450edaeec85863ba.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1VLbdHmPHHCI0WpnbAhXGYw_hu_1a82da86ce463ba.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="95"
+data-flex-basis="228px"
+>&lt;/p>
+&lt;p>I will also try to do the same with SVG export as I did for the user calling settings. I’m not entirely sure it will work with super large diagrams though.&lt;/p>
+&lt;p>I hope that you enjoy automatically drawing diagrams of your users calling settings as much as I do.&lt;/p>
+&lt;p>Happy Easter everyone!&lt;/p></description></item><item><title>How to Permanently Forward PSTN Calls in Microsoft Teams (Without License)</title><link>https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/</link><pubDate>Thu, 10 Mar 2022 19:01:47 +0000</pubDate><guid>https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/</guid><description>&lt;p>When you’re using Microsoft Teams Direct Routing as your primary calling solution, chances are that sometimes you also need to permanently forward calls to one of your numbers to another external phone number.&lt;/p>
+&lt;p>In many cases, forwarding of numbers can also be handled outside of Teams. Most SIP providers offer a web-based portal for number management and forwarding. However, controlling all your numbers inside Teams without relying on third parties can still be an advantage sometimes.&lt;/p>
+&lt;p>Note: this blog post only considers Teams Direct Routing scenarios. Calling Plans or Operator Connect are not covered.&lt;/p>
+&lt;h4 id="forwarding-by-a-licensed-teamsuser">Forwarding by a Licensed Teams User
+&lt;/h4>&lt;p>Setting up a forwarding of numbers can be achieved in multiple ways. The most obvious one to just create and license a Teams user and setup a permanent call forwarding for that user in the Teams Client.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1hF9oWNMacZgIt1dCtfkcOQ.png"
+width="1156"
+height="485"
+srcset="https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1hF9oWNMacZgIt1dCtfkcOQ_hu_841e30e4e318d3d8.png 480w, https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1hF9oWNMacZgIt1dCtfkcOQ_hu_c9ea9c611629ad97.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="238"
+data-flex-basis="572px"
+>&lt;/p>
+&lt;p>This user will need at minimum a Business Basic + Teams Phone Standard License. A CAP (Common Area Phone License) *in theory* should also present this option when using the Desktop or Web Client but call forwarding won’t be available when using a Teams certified Desk Phone. Thus, this is an unsupported scenario and should not be used. There’s a better way which will even allow you to get rid of the license costs entirely. I’ll explain how later in this article.&lt;/p>
+&lt;p>Since there is no voice app like an auto attendant or call queue involved in this scenario, all calls to the direct number of this particular user will be forwarded right away. This also means that the caller will hear the ring back tone, until the external participant (forwaring target) answers the call.&lt;/p>
+&lt;p>Advantages:&lt;/p>
+&lt;ul>
+&lt;li>Direct forwarding, call does not get picked up or intercepted by Teams&lt;/li>
+&lt;li>Should be possible to forward calls to a FAX number&lt;/li>
+&lt;li>Good for scenarios where the forwarding target often changes (can be changed by other Teams users from inside their client by using the Boss/Delegate feature)&lt;/li>
+&lt;/ul>
+&lt;p>Disadvantages:&lt;/p>
+&lt;ul>
+&lt;li>License costs&lt;/li>
+&lt;li>Configuration can only be reviewed or changed by logging in, using Boss/Delegate or PowerShell Preview Cmdlets (Get-CsUserCallingSettings)&lt;/li>
+&lt;li>Can’t use Service or Toll-Free numbers&lt;/li>
+&lt;/ul>
+&lt;h4 id="forwaring-by-a-resourceaccount">Forwaring by a Resource Account
+&lt;/h4>&lt;p>It’s also possible to transfer calls to external PSTN numbers by using resource accounts assigned to auto attendants or call queues. Before you can assign a number to a resource account, you need to assign a free &lt;a class="link" href="https://docs.microsoft.com/en-us/microsoftteams/teams-add-on-licensing/virtual-user#virtual-user-license-allocation" target="_blank" rel="noopener"
+>Teams Phone Standard — Virtual User License&lt;/a> to the resource account.&lt;/p>
+&lt;p>Once the license is assigned, we need to assign a phone number to the resource account:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Set-CsPhoneNumberAssignment&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="n">ra_cq_PS_Test&lt;/span>&lt;span class="nv">@mozzism&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">ch&lt;/span> &lt;span class="n">-PhoneNumber&lt;/span> &lt;span class="mf">+41445124077&lt;/span> &lt;span class="n">-PhoneNumberType&lt;/span> &lt;span class="n">DirectRouting&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Next we also need to assign it a Voice Routing Policy:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Grant-CsOnlineVoiceRoutingPolicy&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="n">ra_cq_PS_Test&lt;/span>&lt;span class="nv">@mozzism&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">ch&lt;/span> &lt;span class="n">-PolicyName&lt;/span> &lt;span class="s2">&amp;#34;FirstTrunk&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The most obvious way, at least for me was to create an auto attendant and set it up without business hours so it will always perform the same action: forward the call to an external number. This works, no doubt but the problem is that the auto attendant *ALWAYS* answers the call before it’s actually forwarded. Because of that, this method can’t be used to forward calls to a FAX number.&lt;/p>
+&lt;p>Since it’s also possible to forward calls from a call queue to an external number, we can leverage this to create a similar experience as to when the call is permanently forwarded by a Teams user.&lt;/p>
+&lt;p>A call queue has two options to control actions or forwardings. Overflow (max. number of simultaneous calls) or timeout.&lt;/p>
+&lt;p>If we set the timeout to zero (0 minutes, 0 seconds) the queue still answers the call, before it’s forwarded. Even if there is no greeting configured.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1YgnBVoi8wRNzxMl3TedyyQ.png"
+width="1768"
+height="734"
+srcset="https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1YgnBVoi8wRNzxMl3TedyyQ_hu_bd99a2240be77e72.png 480w, https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1YgnBVoi8wRNzxMl3TedyyQ_hu_fea59af5794aed07.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="240"
+data-flex-basis="578px"
+>&lt;/p>
+&lt;p>A good example to see that the queue picked up the call is that the counter starts on any phone. Here I’m using Skype to call the call queue and you can see that the call has been established for 5 seconds, even though the configured forwarding target has not answered the call yet. While the call rings the forwarding target, Teams will generate a ring back tone inside the already established call.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1QAUIogXcABSjdUwIzj5LDQ.png"
+width="1590"
+height="1017"
+srcset="https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1QAUIogXcABSjdUwIzj5LDQ_hu_47bbf5da1fe47.png 480w, https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1QAUIogXcABSjdUwIzj5LDQ_hu_42e461b91d16c734.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="156"
+data-flex-basis="375px"
+>&lt;/p>
+&lt;p>If we set the overflow threshold of the queue to zero on the other hand, TAC shows a warning message that the queue won’t play the greeting when the overflow threshold is set to 0.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1jxc3VpgcSiWVumahjggBRg.png"
+width="1766"
+height="765"
+srcset="https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1jxc3VpgcSiWVumahjggBRg_hu_5d09179a7af773c3.png 480w, https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1jxc3VpgcSiWVumahjggBRg_hu_d3c4145501ecbc36.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="230"
+data-flex-basis="554px"
+>&lt;/p>
+&lt;p>It’s not entirely clear that this has always been the case, but I’m pretty sure that at least this warning message has been introduced a only few weeks ago when the call queue wizard was redesigned. It was this warning message that tipped me of and inspired me to test this.&lt;/p>
+&lt;p>So, let’s make another call to the queue’s number. This time, there’s no counter visible in Skype’s call screen which means that the call gets forwarded without being intercepted by the queue first. In this case, because I’m using Skype I can only hear Skype’s own “ring back jingle”.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1d3NXW1fGGCCxHfm0jhDKzw.png"
+width="1590"
+height="1017"
+srcset="https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1d3NXW1fGGCCxHfm0jhDKzw_hu_f2faa17964f42f1d.png 480w, https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6/1d3NXW1fGGCCxHfm0jhDKzw_hu_989698dac2a90602.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="156"
+data-flex-basis="375px"
+>&lt;/p>
+&lt;p>When using a “real phone” like my cell phone the ring back tone gets played back just like when any other number is dialed.&lt;/p>
+&lt;p>Altough I haven’t actually tested sending a FAX message end to end, I tested forwarding to a FAX number and was able to hear the typical FAX noises when I called the queue’s number. I can’t see any reason why this shouldn’t work.&lt;/p>
+&lt;p>Advantages:&lt;/p>
+&lt;ul>
+&lt;li>No License costs&lt;/li>
+&lt;li>Can use Service or Toll-Free numbers&lt;/li>
+&lt;li>Should be possible to forward calls to a FAX number (when using a CQ)&lt;/li>
+&lt;li>Configured forwarding is more obvious because it’s visible in TAC&lt;/li>
+&lt;/ul>
+&lt;p>Disadvantages:&lt;/p>
+&lt;ul>
+&lt;li>Only Teams admins can change the forwarding target&lt;/li>
+&lt;/ul>
+&lt;h4 id="summary">Summary
+&lt;/h4>&lt;p>Even though it might not be an obvious solution, using a call queue to permanently forward calls is still a great way to have more control over all your DIDs right inside Teams itself without adding any license costs.&lt;/p></description></item></channel></rss>

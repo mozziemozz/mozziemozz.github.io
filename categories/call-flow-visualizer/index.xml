@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Call Flow Visualizer on HEUSSER.PRO</title><link>https://heusser.pro/categories/call-flow-visualizer/</link><description>Recent content in Call Flow Visualizer on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 22 Jan 2025 16:47:23 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/call-flow-visualizer/index.xml" rel="self" type="application/rss+xml"/><item><title>M365 Call Flow Visualizer Update: Support Nested Voice Apps without Resource Accounts</title><link>https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/</link><pubDate>Wed, 22 Jan 2025 16:47:23 +0000</pubDate><guid>https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/</guid><description>&lt;p>In December 2024 Microsoft made a change to their auto attendant and call queue service allowing admins to build call flows without associating a resource account to every nested voice app (call queues and auto attendants). Top-level auto attendants or call queues which are directly called by a phone number still need a resource account associated with them though.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image.png"
+width="1314"
+height="592"
+srcset="https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image_hu_3112e916ffaa576f.png 480w, https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image_hu_9475509f8e8a0103.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Microsoft Learn Article"
+class="gallery-image"
+data-flex-grow="221"
+data-flex-basis="532px"
+>&lt;/p>
+&lt;p>When I wanted to create some diagrams of newly configured call flows using my &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer" target="_blank" rel="noopener"
+>M365 Call Flow Visualizer&lt;/a> tool, I noticed that I got Mermaid syntax errors and that the diagrams weren&amp;rsquo;t displaying anymore. This was because the newly built call flows were already referencing the voice apps directly and not the resource accounts anymore.&lt;/p>
+&lt;h2 id="how-does-it-look-in-powershell">How does it look in PowerShell?
+&lt;/h2>&lt;p>Let&amp;rsquo;s look at some examples. This is an auto attendant which I haven&amp;rsquo;t touched in years. It&amp;rsquo;s a simple demo attendant which has a voice menu where different keys will transfer to two different auto attendants.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/Demo_AA_CallFlow.png"
+width="7090"
+height="8280"
+srcset="https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/Demo_AA_CallFlow_hu_73a29f6dc5061a58.png 480w, https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/Demo_AA_CallFlow_hu_773e2a9b6e909935.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Demo Auto Attendant"
+class="gallery-image"
+data-flex-grow="85"
+data-flex-basis="205px"
+>&lt;/p>
+&lt;p>When I check this attendant in PowerShell, I can see that the &lt;strong>CallTarget&lt;/strong> type is &lt;strong>ApplicationEndpoint&lt;/strong> which means it points to a resource account (Online Application Instance).&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">PS &lt;/span>&lt;span class="n">E:&lt;/span>&lt;span class="p">\&lt;/span>&lt;span class="n">GitHub&lt;/span>&lt;span class="p">\&lt;/span>&lt;span class="nb">heusser-pro&lt;/span>&lt;span class="n">-v2&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="nv">$aa&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-CsAutoAttendant&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="n">9516a748&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">95e5&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">4024&lt;/span>&lt;span class="n">-aae1&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">5f11fad27a52&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">PS &lt;/span>&lt;span class="n">E:&lt;/span>&lt;span class="p">\&lt;/span>&lt;span class="n">GitHub&lt;/span>&lt;span class="p">\&lt;/span>&lt;span class="nb">heusser-pro&lt;/span>&lt;span class="n">-v2&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="nv">$aa&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">DefaultCallFlow&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Menu&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">MenuOptions&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Action&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="n">TransferCallToTarget&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">DtmfResponse&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="n">Tone1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">VoiceResponses&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">CallTarget&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="nb">Type &lt;/span>&lt;span class="p">=&lt;/span> &lt;span class="n">ApplicationEndpoint&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Id&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="n">0ae17201&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">09fb&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">4434&lt;/span>&lt;span class="n">-ac7b&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">66681fb34345&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Prompt&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Action&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="n">TransferCallToTarget&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">DtmfResponse&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="n">Tone2&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">VoiceResponses&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">CallTarget&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="nb">Type &lt;/span>&lt;span class="p">=&lt;/span> &lt;span class="n">ApplicationEndpoint&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Id&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="n">1ba43d85&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">20c8&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">41bf-a474&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">9b771877b4be&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Prompt&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Action&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="n">TransferCallToTarget&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">DtmfResponse&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="n">Tone3&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">VoiceResponses&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">CallTarget&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="nb">Type &lt;/span>&lt;span class="p">=&lt;/span> &lt;span class="n">ExternalPstn&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Id&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="n">tel&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="p">+&lt;/span>&lt;span class="n">496971041xxxx&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Prompt&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>In TAC, we now have a new option called &lt;strong>Resource Account&lt;/strong> next to the existing &lt;strong>Voice App&lt;/strong> option. This way, we can choose if we want to forward calls to a resource account associated with a voice app or to a voice app directly.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-1.png"
+width="1501"
+height="902"
+srcset="https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-1_hu_2e793513d52c7d71.png 480w, https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-1_hu_fc5113ba50aa2f4d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="New Options in TAC"
+class="gallery-image"
+data-flex-grow="166"
+data-flex-basis="399px"
+>&lt;/p>
+&lt;p>This is actually a bit confusing to me. As I recall, the option to transfer to another attendant or queue was always called &lt;strong>Voice app&lt;/strong> before but it was actually referencing resource accounts. I checked one of my previous blog &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-auto-attendants-what-you-didnt-know-part-2-iz5ftexar5sq" >posts&lt;/a> and found this screenshot where it&amp;rsquo;s clearly visible that the &lt;strong>Voice app&lt;/strong> is in fact referencing a the UPN of a resource account.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-3.png"
+width="1024"
+height="634"
+srcset="https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-3_hu_9f6782efd3bc99f6.png 480w, https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-3_hu_4d758a3f9ac98340.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Old screenshot"
+class="gallery-image"
+data-flex-grow="161"
+data-flex-basis="387px"
+>&lt;/p>
+&lt;p>When we look at the voice menu in TAC again after the change, we can see that the existing options which previously said &lt;strong>Voice app&lt;/strong> are now called &lt;strong>Resource account&lt;/strong>. I&amp;rsquo;ve replaced the third menu option with a &lt;strong>Voice App&lt;/strong> now.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-4.png"
+width="1482"
+height="500"
+srcset="https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-4_hu_a0d5bb30b1b51d44.png 480w, https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-4_hu_782b1148aab2835c.png 1024w"
+loading="lazy"
+decoding="async"
+alt="New labels"
+class="gallery-image"
+data-flex-grow="296"
+data-flex-basis="711px"
+>&lt;/p>
+&lt;p>So, existing configs referencing resource accounts that were previously labeled &lt;strong>Voice app&lt;/strong> are now called &lt;strong>Resource accounts&lt;/strong> and if you want to reference a voice app, you&amp;rsquo;ll need to select &lt;strong>Voice app&lt;/strong>.&lt;/p>
+&lt;p>Let&amp;rsquo;s look at the PowerShell output again. Notice how the third option now says &lt;strong>ConfigurationEndpoint&lt;/strong> and not &lt;strong>ApplicationEndpoint&lt;/strong> anymore. Both options are valid configurations and can be mixed and matched as you need but it&amp;rsquo;s important to understand the difference.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">PS &lt;/span>&lt;span class="n">E:&lt;/span>&lt;span class="p">\&lt;/span>&lt;span class="n">GitHub&lt;/span>&lt;span class="p">\&lt;/span>&lt;span class="nb">heusser-pro&lt;/span>&lt;span class="n">-v2&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="nv">$aa&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-CsAutoAttendant&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="n">9516a748&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">95e5&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">4024&lt;/span>&lt;span class="n">-aae1&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">5f11fad27a52&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">PS &lt;/span>&lt;span class="n">E:&lt;/span>&lt;span class="p">\&lt;/span>&lt;span class="n">GitHub&lt;/span>&lt;span class="p">\&lt;/span>&lt;span class="nb">heusser-pro&lt;/span>&lt;span class="n">-v2&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="nv">$aa&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">DefaultCallFlow&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Menu&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">MenuOptions&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Action&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="n">TransferCallToTarget&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">DtmfResponse&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="n">Tone1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">VoiceResponses&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">CallTarget&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="nb">Type &lt;/span>&lt;span class="p">=&lt;/span> &lt;span class="n">ApplicationEndpoint&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Id&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="n">0ae17201&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">09fb&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">4434&lt;/span>&lt;span class="n">-ac7b&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">66681fb34345&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Prompt&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Action&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="n">TransferCallToTarget&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">DtmfResponse&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="n">Tone2&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">VoiceResponses&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">CallTarget&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="nb">Type &lt;/span>&lt;span class="p">=&lt;/span> &lt;span class="n">ApplicationEndpoint&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Id&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="n">1ba43d85&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">20c8&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">41bf-a474&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">9b771877b4be&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Prompt&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Action&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="n">TransferCallToTarget&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">DtmfResponse&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="n">Tone3&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">VoiceResponses&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">CallTarget&lt;/span> &lt;span class="err">:&lt;/span> &lt;span class="nb">Type &lt;/span>&lt;span class="p">=&lt;/span> &lt;span class="n">ConfigurationEndpoint&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Id&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="n">82c392e9-ec73&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">4890&lt;/span>&lt;span class="n">-bc5e&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">99d385f935b9&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Prompt&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="updated-m365-call-flow-visualizer">Updated M365 Call Flow Visualizer
+&lt;/h2>&lt;p>I&amp;rsquo;ve updated the M365 Call Flow Visualizer to support nested voice apps which don&amp;rsquo;t have associated resource accounts anymore.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/Demo_AA_CallFlow-1.png"
+width="6790"
+height="6910"
+srcset="https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/Demo_AA_CallFlow-1_hu_4a17f151c7f1e367.png 480w, https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/Demo_AA_CallFlow-1_hu_a16b3ebab893ced2.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Successfully generated diagram"
+class="gallery-image"
+data-flex-grow="98"
+data-flex-basis="235px"
+>&lt;/p>
+&lt;p>The visualizer has always only shown an auto attendant or a call queue as a node element, regardless of which resource account was linked, it&amp;rsquo;s still the same in the current version. As you can see in the diagram above, both the keys 2 and 3 point to the same auto attendant even though one menu option is referencing the resource account and the other one is referencing the auto attendant directly (voice app).&lt;/p>
+&lt;h2 id="additional-notes">Additional Notes
+&lt;/h2>&lt;p>Even though the functionality to link voice apps without resource accounts have been added to TAC already, it will still display a warning that all voice apps must have an associated resource account.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-2.png"
+width="2405"
+height="674"
+srcset="https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-2_hu_a3f352a250881fc6.png 480w, https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/image-2_hu_6179c22762fb7f10.png 1024w"
+loading="lazy"
+decoding="async"
+alt="TAC Warning"
+class="gallery-image"
+data-flex-grow="356"
+data-flex-basis="856px"
+>&lt;/p>
+&lt;p>Call flows which don&amp;rsquo;t have any resource accounts associated with them, are not supported in historical reports yet. Availability for this is expected in early 2025 according to &lt;a class="link" href="https://www.linkedin.com/posts/miguelcorteguera_set-up-a-microsoft-teams-auto-attendant-activity-7260296970555027456-MPow?utm_source=share&amp;amp;utm_medium=member_desktop" target="_blank" rel="noopener"
+>this&lt;/a> LinkedIn post.&lt;/p>
+&lt;p>From what I can see, auto attendants or call queues will not show up in Teams search either because there is no user account object to search for.&lt;/p>
+&lt;h2 id="version-notes">Version Notes
+&lt;/h2>&lt;p>If you&amp;rsquo;re already making use of this new capability, make sure to pull the &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer" target="_blank" rel="noopener"
+>repo&lt;/a> or download the latest version to be able to generate diagrams for these new call flows. You&amp;rsquo;ll need version &lt;strong>3.1.9&lt;/strong>. This version also fixes and issue where an inbound number was shown multiple times in case a nested voice app looped back to the initial top-level voice app. A full change log can be found &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer/blob/main/Changelog.md" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/p>
+&lt;p>When I wrote this blog, I didn&amp;rsquo;t think about writing additional code to reflect in the diagram if a &lt;strong>TransferCallToTarget&lt;/strong> or &lt;strong>TransferCallToOperator&lt;/strong> action is transferring to a voice app or a resource account. However, the longer I thought about it, the more sense it made. I&amp;rsquo;ve already got a new version (3.2.0) ready for your to try in my dev branch on &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer/tree/dev" target="_blank" rel="noopener"
+>GitHub&lt;/a>.&lt;/p>
+&lt;p>Here&amp;rsquo;s a wild example. As you can see, each &lt;strong>TransferCallToTarget&lt;/strong> node which goes to either an auto attendant or a call queue now shows if it&amp;rsquo;s transferring to a resource account or the voice app itself.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/Demo_AA_CallFlow-2.png"
+width="7840"
+height="29870"
+srcset="https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/Demo_AA_CallFlow-2_hu_4762f5895fa462c.png 480w, https://heusser.pro/p/m365-call-flow-visualizer-update-support-nested-voice-apps-without-resource-accounts-hjm1e1w9m0h8/Demo_AA_CallFlow-2_hu_811e5b004058fa2d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Version 3.2.0 including voice app/resource account information for transfers"
+class="gallery-image"
+data-flex-grow="26"
+data-flex-basis="62px"
+>&lt;/p>
+&lt;p>As you can imagine, maintaining the code and keeping up with Microsoft&amp;rsquo;s changes takes up a lot of my spare time. If you want to support me, you can do that &lt;a class="link" href="https://heusser.pro/support-me" >here&lt;/a>.&lt;/p></description></item><item><title>Teams Call Queues now Support Greetings in Exception Handlings</title><link>https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/</link><pubDate>Wed, 01 May 2024 15:31:57 +0000</pubDate><guid>https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/</guid><description>&lt;img src="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/cover.png" alt="Featured image of post Teams Call Queues now Support Greetings in Exception Handlings" />&lt;h2 id="how-it-was-before">How It Was Before
+&lt;/h2>&lt;p>I noticed a whole lot of new properties returned by &lt;code>Get-CsCallQueue&lt;/code> quite a while ago but somehow I completely missed that Microsoft has now added this feature in Teams Admin Center. Before this was rolled out, the only way to play a message before disconnecting when a call timed out, when there were too many concurrent calls or when no agents were available in a call queue, you had to forward the call to an additional auto attendant which only played the message and then disconnected the call.&lt;/p>
+&lt;p>A call flow which had no message looked like this. The call disconnected without any message.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow.png"
+width="2110"
+height="3840"
+srcset="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_hu_9ce3ad824e151aa2.png 480w, https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_hu_ff8e913474fa05a3.png 1024w"
+loading="lazy"
+decoding="async"
+alt="No Disconnect Message"
+class="gallery-image"
+data-flex-grow="54"
+data-flex-basis="131px"
+>&lt;/p>
+&lt;p>A call flow using the workaround with an additional auto attendant looked like this. The call had to be forwarded to an auto attendant so that a message could be played back before disconnecting the call.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_Disconnect_AA.png"
+width="1947"
+height="3840"
+srcset="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_Disconnect_AA_hu_8197b11800ce5725.png 480w, https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_Disconnect_AA_hu_691dfed19e6c2c3b.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Disconnect Message on Auto Attendant"
+class="gallery-image"
+data-flex-grow="50"
+data-flex-basis="121px"
+>&lt;/p>
+&lt;p>While it wasn&amp;rsquo;t very hard to build something like that, it certainly required more time and added unnecessary complexity to otherwise relatively simple call flows.&lt;/p>
+&lt;h2 id="whats-changed">What&amp;rsquo;s Changed?
+&lt;/h2>&lt;p>With the recently added functionality, it&amp;rsquo;s now possible to configure greetings on call queues in exception handling actions. At the time of writing this blog post it&amp;rsquo;s possible to configure a greeting for &lt;strong>Disconnect&lt;/strong> and &lt;strong>Redirect to External Phone Number&lt;/strong> or &lt;strong>Redirect to Voice App&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image.png"
+width="1992"
+height="826"
+srcset="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image_hu_30c6236880ac8d65.png 480w, https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image_hu_d436c5cd35f9c367.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Greeting on Disconnect"
+class="gallery-image"
+data-flex-grow="241"
+data-flex-basis="578px"
+> &lt;img src="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image-1.png"
+width="1398"
+height="655"
+srcset="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image-1_hu_954ee248ce8e49fd.png 480w, https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image-1_hu_6638a0504d35a0a8.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Greeting for Redirect to Phone Number"
+class="gallery-image"
+data-flex-grow="213"
+data-flex-basis="512px"
+> &lt;img src="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image-2.png"
+width="1412"
+height="960"
+srcset="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image-2_hu_a90222cbc432f261.png 480w, https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image-2_hu_8a8eabc1958ebc50.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Greeting for Redirect to Voice App"
+class="gallery-image"
+data-flex-grow="147"
+data-flex-basis="353px"
+>&lt;/p>
+&lt;p>I&amp;rsquo;ve already added support for these new configuration options to the &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer" target="_blank" rel="noopener"
+>M365 Call Flow Visualizer&lt;/a>. In this demo call flow I&amp;rsquo;m just using text to speech greetings but of course it also works for audio files including exporting them to disk. This is how it looks now.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_New_Greetings.png"
+width="1978"
+height="3840"
+srcset="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_New_Greetings_hu_924f5a60a5e00bfc.png 480w, https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_New_Greetings_hu_57e9d38580f8eb25.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Greetings are configured on call queue directly"
+class="gallery-image"
+data-flex-grow="51"
+data-flex-basis="123px"
+>&lt;/p>
+&lt;p>As you can see, the greetings are now configured directly on the call queue and there&amp;rsquo;s no need to deploy and manage additional auto attendants anymore. The greeting options for redirect to shared voicemail are unchanged. This can be seen on the &lt;strong>PS Test EV Enabled On Call CQ&lt;/strong>.&lt;/p>
+&lt;h2 id="powershell-vs-teams-admin-center">PowerShell vs Teams Admin Center
+&lt;/h2>&lt;p>Teams Admin Center doesn&amp;rsquo;t support configuring a greeting if the call is being forwarded to another Teams user (person in organization) or a personal voicemail. However, the available properties which are returned in &lt;code>Get-CsCallQueue&lt;/code> hint that support for greetings before a call is forwarded to a person might be coming soon too.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$cq&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-CsCallQueue&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="nv">$cq&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Identity&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">PS &lt;/span>&lt;span class="n">V:&lt;/span>&lt;span class="p">\&lt;/span>&lt;span class="n">GitHub&lt;/span>&lt;span class="p">\&lt;/span>&lt;span class="n">M365CallFlowVisualizer&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="nv">$cq&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">fl &lt;/span>&lt;span class="p">*&lt;/span>&lt;span class="n">person&lt;/span>&lt;span class="p">*&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">OverflowRedirectPersonAudioFilePrompt&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">OverflowRedirectPersonAudioFilePromptFileName&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">OverflowRedirectPersonTextToSpeechPrompt&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">TimeoutRedirectPersonAudioFilePrompt&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">TimeoutRedirectPersonAudioFilePromptFileName&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">TimeoutRedirectPersonTextToSpeechPrompt&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">NoAgentRedirectPersonAudioFilePrompt&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">NoAgentRedirectPersonAudioFilePromptFileName&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">NoAgentRedirectPersonTextToSpeechPrompt&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>I wouldn&amp;rsquo;t be me unless I tested this. Using &lt;code>Set-CsCallQueue -Identity $cq.Identity -OverflowRedirectPersonTextToSpeechPrompt &amp;quot;Test overflow redirect to person greeting&amp;quot;&lt;/code> I was able to configure a greeting before the call was forwarded to the specified Teams user. A quick test call to the queue successfully played back the message before the call was forwarded to the Teams user. &lt;strong>But&lt;/strong> when I updated the call queue in TAC again, the greeting was deleted (as expected) from the queue. I strongly recommend not to configure a greeting before redirecting to a person until the feature is officially available in Teams Admin Center. Otherwise, you can only update the queue through PS until Microsoft has added the feature to TAC as well. Because of that, I also didn&amp;rsquo;t include this in the Visualizer yet.&lt;/p>
+&lt;h2 id="summary">Summary
+&lt;/h2>&lt;p>I haven&amp;rsquo;t seen anybody talk about this new feature online before so I thought that it would be worth sharing. And of course I also wanted to share that the M365 Call Flow Visualizer has been updated to display all configured greetings accurately. I hope you like the new feature and that the Visualizer will help you to get your documentation up to speed quickly.&lt;/p>
+&lt;p>If you want to learn how to download existing audio files from call queues through TAC or PowerShell without the M365 Call Flow Visualizer, you can check out &lt;a class="link" href="https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0" >this&lt;/a> post.&lt;/p></description></item></channel></rss>

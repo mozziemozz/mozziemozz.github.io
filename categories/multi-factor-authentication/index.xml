@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Multi-Factor Authentication on HEUSSER.PRO</title><link>https://heusser.pro/categories/multi-factor-authentication/</link><description>Recent content in Multi-Factor Authentication on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 27 Nov 2022 12:46:25 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/multi-factor-authentication/index.xml" rel="self" type="application/rss+xml"/><item><title>Forward SMS Verification Codes From iPhone To a Windows PC</title><link>https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/</link><pubDate>Sun, 27 Nov 2022 12:46:25 +0000</pubDate><guid>https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/</guid><description>&lt;p>A few days ago, I wrote “&lt;a class="link" href="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6" >How To Handle Password and 2FA Madness Like a Pro&lt;/a>”. In this article I explained why I think it’s better to use a full-fledged password manager instead of a basic Authenticator App such as Microsoft or Google Authenticator to handle your 2FA codes.&lt;/p>
+&lt;p>These types of apps work well when the service for which you want to enable 2FA allows you to add a secret key to your authenticator app. But what about services which don’t support such apps and instead only send you an SMS with a verification code? Unfortunately, there are still some services which will only allow one-time codes sent by SMS.&lt;/p>
+&lt;p>If you’re using an iPhone and a MAC for example, this shouldn’t be too big of an issue since you can seamlessly sync your clipboard across devices (at least that’s what I’ve heard).&lt;/p>
+&lt;p>If you’re using an Android phone together with Phone Link on Windows, you can easily access your SMS from there. But if you use an iPhone and a Windows PC, there’s no way to seamlessly transfer a code received by SMS on your iPhone to your PC.&lt;/p>
+&lt;p>In &lt;a class="link" href="https://heusser.pro/p/11-must-have-apps-for-windows-11-2c362809db3/" >11 Must-Have Apps for Windows 11&lt;/a> I wrote about Clipt which allows you to transfer content between an iPhone and a Windows PC through their Chromium extension.&lt;/p>
+&lt;p>When you use this method, you must open the message containing the verification code and manually select and copy it. Once the code is in your iPhone&amp;rsquo;s clipboard, you need to open Clipt and click Send. The copied content will be added to your PCs clipboard automatically and you’re ready to paste it.&lt;/p>
+&lt;p>I didn’t quite like the manual steps involved on the iPhone. So I thought why not tinker around with Siri Shortcuts again, like I did in &lt;a class="link" href="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa" >this&lt;/a> article.&lt;/p>
+&lt;h3 id="siri-automation">Siri Automation
+&lt;/h3>&lt;h4 id="building-the-automation">Building the Automation
+&lt;/h4>&lt;p>The good thing is that there is a trigger for &lt;em>“When I get a message containing &lt;keyword>”.&lt;/em> The bad thing is that there’s no way of running it truly automated. You will still need to confirm running the automation each time it’s triggered.&lt;/p>
+&lt;p>But that’s only one manual interaction on the iPhone compared to four with Clipt (Open messages, copy code, open clipt, send content).&lt;/p>
+&lt;p>I set the trigger to match all messages which contain the string &lt;strong>“verification code”&lt;/strong>. If that should not work for the messages you receive, you can adjust it to your liking or create multiple automations with different words.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1hvOkUTfWoJtXfbbsied89g.png"
+width="1125"
+height="2436"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1hvOkUTfWoJtXfbbsied89g_hu_2d3b82805d8368d6.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1hvOkUTfWoJtXfbbsied89g_hu_cf99e3b124afba09.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+>&lt;/p>
+&lt;p>Let’s take a look at the actions. First, we’re going to use the regular expression &lt;code>\d{6,}&lt;/code> to match all strings which consist of only numbers and are at least six digits long.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FUqHjHbQq1UXAqH7gkHug.png"
+width="1361"
+height="263"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FUqHjHbQq1UXAqH7gkHug_hu_6ff2be61f073fb62.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FUqHjHbQq1UXAqH7gkHug_hu_cb3a1ba44a67b79d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="517"
+data-flex-basis="1241px"
+>&lt;/p>
+&lt;p>Then we’re going to create a note in Apple Notes with the extracted verification code. After 60 seconds, we’re going to delete the note.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1KUBIIWC2Zk7hIm6K29sD2A.png"
+width="1125"
+height="2436"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1KUBIIWC2Zk7hIm6K29sD2A_hu_5483008a953500fb.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1KUBIIWC2Zk7hIm6K29sD2A_hu_fe37ea6ef61e7083.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+>&lt;/p>
+&lt;h4 id="configuring-ios">Configuring iOS
+&lt;/h4>&lt;p>You might ask yourself what good does it do if the verification code is stored in Apple Notes when I want to access it on my PC?&lt;/p>
+&lt;p>If you configure your Outlook.com or work or school account as the default account for Notes in iOS settings, your notes will automatically synchronize with Microsoft Sticky Notes. Of course, I’m assuming that you’ve already added a Microsoft Account to iOS at this point.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1eK5EzyD2ps2osajFS6Zmw.png"
+width="1125"
+height="2436"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1eK5EzyD2ps2osajFS6Zmw_hu_4cf78c58ebabd855.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1eK5EzyD2ps2osajFS6Zmw_hu_e42466a8ee32fb44.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+>&lt;/p>
+&lt;h4 id="demo-of-the-automation-inaction">Demo of the Automation in Action
+&lt;/h4>&lt;p>To show off the automation, I just sent myself an SMS from Skype to my mobile number containing the following text.&lt;/p>
+&lt;blockquote>
+&lt;p>Here’s your verification code: 456789. Thanks for using it.&lt;/p>&lt;/blockquote>
+&lt;p>I added the code between other text and added a full stop right after the code to demonstrate how powerful regular expressions are.&lt;/p>
+&lt;p>This is what it looks like on an iPhone. First there will be a notification for the new message. Shortly after, the automation will be triggered, and we’ll need to click it, and then click &lt;em>“Ausführen”&lt;/em> (German for &lt;em>“Run”&lt;/em>).&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1Cd58DqlhiHJsmyJ43qnR1Q.gif"
+width="886"
+height="1920"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+>&lt;/p>
+&lt;h4 id="accessing-copied-codes-onwindows">Accessing Copied Codes on Windows
+&lt;/h4>&lt;p>There are many Apps from which you access to your Sticky Notes on Windows.&lt;/p>
+&lt;p>The most obvious one is &lt;strong>Sticky Notes&lt;/strong> of course.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1gj6ozy5v4BuGa4RWlxETNw.png"
+width="648"
+height="1035"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1gj6ozy5v4BuGa4RWlxETNw_hu_4a3b4d205cfbe0d5.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1gj6ozy5v4BuGa4RWlxETNw_hu_3b81f501717a1b9c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="62"
+data-flex-basis="150px"
+>&lt;/p>
+&lt;p>You can also access them in &lt;strong>Outlook&lt;/strong> or &lt;strong>Outlook on the Web&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1UOcsgxeQRRwdEEur32BwRg.png"
+width="1684"
+height="873"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1UOcsgxeQRRwdEEur32BwRg_hu_2a9c910007c55137.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1UOcsgxeQRRwdEEur32BwRg_hu_9583e154b3ef9913.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="192"
+data-flex-basis="462px"
+>&lt;/p>
+&lt;p>And finally, they’re also available in your &lt;strong>OneNote&lt;/strong> Feed.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1MYZQMg0ggzjHrsx6lBk0w.png"
+width="471"
+height="1103"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1MYZQMg0ggzjHrsx6lBk0w_hu_3360fffe8c5abb41.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1MYZQMg0ggzjHrsx6lBk0w_hu_3aeec37f1b64e249.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="42"
+data-flex-basis="102px"
+>&lt;/p>
+&lt;h4 id="copying-the-verification-code">Copying the Verification Code
+&lt;/h4>&lt;p>Unfortunately, Stick Notes does not support copying the contents of a note from a right-click.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1T3wMGAbPW9enWGJClr1Q.png"
+width="697"
+height="489"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1T3wMGAbPW9enWGJClr1Q_hu_b03123b41fea6216.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1T3wMGAbPW9enWGJClr1Q_hu_2d21adad88458b6c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="342px"
+>&lt;/p>
+&lt;p>We need to open the note, select the text, and then copy it.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1vrDPnDLy9MS7pR4ynTxCEw.png"
+width="462"
+height="471"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1vrDPnDLy9MS7pR4ynTxCEw_hu_d09fc54fdc7d9ae5.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1vrDPnDLy9MS7pR4ynTxCEw_hu_66c018ef487da2b9.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="98"
+data-flex-basis="235px"
+>&lt;/p>
+&lt;p>The &lt;a class="link" href="https://apps.microsoft.com/store/detail/outlook-for-windows/9NRX63209R7B" target="_blank" rel="noopener"
+>new Outlook&lt;/a> or Outlook on the Web or OneNote allow you to copy the contents of the note using a right-click though.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1w0YaPyh8JvP8zGVeXsMag.png"
+width="620"
+height="620"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1w0YaPyh8JvP8zGVeXsMag_hu_e82a42ac7834e670.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1w0YaPyh8JvP8zGVeXsMag_hu_787f2755e0c01937.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="100"
+data-flex-basis="240px"
+>&lt;/p>
+&lt;p>This also works well in the OneNote (for Windows 10) Feed. While it does work in the new, &lt;a class="link" href="https://techcommunity.microsoft.com/t5/microsoft-365-blog/refreshing-the-onenote-app-on-windows/ba-p/3401914" target="_blank" rel="noopener"
+>refreshed version of OneNote&lt;/a>, it was quite buggy and sluggish for me. I’ll let that slide since that’s an Insider Build.&lt;/p>
+&lt;p>OneNote for Windows 10 is not listed in Microsoft Store Search anymore, but you can still get it from &lt;a class="link" href="https://www.microsoft.com/store/productId/9WZDNCRFHVJL" target="_blank" rel="noopener"
+>this&lt;/a> link. I will keep using OneNote for Windows 10 until the new OneNote also supports vertical sections in &lt;a class="link" href="https://www.microsoft.com/en-us/microsoft-365/roadmap?filters=&amp;amp;searchterms=100492" target="_blank" rel="noopener"
+>March 2023&lt;/a>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FhUKm1MGidjVrNEd74YA.png"
+width="463"
+height="746"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FhUKm1MGidjVrNEd74YA_hu_89b1522215d5c61a.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FhUKm1MGidjVrNEd74YA_hu_c7df97196ada57b6.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="62"
+data-flex-basis="148px"
+>&lt;/p>
+&lt;p>Once the code has been copied from Outlook or OneNote for Windows 10, it will be in your clipboard as plain text without any trailing whitespaces or line breaks so that you’re ready to paste it wherever you need it.&lt;/p>
+&lt;p>This was not the case with the new OneNote App. In this case there were two line breaks before the code and one after.&lt;/p>
+&lt;p>While it’s theoretically possible to also copy the code from the classic Outlook App, the experience is not the same as with the modern Outlook or OWA.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1HXrJSz8Q8JxGFYiZ0kGvCw.png"
+width="1007"
+height="308"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1HXrJSz8Q8JxGFYiZ0kGvCw_hu_dd662b68786d11a9.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1HXrJSz8Q8JxGFYiZ0kGvCw_hu_aa0d53d8d3bfbff1.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="326"
+data-flex-basis="784px"
+>&lt;/p>
+&lt;p>When you copy the code from there, it will include additional, unwanted metadata such as the subject and date created.&lt;/p>
+&lt;p>Subject Created Categories&lt;/p>
+&lt;p>456789 So 27.11.2022 11:59&lt;/p>
+&lt;p>I like the experience of copying the verification code from the modern Outlook or OWA the best. It will only show Sticky Notes and allows me to copy the raw code by a right-click. I usually have Outlook open all day anyway so it’s very convenient to just switch from inbox to notes to copy a new verification code.&lt;/p>
+&lt;p>Because the note is only used to store a temporary verification code and we want to avoid clutter, the Automation will remove the note 60 seconds after it has been created. This should give you plenty of time to copy it from your notes.&lt;/p>
+&lt;h3 id="conclusion">Conclusion
+&lt;/h3>&lt;p>Both methods, Clipt and Automation + Sticky Notes require manual user interaction, so none of them are perfect. Clipt requires you to do more manual tasks on the phone and Sticky Notes needs more actions on Windows. I like using the Automation + Sticky Notes more because I believe that working on a Desktop with mouse and keyboard is still king in terms of how fast things can get done. I also like that no additional apps or services are required, especially that no Chromium Extension which runs in the background, even when the browser is closed is needed.&lt;/p></description></item><item><title>How To Handle Password and 2FA Madness Like a Pro</title><link>https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/</link><pubDate>Sat, 26 Nov 2022 03:04:56 +0000</pubDate><guid>https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/</guid><description>&lt;p>Every once in a while, I come across a random Twitter conversation where people share their struggles and frustrations about the current state of 2FA apps and migrating those codes to a new phone.&lt;/p>
+&lt;p>This sparked a private discussion between &lt;a class="link" href="https://twitter.com/AndresGorzelany" target="_blank" rel="noopener"
+>Andrés Gorzelany&lt;/a> and me where he asked me if I had written a blog post about this already. I hadn’t, so here we are.&lt;/p>
+&lt;p>First, let’s cover some of the abbreviations which I’m going to use in this article.&lt;/p>
+&lt;p>&lt;strong>2FA&lt;/strong> = Second Factor Authentication &lt;br>
+&lt;em>(Password is not enough, you need to either enter a one time code or verify a login in a mobile app)&lt;/em>&lt;br>
+&lt;strong>MFA&lt;/strong> = Multi Factor Authentication &lt;br>
+&lt;em>(Pretty much the same as 2FA, the term is primarily used by Microsoft)&lt;/em>&lt;br>
+&lt;strong>OTP&lt;/strong> = One Time Password&lt;br>
+_(Usually, a 6 to 8 digit long code received by email or SMS which can only be used once)&lt;br>
+_&lt;strong>TOTP&lt;/strong> = Time Based One Time Password&lt;br>
+&lt;em>(Usually, a 6 to 8 digit long code which gets generated (and hashed against the current time) by an app. Usually, every code is only valid for 30 seconds)&lt;/em>&lt;/p>
+&lt;h3 id="microsoft-authenticator">Microsoft Authenticator
+&lt;/h3>&lt;p>I’m sure that many IT Pros use &lt;a class="link" href="https://apps.apple.com/us/app/microsoft-authenticator/id983156458" target="_blank" rel="noopener"
+>Microsoft Authenticator&lt;/a> for all or most of their 2FA codes because that’s what they first used, when MFA was initially required by the company they work for. As of drafting this article, the app currently sits on #7 in Productivity on Apple’s App Store, so I assume it’s quite popular.&lt;/p>
+&lt;h4 id="account-setup">Account Setup
+&lt;/h4>&lt;p>If you head over to &lt;a class="link" href="https://mysignins.microsoft.com/" target="_blank" rel="noopener"
+>https://mysignins.microsoft.com/&lt;/a> you will be able to add or edit your MFA methods for a Microsoft work or school account.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1cklX2PhJurEPz0XDmzqvQw.png"
+width="1542"
+height="365"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1cklX2PhJurEPz0XDmzqvQw_hu_c912f0beade3a83a.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1cklX2PhJurEPz0XDmzqvQw_hu_e7eab10c00af119d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="422"
+data-flex-basis="1013px"
+>
+&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1gWZ6lvVge9MxPPIZ3jNag.png"
+width="710"
+height="312"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1gWZ6lvVge9MxPPIZ3jNag_hu_90cb0cac69db1375.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1gWZ6lvVge9MxPPIZ3jNag_hu_214a7b66c87e4e78.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="227"
+data-flex-basis="546px"
+>
+&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1oTRkXMubTJO3zz66gTBdSg.png"
+width="1068"
+height="386"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1oTRkXMubTJO3zz66gTBdSg_hu_ee55f5485fc7f010.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1oTRkXMubTJO3zz66gTBdSg_hu_1cbe24750f3f20c7.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="276"
+data-flex-basis="664px"
+>&lt;/p>
+&lt;p>If you click on &lt;em>Next&lt;/em>, your account will be added using the “Microsoft Authenticator” method. If you click on &lt;em>I want to use a different authenticator app&lt;/em> your account will be added as a “different authenticator app”.&lt;/p>
+&lt;p>Let’s take a look at Microsoft Authenticator first.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1iwc5ewsVqKxfrJZpyGZNKQ.png"
+width="1045"
+height="645"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1iwc5ewsVqKxfrJZpyGZNKQ_hu_df45f1636e897bdb.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1iwc5ewsVqKxfrJZpyGZNKQ_hu_693f213f27c78655.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="388px"
+>&lt;/p>
+&lt;p>If you just scan the QR code, you won’t notice any difference between the two options. The account will just be added.&lt;/p>
+&lt;p>However, if you click on &lt;em>Can’t scan image?&lt;/em> More information will be revealed. Notice how there’s a code and an URL which also includes a code.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1MM5qGsmVCoTlFfz6hqw.png"
+width="1014"
+height="246"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1MM5qGsmVCoTlFfz6hqw_hu_3db4e04d70824238.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1MM5qGsmVCoTlFfz6hqw_hu_b100269f125f3102.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="412"
+data-flex-basis="989px"
+>&lt;/p>
+&lt;p>After adding the account, this sign in method will show as &lt;strong>Microsoft Authenticator&lt;/strong> under Security info.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1vUw5bgZWn5i3AHHS1cq2A.png"
+width="1533"
+height="355"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1vUw5bgZWn5i3AHHS1cq2A_hu_bdb22273eb3d41f4.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1vUw5bgZWn5i3AHHS1cq2A_hu_915eb3433e381a34.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="431"
+data-flex-basis="1036px"
+>&lt;/p>
+&lt;p>If we do the same thing again but choose &lt;em>different authenticator app&lt;/em> this time, we can see that there’s just a &lt;strong>Secret key&lt;/strong> but no URL anymore.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1gxdJiEm3V5bY9UWSWMW9zw.png"
+width="1001"
+height="189"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1gxdJiEm3V5bY9UWSWMW9zw_hu_e321952177998b33.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1gxdJiEm3V5bY9UWSWMW9zw_hu_cf80ed74fa1ea454.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="529"
+data-flex-basis="1271px"
+>&lt;/p>
+&lt;p>If we look at the sign in methods again, we can see that the second one is called &lt;strong>Authenticator App&lt;/strong> even though we also added it to the Microsoft Authenticator App.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1mG8IBsBGe6qAhWgPgyH5bA.png"
+width="1524"
+height="427"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1mG8IBsBGe6qAhWgPgyH5bA_hu_63a224da89493042.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1mG8IBsBGe6qAhWgPgyH5bA_hu_2945362e69d33465.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="356"
+data-flex-basis="856px"
+>&lt;/p>
+&lt;p>When we look at the mobile app itself, we can also see some differences between these two accounts. The App knows that the first one is a Microsoft work or school account. But it has absolutely no idea that the second one is in fact also a work or school account or even that it’s the same account.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1h5rb2kwBLtxLfgZjmxYTw.png"
+width="750"
+height="1334"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1h5rb2kwBLtxLfgZjmxYTw_hu_64ead55d9a8cd01c.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1h5rb2kwBLtxLfgZjmxYTw_hu_f739d82f21e31a4.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="134px"
+>&lt;/p>
+&lt;p>It’s even clearer on the details page of each account. And because both accounts were added using different secrets, they also generate different codes.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1UB42dCXf3Ct533AiYGOBQ.png"
+width="1498"
+height="1067"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1UB42dCXf3Ct533AiYGOBQ_hu_4c47dc3e9ad4a46b.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1UB42dCXf3Ct533AiYGOBQ_hu_5d0a7e17d43631f2.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="336px"
+>&lt;/p>
+&lt;h4 id="backing-up-our-authenticator-app">Backing up our Authenticator App
+&lt;/h4>&lt;p>Switching phones has become increasingly complicated since 2FA has gotten so popular (where 2FA becoming a standard is a good thing).&lt;/p>
+&lt;p>Backing up Microsoft Authenticator Data requires a personal Microsoft Account (outlook.com/live.com/hotmail.com).&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1loZR0pS5OVVtT78aPpRrDA.png"
+width="750"
+height="1334"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1loZR0pS5OVVtT78aPpRrDA_hu_30e3981d946f535a.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1loZR0pS5OVVtT78aPpRrDA_hu_b2161c20009af44c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="134px"
+>
+&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1oI230pk3tWEcv7Qmi2fow.png"
+width="1497"
+height="795"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1oI230pk3tWEcv7Qmi2fow_hu_951c016827688b67.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1oI230pk3tWEcv7Qmi2fow_hu_7e51971658c8e7bf.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="188"
+data-flex-basis="451px"
+>&lt;/p>
+&lt;h4 id="restoring-microsoft-authenticator">&lt;strong>Restoring Microsoft Authenticator&lt;/strong>
+&lt;/h4>&lt;p>If the app is deleted or if you switch phones, you can restore from your backup.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1I4VPjVxbWbjEHstl1WeZg.png"
+width="1489"
+height="1332"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1I4VPjVxbWbjEHstl1WeZg_hu_e22adc21d797068d.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1I4VPjVxbWbjEHstl1WeZg_hu_603207f315fa6267.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="111"
+data-flex-basis="268px"
+>&lt;/p>
+&lt;p>And there it is: a big red warning appears for the work or school account we added using the Microsoft Authenticator method. The generic code was restored just fine.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/12xH4t91wnijwWl0r6Xfw.png"
+width="750"
+height="1334"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/12xH4t91wnijwWl0r6Xfw_hu_5c19ae5b182cc3f3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/12xH4t91wnijwWl0r6Xfw_hu_3a0eba0a244dfcf7.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="134px"
+>&lt;/p>
+&lt;p>From what I could observe online, many people seemed annoyed (understandably) that there’s an action required for each work or school account which was added using the Microsoft Authenticator method.&lt;/p>
+&lt;p>To be honest, I don’t know if there’s a specific QR code to recover the account. To me it seems more like that the backup only stores your email address and that you need to go through the setup again on a new device.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1ZHcT91WwAGsIFVT5foO31w.png"
+width="750"
+height="1334"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1ZHcT91WwAGsIFVT5foO31w_hu_7e6337985bdbef70.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1ZHcT91WwAGsIFVT5foO31w_hu_62df1dff04bab7c2.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="134px"
+>&lt;/p>
+&lt;p>To restore it, go back to the My-Sign-Ins page and add the Microsoft Authenticator App again.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/10O59nIbYIkqQvOtrLMoGvg.png"
+width="1526"
+height="501"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/10O59nIbYIkqQvOtrLMoGvg_hu_55fa3d3e664e96dc.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/10O59nIbYIkqQvOtrLMoGvg_hu_219ca82c3bbca220.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="304"
+data-flex-basis="731px"
+>&lt;/p>
+&lt;p>The same is also possible from this website: &lt;a class="link" href="https://aka.ms/mfasetup" target="_blank" rel="noopener"
+>https://aka.ms/mfasetup&lt;/a>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1baOzZjJDNtR5vt8cDPUnNA.png"
+width="1404"
+height="1270"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1baOzZjJDNtR5vt8cDPUnNA_hu_bdc7726a4fed7838.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1baOzZjJDNtR5vt8cDPUnNA_hu_788b962094b086fb.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="110"
+data-flex-basis="265px"
+>&lt;/p>
+&lt;p>The &lt;em>Restore&lt;/em> button at the bottom of this page didn’t do anything for me. Since it’s a new device, you need to add it again.&lt;/p>
+&lt;p>If you deleted the app on your current phone and restore the backup to the same device, the old registration will stop working. In this case, both Authenticator apps will have the same description in the portal. Delete the one which is sorted last in the list. If you got a new phone and don’t use your old phone anymore or if you’ve lost it, you can delete it from the sign-in methods.&lt;/p>
+&lt;p>If MFA is enforced by your organization, and if you’re not currently excluded from MFA prompts like you maybe would be in an office building/network you may need to provide an alternative 2FA method like an OTP received by SMS or email if you’re not already logged in on your desktop. If you still have your old phone at hand, you can also use the Microsoft Authenticator from there to approve the sign in.&lt;/p>
+&lt;p>This example just shows one work or school account for demonstration purposes. Just imagine that you work for dozens of companies as a consultant or freelancer… In this case, you would need to repeat these steps in all of their tenants in order to recover your accounts.&lt;/p>
+&lt;p>Microsoft Authenticator only backs up 2FA codes for generic accounts and your personal Microsoft Account. All work or school accounts that were added using the Microsoft Authenticator method require that you go through the setup again. Basically, only the account name, tenant name and user principal name will be restored but not the trust relationship itself.&lt;/p>
+&lt;h4 id="2fa-codes-from-otherservices">2FA Codes From Other Services
+&lt;/h4>&lt;p>2FA is without doubt a great mechanism for securing your accounts and online identities. It should be used wherever possible. Without exceptions.&lt;/p>
+&lt;p>Microsoft even advertises their Authenticator App as an App in which you can store all your 2FA codes on the App Store.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1nVlZbzfDSWyem4SdQhpqxQ.png"
+width="1494"
+height="757"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1nVlZbzfDSWyem4SdQhpqxQ_hu_8f185811a37a8432.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1nVlZbzfDSWyem4SdQhpqxQ_hu_6a5935cae9084765.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="197"
+data-flex-basis="473px"
+>&lt;/p>
+&lt;p>If you’re going all-in on 2FA and want to potentially store hundreds of 2FA codes, you should seriously consider not using Microsoft Authenticator for that.&lt;/p>
+&lt;p>Can you believe it? A statement like that from a Microsoft fan as big as me? The first thing you need to think about is that you will either need to read the code from the app and type it on your PC or you need to copy it from the app. Either way you need to find it in the app. Although Microsoft has recently added a search function to the app (which was long overdue to be honest) there’s still no option to create folders to better manage your accounts.&lt;/p>
+&lt;p>The second thing you should consider is lock-in. Once you’ve added all your 2FA codes to Microsoft Authenticator, you can only restore them to another Microsoft Authenticator app. Unless you explicitly save the secret key to a safe place every time you add an account, you won’t be able to extract those secrets again after they’ve been added to Microsoft Authenticator. If you didn’t do that and you want to move them to another app, for example to &lt;a class="link" href="https://apps.apple.com/us/app/google-authenticator/id388497605" target="_blank" rel="noopener"
+>Google Authenticator&lt;/a> or &lt;a class="link" href="https://apps.apple.com/us/app/twilio-authy/id494168017" target="_blank" rel="noopener"
+>Twilio Authy&lt;/a>, you will need to log into each service and setup 2FA again for the new app. Much like we need to do if we want to move a Microsoft work or school account to a new device.&lt;/p>
+&lt;p>On top of all that, finding and copying or typing 2FA codes is not a good user experience. Some services even force their users to use their specific authenticator app. In these cases, apps like these often support push notifications like Microsoft Authenticator does. While just tapping a button on the phone to verify a login is certainly a better experience than searching for a code and then typing it on your PC, having dozens of service-specific authenticator apps is not a viable solution either.&lt;/p>
+&lt;p>On the plus side, it’s great that Microsoft Authenticator offers a backup capability. Google Authenticator for example still doesn’t support backups. It only supports exporting your data via a QR code to another Google Authenticator App. The problem with that is that your codes will be lost if you lose your device.&lt;/p>
+&lt;p>Authy also offers backing up your 2FA codes. While Microsoft Authenticator requires a personal Microsoft Account to back up your data, Authy uses a separate password to protect your backup. But the lock-in problem remains. Since you can’t retrieve the secret keys from all these Authenticator Apps, your only option of migrating to another app is to go through the 2FA setup for each account again.&lt;/p>
+&lt;p>I think not exposing the secret keys after an account has been added makes sense for most users since secret keys need to be handled with absolute caution. If a secret key gets into the wrong hands, a malicious actor could generate the same TOTPs as you without you even knowing.&lt;/p>
+&lt;p>Here I’ve used the same secret/QR code to add an account to both Microsoft and Google Authenticator.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1ecWsxhP48aEhfo2vGa0VUg.png"
+width="1494"
+height="702"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1ecWsxhP48aEhfo2vGa0VUg_hu_fb97bcfb645fc1aa.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1ecWsxhP48aEhfo2vGa0VUg_hu_434e8a86308ed774.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="212"
+data-flex-basis="510px"
+>&lt;/p>
+&lt;h3 id="upping-your-2fagame">Upping Your 2FA Game
+&lt;/h3>&lt;p>So far, we’ve established that using 2FA is a good thing. But we’ve also seen that it can come at the cost of convenience which might put a lot of users off from using it. Weighing security against convenience is an extremely hard decision. But I have found a way wich works well for me and I’m confident that it will work well for others too.&lt;/p>
+&lt;p>I know Microsoft, 1Password and other industry leaders are all talking about getting rid of passwords entirely but in reality, we’re just not there yet.&lt;/p>
+&lt;p>Another advantage of Microsoft Authenticator compared to other authenticator apps is that it now also offers password synchronization from Edge and auto-fill capabilities on mobile devices. While this is a good feature for many non tech savvy users, it’s still way worse than what a full-fledged password manager can offer. And by that, I mean &lt;a class="link" href="https://bitwarden.com/" target="_blank" rel="noopener"
+>Bitwarden&lt;/a>.&lt;/p>
+&lt;h4 id="bitwarden">Bitwarden
+&lt;/h4>&lt;p>Bitwarden differentiates itself quite a bit from competing services. First of all, it’s completely open source but still backed by a commercial company. While password managers like 1 Password, Dashlane or LastPass are all running on AWS Bitwarden runs on &lt;a class="link" href="https://bitwarden.com/help/is-bitwarden-audited/#cloud-hosting" target="_blank" rel="noopener"
+>Azure&lt;/a>. But most importantly, Bitwarden allows self-hosting for those who wish to do so. This means that you can be in control of your own vault data but won’t miss out on any of the awesome features like access and sync from anywhere, awesome mobile apps or browser extensions including auto-fill or even Windows Hello and Touch/FaceID support.&lt;/p>
+&lt;p>And then there’s the super fair &lt;a class="link" href="https://bitwarden.com/pricing/" target="_blank" rel="noopener"
+>pricing options&lt;/a>. Unlike many other password managers, their free tier supports unlimited passwords and devices and will stay free forever. It even supports vault sharing with one other user. This is because Bitwarden simply believes that anybody should be able to store their passwords securely and freely.&lt;/p>
+&lt;p>Their premium tier which also supports storing and generating 2FA codes only costs 10$ per year. By the way, I’m not sponsored by them in any way, but I’d gladly pay the 10$ per year even if the free version also included advanced 2FA features just to support their cause.&lt;/p>
+&lt;h4 id="putting-all-your-eggs-in-onebasket">Putting All Your Eggs in One Basket
+&lt;/h4>&lt;p>Let’s get to the technical part. Using a password manager means that you will be storing all your passwords in the same place. People often refer to this as putting all your eggs in one basket. It’s a risk for sure but remembering hundreds of complex passwords is definitely not an option. And using more or less the same password for each website isn’t either.&lt;/p>
+&lt;p>I’ve had arguments about this where people claimed that there’s no real difference between using a master password to protect all your passwords or using the same password for each website. This not the case at all. Imagine if you use the same password for each website and one of those sites gets hacked and your password gets leaked on the internet. The chance of a password being compromised by a random website you signed up for is much higher than the chance of someone getting a hold of your master password.&lt;/p>
+&lt;p>Besides, the master password is not the only thing needed to get into the vault of any sane person. You also need a 2FA code or a physical security key to access the vault. I think it was on Reddit where someone said that they call this &lt;strong>“Staged 2FA”.&lt;/strong>&lt;/p>
+&lt;h4 id="using-a-password-manager-as-an-authenticator-app">Using a Password Manager as an Authenticator App
+&lt;/h4>&lt;p>Maybe you think that I must be crazy for not only storing all my passwords but almost all of my 2FA codes in the same place as well. Bear with me and let me explain why I think that this is a good idea.&lt;/p>
+&lt;p>The idea of a second factor is that you need an additional physical device which generates a one-time code. This applies if you for example want to log into a website on your PC and then use the TOTP which only your phone/app can generate. But nowadays so much more is done on mobile devices too. So, if I log in to outlook.com on my phone, I don’t technically have a second factor since I can approve the sign-in request on the same device. In fact, if you think about it, most people probably have an app for their password manager and Microsoft Authenticator or another authenticator app on their phone which both can be unlocked biometrically.&lt;/p>
+&lt;p>If somebody wants to access your 2FA codes, they need access to your phone anyway. If they already have access to your phone, does it really matter if they get the 2FA codes from the Microsoft Authenticator App or from the password manager? Of course, this is a hypothetical worst-case scenario as physical violence or serious threats could be involved in order to get you to unlock your phone and apps with biometrics.&lt;/p>
+&lt;p>The key difference between storing your 2FA codes in an authenticator app or in a password manager is that a hacker would always need physical access to your phone if they’re stored in an authenticator app. But even if an attacker would be able to get these codes, the passwords which are protected in the password manager are still needed.&lt;/p>
+&lt;p>To get into the password manager, the uncrackable (at least until quantum computing becomes mainstream) master password is needed. Even if that had been obtained by somebody, physical access to my unlocked phone would still be needed. The way I see it, what really needs to be protected is the phone. Instead of only being a second factor it actually has become the weakest link since it often holds passwords and 2FA codes, regardless of if they’re accessible in different apps.&lt;/p>
+&lt;h4 id="security-concept">Security Concept
+&lt;/h4>&lt;p>My security concept consists of two main security elements as I call them. One of them is Bitwarden, the other one is my personal Microsoft Account. Well, basically there’s also a third one which is my Apple Id (which of course is 2FA enabled as well). I don’t store anything from my Microsoft Account in Bitwarden. This is absolutely crucial. Even if a hacker would somehow get temporarily into my vault, they would not be able to take full control over it since they can’t get the 2FA code for the Bitwarden login. To get to the 2FA code, somebody would need to manage to sign into an iPhone with my Apple Id, restore the backup of my Microsoft Authenticator App from iCloud and then log into my Microsoft Account where both the Apple Id and my Microsoft Account are 2FA enabled and neither of the codes are stored in Bitwarden. All account related settings must be done in the Bitwarden Web Vault for which 2FA is required. The 2FA code for Bitwarden is only stored in my Microsoft Authenticator App. In my Microsoft Account there’s no information regarding Bitwarden except for the 2FA code (without the secret key). This means I only need to remember two complex passwords where the master password of Bitwarden is extremely complex (50+ characters).&lt;/p>
+&lt;p>I only enter my master password about once per month to make sure that I don’t forget it. (I do have a backup plan in case I should forget it.) All the other times, I just use biometric authentication on Windows and iOS. Not using or typing the master password reduces the risk of it being obtained by anybody.&lt;/p>
+&lt;p>I trust that my devices are secure, therefore I only use biometric authentication and choose to stay logged in (only biometric auth required) until I explicitly sign out of my Bitwarden Vault. This on the other hand exposes my PC to the same risk as my smartphone. If somebody puts a gun to my head and asks me to unlock Bitwarden on my Phone or my PC, they’d get everything. I’m sure I’ll have bigger problems than that if that should ever happen.&lt;/p>
+&lt;p>As long as we’re excluding attack scenarios where a malicious actor physically attacks us or forces us to unlock our devices and apps, it doesn’t really matter if you store passwords and 2FA codes in the same place. I mean if we’re talking that somebody is targeting you remotely. They can’t get into your vault by using your master password unless they also have access to your authenticator app on your phone, which does exactly what it should — being a second factor.&lt;/p>
+&lt;h4 id="convenience-of-having-2fa-codes-stored-in-bitwarden">Convenience of Having 2FA Codes Stored in Bitwarden
+&lt;/h4>&lt;p>Let’s talk about some positive stuff. There are lots of advantages from a convenience point of view by storing all your 2FA codes (except Microsoft Account, Bitwarden and iCloud 2FA) in your password manager.&lt;/p>
+&lt;p>There’s no tedious searching for accounts/codes and no annoying typing of 6-digit codes each time you want to log into a website. Matching accounts will autmatically be detected by a websites base URL. All you have to do is to choose a matching account for any particular website and press Ctrl + V after the username and password have been auto-filled.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1bOQpqyUFe92Ujs56MwkIEQ.png"
+width="1505"
+height="576"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1bOQpqyUFe92Ujs56MwkIEQ_hu_f576f2e5aaf03c3.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1bOQpqyUFe92Ujs56MwkIEQ_hu_6ecfc026b3e73c42.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="261"
+data-flex-basis="627px"
+>&lt;/p>
+&lt;p>I find that auto-fill with automatic copy/paste of the 2FA is actually even faster than approving a sign-in request on your phone. If you’re using a randomly generated password which is impossible to memorize, you need to use your password manager anyway. Thus, you might as well paste the 2FA code from the password manager as well. When you log into a website or an app on your PC, grabbing your mobile phone is only going to break your flow since you need to pick it up or even take it out of your pants. I for one always choose Bitwarden auto-fill over accepting sign-in requests on my phone.&lt;/p>
+&lt;h4 id="secret-key-management-in-bitwarden">Secret Key Management in Bitwarden
+&lt;/h4>&lt;p>If you wish, you can also just store a TOTP without an associated password.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1OAhirvPr9CBNblaE87Bfw.png"
+width="636"
+height="891"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1OAhirvPr9CBNblaE87Bfw_hu_5215e0b77d25fe6d.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1OAhirvPr9CBNblaE87Bfw_hu_aa368b049758fcae.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="71"
+data-flex-basis="171px"
+>&lt;/p>
+&lt;p>You can safely store secret keys and can always access them again if you want to move them to another app. There’s no need to sign into a website and setup 2FA again. You are your own master of keys.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1Xm0GomzXQCGkjICW8yKWoQ.png"
+width="636"
+height="891"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1Xm0GomzXQCGkjICW8yKWoQ_hu_5af555c11bbfcee4.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1Xm0GomzXQCGkjICW8yKWoQ_hu_7b0e0e5fca328aaa.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="71"
+data-flex-basis="171px"
+>&lt;/p>
+&lt;p>If you’re the type of person who likes to organize stuff, you can create as many folders as you like and sort your credentials to fit your needs.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1OrrRoyMiBrT2xIjbee9g.png"
+width="634"
+height="891"
+srcset="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1OrrRoyMiBrT2xIjbee9g_hu_bc6c3b3383965460.png 480w, https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6/1OrrRoyMiBrT2xIjbee9g_hu_6124829478e11b8b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="71"
+data-flex-basis="170px"
+>&lt;/p>
+&lt;h4 id="multiple-bitwarden-vaults">Multiple Bitwarden Vaults
+&lt;/h4>&lt;p>If the idea of storing passwords and 2FA codes in the same place creeps you out, and you don’t mind manually copying or typing in 2FA codes, you could also consider creating a second Bitwarden Vault (account) with a different master password. With this approach you will lose a lot of convenience and ease of use but a dedicated password manager with support for 2FA codes still provides much more freedom and functionality than a classic authenticator app. But if we’re honest with each other you’re probably going to end up with both vaults synced to your phone anyway.&lt;/p>
+&lt;h3 id="conclusion">Conclusion
+&lt;/h3>&lt;p>If you’re struggling with your password and 2FA management and finding your current usability questionable I recommend the following basic principles to make your life a little easier.&lt;/p>
+&lt;ol>
+&lt;li>Use Microsoft Authenticator only for your personal Microsoft Account, for your main work or school account and for the 2FA code of your password manager. Keep it clean.&lt;/li>
+&lt;li>Add all other 2FA codes to your password manager.&lt;/li>
+&lt;li>Choose a super strong master password and type it only as often as necessary.&lt;/li>
+&lt;li>Use biometric authentication whenever possible.&lt;/li>
+&lt;li>Enable 2FA for your password manager.&lt;/li>
+&lt;li>Use 2FA wherever possible without any exceptions.&lt;/li>
+&lt;li>Make sure that you always have a backup plan in case you forget your master password, or you lose your phone.&lt;/li>
+&lt;li>Never save your Microsoft Account password or 2FA code to your password manager.&lt;/li>
+&lt;li>Use a different, strong, randomly generated password for each website.&lt;/li>
+&lt;li>Follow me on Medium.&lt;/li>
+&lt;/ol></description></item></channel></rss>

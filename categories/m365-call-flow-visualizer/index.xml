@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>M365 Call Flow Visualizer on HEUSSER.PRO</title><link>https://heusser.pro/categories/m365-call-flow-visualizer/</link><description>Recent content in M365 Call Flow Visualizer on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 07 Nov 2023 13:41:33 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/m365-call-flow-visualizer/index.xml" rel="self" type="application/rss+xml"/><item><title>Advanced Teams Auto Attendant Troubleshooting</title><link>https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/</link><pubDate>Tue, 07 Nov 2023 13:41:33 +0000</pubDate><guid>https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/</guid><description>&lt;p>It’s that time of the year again. The holidays are right around the corner. Which begs the question: &lt;strong>&lt;em>Did you update the holiday schedules for your Teams Auto Attendants already? And if so, are you sure they’re configured correctly?&lt;/em>&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/0y1IZwOr6MkdJ2v48.jpg"
+width="1024"
+height="1024"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/0y1IZwOr6MkdJ2v48_hu_d8d12f7257a9aa9a.jpg 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/0y1IZwOr6MkdJ2v48_hu_189ef7faa5c6953f.jpg 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="100"
+data-flex-basis="240px"
+>&lt;/p>
+&lt;p>No? Me neither. But I do remember that I wrote a comprehensive guide about &lt;a class="link" href="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743" >&lt;strong>Everything You Ever Wanted to Know About Teams Holidays&lt;/strong>&lt;/a> about a year ago. This is a great resource to read up on some of my personal best practices and some lesser-known things about Teams Holidays and how they work.&lt;/p>
+&lt;p>If you’d rather outsource this to end users for next year, &lt;a class="link" href="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471" >this&lt;/a> article might be interesting to you as well.&lt;/p>
+&lt;h4 id="what-is-todays-blog-post-allabout">What is today’s blog post all about?
+&lt;/h4>&lt;p>I recently built a very large &lt;strong>&lt;em>follow the sun&lt;/em>&lt;/strong> type of call flow which consists of about ten different Auto Attendants and Call Queues. Each Auto Attendant has different business hours, and many Auto Attendants have a different time zone configured as well. This can get quite complicated to build, verify and troubleshoot. How can something like this be tested and verified that it works as intended?&lt;/p>
+&lt;p>Since this was not live yet, I started out by adding a greeting to each Call Queue which said the name of the Queue whenever a call was routed to a Call Queue. Then I just made a couple of test calls during the day to see if calls were routed to the correct Queue.&lt;/p>
+&lt;p>But then I thought of something much better. I’ve already got the &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer" target="_blank" rel="noopener"
+>M365 Call Flow Visualizer&lt;/a> script in place which is capable of reading all nested voice apps recursively from any starting point. I only had to code some additional stuff to check whether an Auto Attendant is currently in business hours, after hours or in a holiday schedule. The best part about this is that it works for any date. Past, present and future. And of course, any date and time is converted to the time zone which is configured on each Auto Attendant in your call flow. Just as if you would call the Auto Attendant.&lt;/p>
+&lt;h4 id="demo-callflow">Demo Call Flow
+&lt;/h4>&lt;p>This is the demo call flow I’ll be using to demonstrate and explain the new feature. Nothing crazy, just an Auto Attendant with two holiday call handlings and schedules and some business hours.&lt;/p>
+&lt;p>Note that the Auto Attendant is configured in &lt;strong>Pacific Standard Time&lt;/strong> while I live in &lt;strong>W. Europe Standard Time&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1fiPIdMocTgqdYRHlZE1kw.png"
+width="7840"
+height="20020"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1fiPIdMocTgqdYRHlZE1kw_hu_9d8abf78408af3b0.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1fiPIdMocTgqdYRHlZE1kw_hu_1a6ac0c40aafb59d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="39"
+data-flex-basis="93px"
+>&lt;/p>
+&lt;h3 id="how-to-check-business-hours-andholidays">How to Check Business Hours and Holidays
+&lt;/h3>&lt;p>To check if any Auto Attendant is currently in business hours or after hours or in a holiday schedule, simply run the M365 CFV script with the switch parameter &lt;code>-CheckCallFlowRouting&lt;/code> .&lt;/p>
+&lt;p>Note that the&lt;code>-CheckCallFlowRouting&lt;/code> parameter is not mutually exclusive from the Visualizer. You can generate a diagram and check business hours/holiday in the same script run.&lt;/p>
+&lt;p>. .\M365CallFlowVisualizerV2.ps1 -CheckCallFlowRouting -Identity edde8e13-1a73-434b-a724-xxxxxxxxxxxx&lt;/p>
+&lt;p>This will use your local system time and convert it to whatever time zone is set on the Auto Attendant. The script will output the local and the Auto Attendant time and time zones.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/18EknlCjKIUMexJCdJGpDHQ.png"
+width="1645"
+height="209"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/18EknlCjKIUMexJCdJGpDHQ_hu_2ceddb63c89c033c.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/18EknlCjKIUMexJCdJGpDHQ_hu_26d5302fe16be08c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="787"
+data-flex-basis="1888px"
+>&lt;/p>
+&lt;p>As you can see, it’s already &lt;strong>Tuesday&lt;/strong> in Switzerland but it’s still &lt;strong>Monday&lt;/strong> in Pacific Standard Time. Since the business hours for Monday are only configured to &lt;strong>17:45 PST&lt;/strong> the Auto Attendant is closed.&lt;/p>
+&lt;p>Further down in the output, we’ll see the information about holidays as well. In this case, the Auto Attendant has actually multiple holidays which match my local date and time. While an Auto Attendant can’t have two holidays with the same start date, it’s possible to have holidays which enclose others and/or have the same end date. In that case, the holiday which is most precise (smallest time range) will be active. (This is also explained in the &lt;em>Everything You Ever Wanted to Know About Teams Holidays&lt;/em> article linked at the beginning of this post.)&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1TH5IO8IG0dZ33HdI6t4vRA.png"
+width="2264"
+height="645"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1TH5IO8IG0dZ33HdI6t4vRA_hu_e60d89aaaf65334c.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1TH5IO8IG0dZ33HdI6t4vRA_hu_f53f4ae53dcb05d1.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="351"
+data-flex-basis="842px"
+>&lt;/p>
+&lt;p>In PST, it’s still Monday, November 6th and there are three holidays starting on this date. One starts at &lt;code>00:00:00&lt;/code> one at &lt;code>17:15:00&lt;/code> and one at &lt;code>17:30:00&lt;/code> . The time in PST is currently &lt;code>23:50:00&lt;/code> so it’s already past all start times of the aforementioned holidays which means, the one starting at &lt;code>17:30:00&lt;/code> is the currently active one, because its start time is closest to the current time. You can see the name of the active holiday call handling and holiday schedule in the output. But that’s not all. You can also see that it lists the actual time range of the schedule on the line which starts with &lt;code>Holiday Schedule:&lt;/code> .&lt;/p>
+&lt;p>If nobody can answer a call, during business hours, after hours, this demo Auto Attendant (&lt;strong>USA Toll Free Test&lt;/strong>) just forwards to another Auto Attendant called &lt;strong>Main Number Busy AA&lt;/strong> which will just play a greeting and disconnect. This Auto Attendant does not have any business hours or holidays configured, which is also visible in the console output when the &lt;code>-CheckCallFlowRouting&lt;/code> switch is used.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1ivagCv8KIVIHLMSGyABkXA.png"
+width="2276"
+height="206"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1ivagCv8KIVIHLMSGyABkXA_hu_8581e3ce92ea81c5.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1ivagCv8KIVIHLMSGyABkXA_hu_9a5f8826b872916b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="1104"
+data-flex-basis="2651px"
+>&lt;/p>
+&lt;p>It even tells you that it’s a nested Auto Attendant and which was the initially queried Auto Attendant.&lt;/p>
+&lt;h4 id="advanced-check">Advanced Check
+&lt;/h4>&lt;p>Obviously, we won’t always have the time or the patience to stay up all night just to verify that business hours or holidays are configured correctly on an Auto Attendant which serves customers on the other end of the world.&lt;/p>
+&lt;p>To check the call flow routing for any specific date we can just pass an additional parameter to the script. &lt;strong>It doesn’t matter if the date lies in the past or in the future.&lt;/strong>&lt;/p>
+&lt;p>&lt;code>-CheckCallFlowRouting -CheckCallFlowRoutingSpecificDate &amp;quot;07.11.2024 17:00:01&amp;quot;&lt;/code>&lt;/p>
+&lt;p>The only thing you need to consider is that you need to enter it in a format which is expected by your system. This depends on your regional settings in Windows.&lt;/p>
+&lt;p>For me that would be &lt;code>dd.MM.yyyy HH:mm:ss&lt;/code> . You can test this using the following code.&lt;/p>
+&lt;p>Get-Date -Date &amp;ldquo;08.11.2023 17:00:01&amp;rdquo;&lt;/p>
+&lt;p>If you for example, typically use &lt;code>MM/dd/yyyy HH:mm:ss&lt;/code> you have to specify it like this.&lt;/p>
+&lt;p>Get-Date -Date &amp;ldquo;11/08/2023 17:00:01&amp;rdquo;&lt;/p>
+&lt;p>As long as this doesn’t throw an error and the returned date is correct, you should be fine.&lt;/p>
+&lt;p>When I queried the Auto Attendant in the first example it was &lt;code>08:50:00&lt;/code> in my local time. Now, I’m going to query the same Auto Attendant again but this time, I’m specifying a date and time which was &lt;strong>7 hours&lt;/strong> before at &lt;code>07.11.2023 01:50:00&lt;/code>.&lt;/p>
+&lt;p>. .\M365CallFlowVisualizerV2.ps1 -CheckCallFlowRouting -Identity edde8e13-1a73-434b-a724-xxxxxxxxxxxx -CheckCallFlowRoutingSpecificDateTime &amp;ldquo;07.11.2023 01:50:00&amp;rdquo;&lt;/p>
+&lt;p>At this time, which is &lt;code>16:50:00&lt;/code> in PST, the Auto Attendant was still open. Even though there are multiple schedules configured for Monday (which are also listed in the output) the script is still able to determine which time range from the Monday schedule is the currently active one.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1LvC58oq2DdhSty9qGzEeg.png"
+width="1663"
+height="236"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1LvC58oq2DdhSty9qGzEeg_hu_6a2d631ce0641cdf.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1LvC58oq2DdhSty9qGzEeg_hu_55b6f3eb7d16c9cb.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="704"
+data-flex-basis="1691px"
+>&lt;/p>
+&lt;p>And because it’s not &lt;code>17:15:00&lt;/code> or &lt;code>17:30:00&lt;/code> in PST yet, there are only two matching holiday schedules returned now.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/10kkp2EAk917jOWxqftxcfA.png"
+width="2270"
+height="583"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/10kkp2EAk917jOWxqftxcfA_hu_e61eba580afeac8f.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/10kkp2EAk917jOWxqftxcfA_hu_647ed8366d669c02.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="389"
+data-flex-basis="934px"
+>&lt;/p>
+&lt;p>Let’s check what happens if we query it again after the holiday on &lt;strong>18.11.2023&lt;/strong> has ended. Pacific Standard Time is currently -9 hours from W. Europe Standard Time. So, I need to check for &lt;code>18.11.2023&lt;/code> .&lt;/p>
+&lt;p>If I check for &lt;code>18.11.2023 00:00:00&lt;/code> it’s still in the holiday schedule.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/17hQxglSj5V9eOGQ4rtzw.png"
+width="1634"
+height="299"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/17hQxglSj5V9eOGQ4rtzw_hu_ce1d4de6cde1bc2.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/17hQxglSj5V9eOGQ4rtzw_hu_4ce8d041899c98c8.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="546"
+data-flex-basis="1311px"
+>&lt;/p>
+&lt;p>But if I check for &lt;code>18.11.2023 00:00:01&lt;/code> the holiday is over, but since this is a Saturday, the Auto Attendant is closed because of business hours anyway.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1oXnJNbrAq0Fp6yzadsQiA.png"
+width="1654"
+height="326"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1oXnJNbrAq0Fp6yzadsQiA_hu_e17bdea4ce38e8a.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1oXnJNbrAq0Fp6yzadsQiA_hu_d8be5ea99196edea.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="507"
+data-flex-basis="1217px"
+>&lt;/p>
+&lt;p>Let’s try Monday &lt;code>20.11.2023 17:15:00.&lt;/code>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1ZyD35XzHgy0QYEquOBL6WQ.png"
+width="1668"
+height="526"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1ZyD35XzHgy0QYEquOBL6WQ_hu_8d062f08762f8205.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1ZyD35XzHgy0QYEquOBL6WQ_hu_10ae6152a8e50251.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="317"
+data-flex-basis="761px"
+>&lt;/p>
+&lt;p>Looks good, the Auto Attendant is open again. However, there is one caveat. There is another holiday scheduled on &lt;strong>20.11.2023&lt;/strong> (which can be seen in the diagram above as well). &lt;strong>Holidays always take precedence over business hours.&lt;/strong>&lt;/p>
+&lt;p>The M365 CFV was built in a way, where it first checks the business hours and then the holidays. So, there’s no easy way to properly reflect that in the output, because the script is unaware of possible holidays at the time it outputs the information about business hours. I’m sure it’s possible somehow but I don’t know how much work that would require.&lt;/p>
+&lt;p>&lt;strong>For now, we must accept that and just pay attention to all the output. If there’s an active holiday, business hours will be disregarded until that holiday is over.&lt;/strong> On the other hand, I think it’s great to get all the information, so one could check how the call would have been routed at that date and time, if it weren’t a holiday.&lt;/p>
+&lt;p>Let’s do one more check to see if everything will be back to normal on &lt;code>21.11.2023&lt;/code> .&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1nbQvsvu4WRLHKWmVhZsBww.png"
+width="2280"
+height="845"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1nbQvsvu4WRLHKWmVhZsBww_hu_bdfa05612e134802.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1nbQvsvu4WRLHKWmVhZsBww_hu_56c3abce7ab44b25.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="269"
+data-flex-basis="647px"
+>&lt;/p>
+&lt;p>I set the time to &lt;code>21.11.2023 23:30:00&lt;/code> so that it would be &lt;code>21.11.2023 14:30:00&lt;/code> in PST which is covered by the second date time range on Tuesday’s schedule. Looks good to me.&lt;/p>
+&lt;h3 id="deep-dive-on-auto-attendant-schedules">Deep Dive on Auto Attendant Schedules
+&lt;/h3>&lt;p>There’s one more thing I want to mention. You might have noticed the &lt;code>Complement: Enabled&lt;/code> output in the screenshots above. This is a parameter which belongs to &lt;code>New-CsOnlineSchedule&lt;/code> or &lt;code>Set-CsOnlineSchedule&lt;/code> which is used to create/update business hours schedules for Auto Attendants. You can find the official parameter description &lt;a class="link" href="https://learn.microsoft.com/en-us/powershell/module/skype/new-csonlineschedule?view=skype-ps#-complement" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/14vYbtKJq4sQwPuvSXuvYPw.png"
+width="1054"
+height="297"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/14vYbtKJq4sQwPuvSXuvYPw_hu_31f24806501ef3e.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/14vYbtKJq4sQwPuvSXuvYPw_hu_2691417fc5ce3857.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="354"
+data-flex-basis="851px"
+>&lt;/p>
+&lt;p>As of writing this article, it says the following:&lt;/p>
+&lt;blockquote>
+&lt;p>The Complement parameter indicates how the schedule is used. When Complement is enabled, the schedule is used as the inverse of the provided configuration. For example, if Complement is enabled and the schedule only contains time ranges of Monday to Friday from 9AM to 5PM, then the schedule is active at all times other than the specified time ranges.&lt;/p>&lt;/blockquote>
+&lt;p>If you think about this from looking at Teams Admin Center and how business hours are configured under &lt;strong>Call flow for after hours&lt;/strong> in TAC it makes sense. There is no way to configure business hours under &lt;strong>Call flow&lt;/strong> (which is the default call flow). So, when you configure &lt;strong>Business and after hours&lt;/strong>, the time ranges you define will be the times during which the default call flow is active. Outside of the configured times, the after hours call flow will be active. This is 100% in line with what the docs say for the &lt;code>-Complement&lt;/code> switch parameter.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1XR0AamDozStlUDLTSQugZQ.png"
+width="1670"
+height="1515"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1XR0AamDozStlUDLTSQugZQ_hu_513909b7581cd289.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1XR0AamDozStlUDLTSQugZQ_hu_4b0db1c9ce0ccd6f.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="110"
+data-flex-basis="264px"
+>&lt;/p>
+&lt;p>It’s not possible to set &lt;code>ComplementEnabled&lt;/code> to &lt;code>$false&lt;/code> using Teams Admin Center. It’s only possible through PowerShell. This will set &lt;code>ComplementEnabled&lt;/code> to &lt;code>$false&lt;/code> on an Auto Attendant’s after hours schedule.&lt;/p>
+&lt;p># Define Auto Attendant&lt;br>
+$aaId = &amp;ldquo;b74da106-ea89-4786-b8aa-xxxxxxxxxxxx&amp;rdquo;&lt;br>
+$aa = Get-CsAutoAttendant -Identity $aaId&lt;/p>
+&lt;p># Get schedule&lt;br>
+$schedule = Get-CsOnlineSchedule -Id $aa.Schedules.Id&lt;/p>
+&lt;p># Disable ComplementEnabled&lt;br>
+$schedule.WeeklyRecurrentSchedule.ComplementEnabled = $false&lt;/p>
+&lt;p># Check value in schedule variable&lt;br>
+$schedule.WeeklyRecurrentSchedule&lt;/p>
+&lt;p># Set new (disabled) value for the schedule&lt;br>
+Set-CsOnlineSchedule -Instance $schedule&lt;/p>
+&lt;p># Check result&lt;br>
+$aa = Get-CsAutoAttendant -Identity $aaId&lt;br>
+$aa.Schedules.WeeklyRecurrentSchedule&lt;/p>
+&lt;p>In this case, the after hours call flow will be active during the specified time ranges.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/14lvuctyk7szFS7knkmIO8g.png"
+width="1177"
+height="300"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/14lvuctyk7szFS7knkmIO8g_hu_e2b097dac2c4d84.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/14lvuctyk7szFS7knkmIO8g_hu_60b12115dd91a8d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="392"
+data-flex-basis="941px"
+>&lt;/p>
+&lt;p>This is where it gets complicated. &lt;strong>Any time you change business hours in Teams Admin Center, complement will be ENABLED again without any warning.&lt;/strong> I haven’t figured out changing which properties exactly trigger TAC to reset the Complement setting but it’s definitely not just editing business hours. A change to the default and after hours call flow greeting resulted in TAC overwritting &lt;code>ComplementEnabled&lt;/code>to &lt;code>$true&lt;/code> too.&lt;/p>
+&lt;p>Also, Teams Admin Center won’t display open/closed hours correctly when complement is off. When I view the after hours call flow in TAC, it says, it’s closed during that time when in fact it should say open.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1I6KmVUwo2s8ICzHMfN0Jg.png"
+width="1189"
+height="145"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1I6KmVUwo2s8ICzHMfN0Jg_hu_36d1f32c368222d6.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1I6KmVUwo2s8ICzHMfN0Jg_hu_830c1255f9dccf24.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="820"
+data-flex-basis="1968px"
+>&lt;/p>
+&lt;p>I verified that the schedule is in fact not inverted by calling the Auto Attendant at &lt;code>11:26&lt;/code> which is within the defined time range of &lt;code>09:30-12:00&lt;/code> . I was indeed able to hear the greeting which was configured for the after hours call flow. To summarize: setting &lt;code>ComplementEnabled&lt;/code> to &lt;code>$false&lt;/code> through PowerShell is working, but TAC won’t display it correctly.&lt;/p>
+&lt;p>I’ve enabled complement again to verify if there’s any change in how TAC displays things. There isn’t. TAC simply doesn’t care if &lt;code>ComlementEnabled&lt;/code> is enabled or disabled.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1qzcjJD557Se3KN4Kn7yG0w.png"
+width="1205"
+height="159"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1qzcjJD557Se3KN4Kn7yG0w_hu_db07e6ca1f6724b9.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1qzcjJD557Se3KN4Kn7yG0w_hu_1406dbdd4f8dd97.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="757"
+data-flex-basis="1818px"
+>&lt;/p>
+&lt;p>After I enabled &lt;code>ComplementEnabled&lt;/code> I called the Auto Attendant again, still between &lt;code>09:30-12:00&lt;/code> and was able to hear the greeting which is configured for the default call flow.&lt;/p>
+&lt;p>Sadly, I didn’t consider this in the CFV so here, the output &lt;strong>&lt;em>was&lt;/em>&lt;/strong> wrong, when Complement is disabled.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1zYKhgZhp4yPg9XhI8oHEyQ.png"
+width="7040"
+height="11030"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1zYKhgZhp4yPg9XhI8oHEyQ_hu_35b7a3f9b1dc91eb.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1zYKhgZhp4yPg9XhI8oHEyQ_hu_5780bda1e27ac548.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="63"
+data-flex-basis="153px"
+>&lt;/p>
+&lt;p>When Complement is disabled, the &lt;code>Yes&lt;/code> and &lt;code>No&lt;/code> nodes should be switched.&lt;/p>
+&lt;p>The output of the &lt;strong>CheckCallFlowRouting&lt;/strong> is correct though. Even though the checked time of &lt;code>11:41&lt;/code> is within the schedule &lt;code>09:30:00-12:00:00&lt;/code> it says it’s closed because Complement is disabled. In this case, the colors (red/green) are also inverted, and it says &lt;strong>Active After Hours Time Range&lt;/strong> instead of &lt;strong>Active Business Hours Time Range.&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1K99P060upRCKbWvXKWteLQ.png"
+width="2159"
+height="378"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1K99P060upRCKbWvXKWteLQ_hu_40f3ce911bdc67ef.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1K99P060upRCKbWvXKWteLQ_hu_2b6bd51eafb0992a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="571"
+data-flex-basis="1370px"
+>&lt;/p>
+&lt;p>When I check it for &lt;code>13:49&lt;/code> which is not part of the specified schedule, the Auto Attendant is open, and the default call flow is active.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1h4UB7jz6S2MK5IPbazlF4A.png"
+width="2161"
+height="354"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1h4UB7jz6S2MK5IPbazlF4A_hu_5ae425884afc972b.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1h4UB7jz6S2MK5IPbazlF4A_hu_af9731e30f933c39.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="610"
+data-flex-basis="1465px"
+>&lt;/p>
+&lt;p>Luckily, it was easy enough to fix the CFV and add support for Complement disabled schedules in Version 3.1.1. Even when you don’t use the &lt;strong>CheckCallFlowRouting&lt;/strong> paraemeter, you’ll still see a warning when &lt;code>ComplementEnabled&lt;/code> is &lt;code>$false&lt;/code> .&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1ZCUHgh103T16ksqNPm5OTw.png"
+width="2243"
+height="470"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1ZCUHgh103T16ksqNPm5OTw_hu_83236f8f61ca6703.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1ZCUHgh103T16ksqNPm5OTw_hu_eb96c934fae8c594.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="477"
+data-flex-basis="1145px"
+>&lt;/p>
+&lt;p>Here we can see an Auto Attendant, which has two nested AAs. One has Complement disabled and the other one enabled and everything is displayed correctly now. You can see that on the left side, for &lt;strong>Complement Disabled AA&lt;/strong> the &lt;strong>Yes&lt;/strong> option for the business hours goes to the after hours call flow greeting. On the right side for &lt;strong>Complement Enabled AA&lt;/strong> it’s the opposite. (This is the standard.)&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1qwwbJaahEpCKTyEBKlRCQ.png"
+width="7840"
+height="8470"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1qwwbJaahEpCKTyEBKlRCQ_hu_e253a427dee06836.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1qwwbJaahEpCKTyEBKlRCQ_hu_1f37ac0868237905.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="92"
+data-flex-basis="222px"
+>&lt;/p>
+&lt;p>And here you can see, that the after hours call flow greeting in TAC for &lt;strong>Complement Disabled AA&lt;/strong> says: &lt;em>This is the after hours greeting&lt;/em>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1dQgyhp4ak1B3jq6lFs4FDA.png"
+width="1351"
+height="498"
+srcset="https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1dQgyhp4ak1B3jq6lFs4FDA_hu_34628513a48acfd8.png 480w, https://heusser.pro/p/advanced-teams-auto-attendant-troubleshooting-2b6ec32fc9cb/1dQgyhp4ak1B3jq6lFs4FDA_hu_1daeedae2d76ecf3.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="271"
+data-flex-basis="651px"
+>&lt;/p>
+&lt;p>You can get Version 3.1.1 of the M365 CFV from my &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer" target="_blank" rel="noopener"
+>GitHub&lt;/a>.&lt;/p>
+&lt;p>Anyway, this doesn’t change the fact that &lt;strong>I strongly recommend not to use&lt;/strong> &lt;code>**ComplementEnabled: $false**&lt;/code> &lt;strong>in any case&lt;/strong>. There’s no point in using it since TAC won’t display it correctly and even more important, will always set it to &lt;code>$true&lt;/code> again if you update the Auto Attendant through TAC.&lt;/p>
+&lt;p>Using schedules with Complement enabled (inverted) schedules makes total sense because the business hours are configured under &lt;strong>Call flow for after hours&lt;/strong> and the title says &lt;strong>Set business hours&lt;/strong> in TAC, so, it’s only logical that the schedules are inverted and that the after hours call flow is active outside of the configured business hours and business hours (default call flow) are active during the specified time ranges.&lt;/p>
+&lt;p>I hope that this new feature, to check any Auto Attendant’s schedules for any given date and time, also helps you to verify and troubleshoot complex call flows more efficiently. By the way, thanks to a Pull Request from a community member, the CFV now also supports export to PDF!&lt;/p>
+&lt;p>If you like my work, feel free to consider sponsoring my work through my &lt;a class="link" href="https://github.com/sponsors/mozziemozz" target="_blank" rel="noopener"
+>GitHub Sponsors Profile&lt;/a>.&lt;/p></description></item><item><title>Simultaneously Forward Calls to Multiple Numbers in Teams</title><link>https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/</link><pubDate>Sun, 14 May 2023 08:23:26 +0000</pubDate><guid>https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/</guid><description>&lt;p>When configuring call flows in Microsoft Teams, one question I hear a lot is if a call can be forwarded to multiple external numbers at the same time.&lt;/p>
+&lt;p>This most likely applies to after-hours on-call scenarios where it’s absolutely crucial that somebody will eventually answer the call.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/0rL2fJDRh74kKQK7Z.jpg"
+width="1024"
+height="1024"
+srcset="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/0rL2fJDRh74kKQK7Z_hu_5a3eaf8bc6c9c4a4.jpg 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/0rL2fJDRh74kKQK7Z_hu_75186815f37b0f8f.jpg 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="100"
+data-flex-basis="240px"
+>&lt;/p>
+&lt;p>Currently, this is impossible with Teams call queues. However, this is by design. The purpose of a queue is that the call stays within the queue and the company has control over the call for the entire flow of the call. In other words, the queue makes sure that the call stays within company boundaries by ignoring all user configured call answering rules. So, if a user has configured his calls to immediately forward to a personal cell phone, the queue simply doesn’t care and will present the call to the user in Teams anyway.&lt;/p>
+&lt;p>If you must forward the call to multiple numbers at the same time, you can use regular Teams (Microsoft 365) users. I always suggest using dedicated, generic accounts for this, even though it’s an additional license cost. This will make management easier and ensures that no user is able to change the forwarding settings and mess with the call flow on their own.&lt;/p>
+&lt;p>Since I did this in my lab, I used the users I already had to demonstrate this. This means that they have real sounding names and are not generically named accounts like I would use in a real-world scenario.&lt;/p>
+&lt;h4 id="how-to-configure-it">How To Configure It
+&lt;/h4>&lt;p>To configure forwarding to multiple external numbers simultaneously, identify where in your auto attendant or call queue the call must be forwarded.&lt;/p>
+&lt;p>Next, think about to how many numbers the call must be forwarded. Create one Teams enterprise voice enabled user for each external target number. Then create one more Teams voice enabled user. On this user, configure a call group and add all the users which forward to external numbers immediately.&lt;/p>
+&lt;p>Set this user’s call forwarding settings to either immediately forward to or also ring the call group.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1GFWLa0rX87G1PIvrBqX0jg.png"
+width="1251"
+height="640"
+srcset="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1GFWLa0rX87G1PIvrBqX0jg_hu_c92b3a18fdc4c3e6.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1GFWLa0rX87G1PIvrBqX0jg_hu_c46428d6cb3edf07.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="195"
+data-flex-basis="469px"
+>
+&lt;img src="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1Y70lmU10yu9gbNH8JZeJaQ.png"
+width="1248"
+height="787"
+srcset="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1Y70lmU10yu9gbNH8JZeJaQ_hu_52073134cd6b0231.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1Y70lmU10yu9gbNH8JZeJaQ_hu_147b7a241b540f2f.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="158"
+data-flex-basis="380px"
+>&lt;/p>
+&lt;p>The accounts which are members of the call group must all be configured like this.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1XH5BluccXOhJiCrPyMkDQ.png"
+width="1243"
+height="650"
+srcset="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1XH5BluccXOhJiCrPyMkDQ_hu_d751e17c601d8a3.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1XH5BluccXOhJiCrPyMkDQ_hu_7894773101ec806a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="191"
+data-flex-basis="458px"
+>&lt;/p>
+&lt;p>While the first user can be configured to either also ring or immediately forward to the call group, the call group members must be configured to &lt;strong>immediately forward&lt;/strong>. If they’re set to also ring to an external number, it will not work.&lt;/p>
+&lt;h4 id="call-flowdiagram">Call Flow Diagram
+&lt;/h4>&lt;p>I updated the M365 Call Flow Visualizer and added two new parameters.&lt;/p>
+&lt;pre>&lt;code>-ShowNestedUserCallGroups
+Specifies if call groups of users should be expanded and included into the diagram.
+Required: false
+Type: boolean
+Default value: false
+-ShowNestedUserDelegates
+Specifies if delegates s of users should be expanded and included into the diagram.
+Required: false
+Type: boolean
+Default value: false
+&lt;/code>&lt;/pre>
+&lt;p>This allows us to indefinitely expand and display the user calling settings of call group members and delegates in the diagrams as well.&lt;/p>
+&lt;p>Please note that these features are currently only available in the &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer/tree/dev" target="_blank" rel="noopener"
+>DEV&lt;/a> branch of the GitHub repo. I did my best to thoroughly test this but since there are basically unlimited possibilities of how users are interlinked within user call groups and delegates this is quite hard. There may still be some bugs, if you encounter any, please let me know.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1dgXzEKcsD0wZF74b5qg.png"
+width="674"
+height="1694"
+srcset="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1dgXzEKcsD0wZF74b5qg_hu_a6cc687aa00630b6.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1dgXzEKcsD0wZF74b5qg_hu_9beaba2cb0ef2a5.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="39"
+data-flex-basis="95px"
+>
+&lt;img src="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1R6tSs1eHHGO255tRCxAkg.png"
+width="637"
+height="1694"
+srcset="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1R6tSs1eHHGO255tRCxAkg_hu_6250c28e0d894104.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1R6tSs1eHHGO255tRCxAkg_hu_d95be82c760fbb33.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="37"
+data-flex-basis="90px"
+>&lt;/p>
+&lt;h4 id="other-options">Other Options
+&lt;/h4>&lt;p>This also works if you use call delegation instead of a call group with both immediately forward and also ring on the first user. I tested it with Microsoft Calling Plans, but it should work with Direct Routing or Operator Connect as well. The maximum amount of simultaneous external forwards via call group I tested was three and that still worked as expected.&lt;/p>
+&lt;p>I recommend using a call group over delegates because this gives you a little more flexibility. While delegates will always simultaneously ring all delegates, a call group can be configured for serial ring as well. In this case, it will always ring for &lt;strong>20 seconds&lt;/strong> per call group member before the next one is tried. This time out cannot be changed as of today.&lt;/p>
+&lt;h4 id="caveats">Caveats
+&lt;/h4>&lt;p>When you do this, you need to be aware of issues that might occur. At the beginning of this article, I briefly mentioned that the purpose of a queue is to stay in control of the call for the entire time. That’s not the case when using external forwarding on user calling settings. For example, if one of the external targets is not reachable by e.g. having a rather short voicemail timeout, is in flight mode or just has no reception, calls might get lost on personal voicemail boxes outside of a company’s control. Once a call hits any voicemail box, the call is technically connected and will stop ringing the other targets, even if parallel ringing is configured on the call group. This also applies to call groups configured in serial ring. If e.g. the first target is not reachable, and the call goes to voicemail the other targets won’t even be tried anymore.&lt;/p>
+&lt;p>It’s also noteworthy that user configured calling settings can become extremely complex and it’s easy for users (or admins for that matter) to build loops or enable forwards without knowing about it.&lt;/p>
+&lt;p>The same goes for the M365 Call Flow Visualizer, I don’t think that it’s possible to accurately display everything that’s configured in nested user calling settings. I tried my best to render call flows where a serial ring is configured on a user configured call group though. As an example, I configured the same call group which was already shown in the above diagram for serial ring. Now all the call group targets are displayed in chronological order, and you can see how the call trickles down to the next target after 20 seconds.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/14omtG0AeKdTOD4TzNItlA.png"
+width="690"
+height="2971"
+srcset="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/14omtG0AeKdTOD4TzNItlA_hu_21b2714bedecc897.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/14omtG0AeKdTOD4TzNItlA_hu_cd0e4d7fbd1af96d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="23"
+data-flex-basis="55px"
+>&lt;/p>
+&lt;p>Unlike with call queues and auto attendants, where the M365 Call Flow Visualizer does a fantastic job displaying things as they are, please take complicated nested user call groups and delegate flows with a grain of salt. At least for now.&lt;/p>
+&lt;p>Look at this call flow for example. When the call gets to &lt;strong>Bill Stearn&lt;/strong> it will also ring his call group in serial order. Thus, it will ring the mobile number &lt;strong>+4178857****&lt;/strong> for 20 seconds. Because there is an unanswered timeout of 20s configured for &lt;strong>Bill&lt;/strong> the call will then be forwarded to his delegates where the call will be forwarded to &lt;strong>Bobby&lt;/strong> and &lt;strong>Mike&lt;/strong> and they have an immediate forwarding configured to their mobiles.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1cZyXiLxV40aMOM5YsXkbUw.png"
+width="882"
+height="3730"
+srcset="https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1cZyXiLxV40aMOM5YsXkbUw_hu_2b0545fc8ba5ed0.png 480w, https://heusser.pro/p/simultaneously-forward-calls-to-multiple-numbers-in-teams-d228adb805b7/1cZyXiLxV40aMOM5YsXkbUw_hu_220bb95abada4b62.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="23"
+data-flex-basis="56px"
+>&lt;/p>
+&lt;p>All the users who are members of the call group are linked after each other because the call group is configured in serial ring. The links which point from the delegate sub graph (which is always parallel ring) to the delegate users are still linked to the correct user but it’s not very easy to understand what’s going on.&lt;/p>
+&lt;p>When we think about the delegate flow, the chaining from &lt;strong>Bobby’s&lt;/strong> time out of 20s doesn’t actually apply anymore and the call won’t be forwarded to &lt;strong>Mike&lt;/strong> because that part of the diagram only applies to the serial order of &lt;strong>Bill’s&lt;/strong> call group.&lt;/p>
+&lt;p>Last but not least, &lt;strong>Wendy&lt;/strong> is also included in the call flow even though a call could never go this far in that specific call flow because of the applied time outs.&lt;/p>
+&lt;p>Unfortunately, I currently don’t see any way I could solve this with the visualizer script.&lt;/p>
+&lt;p>I’d like to point out that configuring both a call group and delegates on the same user seems extremely unlikely and is something I would generally refrain from.&lt;/p>
+&lt;h4 id="conclusion">Conclusion
+&lt;/h4>&lt;p>Although it’s not an ideal solution, using generic user accounts and call groups for certain scenarios is for sure a creative one. In some cases, this might help you solve a very specific niche scenario which previously seemed impossible.&lt;/p>
+&lt;p>I do recommend using auto attendants and call queues to build your call flows whenever possible. If you must use call groups, I advise you to keep it simple and create generic accounts to which only Teams admins have access to. Otherwise, it’s free-for-all kind of situation and users can mess with your configuration as they please.&lt;/p>
+&lt;p>If you stick with simple scenarios (like shown in the first three diagrams in this article) and avoid building call group loops or timeouts which cancel each other out, I don’t see any issues why you shouldn’t do this if you really need to.&lt;/p></description></item><item><title>How To Export a Teams Call Flow to PNG</title><link>https://heusser.pro/p/how-to-export-a-teams-call-flow-to-png-4d38a8c4f183/</link><pubDate>Tue, 13 Sep 2022 16:21:20 +0000</pubDate><guid>https://heusser.pro/p/how-to-export-a-teams-call-flow-to-png-4d38a8c4f183/</guid><description>&lt;p>&lt;strong>Update 29.01.2023&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>This blog post is now obsolete. The M365 Call Flow Visualizer is now able to directly export PNG files using the &lt;code>-ExportPng $true&lt;/code> parameter. Please make sure to install the &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer#install-nodejs-and-mermaid-cli" target="_blank" rel="noopener"
+>prerequisites&lt;/a>.&lt;/p>&lt;/blockquote>
+&lt;p>/Update&lt;/p>
+&lt;p>&lt;a class="link" href="https://heusser.pro/p/automatically-render-microsoft-teams-call-flow-diagrams-607b89df4154" >Back then&lt;/a>, when I thought about making the &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer" target="_blank" rel="noopener"
+>M365 Call Flow Visualizer&lt;/a> a reality I was looking for a way to generate a diagram from code. And &lt;a class="link" href="https://mermaid-js.github.io/" target="_blank" rel="noopener"
+>Mermaid-JS&lt;/a> was the answer. If you’re unfamiliar with Markdown, outputting diagrams to either Markdown, Mermaid or HTML files might look like an odd decision. However, my endgame always was to programmatically generate call flow diagrams and render them on a documentation website built with &lt;a class="link" href="https://dotnet.github.io/" target="_blank" rel="noopener"
+>DocFx&lt;/a>.&lt;/p>
+&lt;p>HTML Output was only added later down the line because I thought that having an option to easily share these files with other, maybe non-tech-savvy people (who wouldn’t know what to do with a *.md file) would be a good option. Having clickable greeting nodes is another benefit of the HTML output option.&lt;/p>
+&lt;p>But of course, sometimes images are the easiest way of sharing things or including them in other documents or services such as Email, Word, or OneNote. While I haven’t found a way to automatically export a Teams Call Flow directly to an image, I’m going to show you what I think is the easiest way for the time being.&lt;/p>
+&lt;h4 id="export-topng">Export to PNG
+&lt;/h4>&lt;p>First, install the VS Code Extension &lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor" target="_blank" rel="noopener"
+>Mermaid Editor&lt;/a> from the Marketplace. Once installed, go to the extension settings, and configure them as you see fit. I suggest Type: “png” with a transparent background for the best results.&lt;/p>
+&lt;p>Next, run the M365CallFlowVisualizerV2.ps1 script with the &lt;code>-DocType Mermaid&lt;/code> parameter. This will output a Mermaid file instead of Mermaid code inside a Markdown file.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="p">.&lt;/span> &lt;span class="p">.\&lt;/span>&lt;span class="n">M365CallFlowVisualizerV2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">ps1&lt;/span> &lt;span class="n">-theme&lt;/span> &lt;span class="n">custom&lt;/span> &lt;span class="n">-ObfuscatePhoneNumbers&lt;/span> &lt;span class="vm">$true&lt;/span> &lt;span class="n">-DocType&lt;/span> &lt;span class="n">Mermaid&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>In the above exmaple, I’m using the fairly new &lt;code>-ObfuscatePhoneNumbers&lt;/code> parameter as well. This way, I can share call flow diagrams without worrying about getting spam calls to my test numbers.&lt;/p>
+&lt;p>In VS Code, navigate to your &lt;code>.\Output&lt;/code> folder and look for the generated &lt;code>*.mmd&lt;/code> (Mermaid) file and open it. You will now see an eye icon in the top right corner of VS Code. Click it.&lt;/p>
+&lt;p>This will preview the diagram in split-view.&lt;/p>
+&lt;p>Now switch back to the &lt;code>*.mmd&lt;/code> file and notice how a little download icon appears next to the eye icon.&lt;/p>
+&lt;p>Click this icon to generate a PNG image from the Mermaid file. The image will be saved to the same directory as the original file.&lt;/p>
+&lt;p>Now you have a nice PNG file, including a transparent background of your call flow.&lt;/p>
+&lt;h4 id="appendix">Appendix
+&lt;/h4>&lt;p>I am aware that &lt;a class="link" href="https://mermaid.ink" target="_blank" rel="noopener"
+>https://mermaid.ink&lt;/a> offers an API to directly output to SVG since I already made use of that to render Teams User &lt;a class="link" href="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7" >Calling Settings&lt;/a>. From what I can tell right now, it looks like an encoded call flow is just too big for the API to handle. I’m also looking into &lt;a class="link" href="https://github.com/mermaid-js/mermaid-cli" target="_blank" rel="noopener"
+>Mermaid CLI&lt;/a> to see if this can be used in some form or another to make outputting images a little bit easier in the future. I still hope that exporting to PNG gives you more flexibility, even though it’s a manual process.&lt;/p></description></item><item><title>Automatically Render Diagrams of Teams User Calling Settings</title><link>https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/</link><pubDate>Sun, 17 Apr 2022 10:38:04 +0000</pubDate><guid>https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/</guid><description>&lt;p>Hello friends.&lt;/p>
+&lt;p>A few weeks ago, Microsoft made a lot of Teams admins happy by rolling out a new feature which allows admins to change (or view) a Teams user’s calling settings directly from the Teams admin center. Gone are the days were we admins needed to be delegates of users to change these kinds of settings.&lt;/p>
+&lt;p>Those of you who know me a little better might know that I don’t have much experience with Skype for Business and thus only ever heard stories about SEFAUtil (secondary extension feature activation). From what I can see, this new feature is basically SEFAUtil for Teams.&lt;/p>
+&lt;p>I won’t go into detail about the functionalities in TAC as these has been covered plenty by other community bloggers already. As it’s often the case, this functionality has been available with PowerShell before it has made its way to the TAC. But anyways, here’s how it looks like in TAC.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/161NOVj8fF2bSwiLrlp2BHA.png"
+width="1799"
+height="1279"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/161NOVj8fF2bSwiLrlp2BHA_hu_db94adbb6af8cd0f.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/161NOVj8fF2bSwiLrlp2BHA_hu_41711bc22bba82c3.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="337px"
+>&lt;/p>
+&lt;p>I haven’t used it much yet but one time I urgently needed to change a user’s forwarding settings, TAC was repeatedly throwing errors at me. I had no choice than to fall back to PowerShell.&lt;/p>
+&lt;h4 id="reading-user-calling-settings-with-powershell">Reading User Calling Settings with PowerShell
+&lt;/h4>&lt;p>Of course, we can not only set them by PS but also read them:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Get-CsUserCallingSettings&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="n">user&lt;/span>&lt;span class="nv">@domain&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">com&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Since I’ve already done much more complex things by &lt;a class="link" href="https://heusser.pro/p/automatically-render-microsoft-teams-call-flow-diagrams-607b89df4154" >generating a diagram of huge Auto Attendant and Call Queue call flows&lt;/a>, I figured why not leverage PowerShell to also draw diagrams from user calling settings?&lt;/p>
+&lt;p>I must admit that it turned out a little more complex than I anticipated. During final testing, I generated a diagram for each possible scenario, and I counted no less than 64 different ways an enterprise voice enabled user can configure his calling settings. This also includes simultaneous and serial ring for call groups. At least I already had a lot of practice on how to structure the code and how to draw the diagrams.&lt;/p>
+&lt;h4 id="user-calling-settings-diagramexamples">User Calling Settings Diagram Examples
+&lt;/h4>&lt;p>Here are some examples, including the corresponding Teams client settings.&lt;/p>
+&lt;p>In this example, “Also ring” and “If unanswered” are the same. Call group is the only forwarding target which supports this scenario.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1TlJx5ucG8YIsZDtamLyzjw.png"
+width="639"
+height="544"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1TlJx5ucG8YIsZDtamLyzjw_hu_6d52d223158760d5.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1TlJx5ucG8YIsZDtamLyzjw_hu_1550536024958d5.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="117"
+data-flex-basis="281px"
+>
+&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/13oEWK0gZhI7y34lBQ40sQ.png"
+width="951"
+height="1747"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/13oEWK0gZhI7y34lBQ40sQ_hu_ff23f3656a977ed.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/13oEWK0gZhI7y34lBQ40sQ_hu_d29c8fb2bc47ae0e.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="54"
+data-flex-basis="130px"
+>&lt;/p>
+&lt;p>Here’s one where immediate forwarding is enabled:&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/174NDGhlNdC2jWmfcns2gA.png"
+width="637"
+height="527"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/174NDGhlNdC2jWmfcns2gA_hu_d69f14535fb7cf19.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/174NDGhlNdC2jWmfcns2gA_hu_9ba7f408ece701d0.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="120"
+data-flex-basis="290px"
+>
+&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1en6dkpg1L1BeJJCVH3lrA.png"
+width="909"
+height="1612"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1en6dkpg1L1BeJJCVH3lrA_hu_8c84ed61d0b9f7bd.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1en6dkpg1L1BeJJCVH3lrA_hu_7f99ef02f1b3a6d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="135px"
+>&lt;/p>
+&lt;p>When immediately forwarding to delegates, an “If unanswered target is required”. “Do nothing” is not available in this case.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1kMUtWPH8Sg9kq0ZXqnvBug.png"
+width="632"
+height="571"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1kMUtWPH8Sg9kq0ZXqnvBug_hu_9a02a6e867b8effa.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1kMUtWPH8Sg9kq0ZXqnvBug_hu_4d477815b1f68d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="110"
+data-flex-basis="265px"
+>&lt;/p>
+&lt;p>In this case, only “Also ring” is configured and “If unanswered” is set to “Do nothing”.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1X0hbtVapj1mEJsp8HHaNJQ.png"
+width="635"
+height="535"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1X0hbtVapj1mEJsp8HHaNJQ_hu_edad5819689aef25.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1X0hbtVapj1mEJsp8HHaNJQ_hu_21e4412ea21a2a92.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="118"
+data-flex-basis="284px"
+>
+&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1gbiySQUKuer0byUExkceg.png"
+width="526"
+height="491"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1gbiySQUKuer0byUExkceg_hu_5a42405200ed9b2a.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1gbiySQUKuer0byUExkceg_hu_f9627ab11aac155b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="107"
+data-flex-basis="257px"
+>&lt;/p>
+&lt;p>And here, “Also ring” is set to “No one else” but “If unanswered” is set to an external phone number with a timeout of 50 seconds.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1poPeDhcPwlEdO1KRPojg.png"
+width="638"
+height="544"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1poPeDhcPwlEdO1KRPojg_hu_1b8ee69f9b7e4a15.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1poPeDhcPwlEdO1KRPojg_hu_7187a16c9c88e615.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="117"
+data-flex-basis="281px"
+>
+&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1XRyPWHckC3MglldUVHgw.png"
+width="633"
+height="1138"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1XRyPWHckC3MglldUVHgw_hu_300feafc0faded31.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1XRyPWHckC3MglldUVHgw_hu_291e5d7b5466c40b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="55"
+data-flex-basis="133px"
+>&lt;/p>
+&lt;p>If you like, you can check out all the examples &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer/tree/main/Examples/UserCallingSettings" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/p>
+&lt;h4 id="render-and-export-diagrams-like-apro">Render and Export Diagrams like a Pro!
+&lt;/h4>&lt;p>Or you can head over to my &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer" target="_blank" rel="noopener"
+>GitHub Repo&lt;/a> to clone it from there to try it for yourself. For now, the function is intended for standalone usage. Meaning, it’s not yet implemented into the M365 Call Flow Visualizer.&lt;/p>
+&lt;p>Once the repo is cloned, you can import the function by dot sourcing it in your terminal:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="p">.&lt;/span> &lt;span class="p">.\\&lt;/span>&lt;span class="n">Functions&lt;/span>&lt;span class="p">\\&lt;/span>&lt;span class="nb">Get-TeamsUserCallFlow&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">ps1&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>After that, you can just run the function by either using the &lt;code>-UserPrincipalName&lt;/code> or the &lt;code>-UserId&lt;/code> parameter where &lt;code>-UserId&lt;/code> expects an Azure AD User Object Id from your tenant.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Get-TeamsUserCallFlow&lt;/span> &lt;span class="n">-UserPrincipalName&lt;/span> &lt;span class="n">user&lt;/span>&lt;span class="nv">@domain&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">com&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>There are a few parameters to play with. By default, the function will generate an SVG image of the diagram and opens it in your default browser by leveraging the &lt;a class="link" href="https://mermaid.ink/" target="_blank" rel="noopener"
+>mermaid.ink&lt;/a> service. It will also save the diagram to&lt;code>.\Output\UserCallingSettings&lt;/code> by default. You can change this by specifying the &lt;code>-CustomFilePath&lt;/code> parameter.&lt;/p>
+&lt;p>Although it has cost me a lot of time, I was finally able to pull off directly exporting an SVG image without using any additional, local dependencies. I’m doing this by encoding the diagram in Base64 and calling mermaid.ink. During testing I noticed that mermaid.ink is quite picky when it comes to these base 64 encoded URLs. At first, a lot of my diagrams failed due to illegal padding characters and so on. I believe that I was able to fix most of that. If any of your diagrams fail to render on mermaid ink, please let me know.&lt;/p>
+&lt;h4 id="create-a-diagram-for-all-yourusers">Create a Diagram for all your users
+&lt;/h4>&lt;p>I’ve also included an example of how to draw a diagram for each enabled user in your tenant. You can copy it from this gist or run it directly from the root of the cloned repo.&lt;/p>
+&lt;script src="https://gist.github.com/mozziemozz/2687f5fe0a2fae48739d71bbd5a86909.js">&lt;/script>
+&lt;h4 id="some-notes-on-recursive-user-callingsettings">Some Notes on Recursive User Calling Settings
+&lt;/h4>&lt;p>I do not support recursive user calling settings in my first release. I’m not sure if there is a strong enough need for it too. I know that some teams like to forward calls to each other if they’re not available. It would certainly be handy for troubleshooting purposes as we could detect infinite forwarding loops created by users much faster. On the other hand, diagrams could get huge and hard to read. What do you think, should I work on recursive diagrams for a future release? Let me know!&lt;/p>
+&lt;h4 id="whats-next">What’s next
+&lt;/h4>&lt;p>There are a couple of changes planned for this project. If you pay close attention, you can see that I already moved some functions like “Connect-M365CFV” out of the main script and import it by dot sourcing instead. Since the main script still has more than 3000 lines of code (including carriage returns) I’m planning to move most of the functions to separate files and dot source them as well.&lt;/p>
+&lt;p>When I get the time, I will also implement user calling settings into the main script. As an example, a call flow which forwards calls to a user will then render like this.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1cje7dY50wNOdeup0F1EQ.png"
+width="938"
+height="1639"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1cje7dY50wNOdeup0F1EQ_hu_cc992eaa5625f1b.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1cje7dY50wNOdeup0F1EQ_hu_ae5b30257124471b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="57"
+data-flex-basis="137px"
+>&lt;/p>
+&lt;p>Whereas it currently “stops” at the users and looks like this:&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1VLbdHmPHHCI0WpnbAhXGYw.png"
+width="1529"
+height="1605"
+srcset="https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1VLbdHmPHHCI0WpnbAhXGYw_hu_450edaeec85863ba.png 480w, https://heusser.pro/p/automatically-render-diagrams-of-teams-user-calling-settings-551d6b12b0a7/1VLbdHmPHHCI0WpnbAhXGYw_hu_1a82da86ce463ba.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="95"
+data-flex-basis="228px"
+>&lt;/p>
+&lt;p>I will also try to do the same with SVG export as I did for the user calling settings. I’m not entirely sure it will work with super large diagrams though.&lt;/p>
+&lt;p>I hope that you enjoy automatically drawing diagrams of your users calling settings as much as I do.&lt;/p>
+&lt;p>Happy Easter everyone!&lt;/p></description></item></channel></rss>

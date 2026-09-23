@@ -1,0 +1,669 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Microsoft 365 Groups on HEUSSER.PRO</title><link>https://heusser.pro/categories/microsoft-365-groups/</link><description>Recent content in Microsoft 365 Groups on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 12 Sep 2026 19:37:37 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/microsoft-365-groups/index.xml" rel="self" type="application/rss+xml"/><item><title>Accessing Content of Microsoft 365 Group Mailboxes Through Microsoft Graph</title><link>https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/</link><pubDate>Sat, 12 Sep 2026 19:37:37 +0000</pubDate><guid>https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/</guid><description>&lt;img src="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/cover.png" alt="Featured image of post Accessing Content of Microsoft 365 Group Mailboxes Through Microsoft Graph" />&lt;p>If you ever need to use the Graph API to access any kind of email related content, the first place you&amp;rsquo;d usually look is the &lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/mail-api-overview?view=graph-rest-1.0" target="_blank" rel="noopener"
+>Graph Mail API&lt;/a>. However, if the emails or calendar events you need to access are stored in a Microsoft 365 Group&amp;rsquo;s mailbox, you&amp;rsquo;ll notice quite quickly that accessing their content is not supported by this API. But that doesn&amp;rsquo;t mean it&amp;rsquo;s impossible.&lt;/p>
+&lt;p>I recently came across a claim that the Graph API doesn&amp;rsquo;t support group mailboxes. But I knew that there must be some way to access group emails since I already did that through Power Autmate for &lt;a class="link" href="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/" >this&lt;/a> blog post. In fact, the first version of this flow used a shared mailbox that was subscribed to receive all emails sent to the group in its own mailbox and the flow accessed the Teams voicemails from there. But later I figured out how to access them directly. Although we can&amp;rsquo;t always see what requests Power Automate performs, a lot of them use Graph under the hood which led me to believe that there must be a way to do it from Graph as well.&lt;/p>
+&lt;h2 id="group-conversations-api">Group Conversations API
+&lt;/h2>&lt;p>Emails in group conversations are structured differently than in user or shared mailboxes. They are accessed by their &lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/group-list-conversations?view=graph-rest-1.0&amp;amp;tabs=http" target="_blank" rel="noopener"
+>&lt;code>conversation&lt;/code>&lt;/a>, &lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/group-list-threads?view=graph-rest-1.0&amp;amp;tabs=http" target="_blank" rel="noopener"
+>&lt;code>thread&lt;/code>&lt;/a> and &lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/conversationthread-list-posts?view=graph-rest-1.0&amp;amp;tabs=http" target="_blank" rel="noopener"
+>&lt;code>post&lt;/code>&lt;/a> IDs. A post is basically the equivalent to a message in the normal Graph Mail API.&lt;/p>
+&lt;h3 id="group-conversation-example">Group Conversation Example
+&lt;/h3>&lt;p>First, I define my group ID in &lt;code>$groupId&lt;/code>.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$groupId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;0ad3ddfb-ae4e-4a4e-b564-36231b966ba6&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>I&amp;rsquo;ll use the same group ID throughout this blog. With the code below, I can list group conversations in a group mailbox. Note that the result is usually paginated and that you&amp;rsquo;ll need to fetch all pages. But in this blog post I&amp;rsquo;m keeping it easy and only ever select one example email.&lt;/p>
+&lt;p>This will fetch the list of conversations in the specified group and select the first one as an example.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$conversationsUri&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/groups/&lt;/span>&lt;span class="nv">$groupId&lt;/span>&lt;span class="s2">/conversations&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$conversations&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">GET&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="nv">$conversationsUri&lt;/span> &lt;span class="n">-OutputType&lt;/span> &lt;span class="n">PSObject&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$conversation&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$conversations&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mf">0&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-2.png"
+width="1675"
+height="943"
+srcset="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-2_hu_94508942169eeaf7.png 480w, https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-2_hu_9e70c6819c1e74d4.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output of $conversation"
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="426px"
+>&lt;/p>
+&lt;p>Since I know know the group ID, I can fetch its threads.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$conversationId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">uri&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">EscapeDataString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nv">$conversation&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$threadsUri&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/groups/&lt;/span>&lt;span class="nv">$groupId&lt;/span>&lt;span class="s2">/conversations/&lt;/span>&lt;span class="nv">$conversationId&lt;/span>&lt;span class="s2">/threads&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$threads&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">GET&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="nv">$threadsUri&lt;/span> &lt;span class="n">-OutputType&lt;/span> &lt;span class="n">PSObject&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$thread&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$threads&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mf">0&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-4.png"
+width="1675"
+height="943"
+srcset="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-4_hu_4c09d382a8428e9b.png 480w, https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-4_hu_df31c2c3cedbc82d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output of $thread"
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="426px"
+>&lt;/p>
+&lt;p>And with both the conversation and the thread ID I can finally fetch posts (emails).&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$threadId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">uri&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">EscapeDataString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nv">$thread&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$postsUri&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/groups/&lt;/span>&lt;span class="nv">$groupId&lt;/span>&lt;span class="s2">/conversations/&lt;/span>&lt;span class="nv">$conversationId&lt;/span>&lt;span class="s2">/threads/&lt;/span>&lt;span class="nv">$threadId&lt;/span>&lt;span class="s2">/posts&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$posts&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">GET&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="nv">$postsUri&lt;/span> &lt;span class="n">-OutputType&lt;/span> &lt;span class="n">PSObject&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$post&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$posts&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mf">0&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-5.png"
+width="1675"
+height="943"
+srcset="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-5_hu_31eb639524d0308c.png 480w, https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-5_hu_a4381b105d302d84.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output of $post"
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="426px"
+>&lt;/p>
+&lt;p>As you can see, each output contains slightly different data. So, to get a complete view of that email, I need to stitch it together.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$groupEmail&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">pscustomobject&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ConversationId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$conversation&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">id&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ConversationTopic&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$conversation&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">topic&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ThreadId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$thread&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">id&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ThreadTopic&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$thread&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">topic&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PostId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$post&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">id&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ReceivedDateTime&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$post&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">receivedDateTime&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">From&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$post&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">from&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">emailAddress&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Sender&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$post&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">sender&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">emailAddress&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">HasAttachments&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$post&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">hasAttachments&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Preview&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$conversation&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">preview&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Body&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$post&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">body&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-6.png"
+width="1675"
+height="943"
+srcset="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-6_hu_333550d3cf5895dd.png 480w, https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-6_hu_567ff2eaf569c556.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output of $groupEmail"
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="426px"
+> &lt;img src="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-13.png"
+width="1357"
+height="516"
+srcset="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-13_hu_7d52c564d970942a.png 480w, https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-13_hu_8aec6a37897f336a.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Same group email in Outlook on the Web"
+class="gallery-image"
+data-flex-grow="262"
+data-flex-basis="631px"
+>&lt;/p>
+&lt;h3 id="caveats-of-group-conversations-api">Caveats of Group Conversations API
+&lt;/h3>&lt;p>The conversation endpoint only enumerates items from the &lt;strong>Inbox&lt;/strong>. Once emails are moved out of there, they&amp;rsquo;re not returned anymore. It also only indicates if the message has attachments or not. Actually accessing them is only possible with delegated authentication which I did not test with Graph in this case as I was performing all tests with application permissions only. However, the blog post about the Teams Shared Voicemail flow I referenced earlier kind of already proves that it&amp;rsquo;s possible to access attachments with delegated permissions.&lt;/p>
+&lt;h2 id="what-else-is-different-with-groups">What Else is Different With Groups?
+&lt;/h2>&lt;p>Group mailboxes are quite different to normal mailboxes. For example, support for rules and custom folders must be turned on at the organization level. This process is described &lt;a class="link" href="https://learn.microsoft.com/en-us/microsoft-365/enterprise/manage-folders-and-rules-feature?view=o365-worldwide" target="_blank" rel="noopener"
+>here&lt;/a> on Microsoft Learn.&lt;/p>
+&lt;p>With a tenant&amp;rsquo;s default settings (custom folders and rules disabled), a group mailbox only exposes the &lt;strong>Inbox&lt;/strong> and &lt;strong>Deleted Items&lt;/strong> folder in Outlook even though the mailbox technically still contains standard folders such as &lt;strong>Calendar&lt;/strong>, &lt;strong>Contacts&lt;/strong>, &lt;strong>Drafts&lt;/strong>, &lt;strong>Archive&lt;/strong>, &lt;strong>Tasks&lt;/strong> and so on. But getting their contents through the Graph API is not very straight forward. That&amp;rsquo;s what I&amp;rsquo;m writing about today.&lt;/p>
+&lt;p>Exchange Online PowerShell can get a group mailbox&amp;rsquo;s folder statistics but not its actual mailbox folders.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$folderStatistics&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-MailboxFolderStatistics&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="nv">$groupId&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-7.png"
+width="1675"
+height="1234"
+srcset="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-7_hu_1439aa5c3f2ac8c6.png 480w, https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-7_hu_fc80934c07a69998.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output of $folderStatistics"
+class="gallery-image"
+data-flex-grow="135"
+data-flex-basis="325px"
+>&lt;/p>
+&lt;p>As you can see, there is way more than what Outlook shows us. But you could argue that this applies to normal mailboxes as well.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image.png"
+width="589"
+height="259"
+srcset="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image_hu_3186cb9d87e74200.png 480w, https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image_hu_129315b41036cfe6.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Group Mailbox folders in Outlook on the Web"
+class="gallery-image"
+data-flex-grow="227"
+data-flex-basis="545px"
+>&lt;/p>
+&lt;p>I enabled custom folders and created a folder called &lt;strong>Test&lt;/strong> in my test group mailbox and I&amp;rsquo;ll walk you through how you can access emails through Graph in folders other than &lt;strong>Inbox&lt;/strong> as well.&lt;/p>
+&lt;p>Pay attention to the &lt;code>ContentMailboxGuid&lt;/code> above. In this case I got it through Exchange PowerShell but I&amp;rsquo;ll show you how you can get it from Graph as well. We&amp;rsquo;ll need this to fetch messages from Graph later.&lt;/p>
+&lt;h2 id="endpoints-and-permissions-map">Endpoints and Permissions Map
+&lt;/h2>&lt;p>Below is a map that shows which endpoints I used to get what kind of content, which IDs need to be known before the API request and what permissions it needs.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Endpoint&lt;/th>
+&lt;th>What I get&lt;/th>
+&lt;th>ID I need&lt;/th>
+&lt;th>Application permission&lt;/th>
+&lt;th>Delegated permission&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;a class="link" href="https://learn.microsoft.com/graph/api/group-list-conversations" target="_blank" rel="noopener"
+>&lt;code>GET /groups/{groupId}/conversations&lt;/code>&lt;/a>&lt;/td>
+&lt;td>Conversations exposed by the normal group conversation collection&lt;/td>
+&lt;td>Group ID&lt;/td>
+&lt;td>&lt;code>Group-Conversation.Read.All&lt;/code>&lt;/td>
+&lt;td>&lt;code>Group-Conversation.Read.All&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;a class="link" href="https://learn.microsoft.com/graph/api/conversation-list-threads" target="_blank" rel="noopener"
+>&lt;code>GET /groups/{groupId}/conversations/{conversationId}/threads&lt;/code>&lt;/a>&lt;/td>
+&lt;td>Threads in an enumerated conversation&lt;/td>
+&lt;td>Group and conversation ID&lt;/td>
+&lt;td>&lt;code>Group-Conversation.Read.All&lt;/code>&lt;/td>
+&lt;td>&lt;code>Group-Conversation.Read.All&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;a class="link" href="https://learn.microsoft.com/graph/api/conversationthread-list-posts" target="_blank" rel="noopener"
+>&lt;code>GET /groups/{groupId}/conversations/{conversationId}/threads/{threadId}/posts&lt;/code>&lt;/a>&lt;/td>
+&lt;td>Posts in an enumerated thread&lt;/td>
+&lt;td>Group, conversation, and thread ID&lt;/td>
+&lt;td>&lt;code>Group-Conversation.Read.All&lt;/code>&lt;/td>
+&lt;td>&lt;code>Group-Conversation.Read.All&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;a class="link" href="https://learn.microsoft.com/graph/api/mailbox-list-folders" target="_blank" rel="noopener"
+>&lt;code>GET /admin/exchange/mailboxes/{mailboxId}/folders&lt;/code>&lt;/a>&lt;/td>
+&lt;td>Mailbox folders, including custom folders, Deleted Items, and Calendar&lt;/td>
+&lt;td>Exchange mailbox ID&lt;/td>
+&lt;td>&lt;code>MailboxFolder.Read.All&lt;/code>&lt;/td>
+&lt;td>&lt;code>MailboxFolder.Read&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;a class="link" href="https://learn.microsoft.com/graph/api/mailboxfolder-list-items" target="_blank" rel="noopener"
+>&lt;code>GET /admin/exchange/mailboxes/{mailboxId}/folders/{folderId}/items&lt;/code>&lt;/a>&lt;/td>
+&lt;td>Items and selected MAPI properties from any discovered folder&lt;/td>
+&lt;td>Exchange mailbox and folder ID&lt;/td>
+&lt;td>&lt;code>MailboxItem.Read.All&lt;/code>&lt;/td>
+&lt;td>&lt;code>MailboxItem.Read&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;a class="link" href="https://learn.microsoft.com/graph/api/post-get" target="_blank" rel="noopener"
+>&lt;code>GET /groups/{groupId}/conversations/{conversationId}/threads/{threadId}/posts/{postId}&lt;/code>&lt;/a>&lt;/td>
+&lt;td>One post directly, including a post no longer returned by conversation enumeration&lt;/td>
+&lt;td>Group, conversation, thread, and post ID&lt;/td>
+&lt;td>&lt;code>Group-Conversation.Read.All&lt;/code>&lt;/td>
+&lt;td>&lt;code>Group-Conversation.Read.All&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;a class="link" href="https://learn.microsoft.com/graph/api/group-list-events" target="_blank" rel="noopener"
+>&lt;code>GET /groups/{groupId}/events&lt;/code>&lt;/a>&lt;/td>
+&lt;td>Group event collection&lt;/td>
+&lt;td>Group ID&lt;/td>
+&lt;td>Not supported&lt;/td>
+&lt;td>&lt;code>Group.Read.All&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;a class="link" href="https://learn.microsoft.com/graph/api/event-get" target="_blank" rel="noopener"
+>&lt;code>GET /groups/{groupId}/events/{eventId}&lt;/code>&lt;/a>&lt;/td>
+&lt;td>One known group event&lt;/td>
+&lt;td>Group and event ID&lt;/td>
+&lt;td>&lt;code>Calendars.Read&lt;/code>&lt;/td>
+&lt;td>&lt;code>Calendars.Read&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="finding-the-mailbox-guid-from-group-conversations-api-results">Finding the Mailbox GUID from Group Conversations API Results
+&lt;/h2>&lt;p>I showed you before we can get the Mailbox GUID from Exchange&amp;rsquo;s &lt;code>Get-MailboxFolderStatistics&lt;/code> function. Now we&amp;rsquo;ll use some PowerShell trickery to get it directly from the Graph API.&lt;/p>
+&lt;p>A conversation ID returned by the group conversations endpoint looks something like this:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">AAQkADkyMmU5NzY3LTdmZWYtNDU1MS04YWQxLTU0ZjBkNTQ0MzVkMwAQAHZjhRl8ul1NkSEqRetlZNA=
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>I would have expected this to be a normal Base64 encoded string but when I tried to decode it I got nothing. Then I asked GitHub Copilot and I&amp;rsquo;m going to level with you here and disclose that I did not write this code myself.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$base64ConversationId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$conversation&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">id&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Replace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;-&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;+&amp;#39;&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">Replace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;_&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;/&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$base64ConversationId&lt;/span> &lt;span class="p">+=&lt;/span> &lt;span class="s1">&amp;#39;=&amp;#39;&lt;/span> &lt;span class="p">*&lt;/span> &lt;span class="p">((&lt;/span>&lt;span class="mf">4&lt;/span> &lt;span class="p">-&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$base64ConversationId&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Length&lt;/span> &lt;span class="p">%&lt;/span> &lt;span class="mf">4&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="p">%&lt;/span> &lt;span class="mf">4&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$conversationIdBytes&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">Convert&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">FromBase64String&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nv">$base64ConversationId&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$conversationIdText&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">Text.Encoding&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">ASCII&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">GetString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nv">$conversationIdBytes&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mailboxGuid&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">regex&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">Match&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$conversationIdText&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;(?i)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">).&lt;/span>&lt;span class="n">Value&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>As far as I know, this isn&amp;rsquo;t documented anywhere. But the code above converts a conversation ID to the same Mailbox GUID I found in Exchange Online PowerShell:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-PowerShell" data-lang="PowerShell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">PS &lt;/span>&lt;span class="n">C:&lt;/span>&lt;span class="p">\&lt;/span>&lt;span class="n">Temp&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="nv">$mailboxGuid&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mf">922e9767&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">7fef&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">4551&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">8ad1&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">54f0d54435d3&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="the-graph-mailbox-import-and-export-api">The Graph Mailbox Import and Export API
+&lt;/h2>&lt;p>This &lt;a class="link" href="https://learn.microsoft.com/en-us/graph/import-exchange-mailbox-item" target="_blank" rel="noopener"
+>API&lt;/a> is primarily used to import and export mailbox items but I&amp;rsquo;ve discovered that it can also be used to fetch emails of group mailboxes.&lt;/p>
+&lt;p>To do that, I need to combine the Mailbox GUID with the tenant ID:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$tenantId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">Get-MgContext&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">TenantId&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mailboxId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;MBX:&lt;/span>&lt;span class="nv">${mailboxGuid}&lt;/span>&lt;span class="s2">@&lt;/span>&lt;span class="nv">${tenantId}&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$encodedMailboxId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">uri&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">EscapeDataString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nv">$mailboxId&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mailboxUri&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/admin/exchange/mailboxes/&lt;/span>&lt;span class="nv">$encodedMailboxId&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Since I wouldn&amp;rsquo;t get my custom &lt;strong>Test&lt;/strong> folder in the first result page, I&amp;rsquo;m using the &lt;code>@odata.nextLink&lt;/code> property to paginate through all pages here.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$foldersUri&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">${mailboxUri}&lt;/span>&lt;span class="s2">/folders&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$folders&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">do&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$response&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">GET&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="nv">$foldersUri&lt;/span> &lt;span class="n">-OutputType&lt;/span> &lt;span class="n">PSObject&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$response&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$foldersUri&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$response&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="s1">&amp;#39;@odata.nextLink&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">until&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">-not&lt;/span> &lt;span class="nv">$foldersUri&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-8.png"
+width="1675"
+height="927"
+srcset="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-8_hu_516609e299cd1e1.png 480w, https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-8_hu_5e9041c2e462eda3.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output of $folders"
+class="gallery-image"
+data-flex-grow="180"
+data-flex-basis="433px"
+>&lt;/p>
+&lt;p>Bingo! I can see all well known folders and my custom &lt;strong>Test&lt;/strong> folder and their folder IDs.&lt;/p>
+&lt;h3 id="reading-items-from-a-group-mailbox-folder">Reading Items from a Group Mailbox Folder
+&lt;/h3>&lt;p>Now let&amp;rsquo;s inspect that &lt;strong>Test&lt;/strong> folder by first storing its folder ID in &lt;code>$folderId&lt;/code>.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$folderName&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;Test&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$folder&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$folders&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Where-Object&lt;/span> &lt;span class="n">displayName&lt;/span> &lt;span class="o">-eq&lt;/span> &lt;span class="nv">$folderName&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-First&lt;/span> &lt;span class="mf">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$folderId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">uri&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">EscapeDataString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nv">$folder&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>This again requires some special sauce for which I used Copilots help.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$propertyFilter&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;id eq &amp;#39;String 0x0037&amp;#39; or id eq &amp;#39;String 0x1035&amp;#39; or id eq &amp;#39;String 0x1000&amp;#39; or id eq &amp;#39;Binary 0x1013&amp;#39; or id eq &amp;#39;Boolean 0x0E1B&amp;#39; or id eq &amp;#39;Binary 0x3013&amp;#39;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$encodedPropertyFilter&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">uri&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">EscapeDataString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nv">$propertyFilter&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$itemsUri&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">${mailboxUri}&lt;/span>&lt;span class="s2">/folders/&lt;/span>&lt;span class="nv">$folderId&lt;/span>&lt;span class="s2">/items?&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">expand=singleValueExtendedProperties(&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">filter=&lt;/span>&lt;span class="nv">$encodedPropertyFilter&lt;/span>&lt;span class="s2">)&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$items&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">do&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$response&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">GET&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="nv">$itemsUri&lt;/span> &lt;span class="n">-OutputType&lt;/span> &lt;span class="n">PSObject&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$response&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$itemsUri&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$response&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="s1">&amp;#39;@odata.nextLink&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$itemsUri&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$item&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$items&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mf">0&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The MAPI properties translate like this:&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Property&lt;/th>
+&lt;th>Meaning&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>String 0x0037&lt;/code>&lt;/td>
+&lt;td>Subject&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>String 0x1035&lt;/code>&lt;/td>
+&lt;td>Internet message ID&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>String 0x1000&lt;/code>&lt;/td>
+&lt;td>Plain-text body, observed truncated at 255 characters&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>Binary 0x1013&lt;/code>&lt;/td>
+&lt;td>HTML body encoded as Base64&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>Boolean 0x0E1B&lt;/code>&lt;/td>
+&lt;td>Whether the item has attachments&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>Binary 0x3013&lt;/code>&lt;/td>
+&lt;td>Conversation ID hash used to reconstruct group IDs&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>&lt;img src="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-9.png"
+width="1675"
+height="927"
+srcset="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-9_hu_a856b5c9a544ab7.png 480w, https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-9_hu_4ae81bc1d873ba5a.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output of $item"
+class="gallery-image"
+data-flex-grow="180"
+data-flex-basis="433px"
+>&lt;/p>
+&lt;p>As you can see the &lt;code>$item&lt;/code> includes the most important information such as the subject and body.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-10.png"
+width="1908"
+height="520"
+srcset="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-10_hu_859ccecf8e5936de.png 480w, https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-10_hu_d80197dcd2e7e11a.png 1024w"
+loading="lazy"
+decoding="async"
+alt="This is the same email in Outlook on the Web"
+class="gallery-image"
+data-flex-grow="366"
+data-flex-basis="880px"
+>&lt;/p>
+&lt;h3 id="retrieving-a-non-enumerated-post-directly">Retrieving a Non-Enumerated Post Directly
+&lt;/h3>&lt;p>I already mentioned that the group conversations API only returns emails that sit in a group&amp;rsquo;s &lt;strong>Inbox&lt;/strong>. But what if we know the group email&amp;rsquo;s post ID?&lt;/p>
+&lt;p>We can see the post ID in the &lt;code>$item&lt;/code> properties above already. But we still need the conversation and thread ID. Let&amp;rsquo;s call our friend Copilot to help us out again.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$conversationIdProperty&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$item&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">singleValueExtendedProperties&lt;/span> &lt;span class="p">|&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Where-Object&lt;/span> &lt;span class="n">id&lt;/span> &lt;span class="o">-eq&lt;/span> &lt;span class="s1">&amp;#39;Binary 0x3013&amp;#39;&lt;/span> &lt;span class="p">|&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-First&lt;/span> &lt;span class="mf">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$conversationHash&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">Convert&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">FromBase64String&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$conversationIdProperty&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$mailboxGuidBytes&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">Text.Encoding&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">ASCII&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">GetBytes&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nv">$mailboxGuid&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$conversationIdBytes&lt;/span> &lt;span class="p">=&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">[&lt;/span>&lt;span class="no">byte[]&lt;/span>&lt;span class="p">](&lt;/span>&lt;span class="mf">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">4&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">36&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$mailboxGuidBytes&lt;/span> &lt;span class="p">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">[&lt;/span>&lt;span class="no">byte[]&lt;/span>&lt;span class="p">](&lt;/span>&lt;span class="mf">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">16&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$conversationHash&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$conversationId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">Convert&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">ToBase64String&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nv">$conversationIdBytes&lt;/span>&lt;span class="p">).&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Replace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;+&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;-&amp;#39;&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">Replace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;/&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;_&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$threadIdBytes&lt;/span> &lt;span class="p">=&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">[&lt;/span>&lt;span class="no">byte[]&lt;/span>&lt;span class="p">](&lt;/span>&lt;span class="mf">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">4&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">36&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$mailboxGuidBytes&lt;/span> &lt;span class="p">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">[&lt;/span>&lt;span class="no">byte[]&lt;/span>&lt;span class="p">](&lt;/span>&lt;span class="mf">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">36&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">16&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$conversationHash&lt;/span> &lt;span class="p">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">[&lt;/span>&lt;span class="no">byte[]&lt;/span>&lt;span class="p">](&lt;/span>&lt;span class="mf">16&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$conversationHash&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$threadId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">Convert&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">ToBase64String&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nv">$threadIdBytes&lt;/span>&lt;span class="p">).&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Replace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;+&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;-&amp;#39;&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="py">Replace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;/&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;_&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$postId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$item&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">id&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Now I have all 3 IDs. Let&amp;rsquo;s put them to the test and call the group conversations endpoint with them directly.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$encodedConversationId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">uri&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">EscapeDataString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nv">$conversationId&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$encodedThreadId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">uri&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">EscapeDataString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nv">$threadId&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$encodedPostId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">uri&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">EscapeDataString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nv">$postId&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$postUri&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/groups/&lt;/span>&lt;span class="nv">$groupId&lt;/span>&lt;span class="s2">/conversations/&lt;/span>&lt;span class="nv">$encodedConversationId&lt;/span>&lt;span class="s2">/threads/&lt;/span>&lt;span class="nv">$encodedThreadId&lt;/span>&lt;span class="s2">/posts/&lt;/span>&lt;span class="nv">$encodedPostId&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$post&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">GET&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="nv">$postUri&lt;/span> &lt;span class="n">-OutputType&lt;/span> &lt;span class="n">PSObject&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-1.png"
+width="1675"
+height="927"
+srcset="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-1_hu_ce49ef7533261966.png 480w, https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-1_hu_ce51ce326148eb8a.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output of $post"
+class="gallery-image"
+data-flex-grow="180"
+data-flex-basis="433px"
+>&lt;/p>
+&lt;p>It works! And it also works with the shorter route by only using &lt;code>/groups/threads/$encodedThreadId/posts/$encodedPostId&lt;/code>. So, in other words, the group conversation/thread endpoint &lt;strong>only&lt;/strong> return items from the &lt;strong>Inbox&lt;/strong> in their &lt;strong>list&lt;/strong> operations but if you know at least a thread and post ID, you can also use this endpoint to fetch group emails from other folders such as custom folders or Deleted Items.&lt;/p>
+&lt;p>Here&amp;rsquo;s an example of getting an email through Graph from Deleted Items.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-3.png"
+width="1588"
+height="612"
+srcset="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-3_hu_9ae3f4e50f9f8ef3.png 480w, https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-3_hu_e53a8ebd0ac1adef.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Deleted email in Group Mailbox in Outlook on the Web"
+class="gallery-image"
+data-flex-grow="259"
+data-flex-basis="622px"
+> &lt;img src="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-11.png"
+width="1675"
+height="927"
+srcset="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-11_hu_d9d1cbf6157b9a7c.png 480w, https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-11_hu_166dc9008fe46298.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Deleted email in Group Mailbox retrieved through Graph"
+class="gallery-image"
+data-flex-grow="180"
+data-flex-basis="433px"
+>&lt;/p>
+&lt;h3 id="getting-group-calendar-events">Getting Group Calendar Events
+&lt;/h3>&lt;p>Like &lt;strong>Conversations&lt;/strong>, the Groups API also officially supports &lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/group-list-events?view=graph-rest-1.0&amp;amp;tabs=http" target="_blank" rel="noopener"
+>&lt;strong>Events&lt;/strong>&lt;/a>. But this endpoint only supports delegated permissions for its enumeration/list events operation.&lt;/p>
+&lt;p>But if I get an event ID from the &lt;code>/admin/exchange/mailboxes&lt;/code> API first, I can query the Group Events endpoint with application permission as well.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$calendarFolder&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$folders&lt;/span> &lt;span class="p">|&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Where-Object&lt;/span> &lt;span class="n">displayName&lt;/span> &lt;span class="o">-eq&lt;/span> &lt;span class="s1">&amp;#39;Calendar&amp;#39;&lt;/span> &lt;span class="p">|&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-First&lt;/span> &lt;span class="mf">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$calendarFolderId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">uri&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">EscapeDataString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nv">$calendarFolder&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$calendarItemsUri&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">${mailboxUri}&lt;/span>&lt;span class="s2">/folders/&lt;/span>&lt;span class="nv">$calendarFolderId&lt;/span>&lt;span class="s2">/items&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$calendarItems&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">do&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$response&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">GET&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="nv">$calendarItemsUri&lt;/span> &lt;span class="n">-OutputType&lt;/span> &lt;span class="n">PSObject&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$response&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$calendarItemsUri&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$response&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="s1">&amp;#39;@odata.nextLink&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$calendarItemsUri&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$knownEventId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$calendarItems&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mf">0&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="py">id&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>$calendarItems&lt;/code> returns &lt;code>IPM.Appointment&lt;/code> objects and their IDs work to call the Group Events API directly with application permissions.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$eventId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">uri&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">EscapeDataString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nv">$knownEventId&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$eventUri&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/groups/&lt;/span>&lt;span class="nv">$groupId&lt;/span>&lt;span class="s2">/events/&lt;/span>&lt;span class="nv">$eventId&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$event&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">GET&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="nv">$eventUri&lt;/span> &lt;span class="n">-OutputType&lt;/span> &lt;span class="n">PSObject&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The Group Calendar endpoint works as well.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$eventUri&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/groups/&lt;/span>&lt;span class="nv">$groupId&lt;/span>&lt;span class="s2">/calendar/events/&lt;/span>&lt;span class="nv">$eventId&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$event&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">GET&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="nv">$eventUri&lt;/span> &lt;span class="n">-OutputType&lt;/span> &lt;span class="n">PSObject&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-12.png"
+width="1675"
+height="927"
+srcset="https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-12_hu_91379064da7a0293.png 480w, https://heusser.pro/p/accessing-content-of-microsoft-365-group-mailboxes-through-microsoft-graph-dithl243n331/image-12_hu_910b5236edcbedce.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output of $event"
+class="gallery-image"
+data-flex-grow="180"
+data-flex-basis="433px"
+>&lt;/p>
+&lt;h2 id="summary">Summary
+&lt;/h2>&lt;p>Nobody said that getting group emails through Graph is easy but it&amp;rsquo;s definitely possible in a limited but reasonable capacity. For example, I wasn&amp;rsquo;t able to get the MIME/original email content in this way. Getting attachments also comes with some significant limitations as they only work with delegated authentication. In my opinion, what I&amp;rsquo;ve demonstrated here is better than nothing.&lt;/p>
+&lt;p>This is a perfect example of how immensely helpful AI coding agents like GitHub Copilot can be in a situation like this. Microsoft Learn is so vast that I&amp;rsquo;d argue that no human will never read every single article or even know about each article&amp;rsquo;s existence. Most services and APIs are documented very well but sometimes it&amp;rsquo;s still a bit siloed and it can be quite challenging to connect the dots. But this is exactly where AI excels. It can discover, read and understand so many things at once and then use trial and error to discover things that aren&amp;rsquo;t immediately clear from individual documentation pages or would just take way more time to figure out manually.&lt;/p>
+&lt;p>Sometimes, a bit of curiosity, persistence and smart prompts is all it takes to get to the bottom of something.&lt;/p>
+&lt;p>Let me close by saying that using the tricks to decode conversation, thread and post IDs is that Copilot discovered (with a bit of guidance from me) are not documented anywhere. While this should be considered experimental research, it worked reliably in all my tests. The same goes for fetching posts from the &lt;code>/conversations/threads/posts&lt;/code> endpoint with known conversation, thread and post IDs directly. I couldn&amp;rsquo;t find any official documentation that states that fetching emails outside of &lt;strong>Inbox&lt;/strong> is possible but my experiments proved that it is indeed possible. At least for the time being. It&amp;rsquo;s important to note that these methods may change or be restricted in the future, just keep that in mind.&lt;/p></description></item></channel></rss>

@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Stream on HEUSSER.PRO</title><link>https://heusser.pro/categories/stream/</link><description>Recent content in Stream on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 17 Jan 2024 19:59:21 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/stream/index.xml" rel="self" type="application/rss+xml"/><item><title>Teams Shared Voicemail for Basic Call Flows</title><link>https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/</link><pubDate>Wed, 17 Jan 2024 19:59:21 +0000</pubDate><guid>https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/</guid><description>&lt;img src="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/cover.png" alt="Featured image of post Teams Shared Voicemail for Basic Call Flows" />&lt;p>Not too long ago I wrote &lt;a class="link" href="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc" >this&lt;/a> blog post about the ultimate Teams shared voicemail solution. This solution assumed a full blown call flow with on-call coverage and an advanced notification mechanism. Today I&amp;rsquo;m going to show you a simplified but yet optimized version of my Power Automate Flow. While the previous solution works without any issues, it&amp;rsquo;s not really scalable. If you have a lot of queues, you probably don&amp;rsquo;t want to create a dedicated shared mailbox for every queue that needs shared voicemail access via Teams and Adaptive Cards. That just adds unnecessary management overhead to your Teams phone environment.&lt;/p>
+&lt;p>I&amp;rsquo;ve got some good news for you. I found a way to do it all without the need of shared mailbox. The flow is now directly triggered by a new email to the Microsoft 365 Group instead of a new email to the shared mailbox. Furthermore, all other mail related actions in the flow have been updated to use the &lt;strong>Office 365 Groups Mail&lt;/strong> connector as well.&lt;/p>
+&lt;h2 id="call-flow-diagram">Call Flow Diagram
+&lt;/h2>&lt;p>Let&amp;rsquo;s look at the scenario first. This time around, it&amp;rsquo;s a very simple call flow which consists of an auto attendant, a call queue and a Microsoft 365 Group as shared voicemail target.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow.png"
+width="7840"
+height="7820"
+srcset="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu_260817bfe9a7390c.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/PS_Test_EV_Enabled_AA_CallFlow_hu_615eefe02aa2a20a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="100"
+data-flex-basis="240px"
+>&lt;/p>
+&lt;h2 id="flow-trigger">Flow Trigger
+&lt;/h2>&lt;p>The flow is now triggered by &lt;strong>When a new email arrives to a group&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39.png"
+width="920"
+height="172"
+srcset="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu_e960f18bdafca6b5.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-46-17-21-46-39_hu_7c0e4795983a9ba4.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="534"
+data-flex-basis="1283px"
+>&lt;/p>
+&lt;h2 id="flow-actions">Flow Actions
+&lt;/h2>&lt;p>Using the Office 365 Groups Mail connector is not as straight forward as retrieving an email from a shared mailbox or a normal user mailbox. There are conversations, threads and thread posts. Everything must be queried in the correct order to receive all the data that&amp;rsquo;s needed.&lt;/p>
+&lt;p>This is how it&amp;rsquo;s done.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39.png"
+width="1104"
+height="1365"
+srcset="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hu_2cf1d40bdfce727.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/Screenshot-2024-47-17-21-47-39_hu_20c493535ae8346f.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="80"
+data-flex-basis="194px"
+>&lt;/p>
+&lt;p>Because this call flow doesn&amp;rsquo;t have an on-call option, the flow uses way less actions. However, there&amp;rsquo;s still a parallel branch needed. Once the Adaptive Card has been posted to the Teams channel, the flow waits for a reply so the &lt;code>messageId&lt;/code> of the message containing the Adaptive card is still unknown to the flow. That&amp;rsquo;s where the parallel branch comes into play. It will get the &lt;code>messageId&lt;/code> and then the &lt;code>userId&lt;/code> of each Team member. Finally, the flow will send a Teams activity feed notification for the new Adaptive Card to each Team member. By using the flow to send the notifications we don&amp;rsquo;t need to worry about users not enabling notifications for all new channel posts. They&amp;rsquo;ll have no excuse if they ever forget to call somebody back.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53.png"
+width="1944"
+height="1585"
+srcset="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu_c7ba3ead60d40c9e.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/flow-notification-2024-59-17-21-59-53_hu_dda079d38fd74060.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="122"
+data-flex-basis="294px"
+>&lt;/p>
+&lt;h2 id="result-in-teams">Result in Teams
+&lt;/h2>&lt;p>This is how the notification looks like for end users in Teams. In case the audio player on the card is not working for whatever reason, I&amp;rsquo;ve also included an additional button called &lt;strong>Open MP3&lt;/strong> which will open the audio file in Microsoft Stream when it&amp;rsquo;s clicked.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17.png"
+width="2241"
+height="932"
+srcset="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu_b33b2e3438113f62.png 480w, https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju/teams-voicemail-notification-2024-34-17-23-34-17_hu_58b7cfe370057bde.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="240"
+data-flex-basis="577px"
+>&lt;/p>
+&lt;h2 id="final-notes">Final Notes
+&lt;/h2>&lt;p>If you have an on-call option in your call flow but you still want to take advantage of the simplified trigger without the shared mailbox, you can just import both flows into your Power Automate Environment and build a new flow from scratch which combines the best of both worlds. The Microsoft Edge split screen feature and Power Automate&amp;rsquo;s copy/paste feature are a great help for that.&lt;/p>
+&lt;h2 id="summary">Summary
+&lt;/h2>&lt;p>The initial scenario which included the on-call notification mechanism was designed for a very specific use case. This iteration of my Teams Shared Voicemail solution should fit a lot more customer scenarios. It&amp;rsquo;s easier to understand and implement and also has less moving parts. Feel free to download the basic version of my flow from &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/raw/main/Scripts/PowerAutomate/Flows/TeamsSharedVoicemailBasicV3%28M365GroupInbox%29_GitHub.zip" target="_blank" rel="noopener"
+>here&lt;/a> and give it a try. Just make sure to replace anything that&amp;rsquo;s specific to my lab tenant with your actual values.&lt;/p>
+&lt;p>If you need help importing the flow, please read this section in the &lt;a class="link" href="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/#the-flow" >initial article&lt;/a> first.&lt;/p>
+&lt;p>If this blog provides additional value to you or your company, I want you to know that you can always show your support by donating on my &lt;a class="link" href="https://github.com/sponsors/mozziemozz?frequency=one-time" target="_blank" rel="noopener"
+>GitHub Sponsors&lt;/a> profile.&lt;/p></description></item><item><title>The Ultimate Teams Shared Voicemail Solution</title><link>https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/</link><pubDate>Wed, 06 Dec 2023 20:59:21 +0000</pubDate><guid>https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/</guid><description>&lt;p>In June last year I wrote about &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-handle-shared-voicemail-more-efficiently-746ddeae6ac4" >handling Teams shared voicemail more efficiently&lt;/a>. Although the principle is the same today, a couple of things have changed which has allowed me to build a much more elegant version of this Power Automate flow.&lt;/p>
+&lt;p>About a year ago, I also &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1" >wrote&lt;/a> about shared voicemail now supporting not just Microsoft 365 groups but also distribution lists and mail enabled security groups. While it’s great to have more options, that doesn’t solve the issue at its core.&lt;/p>
+&lt;p>My main complaint about shared voicemail in Teams is that it’s hard to keep an overview over which voicemails have already been processed (as in the person who left the message has been called back). You either train people to regularly check their Microsoft 365 group inboxes or you enable &lt;a class="link" href="https://support.microsoft.com/en-us/office/follow-a-group-in-outlook-e147fc19-f548-4cd2-834f-80c6235b7c36#:~:text=Follow%20a%20group%3A%201%20In%20Outlook%20for%20Windows%2C,list%2C%20select%20Not%20following%20%3E%20Follow%20in%20Inbox." target="_blank" rel="noopener"
+>follow in inbox&lt;/a> for all the group&amp;rsquo;s members. Follow in inbox will make sure that no voicemail/email gets lost, but it also means that more communication is required within a team to make sure that the caller is not called back multiple times or not at all (because everybody believes that someone else will call back). My Power Automate Flow solves this issue by delivering the voicemails directly into a Teams channel.&lt;/p>
+&lt;h4 id="call-flowdiagram">Call Flow Diagram
+&lt;/h4>&lt;p>This is the example scenario. A relatively simple call flow with an auto attendant which routes calls to a call queue during business hours and redirects to a second auto attendant after hours. The second auto attendant offers callers a choice to either leave a message or get connected to the on-call service.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw.png"
+width="7840"
+height="5630"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hu_8f20dfd6747f1d83.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RMziOV2rbncLrbdFMbnAzw_hu_ec119919f185c28f.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="139"
+data-flex-basis="334px"
+>&lt;/p>
+&lt;p>I purposely used a dedicated auto attendant for the after-hours so it can be re-used if the call flow is extended in the future. You can see that the after-hours call flow of the main auto attendant (PS Test EV Enabled AA) only plays the greeting &lt;em>Welcome to heusser.pro. You’re calling us outside of our business hours&lt;/em>. And &lt;strong>PS Test EV Enabled On Call AA&lt;/strong> does the actual after-hours routing. By splitting the greeting, I could also use the IVR of the second auto attendant for another call queue or for holidays configured on the main auto attendant. This way, I won’t have to build a new/the same IVR per holiday call handling which saves time and reduces management effort.&lt;/p>
+&lt;p>The second reason I built it like this is that the name of the auto attendant includes the keyword &lt;strong>On Call&lt;/strong>. Because the on-call call queue uses the same naming convention. This means that the email containing the voicemail includes the name of the voice app in which the call was sent to voicemail, which makes it easy to determine if a voicemail was left during business hours or during on-call/after hours.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w.png"
+width="2033"
+height="543"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hu_4f269ca5ccda894a.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1DFC8bAkYRUtHZJIpF21w_hu_b5549786c88c9422.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="374"
+data-flex-basis="898px"
+>&lt;/p>
+&lt;h4 id="shared-voicemail">Shared Voicemail
+&lt;/h4>&lt;p>As you can see in the diagram, in every case where a call cannot be answered, it goes to the same shared voicemail group. This Microsoft 365 group is the same group that’s linked to the Team which also hosts the two voice enabled channels which are linked to the call queues.&lt;/p>
+&lt;p>Instead of relying on people either checking the group mailbox for new voicemail messages or subscribing to the group mailbox, we’re going to build a Power Automate flow to deliver voicemail messages directly into a Teams channel.&lt;/p>
+&lt;p>The first thing we need to do is to create or define a shared mailbox so we can subscribe it to new messages of the M365 group. The flow will only process emails which have attachments, and the attachments name must end with &lt;code>.mp3&lt;/code> . But I still strongly recommend to create a dedicated shared mailbox which will only receive emails from the M365 group. To keep things clean, I would also deter from sending any kind of other emails to the M365 group. If you also use a dedicated Team for your call queues, that shouldn’t be an issue.&lt;/p>
+&lt;p>Once the shared mailbox is created, we need to give the user which will own the Flow full access to it.&lt;/p>
+&lt;p>You will need the PowerShell module &lt;code>ExchangeOnlineManagement&lt;/code> and need to run &lt;code>Connect-ExchangeOnline&lt;/code> before you can run these commands.&lt;/p>
+&lt;h3 id="create-shared-mailbox">Create shared mailbox
+&lt;/h3>&lt;p>New-Mailbox -Shared -Name &amp;ldquo;PS Test EV Enabled SharedVoicemail&amp;rdquo; -DisplayName &amp;ldquo;PS Test EV Enabled SharedVoicemail&amp;rdquo; -Alias &amp;ldquo;PSTestEVEnabledSharedVoicemail&amp;rdquo;&lt;/p>
+&lt;p>Start-Sleep -Seconds 30&lt;/p>
+&lt;h4 id="grant-full-mailbox-access-to-the-flow-owner">Grant full mailbox access to the flow owner
+&lt;/h4>&lt;p>Add-MailboxPermission -Identity &amp;ldquo;PSTestEVEnabledSharedVoicemail&amp;rdquo; -User &amp;ldquo;&lt;a class="link" href="mailto:mozzie@mozzism.ch" >mozzie@mozzism.ch&lt;/a>&amp;rdquo; -AccessRights FullAccess -InheritanceType All&lt;/p>
+&lt;h4 id="subscribing-the-shared-mailbox-to-the-m365-groupinbox">Subscribing the Shared Mailbox to the M365 Group Inbox
+&lt;/h4>&lt;p>Next, we add the newly created shared mailbox as a member of the group and then also subscribe it to the group’s inbox.&lt;/p>
+&lt;h4 id="add-the-shared-mailbox-as-a-member-to-the-m365-group">Add the shared mailbox as a member to the M365 group
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Add-UnifiedGroupLinks&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="nv">$groupId&lt;/span> &lt;span class="n">-LinkType&lt;/span> &lt;span class="n">Members&lt;/span> &lt;span class="n">-Links&lt;/span> &lt;span class="s2">&amp;#34;PSTestEVEnabledSharedVoicemail&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="subscribe-the-shared-mailbox-to-the-m365-groups-emails-enable-follow-in-inbox">Subscribe the shared mailbox to the M365 group&amp;rsquo;s emails (enable follow in inbox)
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Add-UnifiedGroupLinks&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="nv">$groupId&lt;/span> &lt;span class="n">-LinkType&lt;/span> &lt;span class="n">Subscribers&lt;/span> &lt;span class="n">-Links&lt;/span> &lt;span class="s2">&amp;#34;PSTestEVEnabledSharedVoicemail&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>We can verify that the shared mailbox is indeed subscribed by using this code. (I have no idea why it says &lt;code>UserMailbox&lt;/code> though…)&lt;/p>
+&lt;p>PS V:\GitHub\TeamsPhoneAutomation&amp;gt; Get-UnifiedGroupLinks -Identity $groupId -LinkType Subscribers&lt;/p>
+&lt;pre>&lt;code>Name RecipientType
+---- -------------
+PS Test EV Enabled SharedVoicemail UserMailbox
+&lt;/code>&lt;/pre>
+&lt;p>The idea here is that only the shared mailbox gets new voicemails in its mailbox. None of the users should get the voicemails in their personal inbox because they receive them in Teams. This allows for much better and efficient collaboration.&lt;/p>
+&lt;h3 id="the-result">The Result
+&lt;/h3>&lt;p>This is the Team I created for this call flow. Channels 1 and 2 are linked to the queues which receive calls. 3 and 4 are the ones which receive the voicemails. As explained earlier in this article, the flow can easily determine at which stage in the call flow (during business hours or on-call/after hours) a voicemail was left. That’s why we have two separate voicemail channels.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw.png"
+width="1054"
+height="489"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu_2c87107b1a734ab8.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ERgB32HAsCptqOqTdj0BGw_hu_abe867a345c229d2.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="215"
+data-flex-basis="517px"
+>&lt;/p>
+&lt;h4 id="voicemail-during-businesshours">Voicemail During Business Hours
+&lt;/h4>&lt;p>Adaptive Cards in Teams now support &lt;a class="link" href="https://adaptivecards.io/explorer/Media.html" target="_blank" rel="noopener"
+>media&lt;/a>. This means that we can now embed an audio file which is stored on SharePoint directly on an adaptive card and we’ll get a neat little Stream powered media player inside Teams.&lt;/p>
+&lt;p>The card will include the number or the email address of the user who left the voicemail.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g.png"
+width="1382"
+height="763"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu_9d324ee456607556.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1N07rBJWK18W1euy4cQzG6g_hu_cb786e0a7b08ea15.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>
+&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ.png"
+width="1384"
+height="760"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu_df0b9be26b1b3310.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1fonLxu3PBkT7HhWfqp6jQ_hu_4feb3c8217f1ba70.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="182"
+data-flex-basis="437px"
+>&lt;/p>
+&lt;p>After members of the channel have listened to a voicemail, they can call the person who left a voicemail back directly from the channel.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA.png"
+width="885"
+height="232"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_hu_ececa6da711a1655.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1e9z0eSHELDBRHsHUBQeObA_hu_39c5d48ac1d9d47c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="381"
+data-flex-basis="915px"
+>
+&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug.png"
+width="882"
+height="230"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu_a6b8543956033421.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1RUyvz8rZnRkIvd09QDxug_hu_72345325d415829b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="383"
+data-flex-basis="920px"
+>&lt;/p>
+&lt;h4 id="updated-adaptivecards">Updated Adaptive Cards
+&lt;/h4>&lt;p>Once a team member has called back, a card can be marked as completed. This will update the card so that all other team members can see that there’s no action left to take. It’s even possible to see who has marked a card as completed.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ.png"
+width="1384"
+height="481"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hu_49a699708462405f.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/19JfyMJstjSP28RABrpIVQ_hu_9d38a50bef3184fb.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="287"
+data-flex-basis="690px"
+>&lt;/p>
+&lt;p>Completed cards don’t show the media player anymore. However, the &lt;strong>Voicemail Details&lt;/strong> button will reveal the original card including the audio file again. This is helpful in case somebody needs to listen to a message again or the &lt;strong>Call Completed&lt;/strong> button was clicked by accident.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA.png"
+width="1379"
+height="1003"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu_f545d5486ad946ba.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1ACYALybGWJoArNe8UambPA_hu_e67878864d57c0c0.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="137"
+data-flex-basis="329px"
+>&lt;/p>
+&lt;p>Users don’t really need to worry about this, but technically, the files get uploaded to the channel’s folder in the Teams’ SharePoint site.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA.png"
+width="1468"
+height="422"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu_3194ffe0c91e66d.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1Z4LN9USbrAkCKJ13EzaKA_hu_3869f30fe3592f9e.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="347"
+data-flex-basis="834px"
+>&lt;/p>
+&lt;p>Completed cards also feature a &lt;strong>Show Metrics&lt;/strong> button which will tell you when a voicemail was received, when it was completed and how many hours and minutes it took until it was marked as completed. Based on that, it will display a different emoji.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q.png"
+width="1385"
+height="539"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu_1751dc284ba1d809.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/133dz2lFitMlRusIK8k3G1Q_hu_2de9e647c863a89e.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="256"
+data-flex-basis="616px"
+>&lt;/p>
+&lt;p>Less or equal 1 hour = 😊&lt;br>
+Less or equal 2 hours = 😐&lt;br>
+More than 2 hours = 😞&lt;/p>
+&lt;h4 id="voicemail-during-after-hours-oncall">Voicemail During After Hours (On Call)
+&lt;/h4>&lt;p>Voicemails which were left outside business hours will go into the &lt;strong>Voicemail On Call&lt;/strong> channel. When a voicemail is left during on-call hours, it means that the people who are on-call missed a call and should call back as soon as possible. Thus, we want to have an appropriate alerting system in place.&lt;/p>
+&lt;p>I’m using a shift which is linked to my Call Queue Team which defines which user is on call on which days.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig.png"
+width="2149"
+height="961"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu_629788c01542017f.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vfGE9YXP2x2YJx0yBEig_hu_219cba109726bf0.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="223"
+data-flex-basis="536px"
+>&lt;/p>
+&lt;p>The great thing about using Shifts is that this will automatically create a Tag with the Shift name in the Team which is linked to the shift and update the members of the Tag dynamically. In other words, the tag always includes only the users which have a currently active shift assigned.&lt;/p>
+&lt;p>When a new voicemail is received in the On Call channel, all members of the On Call Shift Tag will get notified about new voicemails every 15 minutes for 4 hours if a card is not completed sooner. As soon as card is completed, the notifications stop.&lt;/p>
+&lt;p>In case of an on-call voicemail the flow will take at least 15 minutes to complete, even if the card was marked as completed sooner. This is because there’s a delay action which waits for 15 minutes before it checks again if the card has been completed.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw.png"
+width="1554"
+height="740"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu_aa64a69e905122bb.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1IBU2Pc9lwN7E0D5TMxb1iw_hu_57d982876e3bc0bc.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="210"
+data-flex-basis="504px"
+>&lt;/p>
+&lt;p>Because the flow is still waiting on the card to be completed in the on-call scenario, there’s no way to get the message Id of the adaptive card that was sent to the channel from a subsequent step in the flow. Instead, the flow needs to retrieve the latest message which was sent to the channel in a parallel branch.&lt;/p>
+&lt;p>Because of that, I strongly recommend turning on channel moderation and prohibit members from posting new messages to the &lt;strong>On Call Voicemail&lt;/strong> channel. This way, we can make sure that the newest message in the channel is always the adaptive card which was sent by the flow and not something posted by a user.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ.png"
+width="1025"
+height="1195"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu_ed8e1b08e26e972f.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1vHUTKmRHNbKSXstHFfjQhQ_hu_6915680e687aeebb.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="85"
+data-flex-basis="205px"
+>&lt;/p>
+&lt;p>Channel members should only be allowed to reply to messages so that they can e.g. mention a team member who should carry out a call back action.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw.png"
+width="1388"
+height="846"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu_8f2fda2d7d5e8615.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1jbbDZa4DBMfNtFmRN7qw_hu_fdcc56d5cfd2dace.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="164"
+data-flex-basis="393px"
+>&lt;/p>
+&lt;p>I changed the delay action from 15 minutes to 15 seconds for demonstration purposes. Here you can see three Teams activity feed notifications which link directly to the channel message containing the voicemail. Using a Teams activity feed notification instead of a channel message reply has two main advantages. It doesn’t clutter the channel feed and members don’t need to specifically enable notifications for all channel messages to get the alerts.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A.png"
+width="2284"
+height="961"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_hu_78eb2723b933f471.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1H4mIfIX2E8FpbkR1aqUX0A_hu_bb545286fbe90dde.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="237"
+data-flex-basis="570px"
+>&lt;/p>
+&lt;h3 id="the-flow">The Flow
+&lt;/h3>&lt;p>The flow has become quite large and Power Automate keeps reminding me that it contains too many actions to use the new AI-powered designer. 🙃&lt;/p>
+&lt;p>To make it easier for you, I exported the flow and made it available for download &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/PowerAutomate/Flows/TeamsSharedVoicemailv2.4_GitHub.zip" target="_blank" rel="noopener"
+>here&lt;/a>. To import it, go to &lt;a class="link" href="https://make.powerautomate.com" target="_blank" rel="noopener"
+>https://make.powerautomate.com&lt;/a> and select &lt;strong>Import&lt;/strong> and then &lt;strong>Import Package (Legacy)&lt;/strong>.&lt;/p>
+&lt;p>Select an existing or set up a new connection for each of the resources listed before you click &lt;strong>Import.&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g.png"
+width="2095"
+height="1392"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hu_225c36404e438c1b.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1PjOBPj93JF5mUnRj9jX6g_hu_f5b553056da9b909.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="150"
+data-flex-basis="361px"
+>&lt;/p>
+&lt;p>Unfortunately, you still need to expand every action and check if you need to modify/update the values. To make it easier for you, I added a note to all the actions which need to be updated. Here are some examples.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw.png"
+width="915"
+height="351"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu_743e7f965189621d.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/13a2N43Dn0FSyhwhumCryDw_hu_411f7983b045b97c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="260"
+data-flex-basis="625px"
+>
+&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ.png"
+width="1933"
+height="907"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hu_743b5d0b1a64f03.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1xugazCEKqoQ8ujjNlToClQ_hu_6591f6409bf09161.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="213"
+data-flex-basis="511px"
+>
+&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw.png"
+width="913"
+height="349"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hu_f42b60474443fa0d.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1UbT09eRnOVQ5C8w3jb8Lw_hu_83f2757fea081d92.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="261"
+data-flex-basis="627px"
+>
+&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ.png"
+width="914"
+height="1033"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_hu_665132cb22bf0eab.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1uFe7nY71LGjXHUfElaa1KQ_hu_972c3ea6e84eb429.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="88"
+data-flex-basis="212px"
+>
+&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw.png"
+width="916"
+height="218"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu_68cffa45d72fe459.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1NU84CkNj9stAoCGxHSGUw_hu_1cabe4a793d65c59.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="420"
+data-flex-basis="1008px"
+>&lt;/p>
+&lt;p>You get the gist. At least you won’t have to create all the actions manually.&lt;/p>
+&lt;h3 id="summary">Summary
+&lt;/h3>&lt;p>Even though it took me days to finally get this right, I had so much fun building this. Besides that, I also learned a lot of new stuff about Power Automate. In fact, this was the very first parallel branch I ever built. It’s awesome that Adaptive Card in Teams now support media. I think this is a really great example of how powerful Adaptive Cards can be. They not only look beautiful, but they also provide a fantastic user experience since users will be able to interact with them directly in Teams.&lt;/p>
+&lt;p>I’d be lying if I said that I wasn’t a little proud of the flow and process I built. The only thing I’m still missing with this solution is to be able to create Teams deep links which also specify which outbound caller id should be used when a call back link is clicked. Wouldn’t it just be great if we could say that users should always use the queue’s/attendant’s phone number when they call somebody back from a voicemail card?&lt;/p>
+&lt;p>What’s funny is that the Teams mobile apps actually prompt users which have multiple calling line identities assigned to select an identity before the call is made.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg.png"
+width="1125"
+height="2436"
+srcset="https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu_2bb9d93d996b8ad1.png 480w, https://heusser.pro/p/the-ultimate-teams-shared-voicemail-solution-5dd2ce57facc/1rI1ZJKlVVJ1J6E0PPhrg_hu_8fc425194d8f16f7.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+>&lt;/p>
+&lt;p>As you can tell, I’m pretty excited about all of this. I hope you like it too and that you can implement it for your users or customers as well.&lt;/p></description></item></channel></rss>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Reverse Number Lookup (RNL) on HEUSSER.PRO</title><link>https://heusser.pro/categories/reverse-number-lookup-rnl/</link><description>Recent content in Reverse Number Lookup (RNL) on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Fri, 25 Aug 2023 12:22:29 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/reverse-number-lookup-rnl/index.xml" rel="self" type="application/rss+xml"/><item><title>How to Validate Phone Number Assignments in Teams (in Bulk)</title><link>https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/</link><pubDate>Fri, 25 Aug 2023 12:22:29 +0000</pubDate><guid>https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/</guid><description>&lt;p>I’ve been assigning phone numbers in Teams for pretty much five years now. I remember when it all started for me with Direct Routing in 2018.&lt;/p>
+&lt;p>Numbers were assigned by using something like this:&lt;br>
+&lt;code>Set-CsUser -Identity &amp;quot;user@domain.com&amp;quot; -OnPremLineUri &amp;quot;tel:+12345678900&amp;quot; -EnterpriseVoiceEnabled $true&lt;/code> . Later on, &lt;code>OnPremLineUri&lt;/code> was replaced by the &lt;code>LineUri&lt;/code> attribute before Microsoft finally introduced the new &lt;code>Set-CsPhoneNumberAssignment&lt;/code> cmdlet.&lt;/p>
+&lt;p>I don’t know how many phone numbers I’ve assigned in Teams over the years but one thing I know for sure is that I’ve had my fair share of assignment failures. Granted, it’s gotten way better and more reliable in recent years, but sadly, I still run into number assignment issues occasionally.&lt;/p>
+&lt;p>By assignment issues I mean that after a number has been assigned to users, they either don’t receive inbound calls, can’t make outbound calls or both. The nasty thing about this is that in Teams Admin Center or PowerShell everything looks ok. I can see that the users in question indeed have a phone number assigned.&lt;/p>
+&lt;p>In other words, you can’t always trust that a number is successfully assigned when you can see it in TAC or in PowerShell.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/10GLcAACWKdy8YmRwiDTKA.png"
+width="680"
+height="227"
+srcset="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/10GLcAACWKdy8YmRwiDTKA_hu_99708699a0a08316.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/10GLcAACWKdy8YmRwiDTKA_hu_90b0891b19d61e74.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="299"
+data-flex-basis="718px"
+>
+&lt;img src="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/16CTFxF1hiseqWnVFjd1eKQ.png"
+width="744"
+height="153"
+srcset="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/16CTFxF1hiseqWnVFjd1eKQ_hu_adf37075a7bf8171.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/16CTFxF1hiseqWnVFjd1eKQ_hu_a78b5a2754d3f8e7.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="486"
+data-flex-basis="1167px"
+>&lt;/p>
+&lt;p>But when you check a user’s calls app in Teams or ask them to send you a screenshot of it, you notice that they don’t have a work phone number listed beneath the dial pad.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1WvODGT0lZqv9ByCh1xnEvg.png"
+width="348"
+height="525"
+srcset="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1WvODGT0lZqv9ByCh1xnEvg_hu_cb5a8d9034c4ad2d.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1WvODGT0lZqv9ByCh1xnEvg_hu_ab0158072a153704.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="66"
+data-flex-basis="159px"
+>&lt;/p>
+&lt;p>Now obviously there are legit scenarios where users don’t have their own &lt;strong>LineUri&lt;/strong> but in most cases, each user gets assigned a phone number.&lt;/p>
+&lt;p>This is how it’s supposed to look after a number has been assigned.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1caNWs4I4L0XByceG6zw.png"
+width="352"
+height="556"
+srcset="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1caNWs4I4L0XByceG6zw_hu_96b1e733ad280e81.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1caNWs4I4L0XByceG6zw_hu_461c8cc75f891074.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="63"
+data-flex-basis="151px"
+>&lt;/p>
+&lt;p>This is very much undocumented, but I believe that the Teams client and TAC/PowerShell are reading/pulling the number from different systems. It has to be this way since they both display different information.&lt;/p>
+&lt;p>If you’re setting up Teams phone for a bunch of users at once, it’s not like we can just go and ask each user if they can see the number in their Teams client. &lt;strong>That would make IT look bad&lt;/strong>. On the other hand, trying to assign the number a few more times until it hopefully sticks doesn’t seem like an ideal solution either.&lt;/p>
+&lt;h4 id="reverse-number-lookup-rnl-to-validate-the-assignment">Reverse Number Lookup (RNL) to validate the assignment
+&lt;/h4>&lt;p>As you might know, I run a &lt;a class="link" href="https://heusser.pro/discord.html" target="_blank" rel="noopener"
+>Discord Server&lt;/a> for Teams Phone Admins. When the issue reoccurred for me earlier this year, I decided to ask the Discord community if they have a clever way of remotely checking if a phone number assignment has been successful?&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/0GpvfcYavklU7iIg.jpg"
+width="2615"
+height="300"
+srcset="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/0GpvfcYavklU7iIg_hu_b07a98b7e11ee043.jpg 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/0GpvfcYavklU7iIg_hu_a3b14c82cb185fc7.jpg 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="871"
+data-flex-basis="2092px"
+>&lt;/p>
+&lt;p>Our member &lt;strong>Ashish Mishra&lt;/strong> suggested to type in the number in my own Teams client to see if anything comes up on the RNL (reverse number lookup). As it turns out, this is a genius idea.&lt;/p>
+&lt;p>Last week, I stumbled over this issue again when a few users who have recently gotten a new Teams phone number reported to me that outbound calls were not working. Luckily, there were only a handful, and I was able to ask them directly if they could see the phone number in Teams. They couldn’t.&lt;/p>
+&lt;p>I then went on to my Teams client and entered some of the numbers to see if they return anything or not.&lt;/p>
+&lt;p>If the number is not successfully (or not at all) assigned, only the number but no name will be returned.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/13G7UzNqHtfp4Tx0z5UN8Lg.png"
+width="353"
+height="164"
+srcset="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/13G7UzNqHtfp4Tx0z5UN8Lg_hu_50992fdf3fb58649.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/13G7UzNqHtfp4Tx0z5UN8Lg_hu_8dac8b148cb8419.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="215"
+data-flex-basis="516px"
+>&lt;/p>
+&lt;p>As soon as the number is successfully assigned, the name of the user will be returned.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1tJCCTL3n5C8U8nD9IthSGw.png"
+width="353"
+height="166"
+srcset="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1tJCCTL3n5C8U8nD9IthSGw_hu_28a19ec8c5cb7918.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1tJCCTL3n5C8U8nD9IthSGw_hu_bfc2519103f8c033.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="212"
+data-flex-basis="510px"
+>&lt;/p>
+&lt;p>Because I’ve encountered the issue before, I didn’t even bother to check the M365 service health dashboard. But apparently, there was indeed an issue related to numbers assigned during a time frame which matched my errors.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1xgYbaKQOPjo221dBXR6cJA.png"
+width="818"
+height="649"
+srcset="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1xgYbaKQOPjo221dBXR6cJA_hu_a1fce60c59759cb0.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1xgYbaKQOPjo221dBXR6cJA_hu_ea9521ce6b394dc8.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="126"
+data-flex-basis="302px"
+>&lt;/p>
+&lt;blockquote>
+&lt;p>Title: Users can’t make or receive Public Switched Telephone Network (PSTN) calls in Microsoft Teams&lt;/p>&lt;/blockquote>
+&lt;blockquote>
+&lt;p>User impact: Users couldn’t make or receive any PSTN calls from any connection method of Microsoft Teams.&lt;/p>&lt;/blockquote>
+&lt;blockquote>
+&lt;p>More info: This only impacted users who had their phone numbers assigned between Monday, August 14, 2023 at 10:30 PM GMT+2 , and Wednesday, August 16, 2023 at 4:00 AM GMT+2.&lt;/p>&lt;/blockquote>
+&lt;p>In that particular case, I was able to fix the issue by reassigning the numbers. But that didn’t stop me from looking for a more practical, permanent solution.&lt;/p>
+&lt;h4 id="reverse-engineering">Reverse engineering
+&lt;/h4>&lt;p>Once again, we go back to Microsoft Edge’s dev tools to see what’s going on when RNL is done. All it does is to send a request to the following endpoint:&lt;/p>
+&lt;p>&lt;code>https://teams.microsoft.com/api/mt/emea/beta/phone/numbers/+41438833079/teamsidentity&lt;/code>
+&lt;img src="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1xJ60RmW1XFqmugU9KQKwIg.png"
+width="794"
+height="644"
+srcset="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1xJ60RmW1XFqmugU9KQKwIg_hu_66bfad9d09dbdf52.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1xJ60RmW1XFqmugU9KQKwIg_hu_9e3661c8b89ba879.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="123"
+data-flex-basis="295px"
+>&lt;/p>
+&lt;p>If there is a user found for the phone number, a user object Id will be returned.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1kPrP0SJW3a55aANVK75tVg.png"
+width="682"
+height="154"
+srcset="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1kPrP0SJW3a55aANVK75tVg_hu_a810fedb9ae9f030.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1kPrP0SJW3a55aANVK75tVg_hu_e11709952ed341b7.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="442"
+data-flex-basis="1062px"
+>&lt;/p>
+&lt;p>If no users are found, the API returns an error.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1c2LsbM1AUmW4PgU9MQozhA.png"
+width="691"
+height="146"
+srcset="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1c2LsbM1AUmW4PgU9MQozhA_hu_61706a95c239c933.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1c2LsbM1AUmW4PgU9MQozhA_hu_505c32ac39b30710.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="473"
+data-flex-basis="1135px"
+>&lt;/p>
+&lt;p>It’s noteworthy that only numbers assigned in a user’s own tenant can be checked. You can’t use this API to scrape numbers of other tenants.&lt;/p>
+&lt;p>If we want to send these kinds of requests using PowerShell, we obviously need to get a valid bearer token first. For this, we can reuse much of the code I’ve already written for &lt;a class="link" href="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d" >this&lt;/a> blog post. We’re using the same function to either create or read our encrypted credentials which we then use to get a token using the AADInternals PowerShell module/functions.&lt;/p>
+&lt;p>Please note that you don’t need the credentials of a Teams admin user. Since any Teams enterprise voice enabled user can dial a number and trigger RNL, non-admin credentials of any Teams phone enabled user work just fine.&lt;/p>
+&lt;p>What’s interesting is that doing RNL through the API also worked using the bearer token of a user which isn’t even enterprise voice enabled.&lt;/p>
+&lt;p>&lt;strong>Please bear in mind that this means that a user’s password and possibly an OTP secret (albeit both encrypted) are saved to your local disk. Treat the files with care and remove them once you don’t need them anymore!&lt;/strong>&lt;/p>
+&lt;h4 id="the-scriptfunctions">The Script/Functions
+&lt;/h4>&lt;p>Finally, here’s the PowerShell code to make it all happen.&lt;/p>
+&lt;p>Please make sure that you clone the &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation" target="_blank" rel="noopener"
+>repository&lt;/a> from my GitHub because of the dependencies. Simply copying the script from the gist won’t work.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Run this in PowerShell to clone the repository &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">git&lt;/span> &lt;span class="n">clone&lt;/span> &lt;span class="n">https&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="p">//&lt;/span>&lt;span class="n">github&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">mozziemozz&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">TeamsPhoneAutomation&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">git&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>I made this in a way that you can use it in your own scripts. I purposely made this a lightweight function without any requests to Teams or Graph.&lt;/p>
+&lt;p>I did, however, create an example script to show you how you can use the function to validate phone number assignments in bulk.&lt;/p>
+&lt;p>If you want to read users/numbers from a CSV or directly from Teams/Graph, you’ll need to write your own code to build the &lt;code>$lineURIs&lt;/code> array.&lt;/p>
+&lt;p>Use &lt;code>-AdminUser&lt;/code> to specify the user you want to get a Teams token for via the AADInternals module. Use either &lt;code>-MFA $true&lt;/code> or &lt;code>-MFA $false&lt;/code> to tell the function if the account specified is MFA enabled or not.&lt;/p>
+&lt;script src="https://gist.github.com/mozziemozz/7d986581c385c9aeb04ce8a403dff19d.js">&lt;/script>
+&lt;p>The example script will create an object in &lt;code>$results&lt;/code> which includes all the checked phone numbers and if they’re assigned successfully. If a number is assigned correctly, the object id of the user will be included as well if you keep &lt;code>$hideObjectId $false&lt;/code>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1Sid8Gir1zmeKHCmgPg5qgA.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1Sid8Gir1zmeKHCmgPg5qgA_hu_76ae03929f63bd81.png 480w, https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/1Sid8Gir1zmeKHCmgPg5qgA_hu_3bb903638afb8f06.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;p>The actual function doing the RNL can be found &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/ValidateTeamsReverseNumberLookup/ValidateTeamsReverseNumberLookup.ps1" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/p>
+&lt;p>I hope that this bit of code helps you the next time you need to check if a Teams phone number is assigned 100% correctly.&lt;/p></description></item></channel></rss>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Call Flow on HEUSSER.PRO</title><link>https://heusser.pro/categories/call-flow/</link><description>Recent content in Call Flow on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 01 May 2024 15:31:57 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/call-flow/index.xml" rel="self" type="application/rss+xml"/><item><title>Teams Call Queues now Support Greetings in Exception Handlings</title><link>https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/</link><pubDate>Wed, 01 May 2024 15:31:57 +0000</pubDate><guid>https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/</guid><description>&lt;img src="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/cover.png" alt="Featured image of post Teams Call Queues now Support Greetings in Exception Handlings" />&lt;h2 id="how-it-was-before">How It Was Before
+&lt;/h2>&lt;p>I noticed a whole lot of new properties returned by &lt;code>Get-CsCallQueue&lt;/code> quite a while ago but somehow I completely missed that Microsoft has now added this feature in Teams Admin Center. Before this was rolled out, the only way to play a message before disconnecting when a call timed out, when there were too many concurrent calls or when no agents were available in a call queue, you had to forward the call to an additional auto attendant which only played the message and then disconnected the call.&lt;/p>
+&lt;p>A call flow which had no message looked like this. The call disconnected without any message.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow.png"
+width="2110"
+height="3840"
+srcset="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_hu_9ce3ad824e151aa2.png 480w, https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_hu_ff8e913474fa05a3.png 1024w"
+loading="lazy"
+decoding="async"
+alt="No Disconnect Message"
+class="gallery-image"
+data-flex-grow="54"
+data-flex-basis="131px"
+>&lt;/p>
+&lt;p>A call flow using the workaround with an additional auto attendant looked like this. The call had to be forwarded to an auto attendant so that a message could be played back before disconnecting the call.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_Disconnect_AA.png"
+width="1947"
+height="3840"
+srcset="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_Disconnect_AA_hu_8197b11800ce5725.png 480w, https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_Disconnect_AA_hu_691dfed19e6c2c3b.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Disconnect Message on Auto Attendant"
+class="gallery-image"
+data-flex-grow="50"
+data-flex-basis="121px"
+>&lt;/p>
+&lt;p>While it wasn&amp;rsquo;t very hard to build something like that, it certainly required more time and added unnecessary complexity to otherwise relatively simple call flows.&lt;/p>
+&lt;h2 id="whats-changed">What&amp;rsquo;s Changed?
+&lt;/h2>&lt;p>With the recently added functionality, it&amp;rsquo;s now possible to configure greetings on call queues in exception handling actions. At the time of writing this blog post it&amp;rsquo;s possible to configure a greeting for &lt;strong>Disconnect&lt;/strong> and &lt;strong>Redirect to External Phone Number&lt;/strong> or &lt;strong>Redirect to Voice App&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image.png"
+width="1992"
+height="826"
+srcset="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image_hu_30c6236880ac8d65.png 480w, https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image_hu_d436c5cd35f9c367.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Greeting on Disconnect"
+class="gallery-image"
+data-flex-grow="241"
+data-flex-basis="578px"
+> &lt;img src="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image-1.png"
+width="1398"
+height="655"
+srcset="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image-1_hu_954ee248ce8e49fd.png 480w, https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image-1_hu_6638a0504d35a0a8.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Greeting for Redirect to Phone Number"
+class="gallery-image"
+data-flex-grow="213"
+data-flex-basis="512px"
+> &lt;img src="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image-2.png"
+width="1412"
+height="960"
+srcset="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image-2_hu_a90222cbc432f261.png 480w, https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/image-2_hu_8a8eabc1958ebc50.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Greeting for Redirect to Voice App"
+class="gallery-image"
+data-flex-grow="147"
+data-flex-basis="353px"
+>&lt;/p>
+&lt;p>I&amp;rsquo;ve already added support for these new configuration options to the &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer" target="_blank" rel="noopener"
+>M365 Call Flow Visualizer&lt;/a>. In this demo call flow I&amp;rsquo;m just using text to speech greetings but of course it also works for audio files including exporting them to disk. This is how it looks now.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_New_Greetings.png"
+width="1978"
+height="3840"
+srcset="https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_New_Greetings_hu_924f5a60a5e00bfc.png 480w, https://heusser.pro/p/teams-call-queues-now-support-greetings-in-exception-handlings-1ye1avs43jps/PS_Test_EV_Enabled_CQ_CallFlow_New_Greetings_hu_57e9d38580f8eb25.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Greetings are configured on call queue directly"
+class="gallery-image"
+data-flex-grow="51"
+data-flex-basis="123px"
+>&lt;/p>
+&lt;p>As you can see, the greetings are now configured directly on the call queue and there&amp;rsquo;s no need to deploy and manage additional auto attendants anymore. The greeting options for redirect to shared voicemail are unchanged. This can be seen on the &lt;strong>PS Test EV Enabled On Call CQ&lt;/strong>.&lt;/p>
+&lt;h2 id="powershell-vs-teams-admin-center">PowerShell vs Teams Admin Center
+&lt;/h2>&lt;p>Teams Admin Center doesn&amp;rsquo;t support configuring a greeting if the call is being forwarded to another Teams user (person in organization) or a personal voicemail. However, the available properties which are returned in &lt;code>Get-CsCallQueue&lt;/code> hint that support for greetings before a call is forwarded to a person might be coming soon too.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$cq&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-CsCallQueue&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="nv">$cq&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Identity&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">PS &lt;/span>&lt;span class="n">V:&lt;/span>&lt;span class="p">\&lt;/span>&lt;span class="n">GitHub&lt;/span>&lt;span class="p">\&lt;/span>&lt;span class="n">M365CallFlowVisualizer&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="nv">$cq&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">fl &lt;/span>&lt;span class="p">*&lt;/span>&lt;span class="n">person&lt;/span>&lt;span class="p">*&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">OverflowRedirectPersonAudioFilePrompt&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">OverflowRedirectPersonAudioFilePromptFileName&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">OverflowRedirectPersonTextToSpeechPrompt&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">TimeoutRedirectPersonAudioFilePrompt&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">TimeoutRedirectPersonAudioFilePromptFileName&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">TimeoutRedirectPersonTextToSpeechPrompt&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">NoAgentRedirectPersonAudioFilePrompt&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">NoAgentRedirectPersonAudioFilePromptFileName&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">NoAgentRedirectPersonTextToSpeechPrompt&lt;/span> &lt;span class="err">:&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>I wouldn&amp;rsquo;t be me unless I tested this. Using &lt;code>Set-CsCallQueue -Identity $cq.Identity -OverflowRedirectPersonTextToSpeechPrompt &amp;quot;Test overflow redirect to person greeting&amp;quot;&lt;/code> I was able to configure a greeting before the call was forwarded to the specified Teams user. A quick test call to the queue successfully played back the message before the call was forwarded to the Teams user. &lt;strong>But&lt;/strong> when I updated the call queue in TAC again, the greeting was deleted (as expected) from the queue. I strongly recommend not to configure a greeting before redirecting to a person until the feature is officially available in Teams Admin Center. Otherwise, you can only update the queue through PS until Microsoft has added the feature to TAC as well. Because of that, I also didn&amp;rsquo;t include this in the Visualizer yet.&lt;/p>
+&lt;h2 id="summary">Summary
+&lt;/h2>&lt;p>I haven&amp;rsquo;t seen anybody talk about this new feature online before so I thought that it would be worth sharing. And of course I also wanted to share that the M365 Call Flow Visualizer has been updated to display all configured greetings accurately. I hope you like the new feature and that the Visualizer will help you to get your documentation up to speed quickly.&lt;/p>
+&lt;p>If you want to learn how to download existing audio files from call queues through TAC or PowerShell without the M365 Call Flow Visualizer, you can check out &lt;a class="link" href="https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0" >this&lt;/a> post.&lt;/p></description></item><item><title>Download Existing Audio Files from Teams Admin Center</title><link>https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/</link><pubDate>Tue, 16 Aug 2022 17:33:21 +0000</pubDate><guid>https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/</guid><description>&lt;p>Many companies use custom audio files like greetings, IVR announcements etc. in their call flows. Often these audio files are custom made by professionals. Hence, they provide a certain value to many customers. Unfortunately, sometimes people take the “set and forget” approach and these files are then either deleted or can’t be found by the people who need them.&lt;/p>
+&lt;p>So, let’s assume that you have an auto attendant or a call queue in Teams which use custom audio files. Now you want to create a new call flow with the same greetings, but you can’t find the existing files anymore. The only place where they are stored is in Teams / the live configuration.&lt;/p>
+&lt;h4 id="download-viatac">Download via TAC
+&lt;/h4>&lt;p>Since a few weeks, it’s possible to download these files via TAC directly instead of just PowerShell. To do so, just go into the configuration of your auto attendant or call queue and locate the desired file you want to download.&lt;/p>
+&lt;p>Now right click on the filename and select “Save link as”.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/11yqZHiodIZeZzqL9YsH3rg.png"
+width="708"
+height="671"
+srcset="https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/11yqZHiodIZeZzqL9YsH3rg_hu_24de34315c1f533c.png 480w, https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/11yqZHiodIZeZzqL9YsH3rg_hu_4bc5aaf41e947b4.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="105"
+data-flex-basis="253px"
+>&lt;/p>
+&lt;p>The suggested filename is actually the audio file id from the CsOnlineAudioFile but the extension is missing by default.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/1wNaFbBhDQgXFvIUxuonbQ.png"
+width="708"
+height="68"
+srcset="https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/1wNaFbBhDQgXFvIUxuonbQ_hu_a53f43e6b0f4b108.png 480w, https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/1wNaFbBhDQgXFvIUxuonbQ_hu_83afbfb8dfbebfd5.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="1041"
+data-flex-basis="2498px"
+>&lt;/p>
+&lt;p>Naturally, I tried to add .mp3 as the filename extension since that’s what it says in TAC.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/1aa4m4jVobzxNhGuZxTCAVw.png"
+width="530"
+height="129"
+srcset="https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/1aa4m4jVobzxNhGuZxTCAVw_hu_fb8a8dd5d371c607.png 480w, https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/1aa4m4jVobzxNhGuZxTCAVw_hu_5bd826cafa2ceeef.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="410"
+data-flex-basis="986px"
+>&lt;/p>
+&lt;p>Once the file has been downloaded, it plays back just fine on my computer. However, when I try to upload it to another auto attendant or call queue (or even the same for that matter), I always receive the following error message.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/1aWpVq6apo0mqJH0H2uwAw.png"
+width="638"
+height="55"
+srcset="https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/1aWpVq6apo0mqJH0H2uwAw_hu_a2f754b4d294ef3f.png 480w, https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/1aWpVq6apo0mqJH0H2uwAw_hu_2d26a4679a0712d3.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="1160"
+data-flex-basis="2784px"
+>&lt;/p>
+&lt;p>Teams supports MP3, WAV and WMA files which are smaller than 5 MB. So, the downloaded file should be supported. However, it looks like uploaded files are somehow converted by Teams, regardless of their source format. &lt;strong>As soon as I renamed the downloaded mp3 file to .wav, I was able to upload the file without any issues.&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/1jtiQRFtF8SowJ1FSkDVrNg.png"
+width="397"
+height="82"
+srcset="https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/1jtiQRFtF8SowJ1FSkDVrNg_hu_bd610bfad569fc35.png 480w, https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/1jtiQRFtF8SowJ1FSkDVrNg_hu_35bc22c7c2ba329e.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="484"
+data-flex-basis="1161px"
+>&lt;/p>
+&lt;h4 id="download-by-powershell">Download by PowerShell
+&lt;/h4>&lt;p>Previously, the only way to download existing audio files was by using PowerShell. If that’s what you’re interested in, you can use the Gist below to download already uploaded audio files. This handy snippet will retrieve all types of audio files (TenantGlobal, HuntGroup and OrgAutoAttendant), present them in an Out-GridView list (Windows only) and lets you choose a destination directory.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/1EzZMcqhGpskq1eQ9p56T4g.png"
+width="1499"
+height="525"
+srcset="https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/1EzZMcqhGpskq1eQ9p56T4g_hu_c52dbfef5e9c97.png 480w, https://heusser.pro/p/download-existing-audio-files-from-teams-admin-center-1839230eadb0/1EzZMcqhGpskq1eQ9p56T4g_hu_f58512d834a88a7.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="285"
+data-flex-basis="685px"
+>&lt;/p>
+&lt;script src="https://gist.github.com/mozziemozz/4bf4ab793a31b8350793d60e783214d0.js">&lt;/script>
+&lt;p>Note: It’s the same case here, if an mp3 file is saved with an mp3 filename extension, Teams won’t accept the file. Thus, the PowerShell code saves .mp3 and .wma files as .wav files.&lt;/p>
+&lt;p>&lt;strong>&lt;em>TLDR&lt;/em>&lt;/strong>; All you have to do is to download the file and save it as *.wav regardless of the original filename extension. You’ll then be able to easily export and reupload already existing audio files.&lt;/p>
+&lt;p>I hope this article saves you some trouble next time somebody urgently needs an audio file which has mysteriously disappeared from SharePoint or your file server.&lt;/p></description></item></channel></rss>
