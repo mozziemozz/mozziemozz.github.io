@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Holidays on HEUSSER.PRO</title><link>https://heusser.pro/categories/holidays/</link><description>Recent content in Holidays on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 31 Oct 2022 20:12:56 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/holidays/index.xml" rel="self" type="application/rss+xml"/><item><title>Everything You Ever Wanted to Know About Teams Holidays</title><link>https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/</link><pubDate>Mon, 31 Oct 2022 20:12:56 +0000</pubDate><guid>https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/</guid><description>&lt;p>Can you believe that it’s already the last day of October and that so far, I’ve only published &lt;a class="link" href="https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a" >one article&lt;/a> this month? And it wasn’t even about Teams…&lt;/p>
+&lt;p>Let me change that. We’re almost at the end of the year already. You know what that means, right? Holidays! But before we can go on Holiday we need to add or update them on our Teams Auto Attendants. That’s exactly what I’m going to write about today.&lt;/p>
+&lt;h3 id="best-practices">Best Practices
+&lt;/h3>&lt;p>Beware, these are not best practices which are documented anywhere officially. The recommendations outlined in this blog post are based on my learnings from working with Teams Auto Attendants in the past years.&lt;/p>
+&lt;p>When you start planning or configuring Holidays in Teams, the first question you should ask yourself is the following:&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>Do you want to treat every Holiday the same, or do you want to treat some holidays differently?&lt;/strong>&lt;/p>&lt;/blockquote>
+&lt;p>This applies to both actions and greetings. The greeting, of course, is the message which will be played back when somebody calls you on a Holiday. The action is what the Auto Attendant will do in terms of call routing on that Holiday. Examples are, disconnect, forward to voicemail, a person in your organization or to an external number.&lt;/p>
+&lt;h4 id="greetings">Greetings
+&lt;/h4>&lt;p>Depending on the answer to our core question, you either need one generic greeting which applies to all Holidays, or you need a different greeting for each or at least for some Holidays.&lt;/p>
+&lt;p>A reason for an individual greeting per Holiday could be that you want to be very specific and include information when your company will resume business as usual.&lt;/p>
+&lt;p>If you opt for a generic greeting, I always tell my customers that their greeting should mention something like this.&lt;/p>
+&lt;blockquote>
+&lt;p>Thank you for your call. Due to a Holiday, our office remains closed for today. Please try us again on the next &lt;strong>working day&lt;/strong>.&lt;/p>&lt;/blockquote>
+&lt;p>The key take-away here is to use &lt;strong>working day&lt;/strong> rather than tomorrow or the next day, since this could also be a Saturday or a Sunday.&lt;/p>
+&lt;h4 id="actions">Actions
+&lt;/h4>&lt;p>An action is where you configure what should happen to inbound calls which are received on Holidays. These are configured inside a so-called holiday call handling.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1tp1XcM6lXY00lfbcb5vrw.png"
+width="1384"
+height="1024"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1tp1XcM6lXY00lfbcb5vrw_hu_d4a17f3d718385e8.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1tp1XcM6lXY00lfbcb5vrw_hu_2be32433f9d793dc.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="135"
+data-flex-basis="324px"
+>&lt;/p>
+&lt;p>In TAC, actions are called &lt;strong>Call routing options.&lt;/strong> In PowerShell they’re referred to as &lt;strong>Action.&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1XPAcx1D2AiEG7QC9MyeGzg.png"
+width="751"
+height="298"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1XPAcx1D2AiEG7QC9MyeGzg_hu_141e7d984578407f.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1XPAcx1D2AiEG7QC9MyeGzg_hu_7f5fdd9c356518f0.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="252"
+data-flex-basis="604px"
+>&lt;/p>
+&lt;h4 id="scope">Scope
+&lt;/h4>&lt;p>Please note that the settings described in this article only apply to Auto Attendants. It’s currently not possible with Teams native features to configure a global schedule for all of your company’s numbers or to configure Holidays for Teams Users. To achieve something like this, you need to use Direct Routing and an SBC which offers time-based routing, like &lt;a class="link" href="https://www.anynode.de/technical-data/" target="_blank" rel="noopener"
+>Anynode&lt;/a> does for example.&lt;/p>
+&lt;p>Again, if you treat all your Holidays the same, for example play back a message and then forward to voicemail, your configuration will be much easier to build and maintain. You will only need to update the schedules once a year. There’s no need to touch the call handlings again with this approach.&lt;/p>
+&lt;h4 id="holiday-lists">Holiday Lists
+&lt;/h4>&lt;p>The third thing we need is a Holiday list. The terminology might be a little confusing here. In TAC they’re simply called &lt;strong>Holidays.&lt;/strong> In &lt;a class="link" href="https://learn.microsoft.com/en-us/powershell/module/skype/new-csonlineschedule?view=skype-ps" target="_blank" rel="noopener"
+>PowerShell&lt;/a> they’re called &lt;strong>Schedules.&lt;/strong>&lt;/p>
+&lt;p>If we add a new Holiday in TAC, it uses the singular form Holiday, even though this can have multiple entries. This essentially makes it a Holiday list from my point of view.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1aEtINYXUX2i7UtbWDzbzbA.png"
+width="1277"
+height="269"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1aEtINYXUX2i7UtbWDzbzbA_hu_9df8b344a323d19a.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1aEtINYXUX2i7UtbWDzbzbA_hu_8b4f41f1ebc621cb.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="474"
+data-flex-basis="1139px"
+>&lt;/p>
+&lt;p>While Holidays can be created from inside the configuration menu of an Auto Attendant, these lists are actually stored outside of an Auto Attendant. You can find them in Teams Admin Center under &lt;a class="link" href="https://admin.teams.microsoft.com/company-wide-settings/holidays" target="_blank" rel="noopener"
+>&lt;strong>Voice\Holidays&lt;/strong>&lt;/a>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1hVJdRxmQDMLykXkxp0GEsg.png"
+width="2174"
+height="760"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1hVJdRxmQDMLykXkxp0GEsg_hu_93395874ac3ce712.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1hVJdRxmQDMLykXkxp0GEsg_hu_567a2f72a7fc0990.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="286"
+data-flex-basis="686px"
+>&lt;/p>
+&lt;p>A Holiday list can be linked to multiple Auto Attendants. Because of that, I recommend to always edit Holiday schedules under &lt;a class="link" href="https://admin.teams.microsoft.com/company-wide-settings/holidays" target="_blank" rel="noopener"
+>&lt;strong>Voice\Holidays&lt;/strong>&lt;/a> and not directly on the Attendant itself. This should minimize mistakes and confusion.&lt;/p>
+&lt;p>I don’t recommend including the year into the schedule’s name. The year is already included in each entry. Besides that, it’s also highly likely that you will have a Holiday for New Year&amp;rsquo;s Eve which overlaps into the next year which kind of messes with the naming scheme.&lt;/p>
+&lt;h4 id="limits">Limits
+&lt;/h4>&lt;p>A Holiday list can have up to ten entries. And an Auto Attendant can have up to 20 Holiday call handlings. While I haven’t verified this, it means that in theory, you should be able to have a maximum of 200 Holidays per Auto Attendant, assuming that each entry only spans one day. Only having 165 working days, what a life that would be.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/19kci3K5qI70JBfn20eY1tQ.png"
+width="1073"
+height="721"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/19kci3K5qI70JBfn20eY1tQ_hu_af5bc53cf8e20f01.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/19kci3K5qI70JBfn20eY1tQ_hu_47ab5379d3ce284a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="148"
+data-flex-basis="357px"
+>&lt;/p>
+&lt;h4 id="understanding-thedates">Understanding The Dates
+&lt;/h4>&lt;p>A Holiday consists of a start and end date and a start and end time. This means that we can also configure partial Holidays which for example start at noon or later. Our Auto Attendant might have business hours which allow calls to get through until 5 p.m. If we configure a Holiday to start at 4 p.m. we can close the lines 1 hour earlier without touching our business hours.&lt;/p>
+&lt;p>The end date and time is usually 12:00 a.m. of the following day. So, if we want to close the Auto Attendant for the entire day on October 31st, we configure the Holiday like this:&lt;/p>
+&lt;p>Start: 31.10.2022 12:00 AM&lt;br>
+End: 01.11.2022 12:00 AM&lt;/p>
+&lt;p>This is &lt;a class="link" href="https://learn.microsoft.com/en-us/microsoftteams/set-up-holidays-in-teams" target="_blank" rel="noopener"
+>documented&lt;/a> and recommended by Microsoft.&lt;/p>
+&lt;p>When the new day begins, the Auto Attendant will go back to evaluating business hours as usual.&lt;/p>
+&lt;p>It’s important to point out that Holiday lists do not store any information about time zones. Time zones are configured on Auto Attendants. Remember that the same list can be associated with multiple Auto Attendants. This allows you to have consolidated Holiday lists which automatically adjust to the relevant time zones based on the Auto Attendant configuration.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1GvD76p2agULlleuMkd3A.png"
+width="959"
+height="229"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1GvD76p2agULlleuMkd3A_hu_6abd6dcdd31f09da.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1GvD76p2agULlleuMkd3A_hu_dd9a213e26510887.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="418"
+data-flex-basis="1005px"
+>&lt;/p>
+&lt;h4 id="configuring-holidays-on-an-auto-attendant">Configuring Holidays on an Auto Attendant
+&lt;/h4>&lt;p>If you create a new call handling for an Auto Attendant, you need to select a Holiday (list/schedule) from your Holidays. This again means that if you want to have an individual greeting or action per Holiday, you can only have one Holiday per list. Thus, you need to take the limit of twenty call handlings per Attendant into consideration.&lt;/p>
+&lt;p>If you need to configure more than twenty call handlings, you will need to update the configuration sometime during the year. Without removing call handlings of past Holidays, you won’t be able to add new ones for the rest of the year.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1J4pgmSGCkJ9VPULBb1fpJw.png"
+width="975"
+height="1006"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1J4pgmSGCkJ9VPULBb1fpJw_hu_1917439bd23589bd.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1J4pgmSGCkJ9VPULBb1fpJw_hu_5e1a32495f47b239.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="96"
+data-flex-basis="232px"
+>&lt;/p>
+&lt;p>When I built my first Auto Attendants many years ago, I used to include the year in the name of the call handling. This was an awfully bad idea, and I learned my lesson. I had to update all the schedules and all call handling names.&lt;/p>
+&lt;p>Because of the administrative overhead, I usually recommend my customers to have one list for dynamic Holidays and one for fixed Holidays. Since I came up with these terms on my own, I’m not sure if they’re popular. But they should be self-explanatory. Dynamic days are the ones which occur e.g., every third Monday of April. Fixed days are the ones which fall on the same day each year. E.g., Fourth of July. Because there are usually more than ten Holidays in a year, we need two lists anyway. Splitting between dynamic and fixed days seemed like the most obvious way to me.&lt;/p>
+&lt;p>If you have more than ten fixed or dynamic Holidays, you can just create a second list and add a call handling with the same settings for those days as well. There’s no way around that.&lt;/p>
+&lt;p>Editing a Holiday will open its own sub menu which has a &lt;strong>Save&lt;/strong> button. Never forget to also click &lt;strong>Submit&lt;/strong> on the Auto Attendant after you have saved a Holiday call handling. If you don’t save the Auto Attendant as well, changes to your Holidays won’t be saved.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1RyzPgNVfqMPskxGV6CrDaw.png"
+width="1229"
+height="643"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1RyzPgNVfqMPskxGV6CrDaw_hu_c28852539acd6401.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1RyzPgNVfqMPskxGV6CrDaw_hu_cb1967e227308797.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="191"
+data-flex-basis="458px"
+>&lt;/p>
+&lt;h4 id="some-exceptions">Some Exceptions
+&lt;/h4>&lt;p>If your company also has annual Holidays, which typically last one or two weeks, I suggest creating a separate list and call handling for these weeks.&lt;/p>
+&lt;p>You can create one entry for the entire timespan and configure a custom greeting because it isn’t obvious when the next working day will be.&lt;/p>
+&lt;p>Also, you can’t create multiple call handlings with the same start time on the same Auto Attendant. However, it is possible to create Holidays, where one Holiday occurs during another, multi-day Holiday. To test this, I’ve created the following Holidays.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1DofZ4VAaXsLi6YarxKEvg.png"
+width="1066"
+height="296"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1DofZ4VAaXsLi6YarxKEvg_hu_a914252474b03a37.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1DofZ4VAaXsLi6YarxKEvg_hu_72af2991710c5991.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="360"
+data-flex-basis="864px"
+>&lt;/p>
+&lt;p>The date 31.10.2022 is also in the range of the following Holiday which starts one day before, on 30.10.2022.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1iBXZ4wDNepWvZvBEgTQj7A.png"
+width="1069"
+height="290"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1iBXZ4wDNepWvZvBEgTQj7A_hu_b54c2fce2ebb0088.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1iBXZ4wDNepWvZvBEgTQj7A_hu_e174a64da39a58d7.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="368"
+data-flex-basis="884px"
+>&lt;/p>
+&lt;p>Next, I created another Holiday which wraps around both previous Holidays.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1vFgMTWt3euwkq5lI0j7U5A.png"
+width="1279"
+height="359"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1vFgMTWt3euwkq5lI0j7U5A_hu_5688fb5032a66a67.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1vFgMTWt3euwkq5lI0j7U5A_hu_923f8ef6a2d0cefe.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="356"
+data-flex-basis="855px"
+>&lt;/p>
+&lt;p>I then created a call handling for each of them.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1iVxHOpIvLdlMXHRwAqnIxw.png"
+width="1226"
+height="599"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1iVxHOpIvLdlMXHRwAqnIxw_hu_3043800737f9a9f7.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1iVxHOpIvLdlMXHRwAqnIxw_hu_228c48abedf1aee5.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="204"
+data-flex-basis="491px"
+>&lt;/p>
+&lt;p>To find out, which call handling is effective, I called my Auto Attendant. Because I’ve configured a different greeting for each of them, I was able to easily determine which one was active.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1Wec7TKqb5GlOaz8mQFFDuA.png"
+width="863"
+height="456"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1Wec7TKqb5GlOaz8mQFFDuA_hu_ad503dc534699e19.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1Wec7TKqb5GlOaz8mQFFDuA_hu_831fb3bf5a9a56a4.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="189"
+data-flex-basis="454px"
+>&lt;/p>
+&lt;p>It turns out, that Teams is smart enough to always prioritize the one which is the most precise. In this case, it’s the one which only includes a single day.&lt;/p>
+&lt;p>To be absolutely sure, I even removed the other two call handlings and saved the Auto Attendant. I then added them again to see if the order in which they are configured makes a difference, but it doesn’t.&lt;/p>
+&lt;p>Im not sure if this will be a feature that anyone will ever need but it’s still good to know. In theory we could set up a Holiday for an entire week but still have a different greeting and/or action on e.g. Wednesday if we configure a separate Holiday for it.&lt;/p>
+&lt;h4 id="further-reading">Further Reading
+&lt;/h4>&lt;p>If you’ve found these insights about Auto Attendants and Holidays useful, please also see &lt;a class="link" href="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471" >this article&lt;/a>, where I explain how the entire process of updating (not creating) schedules can be outsourced to users without granting them Teams Administrator rights.&lt;/p>
+&lt;p>And of course, Holiday Tables which are configured on an Auto Attendant can also be visually displayed using the &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer" target="_blank" rel="noopener"
+>M365 Call Flow Visualizer&lt;/a>.&lt;/p>
+&lt;p>Based on feedback from the community, I’ve added the name of the call handling and the linked Holiday list to the diagram for more clarity.&lt;/p>
+&lt;p>You can see that there’s a name for both the &lt;strong>Call Handling&lt;/strong> and the linked &lt;strong>Holiday Schedule&lt;/strong> in the flow chart**.**&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1FpF50ssn2tmTJPC7zAbeSQ.png"
+width="1357"
+height="1584"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1FpF50ssn2tmTJPC7zAbeSQ_hu_b4e766564a623bd4.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1FpF50ssn2tmTJPC7zAbeSQ_hu_6c19e90cbe9602d3.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="85"
+data-flex-basis="205px"
+>&lt;/p>
+&lt;h4 id="final-note">Final Note
+&lt;/h4>&lt;p>In Teams Admin Center, Holidays are chronologically configured and displayed after the business hours have been configured. But in practice, any Holiday gets prioritized over business hours. The M365 Call Flow Visualizer correctly represents this in its diagram outputs.&lt;/p>
+&lt;p>I hope that this article helps you prepare for the Holidays so that you can leave for the Holidays with the peace of mind you need.&lt;/p></description></item></channel></rss>

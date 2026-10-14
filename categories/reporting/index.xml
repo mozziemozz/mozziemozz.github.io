@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Reporting on HEUSSER.PRO</title><link>https://heusser.pro/categories/reporting/</link><description>Recent content in Reporting on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Fri, 10 Oct 2025 13:48:53 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/reporting/index.xml" rel="self" type="application/rss+xml"/><item><title>How to Check Who Started a Teams Meeting Recording as a Teams Administrator</title><link>https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/</link><pubDate>Fri, 10 Oct 2025 13:48:53 +0000</pubDate><guid>https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/</guid><description>&lt;p>The Teams Admin Center offers a lot of insights and logs for Teams Administrators. But some meeting related information like &lt;a class="link" href="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z" >attendance reports&lt;/a> or meeting chats are only accessible by meeting organizers and participants. Even with Teams administrator access, this kind of information can&amp;rsquo;t be viewed in TAC.&lt;/p>
+&lt;p>Let&amp;rsquo;s assume that you need to check who started a meeting recording for a particular meeting and where that recording was saved. The easiest way to get this information is to just ask the meeting organizer to add you to the meeting so you can check the chat history yourself. This will give you &lt;em>most&lt;/em> of the data.&lt;/p>
+&lt;p>If you can&amp;rsquo;t get a hold of somebody to add you to a meeting chat, there&amp;rsquo;s still the Microsoft Graph way which at least gives you &lt;em>some&lt;/em> of the data.&lt;/p>
+&lt;h2 id="system-event-messages">System Event Messages
+&lt;/h2>&lt;p>Messages that contain information about chat events, like when somebody was added/removed from a chat or when a meeting recording was started are called &lt;strong>system event messages&lt;/strong>. The &lt;strong>messageType&lt;/strong> in Graph is &lt;code>systemEventMessage&lt;/code> for these types of messages. The body doesn&amp;rsquo;t contain anything besides &lt;code>&amp;lt;systemEventMessage/&amp;gt;&lt;/code>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image.png"
+width="1740"
+height="255"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image_hu_3d44d8caf7cd059e.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image_hu_487780c105057cb1.png 1024w"
+loading="lazy"
+decoding="async"
+alt="System event message property example"
+class="gallery-image"
+data-flex-grow="682"
+data-flex-basis="1637px"
+>&lt;/p>
+&lt;p>However, when a message like this is viewed in a Teams chat, it contains much more information.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-1.png"
+width="682"
+height="135"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-1_hu_7918bd40aacddcdc.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-1_hu_ff7bdcea1f0844ff.png 1024w"
+loading="lazy"
+decoding="async"
+alt="System event message examples in a chat"
+class="gallery-image"
+data-flex-grow="505"
+data-flex-basis="1212px"
+>&lt;/p>
+&lt;p>For example, a system event message for when a meeting recording was started has a value of &lt;code>||#microsoft.graph.callRecordingEventMessageDetail|&lt;/code> in the chat message&amp;rsquo;s &lt;code>eventDetail|&lt;/code> property.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-10.png"
+width="1741"
+height="283"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-10_hu_ffe14d5ab594b2b3.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-10_hu_a2a81f5c374ef814.png 1024w"
+loading="lazy"
+decoding="async"
+alt="System event message body"
+class="gallery-image"
+data-flex-grow="615"
+data-flex-basis="1476px"
+> &lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-2.png"
+width="1738"
+height="424"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-2_hu_9a59c71904246cb4.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-2_hu_d26e25a797cbe6ff.png 1024w"
+loading="lazy"
+decoding="async"
+alt="System event message for meeting recording started"
+class="gallery-image"
+data-flex-grow="409"
+data-flex-basis="983px"
+>&lt;/p>
+&lt;p>The &lt;code>initiator&lt;/code> property includes an Entra ID user ID to tell us who started a recording.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-3.png"
+width="1739"
+height="332"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-3_hu_4b10603f24d6f565.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-3_hu_f8a30db3f223ad73.png 1024w"
+loading="lazy"
+decoding="async"
+alt="System event message for meeting recording initiator"
+class="gallery-image"
+data-flex-grow="523"
+data-flex-basis="1257px"
+>&lt;/p>
+&lt;h2 id="not-everything-is-exposed-in-graph">Not everything is exposed in Graph
+&lt;/h2>&lt;p>Sadly, Graph doesn&amp;rsquo;t seem to expose everything. Obviously I can&amp;rsquo;t say for sure how exactly the Teams client works but it looks very much like that it&amp;rsquo;s able to access additional data before it determines which end user facing message is displayed in the chat.&lt;/p>
+&lt;p>For example, when a meeting recording is automatically started by the organizer&amp;rsquo;s setting, the following message is displayed in the chat.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-4.png"
+width="675"
+height="47"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-4_hu_65a376ae64e41d86.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-4_hu_c45a9aed0838bd33.png 1024w"
+loading="lazy"
+decoding="async"
+alt="System event message for automatically started recording"
+class="gallery-image"
+data-flex-grow="1436"
+data-flex-basis="3446px"
+>&lt;/p>
+&lt;p>But in Graph, I wasn&amp;rsquo;t able to find any reference to this. The system message looks just like when the recording was started manually by a participant.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-7.png"
+width="1739"
+height="667"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-7_hu_5d29822ee14c741f.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-7_hu_a4212d0e7a74b527.png 1024w"
+loading="lazy"
+decoding="async"
+alt="First object: automatically started recording, second object: manually started recording"
+class="gallery-image"
+data-flex-grow="260"
+data-flex-basis="625px"
+>
+&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-5.png"
+width="1739"
+height="283"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-5_hu_38782c4ed56cf647.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-5_hu_f2b3566e6b99723d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Automatically started recording"
+class="gallery-image"
+data-flex-grow="614"
+data-flex-basis="1474px"
+> &lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-6.png"
+width="1739"
+height="275"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-6_hu_1e0af2af649486eb.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-6_hu_7d85950b4e0a764b.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Manually started recording"
+class="gallery-image"
+data-flex-grow="632"
+data-flex-basis="1517px"
+>&lt;/p>
+&lt;p>I would have expected that when a meeting is recorded automatically by the organizer&amp;rsquo;s meeting options, that Graph would have some kind of reference under the &lt;code>initiator.application&lt;/code> property but that&amp;rsquo;s not the case.&lt;/p>
+&lt;p>Also, in my testing, Graph doesn&amp;rsquo;t differentiate when different users started and stopped a recording. Here is how it looks in Graph. It says that the meeting recording was started and stopped by Evelyn.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-8.png"
+width="2084"
+height="221"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-8_hu_b6b739fd4ee59454.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-8_hu_1f5386b68611e83b.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Data from Graph"
+class="gallery-image"
+data-flex-grow="942"
+data-flex-basis="2263px"
+>&lt;/p>
+&lt;p>But in the Teams client, it says that the recording was started by Evelyn and stopped by Emma.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-9.png"
+width="400"
+height="82"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-9_hu_b88d3c08307be9d8.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-9_hu_78cd45771bfc6dbc.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Messages in Teams"
+class="gallery-image"
+data-flex-grow="487"
+data-flex-basis="1170px"
+>&lt;/p>
+&lt;p>The only explanation for this is that the Teams client does in fact have access to more data than what&amp;rsquo;s exposed in Graph.&lt;/p>
+&lt;p>The data provided by Graph is definitely not perfect but I think it can still be helpful, if you just need to check very basic information, like if a meeting has been recorded at all and where the recording was saved.&lt;/p>
+&lt;h2 id="other-system-event-messages">Other System Event Messages
+&lt;/h2>&lt;p>Before we get to the script example, let&amp;rsquo;s take a look at all the different system event message types.
+These are the system message events I was able to find:&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Description&lt;/th>
+&lt;th>@odata.type&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Meeting started&lt;/td>
+&lt;td>&lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/callstartedeventmessagedetail?view=graph-rest-1.0" target="_blank" rel="noopener"
+>#microsoft.graph.callStartedEventMessageDetail&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Meeting ended&lt;/td>
+&lt;td>&lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/callendedeventmessagedetail?view=graph-rest-1.0" target="_blank" rel="noopener"
+>#microsoft.graph.callEndedEventMessageDetail&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Meeting chat was renamed&lt;/td>
+&lt;td>&lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/chatrenamedeventmessagedetail?view=graph-rest-1.0" target="_blank" rel="noopener"
+>#microsoft.graph.chatRenamedEventMessageDetail&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Meeting recording started/saved/ended&lt;/td>
+&lt;td>&lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/callrecordingeventmessagedetail?view=graph-rest-1.0" target="_blank" rel="noopener"
+>#microsoft.graph.callRecordingEventMessageDetail&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Meeting transcript started&lt;/td>
+&lt;td>&lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/calltranscripteventmessagedetail?view=graph-rest-1.0" target="_blank" rel="noopener"
+>#microsoft.graph.callTranscriptEventMessageDetail&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Participant added to the meeting chat&lt;/td>
+&lt;td>&lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/membersaddedeventmessagedetail?view=graph-rest-1.0" target="_blank" rel="noopener"
+>#microsoft.graph.membersAddedEventMessageDetail&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Participant joined the meeting&lt;/td>
+&lt;td>&lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/membersjoinedeventmessagedetail?view=graph-rest-1.0" target="_blank" rel="noopener"
+>#microsoft.graph.membersJoinedEventMessageDetail&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Participant removed from the meeting chat&lt;/td>
+&lt;td>&lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/membersdeletedeventmessagedetail?view=graph-rest-1.0" target="_blank" rel="noopener"
+>#microsoft.graph.membersDeletedEventMessageDetail&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="meeting-transcript-started">Meeting Transcript started
+&lt;/h3>&lt;p>One example where the meeting chat in Teams gives you less information than Graph is when a meeting participant starts the meeting transcription. In that case, no message is sent to the meeting chat but there is a system message returned by Graph.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-11.png"
+width="1736"
+height="334"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-11_hu_6da53f84ffbf9987.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-11_hu_43688a32ac6da400.png 1024w"
+loading="lazy"
+decoding="async"
+alt="System event message for meeting transcription"
+class="gallery-image"
+data-flex-grow="519"
+data-flex-basis="1247px"
+>&lt;/p>
+&lt;p>However, the system posts a card to the chat with the transcript.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-12.png"
+width="987"
+height="257"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-12_hu_69abf12ba740730f.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-12_hu_3d4d2fe3c4f3515.png 1024w"
+loading="lazy"
+decoding="async"
+alt="alt text"
+class="gallery-image"
+data-flex-grow="384"
+data-flex-basis="921px"
+>&lt;/p>
+&lt;p>The &lt;strong>Transcript&lt;/strong> button opens the transcript in a new window which then also shows the details of when and by whom the transcript was started.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-13.png"
+width="1121"
+height="935"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-13_hu_e0c8558d24cc9b3a.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-13_hu_36f43fd553ed230e.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Meeting transcript details"
+class="gallery-image"
+data-flex-grow="119"
+data-flex-basis="287px"
+>&lt;/p>
+&lt;h2 id="sample-script">Sample Script
+&lt;/h2>&lt;p>You can find a sample script on my &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/Teams/Chats/Get-MeetingRecordingStartedByReport.ps1" target="_blank" rel="noopener"
+>GitHub&lt;/a>. It requires a service principal with the following application permissions: &lt;code>Chat.Read.All&lt;/code>, &lt;code>ChatMessage.Read.All&lt;/code>, &lt;code>User.Read.All&lt;/code>. The directory includes a script called &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/Teams/Chats/CreateAppRegistrationAndServicePrincipal.ps1" target="_blank" rel="noopener"
+>&lt;strong>CreateAppRegistrationAndServicePrincipal.ps1&lt;/strong>&lt;/a> which will create a new app registration and service principal with the required permissions automatically.&lt;/p>
+&lt;p>The script will filter the system event messages for meeting recording related events and output them in a grid view.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-15.png"
+width="3105"
+height="964"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-15_hu_851bca91619fec88.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-15_hu_e6ecf696068634c3.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Script output example"
+class="gallery-image"
+data-flex-grow="322"
+data-flex-basis="773px"
+>&lt;/p></description></item><item><title>Report on Teams Call Queue Opt In Status and Assignment Paths</title><link>https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/</link><pubDate>Thu, 29 Sep 2022 17:22:31 +0000</pubDate><guid>https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/</guid><description>&lt;p>At the beginning of September, I wrote &lt;a class="link" href="https://heusser.pro/p/find-all-auto-attendants-and-call-queues-a-user-is-associated-with-16710c3adf01" >this&lt;/a> article, where I presented a way to quickly see all Call Queues and Auto Attendants any user is associated with by running a PowerShell script.&lt;/p>
+&lt;p>Today, we’re going to wrap up September by taking a look at the other way around. We want to see all the agents which are part of a specific queue. Of course, the &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer" target="_blank" rel="noopener"
+>M365 Call Flow Visualizer&lt;/a> will also show this information in the diagram but sometimes all we need is just a plain old CSV file.&lt;/p>
+&lt;p>If you’re using a Teams Voice Enabled Channel (also known as Collaborative Calling) you will be able to see which agents are currently opted in to the Queue in the Teams Client.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1sQNinlL8ABHZcYr69HUZ5w.png"
+width="1896"
+height="1238"
+srcset="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1sQNinlL8ABHZcYr69HUZ5w_hu_e0c74b08492521ac.png 480w, https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1sQNinlL8ABHZcYr69HUZ5w_hu_3648a4f7f3afdde3.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="153"
+data-flex-basis="367px"
+>&lt;/p>
+&lt;p>However, this only works for Voice Enabled Channels and only agents which are part of the Queue can see this information. If you’re a Teams Voice Admin like me, you might want to see the opt in status of agents from other queues or check the assignment path (Direct, Groups or Channel) as well. If you’re confused about Call Queues and agent lists, please have a look at &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0" >this&lt;/a> article.&lt;/p>
+&lt;h3 id="the-problem">The Problem
+&lt;/h3>&lt;p>It has always been possible to retrieve some of the information about Call Queue agents by PowerShell. The problem is that the properties of a Call Queue will only display the Object Ids of agents but no Display Names.&lt;/p>
+&lt;p>Let’s store the properties of a Call Queue in a variable.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$callQueue&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-CsCallQueue&lt;/span> &lt;span class="n">-Identity&lt;/span> &lt;span class="nb">a3b9ffff-f74b&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">46bb&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">9743&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">0c5146a61f31&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>We can now view the agent list by accessing the &lt;strong>Agents&lt;/strong> property. This will give us an output which looks like this.&lt;/p>
+&lt;p>PS C:\Temp\M365CallFlowVisualizer&amp;gt; $callQueue.Agents&lt;/p>
+&lt;p>ObjectId OptIn&lt;br>
+-&amp;mdash;&amp;mdash;- &amp;mdash;&amp;ndash;&lt;br>
+61d8b739-2e10-4e47-8e63-e66cc73d0a24 True&lt;br>
+fa19b242-8bae-419d-a4eb-12796577c81f True&lt;br>
+76606d0b-4d28-4246-9c08-2a0f95f96141 True&lt;br>
+9a7c1bb4-49db-40ee-9d05-26f5dfd338c2 True&lt;/p>
+&lt;p>We can also see that two distribution lists (groups) are associated with this Call Queue by entering the following.&lt;/p>
+&lt;p>PS C:\Temp\M365CallFlowVisualizer&amp;gt; $callQueue.DistributionLists&lt;/p>
+&lt;p>Guid&lt;br>
+-&amp;mdash;&lt;br>
+57e8de46-1552-4271-9f93-a602216c32ad&lt;br>
+942d0869-2713-407d-8b6f-70b946039877&lt;/p>
+&lt;p>So far, we only know the Opt In status of the agents (without names) and that there are two groups linked to this Call Queue. But we still don’t know the user principal or display names of the agents, or if they’ve been added to the queue by a group or a direct assignment. If they’ve indeed been added by a group, we also don’t know from which one(s).&lt;/p>
+&lt;h3 id="the-solution">The Solution
+&lt;/h3>&lt;p>I’ve created a PowerShell function inside a script which will give us just that. The script is available on my &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer/blob/main/Functions/Get-CallQueueAgentsStatus.ps1" target="_blank" rel="noopener"
+>GitHub&lt;/a> profile. Make sure that you download or clone the whole repository, since this re-uses the &lt;code>Connect-M365CFV&lt;/code> function which is part of the Visualizer. Because some data, like group memberships can’t be retrieved by Teams PS alone, we also need to connect to Microsoft.Graph Powershell and thus need this function.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1mZw6xKKup3ayftvTLiY4kw.png"
+width="1798"
+height="483"
+srcset="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1mZw6xKKup3ayftvTLiY4kw_hu_a208d81a7f846132.png 480w, https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1mZw6xKKup3ayftvTLiY4kw_hu_ba9a1d6890174a91.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="372"
+data-flex-basis="893px"
+>&lt;/p>
+&lt;h4 id="how-to-run-thescript">How To Run the Script
+&lt;/h4>&lt;p>Basically, all the code is inside a single function. The script has a Cmdlet-Binding with two optional parameters though.&lt;/p>
+&lt;p>-CallQueueId&lt;br>
+-Export&lt;/p>
+&lt;p>The &lt;strong>CallQueueId&lt;/strong> can be the Id of any Call Queue. You can copy this from the URL in TAC for example.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1NmlnNylGa7Y9vxBjnjYg.png"
+width="1143"
+height="177"
+srcset="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1NmlnNylGa7Y9vxBjnjYg_hu_5b4a5aa2353ca21a.png 480w, https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1NmlnNylGa7Y9vxBjnjYg_hu_5d327253d25fd3e4.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="645"
+data-flex-basis="1549px"
+>&lt;/p>
+&lt;p>If you don’t specify an Id, you will be able to select any Call Queue from a list.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1V3XpQnRhcbiSGCTMdcrw.png"
+width="1896"
+height="474"
+srcset="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1V3XpQnRhcbiSGCTMdcrw_hu_4987ba497758c8df.png 480w, https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1V3XpQnRhcbiSGCTMdcrw_hu_401556e72ac47cd.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="400"
+data-flex-basis="960px"
+>&lt;/p>
+&lt;p>&lt;strong>Export&lt;/strong> is a Validate Set where &lt;strong>WorkingDir&lt;/strong> and &lt;strong>CustomDir&lt;/strong> are valid inputs. &lt;strong>WorkingDir&lt;/strong> will export a CSV file to your current working directory and &lt;strong>CustomDir&lt;/strong> will prompt you to choose a destination folder.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1fJjtD9WrLPnxwvtm6Ocwg.png"
+width="617"
+height="744"
+srcset="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1fJjtD9WrLPnxwvtm6Ocwg_hu_e7d993a241837a51.png 480w, https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1fJjtD9WrLPnxwvtm6Ocwg_hu_4e637b17fe01fd99.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="82"
+data-flex-basis="199px"
+>&lt;/p>
+&lt;p>If you don’t include any of the two values, no CSV file will be exported.&lt;/p>
+&lt;p>If we want to run the script from the root of the repository, we can do it like this.&lt;/p>
+&lt;p>.\Functions\Get-CallQueueAgentsStatus.ps1&lt;/p>
+&lt;p>Or like this.&lt;/p>
+&lt;p>.\Functions\Get-CallQueueAgentsStatus.ps1 -Export CustomDir -CallQueueId b138ee51-75e0-4c39-b3a8-c14c01170ee0&lt;/p>
+&lt;h3 id="output-of-different-scenarios">Output of Different Scenarios
+&lt;/h3>&lt;p>Let’s check out some examples of the results.&lt;/p>
+&lt;p>&lt;strong>Example 1:&lt;/strong> Here, all the agents are assigned directly.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1bWLc7yMh3ze3I6dpECPVQA.png"
+width="1896"
+height="234"
+srcset="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1bWLc7yMh3ze3I6dpECPVQA_hu_ecc602a221a5bc80.png 480w, https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1bWLc7yMh3ze3I6dpECPVQA_hu_5cb15c5adc923277.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="810"
+data-flex-basis="1944px"
+>
+&lt;img src="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1noowArUNCiqMWCqN3KfjQ.png"
+width="1375"
+height="633"
+srcset="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1noowArUNCiqMWCqN3KfjQ_hu_daf5c8998477548.png 480w, https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1noowArUNCiqMWCqN3KfjQ_hu_cda7dd915b4cd05c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="217"
+data-flex-basis="521px"
+>&lt;/p>
+&lt;p>&lt;strong>Example 2:&lt;/strong> This one is a little more interesting. Here we can see that one user is assigned directly, two are assigned by two groups and one is assigned by only one group. We can also see that the first user does not have a direct phone number assigned.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1FeNdBPyrxK0FCUQajL2acA.png"
+width="1896"
+height="302"
+srcset="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1FeNdBPyrxK0FCUQajL2acA_hu_a23bf974d6861da7.png 480w, https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1FeNdBPyrxK0FCUQajL2acA_hu_c9390e8ddffad1c4.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="627"
+data-flex-basis="1506px"
+>
+&lt;img src="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1VdnttMWdiPNxH4qp5uVjdw.png"
+width="1373"
+height="965"
+srcset="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1VdnttMWdiPNxH4qp5uVjdw_hu_e6b27cdc652fa8b.png 480w, https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1VdnttMWdiPNxH4qp5uVjdw_hu_73162ac0d6b1cd0b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="341px"
+>&lt;/p>
+&lt;p>&lt;strong>Example 3:&lt;/strong> And in this last example, all the agents have the same assignment path. Because only direct (users) and groups can be combined, all the agents are assigned by the same Team and Channel. Last but not least, we can see that the last user is currently not opted in to the queue.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1GGTgZcdZuXLz6WPAavIuQ.png"
+width="1896"
+height="266"
+srcset="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1GGTgZcdZuXLz6WPAavIuQ_hu_e168d481d59ecff.png 480w, https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1GGTgZcdZuXLz6WPAavIuQ_hu_11dfda15403977f1.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="712"
+data-flex-basis="1710px"
+>
+&lt;img src="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1bTLk3fjZ1Yitj3loiLdRQ.png"
+width="1376"
+height="225"
+srcset="https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1bTLk3fjZ1Yitj3loiLdRQ_hu_27f918dee6c3a82.png 480w, https://heusser.pro/p/report-on-teams-call-queue-opt-in-status-and-assignment-paths-93f177976485/1bTLk3fjZ1Yitj3loiLdRQ_hu_e3849f11b48f3cdb.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="611"
+data-flex-basis="1467px"
+>&lt;/p>
+&lt;p>As you can see, the output of my script provides a lot of valuable information about Call Queue agents which is nowhere to be found in Teams Admin Center.&lt;/p>
+&lt;p>I hope that you enjoy my work and that you too — will find this script useful.&lt;/p></description></item><item><title>Find All Auto Attendants and Call Queues a User is Associated with</title><link>https://heusser.pro/p/find-all-auto-attendants-and-call-queues-a-user-is-associated-with-16710c3adf01/</link><pubDate>Sun, 04 Sep 2022 11:12:16 +0000</pubDate><guid>https://heusser.pro/p/find-all-auto-attendants-and-call-queues-a-user-is-associated-with-16710c3adf01/</guid><description>&lt;p>I’d be lying if I said that many people have asked me about such a script. But one person has. Frankly, this was all the motivation I needed. The question was &lt;strong>if there’s a way to see all call flows any user is associated with&lt;/strong>. I figured that I’d take a shot and see if I can come up with anything. And come up I did.&lt;/p>
+&lt;p>First, let’s talk about where a Teams User could be configured in a call flow.&lt;/p>
+&lt;ul>
+&lt;li>Auto Attendant Holiday Call Handlings&lt;/li>
+&lt;li>Auto Attendant Default Call Flows (transfer or IVR option)&lt;/li>
+&lt;li>Auto Attendant After Hours Call Flows (transfer or IVR option)&lt;/li>
+&lt;li>Auto Attendant Operator (IVR option)&lt;/li>
+&lt;li>Call Queue Agent&lt;/li>
+&lt;li>Call Queue Timeout Target (transfer or personal voicemail)&lt;/li>
+&lt;li>Call Queue Overflow Target (transfer or personal voicemail)&lt;/li>
+&lt;/ul>
+&lt;h4 id="how-does-itwork">How Does it Work?
+&lt;/h4>&lt;p>To achieve this, I’ve modified the M365 Call Flow Visualizer Script. Since the Visualizer is already able to read configurations from Auto Attendants and Call Queues, this wasn’t too hard. All I had to do was to write another function which will pull the Ids of all Voice Apps into an array. I then loop through all the Ids and run the Visualizer for each Voice App. When the Visualizer detects that a call is forwarded to a User at any point in the call flow, the details of said forwarding will be added to a PSObject which will then be added to a variable which only exists in the new function. I called this variable &lt;code>$userLinkVoiceApps&lt;/code> . Because the Visualizer is running for each Voice App, this variable must exist outside of the main script. Otherwise, it would get overwritten after each run.&lt;/p>
+&lt;p>. .\Functions\Find-CallQueueAndAutoAttendantUserLinks.ps1&lt;/p>
+&lt;p>. Find-CallQueueAndAutoAttendantUserLinks -SearchScope All&lt;/p>
+&lt;p>I’ve added this script to my &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer/blob/main/CallFlowUserFinder.ps1" target="_blank" rel="noopener"
+>repository&lt;/a>. Make sure you clone the whole repo or download it as a zip file so that all relative file paths work.&lt;/p>
+&lt;p>If you don’t specify the &lt;code>-SearchUserId&lt;/code> you will be able to select a user from the Out-GridView Table. Otherwise, you can pass an Azure AD ObjectId to the function using this parameter. You can also limit the search scope to just &lt;code>AutoAttendants&lt;/code>or &lt;code>CallQueues&lt;/code> . By default, the search Scope &lt;code>All&lt;/code> is used.&lt;/p>
+&lt;p>The M365CallFlowVisualizer.ps1 is run with the parameters shown below. The &lt;code>-FindUserLinks&lt;/code> switch tells the script to write all user related information into the external &lt;code>$userLinkVoiceApps&lt;/code> variable. Since we’re running the script for each Voice App anyway, there’s no point in expanding nested call flows. We don’t need to create diagrams either, therefore all diagram output options are disabled.&lt;/p>
+&lt;p>. .\M365CallFlowVisualizerV2.ps1 -Identity $searchScopeIncludedVoiceApp -FindUserLinks -SaveToFile $false -SetClipBoard $false -ExportHtml $false -ShowNestedCallFlows $false -ShowUserCallingSettings $false&lt;/p>
+&lt;p>Depending on the amount of Voice Apps you have, it will take some time to finish. After all the information has been gathered, it will be exported to a CSV file at&lt;code>.\Output\VoiceAppsLinkedTo_$UserId.csv&lt;/code> .&lt;/p>
+&lt;p>Here’s an example of the generated output (the actual output will also include User Ids and Voice App Ids). We’re now able to see to which Voice Apps and where in these Voice Apps a user is configured at a glance.&lt;/p>
+&lt;h4 id="good-toknow">Good to Know
+&lt;/h4>&lt;p>The M365 Call Flow Visualizer does not support reading IVRs on Holiday Call Handlings. Thus, this script won’t be able to tell if a user is linked to an Auto Attendant on a Holiday IVR.&lt;/p>
+&lt;p>The Visualizer is built in a way in which it represents an accurate diagram of the &lt;strong>active&lt;/strong> configuration of a Voice App. For example, if you’ve configured an Operator but it isn’t linked to an IVR menu option, the Operator won’t be drawn in the diagram, even if it’s present in the configuration. The same goes for configured after hours call flows, which don’t use a schedule (in which case the default call flow is active all the time). Because of that, the script won’t include users which are configured on &lt;strong>inactive&lt;/strong> configurations on Auto Attendants.&lt;/p>
+&lt;p>For Call Queues which are configured to either immediately time out or overflow it’s a little bit different. The Visualizer won’t draw the call distribution subgraph because there’s no distribution happening when zero-time outs or overflows are configured but the agent will still be included in the exported CSV file.&lt;/p>
+&lt;p>Here we can see that the Call Queue “PS Test CQ” immediately overflows to an external number.&lt;/p>
+&lt;p>In Teams Admin Center, agents are assigned using a Team though.&lt;/p>
+&lt;p>If you would like to learn more about Call Queues and Agent Lists, please refer to &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0" >this article&lt;/a>.&lt;/p>
+&lt;p>Nevertheless, the CallFlowUserFinder.ps1 will still include this user in the exported table so that you can see all the Queues a user is associated with.&lt;/p>
+&lt;p>I hope that this script/method helps you figure which Voice Apps a specific user is linked to.&lt;/p></description></item><item><title>How To Read/Format Microsoft Teams PSTN Call Reports</title><link>https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/</link><pubDate>Fri, 11 Mar 2022 23:52:10 +0000</pubDate><guid>https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/</guid><description>&lt;p>Analyzing PSTN usage reports in Teams Admin Center is a good start to troubleshoot issues with Direct Routing calls in Teams. You can either view the report directly in the browser or export it into a CSV file.&lt;/p>
+&lt;p>To access this report, head over to &lt;a class="link" href="https://admin.teams.microsoft.com/" target="_blank" rel="noopener"
+>https://admin.teams.microsoft.com/&lt;/a> and click Usage reports under Analytics &amp;amp; Reports. Next, choose PSTN and SMS (preview) usage and select a date range. Finally, click on Run report.&lt;/p>
+&lt;p>It will default to Calling plans/SMS so you need to switch the tab to Direct Routing.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1PckxJFyhvjI2Pdokxqqwg.png"
+width="1975"
+height="879"
+srcset="https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1PckxJFyhvjI2Pdokxqqwg_hu_7ee31944db3410d9.png 480w, https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1PckxJFyhvjI2Pdokxqqwg_hu_b470696cdf260bd0.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="224"
+data-flex-basis="539px"
+>&lt;/p>
+&lt;p>Viewing the logs in the browser is good enough if you just need to take a quick look at some calls. For example, you can quickly identify issues if you sort by the column Failure time (UTC). But keep in mind that cancelled calls are also shown as errors, as these are terminated with the SIP error code 487 (busy here). A duration of zero is also an indicator for failed calls.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1qexWj1fWPIeTIS1gBZP2Q.png"
+width="1322"
+height="285"
+srcset="https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1qexWj1fWPIeTIS1gBZP2Q_hu_d02f701cea5b094c.png 480w, https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1qexWj1fWPIeTIS1gBZP2Q_hu_a9dc52e80e4d4378.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="463"
+data-flex-basis="1113px"
+>&lt;/p>
+&lt;p>Besides obvious stuff like the display name, callee and caller numbers, the SIP address, or the call direction/type, you can also see which Direct Routing gateway and which Azure region for media or signaling was used.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1ppdvGy7oVq2GzGoJXVUkSg.png"
+width="1059"
+height="198"
+srcset="https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1ppdvGy7oVq2GzGoJXVUkSg_hu_e7f905bf81115204.png 480w, https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1ppdvGy7oVq2GzGoJXVUkSg_hu_7c72dd139cc5e670.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="534"
+data-flex-basis="1283px"
+>&lt;/p>
+&lt;p>If you need to take a deeper look at your call logs, it’s probably best to download the report as a CSV file. To do that, just click the Excel Icon in the upper right corner as shown in the first screenshot.&lt;/p>
+&lt;p>Once the report has been generated, it will trigger a download of a Zip file. Depending on your setup, the Zip file might also contain a CSV file for Calling Plans. I’m only interested in Direct Routing calls at the moment, so let’s open that file in Excel. It gives us all call records in the specified date range as comma separated values. But they are all in the same column, which is pretty useless until they’re formatted correctly.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/15zq9Y2Xpl34hYAAyZMhpgw.png"
+width="780"
+height="350"
+srcset="https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/15zq9Y2Xpl34hYAAyZMhpgw_hu_f90539f71e83b55e.png 480w, https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/15zq9Y2Xpl34hYAAyZMhpgw_hu_27f34bf282d69afa.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="222"
+data-flex-basis="534px"
+>&lt;/p>
+&lt;p>For some reason, Excel always shows a warning, that there’s already data here, when I try to use the Text to Columns feature. Despite this warning, I’m still able to read the logs once the columns are separated.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1KWQEcy22MmnVj9zEKQpZow.png"
+width="459"
+height="179"
+srcset="https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1KWQEcy22MmnVj9zEKQpZow_hu_71fefcdde60a569.png 480w, https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1KWQEcy22MmnVj9zEKQpZow_hu_70be83fba98c7974.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="256"
+data-flex-basis="615px"
+>&lt;/p>
+&lt;p>Since I don’t want to take the risk of missing important information in the logs, I wrote this handy PowerShell one-liner to convert the CSV file into a more human readable CSV file. This also saves me the time to turn text into columns first.&lt;/p>
+&lt;p>Just fire up PowerShell or Windows Terminal by entering powershell or wt directly into the File Explorer’s address bar.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/13g7Gfp5XdrhkytDOO5fNg.png"
+width="1218"
+height="352"
+srcset="https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/13g7Gfp5XdrhkytDOO5fNg_hu_fcd72847d1887922.png 480w, https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/13g7Gfp5XdrhkytDOO5fNg_hu_f9bfed176ba4e481.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="346"
+data-flex-basis="830px"
+>&lt;/p>
+&lt;p>This will open PowerShell in the current directory. Now all you have to do is to paste this code.&lt;/p>
+&lt;script src="https://gist.github.com/mozziemozz/9c5fcaaa900b8d26f99f5a304d1f90e3.js">&lt;/script>
+&lt;p>This will read the original CSV, into a PowerShell object and export it to a new CSV file called “drExport.csv” where the columns are already separated.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1Dhj5Bl5uey0u0E3MzVh6Q.png"
+width="1581"
+height="323"
+srcset="https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1Dhj5Bl5uey0u0E3MzVh6Q_hu_cd886370ec70d539.png 480w, https://heusser.pro/p/how-to-read-format-microsoft-teams-pstn-call-reports-3b0e56c422a2/1Dhj5Bl5uey0u0E3MzVh6Q_hu_db0422db0e5e8fc2.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="489"
+data-flex-basis="1174px"
+>&lt;/p>
+&lt;p>I hope this little Gist also helps you formatting your logs a little quicker.&lt;/p></description></item></channel></rss>

@@ -1,0 +1,883 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Research on HEUSSER.PRO</title><link>https://heusser.pro/categories/research/</link><description>Recent content in Research on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 14 Oct 2026 06:30:00 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/research/index.xml" rel="self" type="application/rss+xml"/><item><title>What Happens When Somebody Spoofs a Teams Phone Number of your Tenant?</title><link>https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/</link><pubDate>Wed, 14 Oct 2026 06:30:00 +0000</pubDate><guid>https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/</guid><description>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/cover.png" alt="Featured image of post What Happens When Somebody Spoofs a Teams Phone Number of your Tenant?" />&lt;p>The Teams incoming call toast evolved quite a bit over time. The most recent and most meaningful change is arguably the &lt;code>External&lt;/code> badge it now displays when you get an external call on Teams. But before we dive in, let&amp;rsquo;s take a look at how it changed over time.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image.png"
+width="447"
+height="322"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image_hu_36446a485db0fde0.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image_hu_aa77f06bd8291b7a.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Very old toast without External label"
+class="gallery-image"
+data-flex-grow="138"
+data-flex-basis="333px"
+> &lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-1.png"
+width="672"
+height="480"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-1_hu_fdd3e26d78d8fdbd.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-1_hu_cca10ff9e080f6b1.png 1024w"
+loading="lazy"
+decoding="async"
+alt="(External) string suffix in legacy Teams"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="336px"
+> &lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-3.png"
+width="536"
+height="417"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-3_hu_93b49d8028f97852.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-3_hu_4db29e29bc9bd318.png 1024w"
+loading="lazy"
+decoding="async"
+alt="(External) string suffix in new Teams"
+class="gallery-image"
+data-flex-grow="128"
+data-flex-basis="308px"
+> &lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-2.png"
+width="542"
+height="362"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-2_hu_eb991ecc4bd986cf.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-2_hu_ec34ce990b2f8da3.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Current External badge prefix"
+class="gallery-image"
+data-flex-grow="149"
+data-flex-basis="359px"
+>&lt;/p>
+&lt;p>As you can see, a very long time ago, apart from the toast saying &lt;strong>Unkown user&lt;/strong> there was no source indication on the call toast what so ever. Microsoft then started to append &lt;code>(External)&lt;/code> as a string to the number or the caller&amp;rsquo;s name (if it was already in your saved contacts). While the intentions were good, this method had one major flaw: Threat actors trying to impersonate help desk staff and the like got very creative and started to add a lot of trailing whitespace and or invisible line breaks to their display names. That caused Teams to omit the &lt;code>(External)&lt;/code> suffix because the toast didn&amp;rsquo;t offer enough space and hackers were able to conceal that they were calling from an external number.&lt;/p>
+&lt;p>Luckily, Microsoft fixed this by adding a proper &lt;strong>External&lt;/strong> badge with an icon. I could have sworn that the badge was first displayed &lt;em>after&lt;/em> the display name as well but I couldn&amp;rsquo;t find any old screenshots of that claim. Anyway, placing it &lt;em>before&lt;/em> the display name is definitely the right choice here.&lt;/p>
+&lt;p>The external badge you encounter on incoming call toasts are not the only type of badge or the only place you might encounter them. Microsoft calls them &lt;strong>Trust Indicators&lt;/strong> and actually has a has a great Learn article about them: &lt;a class="link" href="https://learn.microsoft.com/en-us/microsoftteams/trust-indicators" target="_blank" rel="noopener"
+>Representation of users outside your organization&lt;/a>.&lt;/p>
+&lt;p>Further more, they also have a good article on Microsoft Support about &lt;a class="link" href="https://support.microsoft.com/en-us/teams/chat/protect-against-impersonation-attempts-teams-calling" target="_blank" rel="noopener"
+>protecting yourself against impersonation attempts in Teams calling&lt;/a>.&lt;/p>
+&lt;p>I&amp;rsquo;ve actually never seen the &lt;strong>Scam suspected&lt;/strong> warning in a live call notification myself. I could be wrong, but as far as I know, Teams never displays a profile picture of external/federated users unless they&amp;rsquo;re also a guest in your tenant or you&amp;rsquo;ve configured a trust relationship with another organization. Scammers will very likely call as external users (as the screenshot is showing) so the chances that the toast will also show a profile picture are quite small. I believe that this image may have been edited to include a profile picture for the simple reason that it looks better.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-4.png"
+width="520"
+height="349"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-4_hu_463e1cdc0cc49516.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-4_hu_ce0554325c9ec027.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Image: Microsoft Support"
+class="gallery-image"
+data-flex-grow="148"
+data-flex-basis="357px"
+>&lt;/p>
+&lt;p>If you know how to reproduce the screenshot above (get a profile picture on an external Teams call), please do let me know&amp;hellip;&lt;/p>
+&lt;h2 id="when-do-incoming-call-toasts-show-the-external-badge">When Do Incoming Call Toasts Show the External Badge?
+&lt;/h2>&lt;p>There are a number of scenarios in which Teams will show the external badge.&lt;/p>
+&lt;h3 id="external-phone-number">External Phone Number
+&lt;/h3>&lt;h4 id="not-saved-in-contacts">Not Saved in Contacts
+&lt;/h4>&lt;p>In this case, the external badge has an exclamation mark, indicating &lt;a class="link" href="https://learn.microsoft.com/en-us/microsoftteams/trust-indicators#2external-unfamiliar" target="_blank" rel="noopener"
+>External-Unfamiliar&lt;/a>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-2.png"
+width="542"
+height="362"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-2_hu_eb991ecc4bd986cf.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-2_hu_ec34ce990b2f8da3.png 1024w"
+loading="lazy"
+decoding="async"
+alt="External-Unfamiliar"
+class="gallery-image"
+data-flex-grow="149"
+data-flex-basis="359px"
+>&lt;/p>
+&lt;h4 id="saved-in-contacts">Saved in Contacts
+&lt;/h4>&lt;p>In this case, the external badge has a check mark, indicating &lt;a class="link" href="https://learn.microsoft.com/en-us/microsoftteams/trust-indicators#1external-familiar" target="_blank" rel="noopener"
+>External-Familiar&lt;/a>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-5.png"
+width="542"
+height="363"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-5_hu_96e3a9dfd41e79d5.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-5_hu_e89f9c7da3b39b6c.png 1024w"
+loading="lazy"
+decoding="async"
+alt="External-Familiar"
+class="gallery-image"
+data-flex-grow="149"
+data-flex-basis="358px"
+>&lt;/p>
+&lt;h4 id="entra-id-phone-number">Entra ID Phone Number
+&lt;/h4>&lt;p>If the caller ID is set on one of your users in Entra ID as either business or mobile phone, it will also display the &lt;strong>External-Familiar&lt;/strong> badge.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-6.png"
+width="540"
+height="361"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-6_hu_9b3bc1135903d994.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-6_hu_d630aed650ae68a9.png 1024w"
+loading="lazy"
+decoding="async"
+alt="External-Familiar"
+class="gallery-image"
+data-flex-grow="149"
+data-flex-basis="359px"
+>&lt;/p>
+&lt;h3 id="teams-calls">Teams Calls
+&lt;/h3>&lt;h4 id="guest-account">Guest Account
+&lt;/h4>&lt;p>When you get a call from a guest in your tenant, the &lt;a class="link" href="https://learn.microsoft.com/en-us/microsoftteams/trust-indicators#3guest" target="_blank" rel="noopener"
+>Guest badge&lt;/a> is shown.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-7.png"
+width="540"
+height="363"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-7_hu_59b8a8fc63738717.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-7_hu_9a19626f353dd46d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Guest"
+class="gallery-image"
+data-flex-grow="148"
+data-flex-basis="357px"
+>&lt;/p>
+&lt;h4 id="external-account">External Account
+&lt;/h4>&lt;p>Calls from a federated account from orgs that haven&amp;rsquo;t been added to your org&amp;rsquo;s trusted list will still show as &lt;strong>External-Unfamiliar&lt;/strong> even if you save an email address to your contacts.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-8.png"
+width="541"
+height="363"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-8_hu_215d1c7c0d1f6cf9.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-8_hu_5f08e1a3aa85ba54.png 1024w"
+loading="lazy"
+decoding="async"
+alt="External User"
+class="gallery-image"
+data-flex-grow="149"
+data-flex-basis="357px"
+> &lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-10.png"
+width="539"
+height="361"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-10_hu_26e6f25f3ae2a4d.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-10_hu_c1d7967443f15781.png 1024w"
+loading="lazy"
+decoding="async"
+alt="External User tool tip"
+class="gallery-image"
+data-flex-grow="149"
+data-flex-basis="358px"
+>&lt;/p>
+&lt;h4 id="internal-account">Internal Account
+&lt;/h4>&lt;p>This one is pretty clear. But don&amp;rsquo;t rely on the profile picture alone. You might still only see initials instead of a profile picture when there person calling you hasn&amp;rsquo;t set a profile picture. But there is no badge shown for calls from internal users.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-9.png"
+width="542"
+height="362"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-9_hu_dfaf412707bb1a8c.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-9_hu_6d5c3911f7c10c10.png 1024w"
+loading="lazy"
+decoding="async"
+alt="No Badge at all"
+class="gallery-image"
+data-flex-grow="149"
+data-flex-basis="359px"
+>&lt;/p>
+&lt;h3 id="teams-mobile-apps">Teams Mobile Apps
+&lt;/h3>&lt;p>Unfortunately, iOS doesn&amp;rsquo;t support the &lt;strong>External&lt;/strong> badge in call notifications. I suspect that this is due to limitations of &lt;a class="link" href="https://developer.apple.com/documentation/callkit" target="_blank" rel="noopener"
+>CallKit&lt;/a>. At least it adds the &lt;code>(External)&lt;/code> suffix but the scroll text is so slow that most users will likely answer before they ever see it.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/20261013_203558000_iOS.PNG"
+width="1179"
+height="2556"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/20261013_203558000_iOS_hu_d8af4480abcd045c.PNG 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/20261013_203558000_iOS_hu_5c5ef98d427ab656.PNG 1024w"
+loading="lazy"
+decoding="async"
+alt="iOS full screen"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+> &lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-16.png"
+width="860"
+height="1910"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-16_hu_872dcb4cb9bdc6c9.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-16_hu_93ef000def4ec2f5.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Android full screen"
+class="gallery-image"
+data-flex-grow="45"
+data-flex-basis="108px"
+>&lt;/p>
+&lt;p>I only have an Oppo with ColorOS to test but in this case, both iOS and Android fail to display the &lt;code>(External)&lt;/code> tag in banner notifications.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/20261013_204931000_iOS.PNG"
+width="1179"
+height="500"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/20261013_204931000_iOS_hu_8dc6576fbd488309.PNG 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/20261013_204931000_iOS_hu_b50c7a6a70b0cda5.PNG 1024w"
+loading="lazy"
+decoding="async"
+alt="iOS banner - unknown"
+class="gallery-image"
+data-flex-grow="235"
+data-flex-basis="565px"
+> &lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-17.png"
+width="860"
+height="500"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-17_hu_27fa6ff0049ce6f7.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-17_hu_9cf72720e8139a30.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Android banner - unknown"
+class="gallery-image"
+data-flex-grow="172"
+data-flex-basis="412px"
+>&lt;/p>
+&lt;p>This is exactly the reason why Microsoft changed from the appended string to a proper badge on Desktop. It turns out that the &lt;code>(External)&lt;/code> suffix is there, but it can&amp;rsquo;t be shown because there&amp;rsquo;s not enough horizontal space. Depending on number or name length of contacts, the &lt;code>(External)&lt;/code> label might be partially visible.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/20261014_063317000_iOS.PNG"
+width="1179"
+height="500"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/20261014_063317000_iOS_hu_50c88a9d662ad722.PNG 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/20261014_063317000_iOS_hu_8015cd4cb6d28f0a.PNG 1024w"
+loading="lazy"
+decoding="async"
+alt="iOS banner - known contact"
+class="gallery-image"
+data-flex-grow="235"
+data-flex-basis="565px"
+> &lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-19.png"
+width="860"
+height="500"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-19_hu_919c827f8fc01106.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-19_hu_594e26440e4ac5e2.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Android banner - known contact"
+class="gallery-image"
+data-flex-grow="172"
+data-flex-basis="412px"
+>&lt;/p>
+&lt;p>Although it&amp;rsquo;s very small, Teams on iOS does show the &lt;strong>External&lt;/strong> icon in the Teams call history but it doesn&amp;rsquo;t show anything on a caller&amp;rsquo;s profile card. The iOS call history shows the &lt;code>(External)&lt;/code> suffix.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/20261013_203638000_iOS.PNG"
+width="1179"
+height="1089"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/20261013_203638000_iOS_hu_f7311b60cce8b1d7.PNG 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/20261013_203638000_iOS_hu_1235a3dbdbb30cdc.PNG 1024w"
+loading="lazy"
+decoding="async"
+alt="iOS Teams app call history"
+class="gallery-image"
+data-flex-grow="108"
+data-flex-basis="259px"
+> &lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/20261013_204033000_iOS.PNG"
+width="1179"
+height="1089"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/20261013_204033000_iOS_hu_b45045c590c05aa2.PNG 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/20261013_204033000_iOS_hu_b6428e6f558659b9.PNG 1024w"
+loading="lazy"
+decoding="async"
+alt="iOS Teams app profile card"
+class="gallery-image"
+data-flex-grow="108"
+data-flex-basis="259px"
+> &lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/20261013_211348000_iOS.PNG"
+width="1179"
+height="980"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/20261013_211348000_iOS_hu_953c7fa334225430.PNG 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/20261013_211348000_iOS_hu_641163cff8a60ae3.PNG 1024w"
+loading="lazy"
+decoding="async"
+alt="iOS call history"
+class="gallery-image"
+data-flex-grow="120"
+data-flex-basis="288px"
+>&lt;/p>
+&lt;p>The Android app does a better job here and shows the &lt;strong>External&lt;/strong> indicator everywhere where there&amp;rsquo;s enough horizontal space.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-20.png"
+width="860"
+height="756"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-20_hu_737235d07492b4f0.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-20_hu_81f62ece79da98e4.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Android Teams app call history"
+class="gallery-image"
+data-flex-grow="113"
+data-flex-basis="273px"
+> &lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-21.png"
+width="860"
+height="808"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-21_hu_6b45c7cc9fc0bfdb.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-21_hu_6ca16079ccd13738.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Android Teams app profile card"
+class="gallery-image"
+data-flex-grow="106"
+data-flex-basis="255px"
+>&lt;/p>
+&lt;h2 id="number-spoofing">Number Spoofing
+&lt;/h2>&lt;p>Let&amp;rsquo;s get to the interesting part. Anyone that works in the telecommunication industry knows that using a different CLIP (Calling Line Identification Presentation) is quite easy compared to some other technologies like email. While this is legal in many countries and there are legitimate use cases for it, sadly, many scammers take advantage of this as well.&lt;/p>
+&lt;p>I wanted to test what happens when a bad actor is calling you using a phone number as their outgoing caller ID which is part of your own number range for Teams phone number assignments. Bear in mind that most companies list at least 2-3 phone numbers publicly on their website so they&amp;rsquo;re not that hard to come by.&lt;/p>
+&lt;h3 id="test-nr-1">Test Nr. 1
+&lt;/h3>&lt;p>In my lab tenant, I have mostly Calling Plan users. With Direct Routing, numbers are hosted at an external phone operator so there is no way for Teams to verify numbers before they&amp;rsquo;re assigned to users. I can basically assign any number I like to a user as a Direct Routing number. Of course calling will only work if the routing is configured correctly, but this is enough for a first test.&lt;/p>
+&lt;p>I&amp;rsquo;ve assigned the number bewlo to &lt;strong>Emma&lt;/strong>. This number is not configured in Teams. It&amp;rsquo;s on a VoIP account for which I have an app to make calls.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-11.png"
+width="1009"
+height="126"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-11_hu_ff166f02881f7f8d.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-11_hu_3065e808c23f8c23.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Direct Routing Number"
+class="gallery-image"
+data-flex-grow="800"
+data-flex-basis="1921px"
+>&lt;/p>
+&lt;p>Teams now knows that this number is assigned to &lt;strong>Emma&lt;/strong> when I type it &lt;strong>Olivia&amp;rsquo;s&lt;/strong> dial pad because of &lt;a class="link" href="https://heusser.pro/p/how-to-validate-phone-number-assignments-in-teams-in-bulk-8a0909c7b5f5/" >RNL (Reverse Number Lookup)&lt;/a>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-12.png"
+width="718"
+height="259"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-12_hu_9e347100fb8bf75d.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-12_hu_419963e1697236f7.png 1024w"
+loading="lazy"
+decoding="async"
+alt="RNL"
+class="gallery-image"
+data-flex-grow="277"
+data-flex-basis="665px"
+>&lt;/p>
+&lt;p>When I call the number without selecting &lt;strong>Emma&amp;rsquo;s&lt;/strong> name from the drop down menu first, Teams shows that it&amp;rsquo;s calling the external number. But I can see the call ring on &lt;strong>Emma&amp;rsquo;s&lt;/strong> Teams account. Teams always establishes a Teams native call when a number is assigned to another user. Once the call hits &lt;strong>Emma&amp;rsquo;s&lt;/strong> voicemail, it&amp;rsquo;s clearly visible that this was an internal call.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-13.png"
+width="2659"
+height="1687"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-13_hu_117121d15e112c16.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-13_hu_4a74e52f6c8f290f.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Teams shows external number"
+class="gallery-image"
+data-flex-grow="157"
+data-flex-basis="378px"
+> &lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-14.png"
+width="2659"
+height="1687"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-14_hu_91da911ac8984a64.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-14_hu_55743a1933563e28.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Teams shows internal call"
+class="gallery-image"
+data-flex-grow="157"
+data-flex-basis="378px"
+>&lt;/p>
+&lt;p>The point of this exercise is to establish that Teams recognizes &lt;strong>Emma&amp;rsquo;s&lt;/strong> number as an internal number, even if it is technically not configured in my tenant. Well, it&amp;rsquo;s assigned to &lt;strong>Emma&lt;/strong> but I haven&amp;rsquo;t set up any Direct Routing for it.&lt;/p>
+&lt;p>Now I use my VoIP account with that same number and call &lt;strong>Olivia&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-15.png"
+width="540"
+height="359"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-15_hu_de528e1a5babb1bf.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-15_hu_436354420eb7a65a.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Call is labelled as External"
+class="gallery-image"
+data-flex-grow="150"
+data-flex-basis="361px"
+>&lt;/p>
+&lt;p>The call is correctly labelled as external, even though this number is assigned to one of my internal users. This is already a very strong indication that even if somebody is spoofing one of your internal numbers assigned to Teams users, it will still be labelled as &lt;strong>External&lt;/strong>.&lt;/p>
+&lt;h3 id="test-nr-2">Test Nr. 2
+&lt;/h3>&lt;p>To be absolutely sure, I wanted to test and verify this by placing a call using a CLIP of one of my Calling Plan numbers that are actually working in my tenant. For this, I&amp;rsquo;ve received some much appreciated help from my friends at &lt;a class="link" href="https://www.sipcall.ch/" target="_blank" rel="noopener"
+>Sipcall&lt;/a>. With my permission, they were kind enough to set their CLIP to the number assigned to &lt;strong>Olivia&lt;/strong> and place a call to &lt;strong>Evelyn&lt;/strong>.&lt;/p>
+&lt;p>It&amp;rsquo;s the same principle as before. Here you can see &lt;strong>Olivia&amp;rsquo;s&lt;/strong> number and that RNL is working.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/Screenshot%202026-10-08%20093339.png"
+width="754"
+height="165"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/Screenshot%202026-10-08%20093339_hu_4ce80f1035cbd988.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/Screenshot%202026-10-08%20093339_hu_1a2831643d73b5be.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Number assinged in Teams"
+class="gallery-image"
+data-flex-grow="456"
+data-flex-basis="1096px"
+> &lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/Screenshot%202026-10-08%20084427.png"
+width="565"
+height="150"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/Screenshot%202026-10-08%20084427_hu_c5995fccd33ce822.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/Screenshot%202026-10-08%20084427_hu_4e4e92003c699099.png 1024w"
+loading="lazy"
+decoding="async"
+alt="RNL resolves to Olivia"
+class="gallery-image"
+data-flex-grow="376"
+data-flex-basis="904px"
+>&lt;/p>
+&lt;p>When I got the call with the &amp;ldquo;spoofed&amp;rdquo; number, it was correctly labelled as &lt;strong>External-Unfamiliar&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/Screenshot%202026-10-08%20084225.png"
+width="540"
+height="360"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/Screenshot%202026-10-08%20084225_hu_5c7d674548483524.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/Screenshot%202026-10-08%20084225_hu_7fc484aa6a94e1b6.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Spoofed internal number is labelled External"
+class="gallery-image"
+data-flex-grow="150"
+data-flex-basis="360px"
+>&lt;/p>
+&lt;p>The call history is showing the phone number and not &lt;strong>Olivia&amp;rsquo;s&lt;/strong> name. (You can ignore the &lt;strong>To your line: +41 ..&lt;/strong> part. This test account has a secondary number assignment.)&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/Screenshot%202026-10-13%20094219.png"
+width="875"
+height="147"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/Screenshot%202026-10-13%20094219_hu_cc34731922c8129.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/Screenshot%202026-10-13%20094219_hu_cfece0c700ab52f7.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Call history entry"
+class="gallery-image"
+data-flex-grow="595"
+data-flex-basis="1428px"
+>&lt;/p>
+&lt;p>When I call the number back, it&amp;rsquo;s going to &lt;strong>Olivia&lt;/strong> as a Teams call, like in test number 1.&lt;/p>
+&lt;h3 id="addendum">Addendum
+&lt;/h3>&lt;p>Note that I did not have either test number configured as any user&amp;rsquo;s Entra ID business or mobile phone number during these tests. To cover all bases, I&amp;rsquo;ve now set my VoIP number as &lt;strong>Emma&amp;rsquo;s&lt;/strong> mobile number in Entra ID to see if the toast looks any different.&lt;/p>
+&lt;p>After allowing some time for the change to propagate, the toast now shows the name from Entra ID but still displays the &lt;strong>External-Unfamiliar&lt;/strong> badge.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-18.png"
+width="540"
+height="359"
+srcset="https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-18_hu_d6c964ef1220739b.png 480w, https://heusser.pro/p/what-happens-when-somebody-spoofs-a-teams-phone-number-of-your-tenant-3qdqdujrz2j8/image-18_hu_25005c3e0e4c0a88.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Name from Entra ID with External-Unfamiliar badge"
+class="gallery-image"
+data-flex-grow="150"
+data-flex-basis="361px"
+>&lt;/p>
+&lt;p>I couldn&amp;rsquo;t perform test number 2 with the phone number configured on an Entra ID user again on my own. But since it&amp;rsquo;s basically the same scenario, I assume that its outcome would be the same. The only difference is that test number 2 was placed using a CLIP that differed from the actual caller number.&lt;/p>
+&lt;h2 id="summary">Summary
+&lt;/h2>&lt;p>On outgoing calls, Teams will always recognize when you call a number that is assigned to another internal user in Teams and start a Teams audio call instead. Therefore, the tested scenarios are technically not possible to reproduce with internal accounts only.&lt;/p>
+&lt;p>The outcomes above are only possible when a CLIP has been manipulated (&lt;a class="link" href="#test-nr-2" >Test #2&lt;/a>) or when you assigned a number to a user that&amp;rsquo;s not even configured for Teams phone in your tenant (&lt;a class="link" href="#test-nr-1" >Test #1&lt;/a>). You should never receive an external call from a colleague that is also configured for Teams phone, even if they dial your number and not call by name.&lt;/p>
+&lt;p>This is great news. It looks like Teams will always show the &lt;strong>External&lt;/strong> badge based on how a call was received technically (PSTN or internal) rather than solely based on whether the number is known to your tenant through a Teams number assignment/RNL.&lt;/p>
+&lt;p>In fact, RNL doesn&amp;rsquo;t even seem to come into play for inbound call toasts. By the looks of it, caller names are only provided by Entra ID and saved contacts.&lt;/p>
+&lt;p>Incoming calls from guests or federated calls are also labelled correctly. And placing the badge before the display name makes it impossible for scammers to attempt and truncate it through very long display names. So, whenever you receive a call that is labelled &lt;strong>External&lt;/strong> pay extra attention and treat it with vigilance as scammers spoofing a number that is saved to your contacts or is configured on an Entra ID user object still pose a risk because they show as &lt;strong>External-Familiar&lt;/strong>. And of course keep in mind that mobile platforms don&amp;rsquo;t support displaying the badges in all places.&lt;/p>
+&lt;p>The trust indicators Learn article is a very valuable resource and I recommend that any IT administrator familiarizes themselves with what the different badges and icons mean.&lt;/p>
+&lt;p>Thanks again to Sipcall for participating in this research. Knowing that spoofed internal numbers will indeed be labelled as &lt;strong>External&lt;/strong> at least provides some comfort in a world full of emerging threats.&lt;/p></description></item><item><title>Exploring Shared Call History for Microsoft Teams Call Queues</title><link>https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/</link><pubDate>Tue, 22 Sep 2026 18:17:51 +0000</pubDate><guid>https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/</guid><description>&lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/cover.png" alt="Featured image of post Exploring Shared Call History for Microsoft Teams Call Queues" />&lt;p>It&amp;rsquo;s been a while since I&amp;rsquo;ve written something about Teams Phone. And it&amp;rsquo;s been almost two years since I&amp;rsquo;ve published my &lt;a class="link" href="https://heusser.pro/p/get-missed-call-notifications-for-teams-call-queues-free-community-solution-cozo3bhojb7t/" >make-shift solution&lt;/a> for getting notified about missed calls in call queues.&lt;/p>
+&lt;p>Since then, Microsoft finally &lt;a class="link" href="https://www.microsoft.com/de-ch/microsoft-365/roadmap?filters=&amp;amp;searchterms=530579" target="_blank" rel="noopener"
+>shipped&lt;/a> shared call history in Queues app in January 2026. I was still traveling the world at this time so it took me a while to finally catch up.&lt;/p>
+&lt;h2 id="the-elephant-in-the-room">The Elephant in the Room
+&lt;/h2>&lt;p>I just have to mention it again. I&amp;rsquo;m extremely disappointed that it took Microsoft this long to ship a basic calling feature like shared call history and that they made this a feature of Teams Premium.&lt;/p>
+&lt;h2 id="shared-calls-experience-in-queues-app">Shared Calls Experience in Queues App
+&lt;/h2>&lt;p>But that&amp;rsquo;s not even the whole story. While it&amp;rsquo;s finally possible to see missed calls in a queue now, Teams still doesn&amp;rsquo;t notify people about them. It&amp;rsquo;s still a &lt;em>reactive&lt;/em> process. Somebody has to go into the Queues app and check for missed calls periodically.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image.png"
+width="2236"
+height="1276"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image_hu_124631bfc56cac35.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image_hu_a8f0a9749cc45de2.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Missed call in Queues app"
+class="gallery-image"
+data-flex-grow="175"
+data-flex-basis="420px"
+>&lt;/p>
+&lt;p>The &lt;strong>Shared calls&lt;/strong> tab also lists answered calls including who answered a call.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-1.png"
+width="2236"
+height="1276"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-1_hu_81ff7197be6c09db.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-1_hu_c84848b240a922ee.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Answered by you call in Queues app"
+class="gallery-image"
+data-flex-grow="175"
+data-flex-basis="420px"
+> &lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-2.png"
+width="2236"
+height="1276"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-2_hu_9b7b9767f39c7a90.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-2_hu_decfd88eb4f4ac18.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Answered by someone else call in Queues app"
+class="gallery-image"
+data-flex-grow="175"
+data-flex-basis="420px"
+>&lt;/p>
+&lt;h3 id="missed-calls-with-nested-queues">Missed Calls with Nested Queues
+&lt;/h3>&lt;p>I only tested this with one nested queue. But in my case, a call missed in the first queue that flowed over to the second queue only got added to the call history of the second, nested queue. As expected, this is the same with answered calls, they&amp;rsquo;re only displayed in the call history of the queue in which they got answered in. Anything else wouldn&amp;rsquo;t have made any sense.&lt;/p>
+&lt;p>However, there isn&amp;rsquo;t any information available about which queues a call traversed before landing in the final one. The call I answered in the nested queue displays &lt;code>Incoming for {Auto Attendant Name}&lt;/code> while calls answered in the queue directly behind the auto attendant show as &lt;code>Incoming for {Call Queue Name}&lt;/code>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-6.png"
+width="2236"
+height="1276"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-6_hu_c339436c1ce3b149.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-6_hu_c3307550611a2e72.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Shared call history of call answered in nested queue"
+class="gallery-image"
+data-flex-grow="175"
+data-flex-basis="420px"
+>&lt;/p>
+&lt;h3 id="missed-calls-resolution">Missed Calls Resolution
+&lt;/h3>&lt;p>Missed calls carry an additional property for their resolution state. Call queue agents can then update the status of a call from &lt;code>Unresolved&lt;/code> to &lt;code>In-progress&lt;/code> or &lt;code>Resolved&lt;/code>. Call history entries will also display a badge pill next indicating their status next to the caller number.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-3.png"
+width="2236"
+height="1276"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-3_hu_7288f8989987b93e.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-3_hu_fa6d61593cdbf913.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Call status"
+class="gallery-image"
+data-flex-grow="175"
+data-flex-basis="420px"
+> &lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-4.png"
+width="2236"
+height="1276"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-4_hu_e496ecf23f413507.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-4_hu_5e31062aabf4a70.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Status pills"
+class="gallery-image"
+data-flex-grow="175"
+data-flex-basis="420px"
+>&lt;/p>
+&lt;h3 id="queues-without-shared-call-history">Queues without Shared Call History
+&lt;/h3>&lt;p>Call queues that are not set up for shared call history will still display &lt;strong>Calls&lt;/strong> as tab title and display the tab on the left side. For some weird reason, the two tabs swap positions when shared call history is enabled. What&amp;rsquo;s even weirder is that one of my queues changed from &lt;strong>Calls&lt;/strong> to &lt;strong>Shared calls&lt;/strong> but kept the tab on the left.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-5.png"
+width="2236"
+height="1276"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-5_hu_d2a302200cabad0c.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-5_hu_353c7f0d1bef674d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Calls tab"
+class="gallery-image"
+data-flex-grow="175"
+data-flex-basis="420px"
+> &lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-7.png"
+width="2236"
+height="1276"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-7_hu_ad54baedaae16c06.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-7_hu_6eaab665afa6168b.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Shared calls tab stuck on left side"
+class="gallery-image"
+data-flex-grow="175"
+data-flex-basis="420px"
+>&lt;/p>
+&lt;p>Now let&amp;rsquo;s get to the interesting part. The configuration.&lt;/p>
+&lt;h2 id="set-up-shared-call-history-for-call-queues">Set up Shared Call History for Call Queues.
+&lt;/h2>&lt;p>You&amp;rsquo;ll first need to create a shared call history template in Teams Admin Center. You can decide if all agents with Teams Premium and thus access to the Queues app can see missed or answered calls or if only authorized users should see them. In my case, I chose that agents (that term feels weird now&amp;hellip;) that aren&amp;rsquo;t authorized users can see everything.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-8.png"
+width="2249"
+height="1635"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-8_hu_3aa597bd68868656.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-8_hu_a77ab47d143c3954.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Shared call history template"
+class="gallery-image"
+data-flex-grow="137"
+data-flex-basis="330px"
+>&lt;/p>
+&lt;p>Next, you&amp;rsquo;ll need to assign the created template to a call queue and save the changes.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-9.png"
+width="2249"
+height="1635"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-9_hu_fb58b98dc0c3b7d3.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-9_hu_d6cec8712bec5111.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Shared call history template configuration on a call queue"
+class="gallery-image"
+data-flex-grow="137"
+data-flex-basis="330px"
+>&lt;/p>
+&lt;p>It may take some time until the Queues app reflects the changes and replaces the &lt;strong>Calls&lt;/strong> tab with &lt;strong>Shared calls&lt;/strong>. Only calls received after the template has been assigned to the queue will be shown in shared call history. If you remove the template from the queue again, the tab will revert to &lt;strong>Calls&lt;/strong>.&lt;/p>
+&lt;p>After removing the template, I added it back and the previous call history entries were restored. However, calls that were missed when no template is assigned will not be visible. I placed a test call at &lt;code>21:50&lt;/code> while shared call history was disabled and that call is not visible anywhere.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-10.png"
+width="2236"
+height="1276"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-10_hu_3e54a473a5483ae8.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-10_hu_f815265a62b2c397.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Call queue where template was removed"
+class="gallery-image"
+data-flex-grow="175"
+data-flex-basis="420px"
+> &lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-11.png"
+width="2236"
+height="1276"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-11_hu_39c88fdddd22953c.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-11_hu_7b6491eb54f89678.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Restored shared call history after re-assigning the template"
+class="gallery-image"
+data-flex-grow="175"
+data-flex-basis="420px"
+>&lt;/p>
+&lt;h3 id="license-details">License Details
+&lt;/h3>&lt;p>The Premium License is only needed to view the shared call history in Teams. It doesn&amp;rsquo;t look like it&amp;rsquo;s required to configure it or for the backend to do its thing. After all, you could also choose &lt;strong>None&lt;/strong> for each of the permissions in a template. More on that later.&lt;/p>
+&lt;h2 id="how-does-shared-call-history-work">How Does Shared Call History Work?
+&lt;/h2>&lt;p>Let&amp;rsquo;s take a look under the hood, shall we?&lt;/p>
+&lt;p>When you assign a shared call history template for a call queue, two special chats are created. One is for &lt;strong>answered&lt;/strong> and the other one for &lt;strong>missed calls&lt;/strong>.&lt;/p>
+&lt;p>The &lt;code>chatId&lt;/code> looks something like this:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">19:sharedcallqueuelogs_answered_dGVhbXNzdHJlYW1fYW5zd2VyZWRjYWxsbG9nc185MzU3YjMwNS0yOTZlLTRhYzMtODljMS01ZWRlNWJjY2U2NTc=@thread.v2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">19:sharedcallqueuelogs_missed_dGVhbXNzdHJlYW1fbWlzc2VkY2FsbGxvZ3NfOTM1N2IzMDUtMjk2ZS00YWMzLTg5YzEtNWVkZTViY2NlNjU3@thread.v2
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Who would have thunk it but the cryptic looking part is just a Base64 encoded string that includes the call queue&amp;rsquo;s identity. This is the same Id you can get either from PowerShell or copy from the URL in TAC.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-12.png"
+width="1984"
+height="1210"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-12_hu_c8c4d506d753ebfb.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-12_hu_6f669c0062e4058.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Decoded Base64 string"
+class="gallery-image"
+data-flex-grow="163"
+data-flex-basis="393px"
+>&lt;/p>
+&lt;p>That means that we can quite easily reconstruct a &lt;code>chatId&lt;/code> by simply knowing a queue&amp;rsquo;s identity.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$base64EncodedCallQueueId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">System.Convert&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">ToBase64String&lt;/span>&lt;span class="p">([&lt;/span>&lt;span class="no">System.Text.Encoding&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">UTF8&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">GetBytes&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;teamsstream_missedcalllogs_&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$cq&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">Identity&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$chatId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;19:sharedcallqueuelogs_missed_&lt;/span>&lt;span class="nv">$base64EncodedCallQueueId&lt;/span>&lt;span class="s2">@thread.v2&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>To get the &lt;code>chatId&lt;/code> of the answered call logs, we simply replace &lt;code>missed&lt;/code> with &lt;code>answered&lt;/code> in the example code above.&lt;/p>
+&lt;p>Now we can use an Entra app/service principal that has at least the application permission &lt;code>ChatMessage.Read.All&lt;/code> and run &lt;code>Get-MgChatMessage -ChatId {ChatId}&lt;/code>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-13.png"
+width="1734"
+height="955"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-13_hu_7607e136c1a33dac.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-13_hu_a8a68bb3b61f5966.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output of Get-ChatMessage against shared call history chats"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="435px"
+>&lt;/p>
+&lt;p>Note: &lt;code>ChatId&lt;/code> is truncated in the output.&lt;/p>
+&lt;p>This will return a message for each call that was logged as either missed or answered. But sadly, Graph doesn&amp;rsquo;t return much data here. All we can get is a &lt;code>callId&lt;/code> in the message body but that doesn&amp;rsquo;t help us much yet since it will take a couple of minutes until that is available in the &lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/callrecords-callrecord-get?view=graph-rest-1.0&amp;amp;tabs=http" target="_blank" rel="noopener"
+>callRecord&lt;/a> Graph endpoint.&lt;/p>
+&lt;h3 id="good-to-know">Good to Know
+&lt;/h3>&lt;h4 id="graph-edge-cases">Graph Edge Cases
+&lt;/h4>&lt;p>Getting the chat itself via &lt;code>Get-MgChat&lt;/code> failes, even if the app has the &lt;code>Chat.Read.All&lt;/code> permission.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-14.png"
+width="1734"
+height="955"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-14_hu_62e87533547dc840.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-14_hu_f262deb403946dee.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Error message for Get-MgChat"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="435px"
+>&lt;/p>
+&lt;p>Getting a chat of a call queue that has a template assigned but never received any calls works but returns an empty result. And running the command against a generated &lt;code>chatId&lt;/code> for a call queue that never had a template assigned fails. That&amp;rsquo;s why I said earlier the call log chats are provisioned when you assign a template to a queue for the first time.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-15.png"
+width="1734"
+height="955"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-15_hu_755df7f2366f9797.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-15_hu_46b48ee03acddad8.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Example output of empty and non-existent chats"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="435px"
+>&lt;/p>
+&lt;h4 id="templates-with-no-data-access">Templates with No Data Access
+&lt;/h4>&lt;p>If a template is set to &lt;code>None&lt;/code> for incoming and outgoing calls, the calls are still logged in the special call log chats but don&amp;rsquo;t appear in the Queues app. In fact, the Queues app reverts to the standard &lt;strong>Calls&lt;/strong> tab even though the template is still assigned to the queue.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-17.png"
+width="2236"
+height="1276"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-17_hu_6f9905044410dab7.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-17_hu_e223ae77cc793c5a.png 1024w"
+loading="lazy"
+decoding="async"
+alt="No missed calls without permission in template"
+class="gallery-image"
+data-flex-grow="175"
+data-flex-basis="420px"
+> &lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-18.png"
+width="1734"
+height="955"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-18_hu_4d782d7fdef7c7c1.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-18_hu_2b0c2b8433d71c7f.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Missed calls are still recorded in the call log chat"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="435px"
+>&lt;/p>
+&lt;p>I&amp;rsquo;ve also found that editing a template only does not immediately apply changes. When the template is removed from the queue and then added again with saving the queue after each step, the changes were applied almost instantly in my testing.&lt;/p>
+&lt;h4 id="accessing-call-log-chats-in-teams">Accessing Call Log Chats in Teams
+&lt;/h4>&lt;p>I was even able to access a call log chat in Teams by copying a link to another chat and replacing its &lt;code>chatId&lt;/code>. Messages are sent by a bot called &lt;strong>Skype Core Calling Service&lt;/strong> and the members of the chat list the users that are agents in the call queue and have access to the shared call history template. The bot is a Microsoft 1st-Party application that can also be found in a call log chat message&amp;rsquo;s &lt;code>From&lt;/code> property.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">https://teams.cloud.microsoft/l/chat/{chatId}/conversations?context=%7B%22contextType%22%3A%22chat%22%7D
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-19.png"
+width="2236"
+height="1276"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-19_hu_fac5e17fc9044432.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-19_hu_a0ab7e8fb92409de.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Missed call log chat in Teams"
+class="gallery-image"
+data-flex-grow="175"
+data-flex-basis="420px"
+> &lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-20.png"
+width="1734"
+height="955"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-20_hu_86ad4089c62b2b6b.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-20_hu_c1f66faad3dfee92.png 1024w"
+loading="lazy"
+decoding="async"
+alt="From Id (Application)"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="435px"
+> &lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-21.png"
+width="826"
+height="558"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-21_hu_71517c628a171aca.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-21_hu_caceb9ecb4d384f6.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Skype Core Calling Service in Entra ID"
+class="gallery-image"
+data-flex-grow="148"
+data-flex-basis="355px"
+>&lt;/p>
+&lt;p>When a user doesn&amp;rsquo;t have permission to view shared call history through the permissions configured in a template, trying to access that queue&amp;rsquo;s call log chat results in the error message below.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-22.png"
+width="888"
+height="259"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-22_hu_fec91ed10a1b73c.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-22_hu_9ee65647419f5c2e.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Error message when template doesn’t allow access"
+class="gallery-image"
+data-flex-grow="342"
+data-flex-basis="822px"
+>&lt;/p>
+&lt;p>Both the answered and the missed call log chats can be accessed via deep links and there is no license enforcement. Even users without Premium can access these chats as long as they&amp;rsquo;re part of the associated call queue. Even an empty chat of a queue that has a template assigned but never received any calls can be opened in Teams via its deep link.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-23.png"
+width="1136"
+height="769"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-23_hu_b5018a9e0d6e2e33.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-23_hu_36439b601a49e099.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Answered call log chat viewed as non-Teams Premium call queue agent"
+class="gallery-image"
+data-flex-grow="147"
+data-flex-basis="354px"
+> &lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-24.png"
+width="1136"
+height="769"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-24_hu_1cc58f434565640.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-24_hu_d17fa21fc9f86099.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Empty call log chat"
+class="gallery-image"
+data-flex-grow="147"
+data-flex-basis="354px"
+>&lt;/p>
+&lt;h2 id="where-to-go-from-here">Where to Go from Here?
+&lt;/h2>&lt;p>Although I would have liked the chat messages to include more call related detail, especially the caller number or who answered the call, this is better than having nothing at all.&lt;/p>
+&lt;p>It does look like Microsoft is only enforcing the license at the client level through the availability of the queues app. At the time of writing, these chats can be queried via Graph with app-only authentication which means that it&amp;rsquo;s technically possible to build your own solution to notify call queue agents about missed calls.&lt;/p>
+&lt;p>Waiting for the &lt;code>callId&lt;/code> found in the message body to be available in the call records endpoint will still have the noticeable delay of ~15 minutes, just like my original custom solution &lt;strong>Q-Works Lite&lt;/strong> had. But it doesn&amp;rsquo;t require a &lt;em>monitoring user&lt;/em> that&amp;rsquo;s always signed into the queue anymore. I can imagine that it&amp;rsquo;s also much more complicated to work from the direction of the call record towards which agents should be notified.&lt;/p>
+&lt;p>Detecting new missed calls from the call history chats seems like a much easier option here. All one would need to do is to store the last known message per chat and fetch chat messages of shared call history chats periodically to then compare the current newest message against the last known message to determine if there were any new missed calls. Shared call history enabled call queues can easily be filtered with PowerShell and from there it&amp;rsquo;s possible to reconstruct the &lt;code>chatId&lt;/code> and also see which agents should be notified.&lt;/p>
+&lt;p>In my imagination, the best approach would be a hybrid solution. Use Graph and PowerShell to detect new missed calls and notify through a Teams feed notification either by a custom app or via Power Automate. The notification should include the call queue name so agents know when and where to look for detailed information about missed calls in the Queues app.&lt;/p>
+&lt;h3 id="proof-of-concept-script">Proof of Concept Script
+&lt;/h3>&lt;p>I&amp;rsquo;ve created a quick PoC script that reads all call queues from a tenant, finds call queues enabled for shared call history and outputs all missed and answered chats IDs as well as all currently opted in agents.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$queryResultSize&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="mf">99&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$allCallQueues&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-CsCallQueue&lt;/span> &lt;span class="n">-WarningAction&lt;/span> &lt;span class="n">SilentlyContinue&lt;/span> &lt;span class="n">-First&lt;/span> &lt;span class="nv">$queryResultSize&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$allCallQueues&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Count&lt;/span> &lt;span class="o">-ge&lt;/span> &lt;span class="nv">$queryResultSize&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">Write-Host&lt;/span> &lt;span class="s2">&amp;#34;This tenant has at least &lt;/span>&lt;span class="nv">$queryResultSize&lt;/span>&lt;span class="s2"> or more Call Queues. Querrying additional CQs...&amp;#34;&lt;/span> &lt;span class="n">-ForegroundColor&lt;/span> &lt;span class="n">Cyan&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$skipCounter&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$queryResultSize&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">do&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$querriedCQs&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-CsCallQueue&lt;/span> &lt;span class="n">-WarningAction&lt;/span> &lt;span class="n">SilentlyContinue&lt;/span> &lt;span class="n">-Skip&lt;/span> &lt;span class="nv">$skipCounter&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$allCallQueues&lt;/span> &lt;span class="p">+=&lt;/span> &lt;span class="nv">$querriedCQs&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$skipCounter&lt;/span> &lt;span class="p">+=&lt;/span> &lt;span class="nv">$querriedCQs&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Count&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">until&lt;/span> &lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$querriedCQs&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Count&lt;/span> &lt;span class="o">-eq&lt;/span> &lt;span class="mf">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$sharedCallHistoryCQs&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$allCallQueues&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Where-Object&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nv">$_&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">SharedCallQueueHistoryTemplateId&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$sharedCallHistoryChatsMissed&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">foreach&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$cq&lt;/span> &lt;span class="k">in&lt;/span> &lt;span class="nv">$sharedCallHistoryCQs&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$base64EncodedCallQueueId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">System.Convert&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">ToBase64String&lt;/span>&lt;span class="p">([&lt;/span>&lt;span class="no">System.Text.Encoding&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">UTF8&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">GetBytes&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;teamsstream_missedcalllogs_&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$cq&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">Identity&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$sharedCallHistoryChatsMissed&lt;/span> &lt;span class="p">+=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">PSCustomObject&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">CallQueueName&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$cq&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Name&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">CallQueueId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$cq&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Identity&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ChatId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;19:sharedcallqueuelogs_missed_&lt;/span>&lt;span class="nv">$base64EncodedCallQueueId&lt;/span>&lt;span class="s2">@thread.v2&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">NotifyAgents&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$cq&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Agents&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Where-Object&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nv">$_&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">OptIn&lt;/span> &lt;span class="o">-eq&lt;/span> &lt;span class="vm">$true&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">ObjectId&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$sharedCallHistoryChatsAnswered&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">foreach&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$cq&lt;/span> &lt;span class="k">in&lt;/span> &lt;span class="nv">$sharedCallHistoryCQs&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$base64EncodedCallQueueId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">System.Convert&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">ToBase64String&lt;/span>&lt;span class="p">([&lt;/span>&lt;span class="no">System.Text.Encoding&lt;/span>&lt;span class="p">]::&lt;/span>&lt;span class="n">UTF8&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">GetBytes&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;teamsstream_answeredcalllogs_&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$cq&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">Identity&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$sharedCallHistoryChatsAnswered&lt;/span> &lt;span class="p">+=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">PSCustomObject&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">CallQueueName&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$cq&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Name&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">CallQueueId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$cq&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Identity&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ChatId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;19:sharedcallqueuelogs_answered_&lt;/span>&lt;span class="nv">$base64EncodedCallQueueId&lt;/span>&lt;span class="s2">@thread.v2&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">NotifyAgents&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$cq&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Agents&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Where-Object&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nv">$_&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">OptIn&lt;/span> &lt;span class="o">-eq&lt;/span> &lt;span class="vm">$true&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">ObjectId&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The two objects that the script spits out include everything one would need to then loop over the missed call chats to check if there are any new missed calls.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-16.png"
+width="1734"
+height="955"
+srcset="https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-16_hu_e4e7a1630fe71cc0.png 480w, https://heusser.pro/p/exploring-shared-call-history-for-microsoft-teams-call-queues-vrnzevrogniq/image-16_hu_793ae844ecc6c434.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Output of the script (Ids are truncated)"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="435px"
+>&lt;/p>
+&lt;h3 id="disclaimer--summary">Disclaimer &amp;amp; Summary
+&lt;/h3>&lt;p>None of this is supported or documented. This blog only covers the discovery of missed shared calls and right now, I&amp;rsquo;m not planning to build a full-blown notifying solution for missed shared calls. But I hope that this blog post was interesting to you nonetheless.&lt;/p>
+&lt;p>Whether or not Microsoft will block application access to the call log chats or provides an updated experience that includes proactive notifications in the future remains to be seen. Until then, an unsupported, self-made solution leveraging the call log chats to notify call queue agents about missed call queue calls unfortunately remains the most viable option.&lt;/p></description></item></channel></rss>

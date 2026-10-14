@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Outlook on HEUSSER.PRO</title><link>https://heusser.pro/categories/outlook/</link><description>Recent content in Outlook on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 10 Dec 2024 09:36:29 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/outlook/index.xml" rel="self" type="application/rss+xml"/><item><title>iOS Deep Link to Open Specific Email in Outlook App</title><link>https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/</link><pubDate>Tue, 10 Dec 2024 09:36:29 +0000</pubDate><guid>https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/</guid><description>&lt;img src="https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/cover.png" alt="Featured image of post iOS Deep Link to Open Specific Email in Outlook App" />&lt;p>I cannot believe that the day on which I&amp;rsquo;m finally able to write &lt;em>this&lt;/em> blog post has finally come. I&amp;rsquo;m not exaggerating. I have been trying to solve this and find a way to open specific emails (using the message id) in Outlook for more than &lt;strong>five&lt;/strong> years.&lt;/p>
+&lt;p>This may seem like a very small thing to most but to me, this is really big. And based on various forum posts online, I know that other people were looking for a way to do this as well. Of course, one of these &lt;a class="link" href="https://stackoverflow.com/questions/60339181/open-link-to-specific-email-message-directly-in-outlook-for-ios-uri-scheme-de" target="_blank" rel="noopener"
+>forum posts&lt;/a> is from myself, from 4 years and 9 months ago.&lt;/p>
+&lt;p>When ChatGPT was released, I tried to search for a solution again but all that happened was that I was let down by an over confident AI generated answer that turned out to do exactly nothing for me.&lt;/p>
+&lt;p>So, today, I felt like it&amp;rsquo;s time to try my luck again. I guess if I had a middle name, it would be &lt;em>Determination&lt;/em>. I found this other Stack Overflow &lt;a class="link" href="https://stackoverflow.com/questions/64214137/open-received-email-via-ms-outlook-emails-uri-scheme" target="_blank" rel="noopener"
+>post&lt;/a>, on which I apparently also commented coincidentally exactly (on the day) 1 year ago!&lt;/p>
+&lt;blockquote>
+&lt;p>Can you please try to decompile the Microsoft To Do APK? If an email is flagged and there&amp;rsquo;s a task for it in To Do Flagged Emails, there&amp;rsquo;s a button to open the email in Outlook. I think To Do holds the answer how you can open an Email by id in Outlook&amp;hellip;&lt;/p>&lt;span class="cite">&lt;span>― &lt;/span>&lt;span>Myself&lt;/span>&lt;cite>&lt;/cite>&lt;/span>&lt;/blockquote>
+&lt;p>The next thing I know was that I downloaded the To Do APK, decompiled it using an online tool and when I searched for &lt;code>ms-outlook://&lt;/code> I found this line:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">(Uri.parse(&amp;#34;ms-outlook://emails/message/open?restID=&amp;#34; + str + &amp;#34;&amp;amp;immutableID=&amp;#34; + str2 + &amp;#34;&amp;amp;account=&amp;#34; + str3))
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>There you have it Ladies and Gentlemen, this is how you link to a specific email using the message id in Outlook on iOS.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">ms-outlook://emails/message/open?restID=&amp;lt;messageId&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Now I can finally link to an email and open it directly in Outlook on iOS from wherever I want. I mostly use this for notifications sent through Power Automate but it works from any app which supports links.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/image.png"
+width="1902"
+height="1191"
+srcset="https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/image_hu_b36dc70247d05532.png 480w, https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/image_hu_a2a742cca7a62104.png 1024w"
+loading="lazy"
+decoding="async"
+alt="iOS Deep Link for Specific Email in Power Automate"
+class="gallery-image"
+data-flex-grow="159"
+data-flex-basis="383px"
+> &lt;img src="https://heusser.pro/p/ios-deep-link-to-open-specific-email-in-outlook-app-firi7irtgqzn/20241210_103309094_iOS.gif"
+width="443"
+height="960"
+loading="lazy"
+decoding="async"
+alt="Open Specific Email Demo"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+>&lt;/p>
+&lt;p>For what it&amp;rsquo;s worth, this is much easier with the iOS stock &lt;strong>Mail&lt;/strong> app. There you just have to create a link with &lt;code>message:&amp;lt;messageId&amp;gt;&lt;/code>. But of course it&amp;rsquo;s much nicer to directly open the email in Outlook as many companies don&amp;rsquo;t allow anything else than Outlook.&lt;/p>
+&lt;p>I haven&amp;rsquo;t tested this on Android but given that I got the link from the APK, I&amp;rsquo;m quite sure that this will work on Android as well.&lt;/p>
+&lt;p>I hope this made your day as well!&lt;/p></description></item><item><title>Automate Setting Work Location in Teams/Outlook [PoC]</title><link>https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/</link><pubDate>Sat, 08 Jul 2023 08:50:29 +0000</pubDate><guid>https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/</guid><description>&lt;p>Warning: This is another one of those proof of concept &lt;em>“because I can”&lt;/em> kind of things. I’m going to do some things which shouldn’t be done in production. It was just for the fun of it.&lt;/p>
+&lt;p>Microsoft recently released the new &lt;strong>Work location&lt;/strong> feature in Teams and the new Outlook/Outlook on the web. This allows users to set their work location so co-workers can see if their colleagues are working in the &lt;strong>office&lt;/strong> or &lt;strong>remotely&lt;/strong> on any specific day. You can find more information &lt;a class="link" href="https://techcommunity.microsoft.com/t5/microsoft-365-blog/coordination-is-the-key-to-spontaneity-with-these-features-in/ba-p/3814143" target="_blank" rel="noopener"
+>here&lt;/a> and &lt;a class="link" href="https://support.microsoft.com/en-au/office/show-your-hybrid-work-location-availability-to-meet-work-hours-and-more-c861198d-f82e-41d7-88ec-c2e716be5ede" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/p>
+&lt;p>I was extremely disappointed when I learned that there is no support for Microsoft Graph or Power Automate yet, so we could automatically set this each day based on e.g., an IP address or even through geo-fencing on a mobile device.&lt;/p>
+&lt;p>Off I went to try and find a way to do it anyway. First, I opened Teams in Microsoft Edge and used the browser dev tools to see what kind of requests are sent to which APIs when the work location is changed.&lt;/p>
+&lt;p>Here we can see that a &lt;strong>PUT&lt;/strong> request is made to &lt;code>https://presence.teams.microsoft.com/v1/me/workLocation&lt;/code> when the location is edited.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1Ylwjq2bqJUws0kO0nI6SA.png"
+width="1435"
+height="902"
+srcset="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1Ylwjq2bqJUws0kO0nI6SA_hu_7e71fa45b85c8195.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1Ylwjq2bqJUws0kO0nI6SA_hu_d5e70905dbc9f12e.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="159"
+data-flex-basis="381px"
+>&lt;/p>
+&lt;p>In this case the location was cleared with the following JSON payload.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1TUd3bgXiIp7hyKQIWLDTdA.png"
+width="975"
+height="278"
+srcset="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1TUd3bgXiIp7hyKQIWLDTdA_hu_9ee1d59560961f4.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1TUd3bgXiIp7hyKQIWLDTdA_hu_14dccec72bd80590.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="350"
+data-flex-basis="841px"
+>&lt;/p>
+&lt;p>The value &lt;strong>0&lt;/strong> clears the location. &lt;strong>1&lt;/strong> is used to set it to &lt;strong>Office&lt;/strong> and &lt;strong>2&lt;/strong> will map to &lt;strong>Remote.&lt;/strong>&lt;/p>
+&lt;p>Next, I inspected the token needed for this request with the help of &lt;a class="link" href="https://jwt.ms" target="_blank" rel="noopener"
+>jwt.ms&lt;/a>.&lt;/p>
+&lt;pre>&lt;code>{
+&amp;quot;typ&amp;quot;: &amp;quot;JWT&amp;quot;,
+&amp;quot;nonce&amp;quot;: &amp;quot;xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;,
+&amp;quot;alg&amp;quot;: &amp;quot;RS256&amp;quot;,
+&amp;quot;x5t&amp;quot;: &amp;quot;-xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;,
+&amp;quot;kid&amp;quot;: &amp;quot;-xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;
+}.{
+&amp;quot;aud&amp;quot;: &amp;quot;https://presence.teams.microsoft.com/&amp;quot;,
+&amp;quot;iss&amp;quot;: &amp;quot;https://sts.windows.net/4bffbf87-53a0-4fce-b58b-4179cb3a3b7d/&amp;quot;,
+&amp;quot;iat&amp;quot;: 1688763565,
+&amp;quot;nbf&amp;quot;: 1688763565,
+&amp;quot;exp&amp;quot;: 1688841846,
+&amp;quot;acr&amp;quot;: &amp;quot;1&amp;quot;,
+&amp;quot;aio&amp;quot;: &amp;quot;xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;,
+&amp;quot;amr&amp;quot;: [
+&amp;quot;pwd&amp;quot;,
+&amp;quot;mfa&amp;quot;
+],
+&amp;quot;appid&amp;quot;: &amp;quot;5e3ce6c0-2b1f-4285-8d4b-75ee78787346&amp;quot;,
+&amp;quot;appidacr&amp;quot;: &amp;quot;0&amp;quot;,
+&amp;quot;family_name&amp;quot;: &amp;quot;Mozz&amp;quot;,
+&amp;quot;given_name&amp;quot;: &amp;quot;Mozzie&amp;quot;,
+&amp;quot;ipaddr&amp;quot;: &amp;quot;xxx.xxx.xxx.xxx&amp;quot;,
+&amp;quot;name&amp;quot;: &amp;quot;Mozzism Admin&amp;quot;,
+&amp;quot;oid&amp;quot;: &amp;quot;xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx&amp;quot;,
+&amp;quot;puid&amp;quot;: &amp;quot;10032000330C6A66&amp;quot;,
+&amp;quot;rh&amp;quot;: &amp;quot;xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;,
+&amp;quot;scp&amp;quot;: &amp;quot;user_impersonation&amp;quot;,
+&amp;quot;sub&amp;quot;: &amp;quot;xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;,
+&amp;quot;tid&amp;quot;: &amp;quot;xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx&amp;quot;,
+&amp;quot;unique_name&amp;quot;: &amp;quot;mozzie@mozzism.ch&amp;quot;,
+&amp;quot;upn&amp;quot;: &amp;quot;mozzie@mozzism.ch&amp;quot;,
+&amp;quot;uti&amp;quot;: &amp;quot;xxxxxxxxxxxxxxxxxxxxxxxxx&amp;quot;,
+&amp;quot;ver&amp;quot;: &amp;quot;1.0&amp;quot;,
+&amp;quot;xms_cc&amp;quot;: [
+&amp;quot;CP1&amp;quot;
+],
+&amp;quot;xms_ssm&amp;quot;: &amp;quot;1&amp;quot;
+}.[Signature]
+&lt;/code>&lt;/pre>
+&lt;h4 id="aadinternals">AADInternals
+&lt;/h4>&lt;p>Copying the token from the browser and using it to make a web request with PowerShell is easy. The hard thing was to figure out how I can obtain that token programmatically. Luckily, there’s this awesome PowerShell module called &lt;a class="link" href="https://www.powershellgallery.com/packages/AADInternals/0.9.0" target="_blank" rel="noopener"
+>&lt;strong>AADInternals&lt;/strong>&lt;/a> by one Dr. Nestori Syynimaa. This is an amazing resource to test almost anything related to Azure AD and Graph authentication.&lt;/p>
+&lt;p>The documentation for this module can be found &lt;a class="link" href="https://aadinternals.com/aadinternals/" target="_blank" rel="noopener"
+>here&lt;/a>. I discovered that the following command would give me a token for Teams.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$teamsToken&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-AADIntAccessTokenForTeams&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>What’s really cool is that now, with PowerShell 7 the whole login process can be done through the CLI without any browser pop-ups! Even MFA is supported!&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1dsPmfR9rFSmCsWYKlb5mA.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1dsPmfR9rFSmCsWYKlb5mA_hu_6cfc710016dcf843.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1dsPmfR9rFSmCsWYKlb5mA_hu_6dbf596e2e933e61.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;p>Even though the audience for this token is &lt;a class="link" href="https://api.spaces.skype.com" target="_blank" rel="noopener"
+>https://api.spaces.skype.com&lt;/a> and not &lt;a class="link" href="https://presence.teams.microsoft.com/" target="_blank" rel="noopener"
+>https://presence.teams.microsoft.com&lt;/a> it still works to change the work location in Teams.&lt;/p>
+&lt;p>Because everything can be done through the CLI I wondered if I could pass the credentials and the MFA secret to the AADInternals functions so that the login process could be automated to be 100% unattended.&lt;/p>
+&lt;p>After some trial and error, I had that figured out too. Not all functions of the AADInternals module are exposed to the user so the key is to make them available to your current PowerShell session by dot sourcing some of the *.ps1 files included in the module.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$functions&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Get-ChildItem&lt;/span> &lt;span class="n">-Path&lt;/span> &lt;span class="s2">&amp;#34;C:\\Program Files\\WindowsPowerShell\\Modules\\AADInternals\\0.9.0&amp;#34;&lt;/span> &lt;span class="n">-Filter&lt;/span> &lt;span class="s2">&amp;#34;\*.ps1&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$functions&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$functions&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Where-Object&lt;/span> &lt;span class="p">{$\&lt;/span>&lt;span class="n">_&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Name&lt;/span> &lt;span class="o">-match&lt;/span> &lt;span class="s2">&amp;#34;Teams&amp;#34;&lt;/span> &lt;span class="o">-or&lt;/span> &lt;span class="p">$\&lt;/span>&lt;span class="n">_&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Name&lt;/span> &lt;span class="o">-match&lt;/span> &lt;span class="s2">&amp;#34;AccessToken&amp;#34;&lt;/span> &lt;span class="o">-or&lt;/span> &lt;span class="p">$\&lt;/span>&lt;span class="n">_&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Name&lt;/span> &lt;span class="o">-match&lt;/span> &lt;span class="s2">&amp;#34;CommonUtils&amp;#34;&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">foreach&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$function&lt;/span> &lt;span class="k">in&lt;/span> &lt;span class="nv">$functions&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span> &lt;span class="nv">$function&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">FullName&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>By executing this code which uses some of the not exposed functions from AADInternals, we can pass a credential object (and MFA secret) and then get an access token to write Teams presence.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$teamsPresenceToken&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Prompt-Credentials&lt;/span> &lt;span class="n">-ClientId&lt;/span> &lt;span class="nv">$ClientId&lt;/span> &lt;span class="n">-Resource&lt;/span> &lt;span class="s2">&amp;#34;https://presence.teams.microsoft.com&amp;#34;&lt;/span> &lt;span class="n">-Credentials&lt;/span> &lt;span class="nv">$secureCreds&lt;/span> &lt;span class="n">-OTPSecretKey&lt;/span> &lt;span class="nv">$passwordDecrypted&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="credentials">Credentials
+&lt;/h4>&lt;p>I’ve put together a script which does everything for you. However, you must install the AADInternals module first and you also need to clone the repo from my &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation" target="_blank" rel="noopener"
+>GitHub&lt;/a> account since it has dependencies on other functions.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="n">git&lt;/span> &lt;span class="n">clone&lt;/span> &lt;span class="n">https&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="p">//&lt;/span>&lt;span class="n">github&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">mozziemozz&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">TeamsPhoneAutomation&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">git&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Even though this was all part of some good Friday night hacking, we obviously don’t want to store the credentials and especially the MFA secret as plain text on our machines. Therefore, I’ve added a couple of &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Modules/SecureCredsMgmt.ps1" target="_blank" rel="noopener"
+>functions&lt;/a> to help handle encrypted credentials. We want to be better than &lt;a class="link" href="https://www.theverge.com/2022/9/16/23356213/uber-hack-teen-slack-google-cloud-credentials-powershell" target="_blank" rel="noopener"
+>UBER&lt;/a>.&lt;/p>
+&lt;p>When encrypted credentials are stored on a Windows PC, they can only be decrypted using the same &lt;strong>account&lt;/strong> and the same &lt;strong>machine&lt;/strong> because of &lt;a class="link" href="https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/understand-security-identifiers" target="_blank" rel="noopener"
+>security identifiers&lt;/a> (SID).&lt;/p>
+&lt;p>If you don’t trust me, see for yourself. Here’ I’m retrieving the password I encrypted on my main PC using my user account.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1W628X8LBOfnUCpplMXMj4w.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1W628X8LBOfnUCpplMXMj4w_hu_4940aeddf6c6f64d.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1W628X8LBOfnUCpplMXMj4w_hu_fc9aea1ed352f4d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;p>I copied the file to a virtual machine where I’m logged in with the same user. This code will let you decrypt the password if the key matches.&lt;br>
+(I found this code years ago, unfortunately I don’t have the source anymore…)&lt;/p>
+&lt;pre>&lt;code>[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR((Get-Content -Path .\.local\SecureCreds\mozzie@mozzism.ch.txt | ConvertTo-SecureString))) | Out-String
+&lt;/code>&lt;/pre>
+&lt;p>When I run this on another machine with the same logged in user, I get an error that the Key is invalid. Which is good.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1xHjGlNGoWxiJ3qTkRNsxBQ.png"
+width="1758"
+height="928"
+srcset="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1xHjGlNGoWxiJ3qTkRNsxBQ_hu_127b3d13f3483a6c.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1xHjGlNGoWxiJ3qTkRNsxBQ_hu_da6928d12bcda226.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="189"
+data-flex-basis="454px"
+>&lt;/p>
+&lt;p>My Function &lt;code>Get-MzzSecureCreds&lt;/code> will automatically create a PS Credential Object when &lt;code>-AdminUser &amp;quot;user@domain.com&amp;quot;&lt;/code> is specified. The username will be set as file name, and it will also be used as the username of the credential object.&lt;/p>
+&lt;h4 id="the-finalscript">The Final Script
+&lt;/h4>&lt;p>Here’s the script to change your work location in Teams.&lt;/p>
+&lt;script src="https://gist.github.com/mozziemozz/bd60e4c77623b516333e329660e39142.js">&lt;/script>
+&lt;p>If you run it for the first time, you’ll need to provide the username and password and possibly the MFA secret of the user for which you want to change the work location.&lt;/p>
+&lt;p>&lt;strong>At this point I want to make clear again that this is a proof of concept. Even though the credentials are encrypted, you should not store production passwords on the device and most importantly, you shouldn’t store the MFA secret in the same place as the password.&lt;/strong>&lt;/p>
+&lt;p>You can determine if you’re working remotely or in the office by specifying either your local or public home/remote IP address.&lt;/p>
+&lt;p>Since my private IP is &lt;strong>192.168.127.117&lt;/strong>, and I specified &lt;strong>192.168.1.10&lt;/strong> my work location is set to &lt;strong>Office.&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1H9Jn0x3GNJ1gglcfYmRg.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1H9Jn0x3GNJ1gglcfYmRg_hu_aa046d479c47679a.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1H9Jn0x3GNJ1gglcfYmRg_hu_265b830b583962c3.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;p>When I change the IP address to &lt;strong>192.168.127.117&lt;/strong> the work location is set to remote because that matches my local subnet.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1JCJNuJqCHz2FvGnYBkB0A.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1JCJNuJqCHz2FvGnYBkB0A_hu_e9a0d6f3e4d647b3.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1JCJNuJqCHz2FvGnYBkB0A_hu_c1345709df7142fe.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;p>In case your office and your home network both use the same private address space, you can use &lt;code>-IpType Public&lt;/code> and specify your home/remote public IP.&lt;/p>
+&lt;h4 id="the-result">The Result
+&lt;/h4>&lt;p>The updated work location is then visible in both Teams and Outlook.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1rgszjARcTFdFADtwPT9bUg.png"
+width="490"
+height="396"
+srcset="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1rgszjARcTFdFADtwPT9bUg_hu_b81a6c2aa1eb804.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/1rgszjARcTFdFADtwPT9bUg_hu_f381a482b49f4f87.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="123"
+data-flex-basis="296px"
+>
+&lt;img src="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/16wcOq4ZGJ4e9Oy2J80Nyw.png"
+width="686"
+height="351"
+srcset="https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/16wcOq4ZGJ4e9Oy2J80Nyw_hu_4bfed16fa82d11c1.png 480w, https://heusser.pro/p/automate-setting-work-location-in-teams-outlook-poc-deb7b05de08d/16wcOq4ZGJ4e9Oy2J80Nyw_hu_f372c65f866c96a0.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="195"
+data-flex-basis="469px"
+>&lt;/p>
+&lt;p>Even though I won’t be using this in production, I had great fun developing this and I also learned a thing or two about AADInternals, Json Web Tokens and encrypted credentials in PowerShell.&lt;/p></description></item></channel></rss>

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Voice Enabled Channels on HEUSSER.PRO</title><link>https://heusser.pro/categories/voice-enabled-channels/</link><description>Recent content in Voice Enabled Channels on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 20 Dec 2022 11:04:41 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/voice-enabled-channels/index.xml" rel="self" type="application/rss+xml"/><item><title>Teams Auto Attendant Stuff You Didn’t Know About</title><link>https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/</link><pubDate>Tue, 20 Dec 2022 11:04:41 +0000</pubDate><guid>https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/</guid><description>&lt;p>Hello everybody. At the beginning of this year, I set myself a goal of writing at least one article per month. Since I will meet my goal with today’s article, I’ll make sure to take a break over the holidays and recharge.&lt;/p>
+&lt;p>But before I do that, we’re going to talk about some lesser-known stuff about Teams Cloud PBX features. Over the years, auto attendants and call queues have gotten a lot of new or updated features. Did you know that there’s a dedicated &lt;a class="link" href="https://learn.microsoft.com/en-us/powershell/module/skype/get-csautoattendanttenantinformation?view=skype-ps" target="_blank" rel="noopener"
+>Cmdlet&lt;/a> to see what features are enabled for your tenant? Use the following code to get the complete list.&lt;/p>
+&lt;p>(Get-CsAutoAttendantTenantInformation).FlightedFeatures&lt;/p>
+&lt;p>&lt;strong>Update 29.06.2023&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>I’ve written a Bot which sends any new entries in this list to a channel on my Discord Server. If you want to stay up to date, you can join my Server using &lt;a class="link" href="https://discord.gg/wbdAfvwRwq" target="_blank" rel="noopener"
+>this&lt;/a> link. If you want to learn more about my Discord Server, check &lt;a class="link" href="https://heusser.pro/discord.html" target="_blank" rel="noopener"
+>this&lt;/a> link.&lt;/p>&lt;/blockquote>
+&lt;p>&lt;strong>/Update&lt;/strong>&lt;/p>
+&lt;p>At the time of drafting this article, this is what’s returned by the Cmdlet. Unfortunately, many of these features were added without an MCP (Message Center Post) or a M355 Road Map entry. I’ll try to decipher it and explain what each of these entries mean.&lt;/p>
+&lt;blockquote>
+&lt;p>BackupConfigInBvd&lt;br>
+NgcProvisioning&lt;br>
+UserValidationViaAdminService&lt;br>
+AutoAttendantSharedVoicemailEnabled&lt;br>
+AutoAttendantAnnouncementAsMenuOptionEnabled&lt;br>
+AuthorizedUsersEnabled&lt;br>
+CallQueueAllowPstnNumberAsTargetInCmdlets&lt;br>
+DirectorySearchByExtensionEnabled&lt;br>
+PstnTransferOutEnabled&lt;br>
+CallQueueSharedVoicemailEnabled&lt;br>
+CallQueueConferenceModeEnabled&lt;br>
+CallQueuePresenceAwareRoutingEnabled&lt;br>
+CallQueueLongestIdleRoutingEnabled&lt;br>
+GranularSchedulesEnabled&lt;br>
+AVSCallQueueZodiac&lt;br>
+CallQueueEnableResourceAccountsForOboV2&lt;br>
+EnableSharedVoicemailSystemPromptSuppression&lt;br>
+OboMobileFeatureEnabled&lt;br>
+AVSAdminEnableVerificationOfXMSUserIdHeader&lt;br>
+AVSEnableMenuOptionExpansion&lt;br>
+CallQueueEnableSharedVoicemailSystemPromptSuppression&lt;br>
+SupervisorDelegatedAdminPart1Enabled&lt;br>
+SupervisorDelegatedAdminPart2Enabled&lt;br>
+SupervisorDelegatedAdminPart3Enabled&lt;/p>&lt;/blockquote>
+&lt;h4 id="autoattendantannouncementasmenuoptionenabled">AutoAttendantAnnouncementAsMenuOptionEnabled
+&lt;/h4>&lt;p>This feature added the possibility to choose either a Text-To-Speech or an audio file announcement as auto attendant menu options. Once the announcement has been played back, the caller will be returned to the initial IVR greeting (this will create a loop).&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1SGMClnPKvA02S4gDAlpIIA.png"
+width="1535"
+height="303"
+srcset="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1SGMClnPKvA02S4gDAlpIIA_hu_fb1bdf5aa985cd6a.png 480w, https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1SGMClnPKvA02S4gDAlpIIA_hu_25af59c44525f178.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="506"
+data-flex-basis="1215px"
+>&lt;/p>
+&lt;h4 id="authorizedusersenabled">AuthorizedUsersEnabled
+&lt;/h4>&lt;p>As far as I can tell, this feature is not yet enabled yet, even though it already shows in flighted features. I can only assume that this will allow admins to delegate certain admin tasks to non-admin users.&lt;/p>
+&lt;p>There are also three other references which look related to this.&lt;/p>
+&lt;ul>
+&lt;li>SupervisorDelegatedAdminPart1Enabled&lt;/li>
+&lt;li>SupervisorDelegatedAdminPart2Enabled&lt;/li>
+&lt;li>SupervisorDelegatedAdminPart3Enabled&lt;/li>
+&lt;/ul>
+&lt;h4 id="callqueueallowpstnnumberastargetincmdlets">CallQueueAllowPstnNumberAsTargetInCmdlets
+&lt;/h4>&lt;p>I am not 100% sure with this one but the name kind of suggests that this added the possibility to set an external PSTN number as overflow or timeout target on call queues using PowerShell, after PSTN transfer had been rolled out for auto attendants.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1M9Ivkq0Or1ke6sWiSC8ioA.png"
+width="1397"
+height="347"
+srcset="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1M9Ivkq0Or1ke6sWiSC8ioA_hu_8e1dc34a4d1fcb6a.png 480w, https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1M9Ivkq0Or1ke6sWiSC8ioA_hu_145a071383d28327.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="402"
+data-flex-basis="966px"
+>&lt;/p>
+&lt;h4 id="pstntransferoutenabled">PstnTransferOutEnabled
+&lt;/h4>&lt;p>If I remember correctly, transfer to PSTN was enabled for auto attendants before call queues. Thus, there’s another entry for that feature next to CallQueueAllowPstnNumberAsTargetInCmdlets.&lt;/p>
+&lt;h4 id="directorysearchbyextensionenabled">DirectorySearchByExtensionEnabled
+&lt;/h4>&lt;p>This feature allows inbound callers to reach people who have an extension through an auto attendant. The caller will enter a person&amp;rsquo;s extension followed by &lt;code>#&lt;/code>and the auto attendant will forward the call to the recipient. The extension must be configured in Azure AD (Phone Number) and not in Teams (LineURI) for it to work.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1CFmwLZaK7QF3YzC79tBNA.png"
+width="831"
+height="140"
+srcset="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1CFmwLZaK7QF3YzC79tBNA_hu_d2e4e6f6a94fe32b.png 480w, https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1CFmwLZaK7QF3YzC79tBNA_hu_714a45058dd573e0.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="593"
+data-flex-basis="1424px"
+>&lt;/p>
+&lt;p>As you can see, the user does not have an extension set for it’s LineURI.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/12sqS0b4T9eEhvjCWOf2rw.png"
+width="1135"
+height="367"
+srcset="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/12sqS0b4T9eEhvjCWOf2rw_hu_5c6dcef16482e4ab.png 480w, https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/12sqS0b4T9eEhvjCWOf2rw_hu_2d1bd6e5b91666ea.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="309"
+data-flex-basis="742px"
+>&lt;/p>
+&lt;p>We do not need to set any dial keys if we only want Dial by extension without any other options.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1ufTy8uYSsF4oG2rDTDoKA.png"
+width="1646"
+height="1248"
+srcset="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1ufTy8uYSsF4oG2rDTDoKA_hu_8cf58d2a3be998a2.png 480w, https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1ufTy8uYSsF4oG2rDTDoKA_hu_7fe5f5306d3c70b5.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="316px"
+>&lt;/p>
+&lt;p>Any auto attendant can only be enabled for dial by extension or dial by name. If you want both to be available to your callers, you will need to follow the example on &lt;a class="link" href="https://learn.microsoft.com/en-us/microsoftteams/create-a-phone-system-auto-attendant?tabs=call-flow#directory-search" target="_blank" rel="noopener"
+>Microsoft Learn&lt;/a>.&lt;/p>
+&lt;blockquote>
+&lt;p>If you want to use both the Dial by name and Dial by extension features, you can assign a dial key on your main auto attendant to reach an auto attendant enabled for Dial by name. Within that auto attendant, you can assign the 1 key (which has no letters associated with it) to reach the Dial by extension auto attendant.&lt;/p>&lt;/blockquote>
+&lt;p>It’s also possible to limit the dial scope to certain groups.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/15bQzvIaG3Lrw9safocEBQ.png"
+width="1553"
+height="743"
+srcset="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/15bQzvIaG3Lrw9safocEBQ_hu_dda14e4d07271f5.png 480w, https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/15bQzvIaG3Lrw9safocEBQ_hu_36f2871839607dc9.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="209"
+data-flex-basis="501px"
+>&lt;/p>
+&lt;p>&lt;strong>Bonus Tip&lt;/strong>: You can directly dial an extension from some phones by adding &lt;code>,,&amp;lt;extension&amp;gt;#&lt;/code> at the end of the number. At least an iPhone will dial the keys automatically once the announcement has been played back. This is the same technique which Microsoft uses for Calling Links in Teams Meetings which support audio conferencing.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1cKz4ArQJFvLhzpaYA6eOw.png"
+width="1125"
+height="2436"
+srcset="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1cKz4ArQJFvLhzpaYA6eOw_hu_6be967d8e926a037.png 480w, https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1cKz4ArQJFvLhzpaYA6eOw_hu_78c26892dee20c0b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+>&lt;/p>
+&lt;h4 id="callqueuesharedvoicemailenabled">CallQueueSharedVoicemailEnabled
+&lt;/h4>&lt;p>This feature enabled the much-requested shared voicemail on call queues. Before that, we had to license users which would permanently forward to voicemail which was super painful because there’s still no way to upload an audio file for voicemail greetings on user accounts. The voicemail greeting needs to be recorded using the Teams client. If you want to know more about Teams shared voicemail, I recommend to check out &lt;a class="link" href="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24" >this&lt;/a> very comprehensive article.&lt;/p>
+&lt;h4 id="autoattendantsharedvoicemailenabled">AutoAttendantSharedVoicemailEnabled
+&lt;/h4>&lt;p>This feature was also enabled for auto attendants after it has been enabled for call queues.&lt;/p>
+&lt;h4 id="callqueueconferencemodeenabled">CallQueueConferenceModeEnabled
+&lt;/h4>&lt;p>Conference mode will create a meeting when a call is connected to an agent which vastly improves the connection time. This means that agents will hear callers much sooner / without delays. The default value was changed from false to true in 2022. The docs were updated accordingly on August 15 2022 in &lt;a class="link" href="https://github.com/MicrosoftDocs/office-docs-powershell/commit/27e8165f7af0d15a0377ff9c700e4af14a754c32" target="_blank" rel="noopener"
+>this&lt;/a> commit.&lt;/p>
+&lt;h4 id="callqueuepresenceawareroutingenabled">CallQueuePresenceAwareRoutingEnabled
+&lt;/h4>&lt;p>The default value for Presence based routing was also changed from false to true in the same commit linked above.&lt;/p>
+&lt;h4 id="callqueuelongestidleroutingenabled">CallQueueLongestIdleRoutingEnabled
+&lt;/h4>&lt;p>I think that these names are sometimes a little misleading. While I assume that CallQueueConferenceModeEnabled and CallQueuePresenceAwareRoutingEnabled refer to the new default values, this one can’t since it’s not a boolean value. Here’s the description from &lt;a class="link" href="https://learn.microsoft.com/en-us/powershell/module/skype/new-cscallqueue?view=skype-ps#-routingmethod" target="_blank" rel="noopener"
+>Microsoft Learn&lt;/a>.&lt;/p>
+&lt;blockquote>
+&lt;p>The RoutingMethod defines how agents will be called in a Call Queue. If the routing method is set to Serial, then agents will be called one at a time. If the routing method is set to Attendant, then agents will be called in parallel. If routing method is set to RoundRobin, the agents will be called using Round Robin strategy so that all agents share the call-load equally. If routing method is set to LongestIdle, the agents will be called based on their idle time, i.e., the agent that has been idle for the longest period will be called.&lt;/p>&lt;/blockquote>
+&lt;p>I can’t remember if Longest Idle was always there or if it was added later on. But since there’s an entry in flighted features, I assume it was added at some point.&lt;/p>
+&lt;h4 id="granularschedulesenabled">GranularSchedulesEnabled
+&lt;/h4>&lt;p>I’ve been working with Teams Voice since the beginning, when we still had to use Skype for Business Online Admin Center to configure auto attendants and call queues (v1). From there, it was super easy to select business hours from a timetable. This only supported 30 minutes increments though.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1Ao8BKZuMaZlUtWDtqScEsg.png"
+width="770"
+height="1017"
+srcset="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1Ao8BKZuMaZlUtWDtqScEsg_hu_1a4c1eae83bcffb1.png 480w, https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1Ao8BKZuMaZlUtWDtqScEsg_hu_d20ffd1bde9a880b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="75"
+data-flex-basis="181px"
+>&lt;/p>
+&lt;p>When auto attendants were moved to TAC, they only supported 30 minutes increments at first too. 15 minutes increments were added quite early on though.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1IRUMV9um1nnepnOQlMkcjQ.png"
+width="928"
+height="136"
+srcset="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1IRUMV9um1nnepnOQlMkcjQ_hu_4d6959f1013d3eae.png 480w, https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1IRUMV9um1nnepnOQlMkcjQ_hu_45d19b4f0eef0fbe.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="682"
+data-flex-basis="1637px"
+>&lt;/p>
+&lt;p>Because business hours now support 15 minutes increments, the drop-down list is awfully long which makes it kind of time intensive to configure. I’ve published an article and an accompanying PowerShell script to combat this &lt;a class="link" href="https://heusser.pro/p/change-business-hours-of-a-teams-auto-attendant-with-powershell-ed03a15881d2" >here&lt;/a>.&lt;/p>
+&lt;h4 id="avscallqueuezodiac">AVSCallQueueZodiac
+&lt;/h4>&lt;p>Zodiac was the code name for Voice Enabled Channels which is also known as Collaborative Calling. I don’t know how this name made it into production. 🙃&lt;/p>
+&lt;p>This update was mentioned rather briefly in &lt;a class="link" href="https://techcommunity.microsoft.com/t5/microsoft-teams-blog/what-s-new-in-microsoft-teams-february-and-march-2021/ba-p/2245944" target="_blank" rel="noopener"
+>this&lt;/a> TechNet blog post under calling.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>Voice-enabled channels&lt;/strong>&lt;br>
+Voice-enabled channels allow connecting a call queue to a channel in Microsoft Teams. Users can collaborate and share information within the channel while taking calls in the queue. This feature is ideal for scenarios such an IT help desk or HR hotline. IT admins can quickly connect call queues to specific channels, and team owners can manage the settings.&lt;/p>&lt;/blockquote>
+&lt;h4 id="callqueueenableresourceaccountsforobov2">CallQueueEnableResourceAccountsForOboV2
+&lt;/h4>&lt;p>With Voice Enabled Channles, it was finally possible to make outbound calls using a number of a resource account. This only worked if you used the dialer located in the channel but not standard dialer from the Calls app at first. I’m guessing “Obo” stands for Outbound something and V2 also enabled this feature in the Calls App dialer. This was mentioned in Roadmap entry &lt;a class="link" href="https://www.microsoft.com/en-us/microsoft-365/roadmap?filters=Microsoft%20Teams&amp;amp;searchterms=86992" target="_blank" rel="noopener"
+>86992&lt;/a>.&lt;/p>
+&lt;p>&lt;strong>Update 03.06.2023&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>I’m now fairly confident that &lt;strong>Obo&lt;/strong> stands for &lt;strong>On behalf of&lt;/strong>.&lt;/p>&lt;/blockquote>
+&lt;p>&lt;strong>/Update&lt;/strong>&lt;/p>
+&lt;h4 id="enablesharedvoicemailsystempromptsuppression">EnableSharedVoicemailSystemPromptSuppression
+&lt;/h4>&lt;p>When a call goes to voicemail on an auto attendant, a so-called system greeting is being played back by default. In English it sounds like this.&lt;/p>
+&lt;blockquote>
+&lt;p>Please leave a message after the tone. When you have finished, please hang up.&lt;/p>&lt;/blockquote>
+&lt;p>Since many companies use professionally recorded audio files for their announcements, it can be disturbing that a custom greeting is followed by the system greeting which will be Text-To-Speech. Because of that, Microsoft has added the ability to suppress it.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1n6mmIzdyHlToybU63o4r9g.png"
+width="1610"
+height="460"
+srcset="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1n6mmIzdyHlToybU63o4r9g_hu_4bd4005e7ea9afe0.png 480w, https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1n6mmIzdyHlToybU63o4r9g_hu_c44ae2f3841e1eeb.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="350"
+data-flex-basis="840px"
+>&lt;/p>
+&lt;p>When suppressing the system greeting on an auto attendant, you have to be careful though. There will be two different beep tones because the auto attendant forwards the call to shared voicemail, which will play back the first beep and then play onther (different sounding) one as a “ready to leave a message” indicator. I’ve also covered that in more detail under “One Last Caveat” &lt;a class="link" href="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24" >here&lt;/a>.&lt;/p>
+&lt;h4 id="callqueueenablesharedvoicemailsystempromptsuppression">CallQueueEnableSharedVoicemailSystemPromptSuppression
+&lt;/h4>&lt;p>When you read the article linked above, you will find the following paragraph.&lt;/p>
+&lt;blockquote>
+&lt;p>For call queues, this is slightly different. There is no option to suppress the system greeting. A call queue’s primary purpose is to route calls to agents so there are only routing options for overflow or timeout scenarios. This also means that there’s no option to configure a greeting inside the scope of an overflow or a timeout action.&lt;/p>&lt;/blockquote>
+&lt;blockquote>
+&lt;p>When you upload your own audio file, the system greeting is automatically suppressed by the call queue. There’s no option to enable it. (Why would you anyway?)&lt;/p>&lt;/blockquote>
+&lt;p>At the time of writing, this was true. But now Microsoft has added the option to suppress the system message for TTS greetings and not suppress it for audio files on call queues as well. Remember that you can always use my &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer" target="_blank" rel="noopener"
+>M365 Call Flow Visualizer&lt;/a> to see exactly which greetings are configured on any call flow.&lt;/p>
+&lt;h4 id="obomobilefeatureenabled">OboMobileFeatureEnabled
+&lt;/h4>&lt;p>I’d be lying if I said that I knew what this references to. My best guess is that it’s related to &lt;a class="link" href="https://techcommunity.microsoft.com/t5/microsoft-teams-blog/announcing-operator-connect-mobile-delivering-mobile-first/ba-p/3252902#:~:text=Single-number%20simplicity%20and%20the%20flexibility%20to%20work%20from,devices%20and%20hardware%20to%20purchase%2C%20manage%2C%20and%20support." target="_blank" rel="noopener"
+>Operator Connect Mobile&lt;/a>.&lt;/p>
+&lt;h4 id="avsenablemenuoptionexpansion">AVSEnableMenuOptionExpansion
+&lt;/h4>&lt;p>I have no idea what that is. It would be a lot easier if we would see at which dates these entries have been added. The only thing I can think of is support for pound and asterisk key on auto attendant menu options.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1z737i841L01TVQILLF1MKA.png"
+width="1594"
+height="398"
+srcset="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1z737i841L01TVQILLF1MKA_hu_cb27abc0809b6276.png 480w, https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1z737i841L01TVQILLF1MKA_hu_48ceb6fbfaf0df1.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="400"
+data-flex-basis="961px"
+>&lt;/p>
+&lt;h4 id="backupconfiginbvd">BackupConfigInBvd
+&lt;/h4>&lt;p>As far as I know, BVD stands for Business Voice Directory and it is an internal Microsoft system. This is most likely an internal service update which has no impact on admin exposed settings.&lt;/p>
+&lt;h4 id="other-entries">Other Entries
+&lt;/h4>&lt;p>There are a couple of entries where I really don’t have the slightest idea what they could mean.&lt;/p>
+&lt;ul>
+&lt;li>NgcProvisioning&lt;/li>
+&lt;li>UserValidationViaAdminService&lt;/li>
+&lt;li>AVSAdminEnableVerificationOfXMSUserIdHeader&lt;/li>
+&lt;/ul>
+&lt;h4 id="conclusion">Conclusion
+&lt;/h4>&lt;p>&lt;code>Get-CsAutoAttendantTenantInformation&lt;/code> allows us to get a vague overview of which features have been added or might be added soon. It won’t help you configure or unlock anything, but I still hope that I was able to explain some things which you might not have known before.&lt;/p>
+&lt;p>I wish you all happy holidays. See you next year!&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1tpVtUXleSztgTqWH64g.png"
+width="1485"
+height="866"
+srcset="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1tpVtUXleSztgTqWH64g_hu_3b150576baba573e.png 480w, https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb/1tpVtUXleSztgTqWH64g_hu_4414dc0182b5b9b8.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="171"
+data-flex-basis="411px"
+>&lt;/p></description></item></channel></rss>

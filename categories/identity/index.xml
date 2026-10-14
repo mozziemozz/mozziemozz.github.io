@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Identity on HEUSSER.PRO</title><link>https://heusser.pro/categories/identity/</link><description>Recent content in Identity on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 15 Jun 2025 11:39:55 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/identity/index.xml" rel="self" type="application/rss+xml"/><item><title>Find Tenant Owner Company Name with Only an Entra Tenant Id</title><link>https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/</link><pubDate>Sun, 15 Jun 2025 11:39:55 +0000</pubDate><guid>https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/</guid><description>&lt;img src="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/Cover.png" alt="Featured image of post Find Tenant Owner Company Name with Only an Entra Tenant Id" />&lt;h2 id="update-june-16-2025">Update June 16, 2025
+&lt;/h2>&lt;p>It turns out that this blog was kind of pointless&amp;hellip; Fellow Swiss MVP &lt;a class="link" href="https://blog.icewolf.ch" target="_blank" rel="noopener"
+>Andres Bohren&lt;/a> pointed out that the &lt;a class="link" href="https://www.powershellgallery.com/packages/MSIdentityTools/2.0.70" target="_blank" rel="noopener"
+>MSIdentityTools&lt;/a> PowerShell module can already get a company display name &lt;strong>and&lt;/strong> the default domain of a tenant by Id. A quick look at &lt;strong>MSIdentityTools.psm1&lt;/strong> revealed that it&amp;rsquo;s possible to resolve a tenant name/domain by Id without even installing the module.&lt;/p>
+&lt;h3 id="required-permissions">Required Permissions
+&lt;/h3>&lt;p>You&amp;rsquo;ll need the &lt;code>CrossTenantInformation.ReadBasic.All&lt;/code> permission to perform these requests. The permission supports both &lt;a class="link" href="https://heusser.pro/p/whats-the-difference-between-an-entra-id-app-registration-and-an-enterprise-app-4yyib4g1sk5a/#permissions-on-applications" >delegated and application&lt;/a> authentication.&lt;/p>
+&lt;h3 id="resolve-default-domain-and-name-by-tenant-id">Resolve Default Domain and Name by Tenant Id
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">GET&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/beta/tenantRelationships/findTenantInformationByTenantId(tenantId=&amp;#39;536f948a-babb-4048-836d-717833aa0da5&amp;#39;)&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Output&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Name&lt;/span> &lt;span class="n">Value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">----&lt;/span> &lt;span class="p">-----&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">defaultDomainName&lt;/span> &lt;span class="n">mvplab&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">ch&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">displayName&lt;/span> &lt;span class="n">MVP&lt;/span> &lt;span class="n">LAB&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">@odata&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">context&lt;/span> &lt;span class="n">https&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="p">//&lt;/span>&lt;span class="n">graph&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">microsoft&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">beta&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="nv">$metadata&lt;/span>&lt;span class="c">#microsoft.graph.tenantInformation&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">federationBrandName&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">tenantId&lt;/span> &lt;span class="n">536f948a-babb&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">4048&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">836d&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">717833aa0da5&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="find-tenant-id-by-domain">Find Tenant Id by Domain
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">GET&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/beta/tenantRelationships/findTenantInformationByDomainName(domainName=&amp;#39;mvplab.ch&amp;#39;)&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Output&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Name&lt;/span> &lt;span class="n">Value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">----&lt;/span> &lt;span class="p">-----&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">defaultDomainName&lt;/span> &lt;span class="n">mvplab&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">ch&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">displayName&lt;/span> &lt;span class="n">MVP&lt;/span> &lt;span class="n">LAB&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">@odata&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">context&lt;/span> &lt;span class="n">https&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="p">//&lt;/span>&lt;span class="n">graph&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">microsoft&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">beta&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="nv">$metadata&lt;/span>&lt;span class="c">#microsoft.graph.tenantInformation&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">federationBrandName&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">tenantId&lt;/span> &lt;span class="n">536f948a-babb&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">4048&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">836d&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">717833aa0da5&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>You can query any domain verified in a tenant to get its Id. It doesn&amp;rsquo;t need to be the tenant&amp;rsquo;s default domain. I think this could actually be a bit problematic in some cases as it could potentially reveal more information that you might intend to at a given time.&lt;/p>
+&lt;p>For example, I&amp;rsquo;m thinking about a scenario where a company is about to launch a new product or acquire another company and thus has already set up a specific domain in their tenant for said event, but the information isn&amp;rsquo;t public yet.&lt;/p>
+&lt;p>Anyway, thanks for this great tip &lt;a class="link" href="https://x.com/andresbohren" target="_blank" rel="noopener"
+>Andres&lt;/a>!&lt;/p>
+&lt;h2 id="original-article">Original Article
+&lt;/h2>&lt;p>If you work a lot with Microsoft Entra ID a lot, you probably already know the &lt;a class="link" href="https://gettenantpartitionweb.azurewebsites.net" target="_blank" rel="noopener"
+>Tenant Lookup Website&lt;/a> created by the Microsoft 365 U.S. Government Programs team. However, the lookups this website performs only work in one direction. You can only get a tenant id, if you already know one of its connected domains but you can&amp;rsquo;t get a tenant&amp;rsquo;s domain or name just off of a tenant id.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-1.png"
+width="1350"
+height="1037"
+srcset="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-1_hu_bfae7ff9eaa7ffb2.png 480w, https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-1_hu_6c1b45e4f185612b.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Entering a tenant id won’t return it’s name."
+class="gallery-image"
+data-flex-grow="130"
+data-flex-basis="312px"
+> &lt;img src="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-2.png"
+width="1350"
+height="1037"
+srcset="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-2_hu_685ebe73501e8e8.png 480w, https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-2_hu_9d3bd1a0cd21d0fc.png 1024w"
+loading="lazy"
+decoding="async"
+alt="However, entering a domain will return the tenant id as well."
+class="gallery-image"
+data-flex-grow="130"
+data-flex-basis="312px"
+>&lt;/p>
+&lt;p>I&amp;rsquo;m not sure how well known this technique is but when I was still working as a consultant for lots of different companies, I also worked in a lot of different tenants. So, I used this trick quite often. You can actually sign into a specific tenant by appending &lt;code>/&amp;lt;tenant id&amp;gt;&lt;/code> to i.e. &lt;code>https://portal.azure.com&lt;/code>.&lt;/p>
+&lt;p>So, to access my &lt;strong>MVP LAB&lt;/strong> tenant directly, I can just go to &lt;code>https://portal.azure.com/536f948a-babb-4048-836d-717833aa0da5&lt;/code> or even &lt;code>https://portal.azure.com/mvplab.ch&lt;/code>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-10.png"
+width="1335"
+height="1044"
+srcset="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-10_hu_52c324a2e5ea0b14.png 480w, https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-10_hu_a5684c0597bcf6cf.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Sign-In page without custom branding"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="306px"
+>&lt;/p>
+&lt;p>This will open my tenant&amp;rsquo;s sign in page. If no company branding is applied, it doesn&amp;rsquo;t tell you much. However, if you view the page source and search for &lt;code>sCompanyDisplayName&lt;/code> it will tell you the name of the tenant.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image.png"
+width="332"
+height="57"
+srcset="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image_hu_f9dd427cbfaa1fa3.png 480w, https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image_hu_715d57bf8c14d0be.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Company Display Name in page source"
+class="gallery-image"
+data-flex-grow="582"
+data-flex-basis="1397px"
+>&lt;/p>
+&lt;p>The company display name is the one you see in Entra ID&amp;rsquo;s &lt;strong>Overview&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-4.png"
+width="719"
+height="308"
+srcset="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-4_hu_aaff922bfa61002b.png 480w, https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-4_hu_17fecf408220abf1.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Tenant Name in Entra ID Overview"
+class="gallery-image"
+data-flex-grow="233"
+data-flex-basis="560px"
+>&lt;/p>
+&lt;p>If a company is using custom branding, it&amp;rsquo;s even more straight forward to learn more about a tenant&amp;rsquo;s owner. For example, this is LinkedIn&amp;rsquo;s sign-in page.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-3.png"
+width="1352"
+height="1038"
+srcset="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-3_hu_9d6571acaacbad6f.png 480w, https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-3_hu_8bc02e477e6316c8.png 1024w"
+loading="lazy"
+decoding="async"
+alt="LinkedIn sign-in page"
+class="gallery-image"
+data-flex-grow="130"
+data-flex-basis="312px"
+>&lt;/p>
+&lt;p>The page source doesn&amp;rsquo;t expose any domains or other unique values. You can only see the company display name or if the tenant has custom branding, you may be able to tell who the tenant belongs to by looking at their logo or background. However, in most cases, this is already better than just knowing a tenant&amp;rsquo;s id.&lt;/p>
+&lt;p>Remeber to always be vigilant and that bad actors might create fake tenants which try to trick you into thinking that they&amp;rsquo;re a legit organization by using another companies branding.&lt;/p>
+&lt;h2 id="doing-it-programmatically-with-powershell">Doing it Programmatically with PowerShell
+&lt;/h2>&lt;p>You can also get the company display names programmatically with the PowerShell code below.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$tenantId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;536f948a-babb-4048-836d-717833aa0da5&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$uri&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;https://login.microsoftonline.com/&lt;/span>&lt;span class="nv">$tenantId&lt;/span>&lt;span class="s2">/oauth2/v2.0/authorize?redirect_uri=https%3A%2F%2Fportal.azure.com%2Fsignin%2Findex%2F&amp;amp;response_type=code%20id_token&amp;amp;scope=https%3A%2F%2Fmanagement.core.windows.net%2F%2Fuser_impersonation%20openid%20email%20profile&amp;amp;state=OpenIdConnect.AuthenticationProperties%3DCFuFkF0F_FdfQWmaBEfZkrwUojoCqnTFLK5IXKUlMck0I18skpp-zVFCSJNkKE9PDD8wwaUIkX7ln1Hi-96E_fGMU3wDntJTPpSzmzzpxBHu583WpKvoTxl3fMz2krpQkx9Q4q7EkR3l9HOeidAWtC1tLWQ5A30ZcSPaTlHcIE7eBjvcNf4hRHcPCNJFxIilA0LbqGvlozdcF6Pm-ePVt1LDKYBBPDzH_nrKrs2TzXxSjEvyM0fspA_Ett96_0OLNn2uVcoaHN9zNL0zrT7ycYEob4kRic9RriDCRxvC16Hr0ioDYPodhR1Sg9xiSRIow9JDTIpbDpLJ_lSn6eSEReq7wiJVKkb8G2_O8F08WHEu1_-15BxFR9wLp39AMbshuIVHerJ75CnR2LsfaRcodS53s66hgD4oOZClrmdam3iplbYprcZ2MX4KtHJCYg28l-wK2xyuo287QP4QIvt6C8BXAY3sKkvvSsSSeWhHGwpaCHIPuNi-7-p_9inWWRpY5C_-JGhSAMxRPimqTNejoX64h7HBhxbCa-RVkbDjTZI&amp;amp;response_mode=form_post&amp;amp;nonce=638837950082139429.ODA2YjNjYWYtNmEwMy00NmIyLWExNDEtOWM4YTgxYjU3NDg0ZGJhMjI1ODktZjZlMi00NzdjLTllOWMtMzQxZDJiN2U1YTU4&amp;amp;client_id=c44b4083-3bb0-49c1-b47d-974e53cbdf3c&amp;amp;site_id=501430&amp;amp;client-request-id=7576e1d8-cc63-40c7-8f1d-7faaa5afb0c4&amp;amp;x-client-SKU=ID_NET472&amp;amp;x-client-ver=8.3.0.0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$tenantLoginPage&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-WebRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Get&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="nv">$uri&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$tenantOwnerName&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$tenantLoginPage&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Content&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Split&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;sCompanyDisplayName&lt;/span>&lt;span class="se">`&amp;#34;&lt;/span>&lt;span class="s2">:&amp;#34;&lt;/span>&lt;span class="p">)[&lt;/span>&lt;span class="mf">1&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="py">Split&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;,&amp;#34;&lt;/span>&lt;span class="p">)[&lt;/span>&lt;span class="mf">0&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="py">Trim&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="py">Replace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;&amp;#34;&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Write-Host&lt;/span> &lt;span class="s2">&amp;#34;Tenant Owner Name of Tenant ID: &amp;#39;&lt;/span>&lt;span class="nv">$tenantId&lt;/span>&lt;span class="s2">&amp;#39; is: &amp;#39;&lt;/span>&lt;span class="nv">$tenantOwnerName&lt;/span>&lt;span class="s2">&amp;#39;&amp;#34;&lt;/span> &lt;span class="n">-ForegroundColor&lt;/span> &lt;span class="n">Green&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Output&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Tenant&lt;/span> &lt;span class="n">Owner&lt;/span> &lt;span class="n">Name&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">Tenant&lt;/span> &lt;span class="n">ID&lt;/span>&lt;span class="err">:&lt;/span> &lt;span class="s1">&amp;#39;536f948a-babb-4048-836d-717833aa0da5&amp;#39;&lt;/span> &lt;span class="n">is&lt;/span>&lt;span class="err">:&lt;/span> &lt;span class="s1">&amp;#39;MVP LAB&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="use-cases">Use Cases
+&lt;/h2>&lt;h3 id="check-app-owner-tenant-id-of-multi-tenant-apps-in-your-tenant">Check App Owner Tenant Id of Multi Tenant Apps in your Tenant
+&lt;/h3>&lt;p>Why would you want to do this? Let&amp;rsquo;s stick with the example of LinkedIn. You might have wondered how I was even able to get a hold of LinkedIn&amp;rsquo;s tenant id? Well, I have added LinkedIn as an &lt;a class="link" href="p/whats-the-difference-between-an-entra-id-app-registration-and-an-enterprise-app-4yyib4g1sk5a" >Enterprise Application&lt;/a> to my tenant. When I check out the service principal of the Linked in app under Enterprise Applications in Entra ID, it only shows the &lt;strong>Homepage URL&lt;/strong> but no tenant id.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-5.png"
+width="1475"
+height="1157"
+srcset="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-5_hu_6b6e2a0554e270be.png 480w, https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-5_hu_48cc6696df5c7d1c.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Service Principal of the LinkedIn application in my tenant"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="305px"
+>&lt;/p>
+&lt;p>This app is registered as a multi tenant app in LinkedIn&amp;rsquo;s tenant. When I granted consent to it, a service principal for the app got created in my tenant. To get the tenant id of the tenant where it&amp;rsquo;s registered, I can run &lt;code>Get-MgServicePrincipal&lt;/code> with the service principal&amp;rsquo;s object id. (The service principal object id is unique in every tenant where the app was added.)&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Get-MgServicePrincipal&lt;/span> &lt;span class="n">-ServicePrincipalId&lt;/span> &lt;span class="n">fcc0ae79&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">2cfa&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">4bec&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">9d75&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">7e560591ce02&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">AppDisplayName&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">AppOwnerOrganizationId&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Output&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">AppDisplayName&lt;/span> &lt;span class="n">AppOwnerOrganizationId&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">--------------&lt;/span> &lt;span class="p">----------------------&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">LinkedIn&lt;/span> &lt;span class="mf">658728e7&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">1632&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="n">412a&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">9815&lt;/span>&lt;span class="n">-fe53f53ec58b&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The Entra Portal doesn&amp;rsquo;t surface this information but Graph does. That&amp;rsquo;s how I was able to get to LinkedIn&amp;rsquo;s sign in page.&lt;/p>
+&lt;p>Apps that allow sign in with a personal Microsoft Account will list &lt;code>9188040d-6c67-4c5b-b112-36a304b66dad&lt;/code> as &lt;strong>AppOwnerOrganizationId&lt;/strong>. You can find more information &lt;a class="link" href="https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/p>
+&lt;h3 id="check-sign-in-logs-of-users">Check Sign-In Logs of Users
+&lt;/h3>&lt;p>Another good use case is when you&amp;rsquo;re reviewing sign-in logs. If some of your users are guests in other tenants, the sign-in logs will only reference a tenant id but not a tenant name or domain. So, you won&amp;rsquo;t actually know the names of the tenants to which they sign in.&lt;/p>
+&lt;p>To create some sign-in logs for testing and demonstrating this, I opened &lt;code>https://myaccount.microsoft.com/mvplab.ch&lt;/code> and signed in with the identity of a user which is a guest in this tenant. Note that with &lt;code>https://myaccount.microsoft.com&lt;/code> it will only work if you append &lt;code>/&amp;lt;domain&amp;gt;&lt;/code>. Appending &lt;code>/&amp;lt;tenant id&amp;gt;&lt;/code> won&amp;rsquo;t work. But when you sign in with &lt;code>/&amp;lt;domain&amp;gt;&lt;/code>, you&amp;rsquo;re directly taken to that organization and not your own.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-6.png"
+width="2364"
+height="1144"
+srcset="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-6_hu_94938c9a33db7f8d.png 480w, https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-6_hu_30c3b5e8fcb677d9.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Sign-in directly into the org where the user is a guest. Note that the user name includes #EXT#."
+class="gallery-image"
+data-flex-grow="206"
+data-flex-basis="495px"
+>&lt;/p>
+&lt;p>If I check the audit log in the user&amp;rsquo;s home tenant now, I can see that there was a guest login in a different tenant. The tenant where the sign-in happened is called &lt;strong>Resource tenant&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-7.png"
+width="861"
+height="1412"
+srcset="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-7_hu_d6777da05840b65b.png 480w, https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-7_hu_7675385b37323532.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Sign-in logs in home tenant only show tenant id but no names or domains."
+class="gallery-image"
+data-flex-grow="60"
+data-flex-basis="146px"
+>&lt;/p>
+&lt;h2 id="filter-sign-in-logs-for-guest-sign-ins-and-get-tenant-name">Filter Sign-In Logs for Guest Sign-Ins and Get Tenant Name
+&lt;/h2>&lt;p>Since I already provided a way of programatically finding tenant names above, all I needed to create a report which lists guest sign-ins including the resource tenant&amp;rsquo;s display name, was to to retrieve the sign in logs through the Graph API.&lt;/p>
+&lt;p>Only the &lt;strong>Beta&lt;/strong> api returned the &lt;code>userType&lt;/code> property. Funny enough, the Entra ID portal is using the Beta API as well&amp;hellip;&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$guestSignInAuditLog&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-MgGraphRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">GET&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/beta/auditLogs/signIns?&lt;/span>&lt;span class="se">`$&lt;/span>&lt;span class="s2">filter=userType eq &amp;#39;guest&amp;#39;&amp;#34;&lt;/span> &lt;span class="n">-OutputType&lt;/span> &lt;span class="n">PSObject&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">value&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$guestSignInReport&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="vm">@&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">foreach&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$signIn&lt;/span> &lt;span class="k">in&lt;/span> &lt;span class="nv">$guestSignInAuditLog&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nv">$guestSignInReport&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">ResourceTenantId&lt;/span> &lt;span class="o">-contains&lt;/span> &lt;span class="nv">$signIn&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">resourceTenantId&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$resourceTenantName&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$guestSignInReport&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Where-Object&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nv">$_&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">ResourceTenantId&lt;/span> &lt;span class="o">-eq&lt;/span> &lt;span class="nv">$signIn&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">resourceTenantId&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Select-Object&lt;/span> &lt;span class="n">-First&lt;/span> &lt;span class="mf">1&lt;/span> &lt;span class="n">-ExpandProperty&lt;/span> &lt;span class="n">ResourceTenantName&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$uri&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s2">&amp;#34;https://login.microsoftonline.com/&lt;/span>&lt;span class="p">$(&lt;/span>&lt;span class="nv">$signIn&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">resourceTenantId&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="s2">/oauth2/v2.0/authorize?redirect_uri=https%3A%2F%2Fportal.azure.com%2Fsignin%2Findex%2F&amp;amp;response_type=code%20id_token&amp;amp;scope=https%3A%2F%2Fmanagement.core.windows.net%2F%2Fuser_impersonation%20openid%20email%20profile&amp;amp;state=OpenIdConnect.AuthenticationProperties%3DCFuFkF0F_FdfQWmaBEfZkrwUojoCqnTFLK5IXKUlMck0I18skpp-zVFCSJNkKE9PDD8wwaUIkX7ln1Hi-96E_fGMU3wDntJTPpSzmzzpxBHu583WpKvoTxl3fMz2krpQkx9Q4q7EkR3l9HOeidAWtC1tLWQ5A30ZcSPaTlHcIE7eBjvcNf4hRHcPCNJFxIilA0LbqGvlozdcF6Pm-ePVt1LDKYBBPDzH_nrKrs2TzXxSjEvyM0fspA_Ett96_0OLNn2uVcoaHN9zNL0zrT7ycYEob4kRic9RriDCRxvC16Hr0ioDYPodhR1Sg9xiSRIow9JDTIpbDpLJ_lSn6eSEReq7wiJVKkb8G2_O8F08WHEu1_-15BxFR9wLp39AMbshuIVHerJ75CnR2LsfaRcodS53s66hgD4oOZClrmdam3iplbYprcZ2MX4KtHJCYg28l-wK2xyuo287QP4QIvt6C8BXAY3sKkvvSsSSeWhHGwpaCHIPuNi-7-p_9inWWRpY5C_-JGhSAMxRPimqTNejoX64h7HBhxbCa-RVkbDjTZI&amp;amp;response_mode=form_post&amp;amp;nonce=638837950082139429.ODA2YjNjYWYtNmEwMy00NmIyLWExNDEtOWM4YTgxYjU3NDg0ZGJhMjI1ODktZjZlMi00NzdjLTllOWMtMzQxZDJiN2U1YTU4&amp;amp;client_id=c44b4083-3bb0-49c1-b47d-974e53cbdf3c&amp;amp;site_id=501430&amp;amp;client-request-id=7576e1d8-cc63-40c7-8f1d-7faaa5afb0c4&amp;amp;x-client-SKU=ID_NET472&amp;amp;x-client-ver=8.3.0.0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$tenantLoginPage&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">Invoke-WebRequest&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Get&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="nv">$uri&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$resourceTenantName&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$tenantLoginPage&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Content&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">Split&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;sCompanyDisplayName&lt;/span>&lt;span class="se">`&amp;#34;&lt;/span>&lt;span class="s2">:&amp;#34;&lt;/span>&lt;span class="p">)[&lt;/span>&lt;span class="mf">1&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="py">Split&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;,&amp;#34;&lt;/span>&lt;span class="p">)[&lt;/span>&lt;span class="mf">0&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="py">Trim&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="py">Replace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;&amp;#34;&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">$guestSignInReport&lt;/span> &lt;span class="p">+=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="no">PSCustomObject&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="vm">@&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">UserDisplayName&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$signIn&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">userDisplayName&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">UserPrincipalName&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$signIn&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">userPrincipalName&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">UserId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$signIn&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">userId&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">AppDisplayName&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$signIn&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">appDisplayName&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ResourceTenantId&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$signIn&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">resourceTenantId&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ResourceTenantName&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$resourceTenantName&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">SignInLogTime&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nv">$signIn&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">createdDateTime&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$guestSignInReport&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Out-GridView&lt;/span> &lt;span class="n">-Title&lt;/span> &lt;span class="s2">&amp;#34;Guest Sign-In Audit Log Report&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Requests to the sign-in page are only made once per unique tenant id. Unfortunately, I didn&amp;rsquo;t have a third lab tenant handy so I can&amp;rsquo;t really show different tenant names in the output but you get the idea.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-8.png"
+width="1646"
+height="927"
+srcset="https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-8_hu_b04590918e73471a.png 480w, https://heusser.pro/p/find-tenant-owner-company-name-with-only-an-entra-id-tenant-name-qyjkiw0n14bb/image-8_hu_87581fa18ea2b273.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Example output"
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="426px"
+>&lt;/p>
+&lt;h2 id="summary">Summary
+&lt;/h2>&lt;p>I hope that this blog post helps you to make your life a little easier since you now know that you can qucikly sign into a different tenant by appending the tenant id or tenand domain to the Azure Portal URL. I also hope that the technique to find tenant names when all you have available is a tenant id outlined in this article is helpful to you so you can get a better understanding of which tenants your users sign in to as guests.&lt;/p></description></item></channel></rss>

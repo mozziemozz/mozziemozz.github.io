@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Concepts on HEUSSER.PRO</title><link>https://heusser.pro/categories/concepts/</link><description>Recent content in Concepts on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 31 Oct 2022 20:12:56 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/concepts/index.xml" rel="self" type="application/rss+xml"/><item><title>Everything You Ever Wanted to Know About Teams Holidays</title><link>https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/</link><pubDate>Mon, 31 Oct 2022 20:12:56 +0000</pubDate><guid>https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/</guid><description>&lt;p>Can you believe that it’s already the last day of October and that so far, I’ve only published &lt;a class="link" href="https://heusser.pro/p/how-to-handle-microsoft-graph-paging-in-powershell-354663d4b32a" >one article&lt;/a> this month? And it wasn’t even about Teams…&lt;/p>
+&lt;p>Let me change that. We’re almost at the end of the year already. You know what that means, right? Holidays! But before we can go on Holiday we need to add or update them on our Teams Auto Attendants. That’s exactly what I’m going to write about today.&lt;/p>
+&lt;h3 id="best-practices">Best Practices
+&lt;/h3>&lt;p>Beware, these are not best practices which are documented anywhere officially. The recommendations outlined in this blog post are based on my learnings from working with Teams Auto Attendants in the past years.&lt;/p>
+&lt;p>When you start planning or configuring Holidays in Teams, the first question you should ask yourself is the following:&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>Do you want to treat every Holiday the same, or do you want to treat some holidays differently?&lt;/strong>&lt;/p>&lt;/blockquote>
+&lt;p>This applies to both actions and greetings. The greeting, of course, is the message which will be played back when somebody calls you on a Holiday. The action is what the Auto Attendant will do in terms of call routing on that Holiday. Examples are, disconnect, forward to voicemail, a person in your organization or to an external number.&lt;/p>
+&lt;h4 id="greetings">Greetings
+&lt;/h4>&lt;p>Depending on the answer to our core question, you either need one generic greeting which applies to all Holidays, or you need a different greeting for each or at least for some Holidays.&lt;/p>
+&lt;p>A reason for an individual greeting per Holiday could be that you want to be very specific and include information when your company will resume business as usual.&lt;/p>
+&lt;p>If you opt for a generic greeting, I always tell my customers that their greeting should mention something like this.&lt;/p>
+&lt;blockquote>
+&lt;p>Thank you for your call. Due to a Holiday, our office remains closed for today. Please try us again on the next &lt;strong>working day&lt;/strong>.&lt;/p>&lt;/blockquote>
+&lt;p>The key take-away here is to use &lt;strong>working day&lt;/strong> rather than tomorrow or the next day, since this could also be a Saturday or a Sunday.&lt;/p>
+&lt;h4 id="actions">Actions
+&lt;/h4>&lt;p>An action is where you configure what should happen to inbound calls which are received on Holidays. These are configured inside a so-called holiday call handling.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1tp1XcM6lXY00lfbcb5vrw.png"
+width="1384"
+height="1024"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1tp1XcM6lXY00lfbcb5vrw_hu_d4a17f3d718385e8.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1tp1XcM6lXY00lfbcb5vrw_hu_2be32433f9d793dc.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="135"
+data-flex-basis="324px"
+>&lt;/p>
+&lt;p>In TAC, actions are called &lt;strong>Call routing options.&lt;/strong> In PowerShell they’re referred to as &lt;strong>Action.&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1XPAcx1D2AiEG7QC9MyeGzg.png"
+width="751"
+height="298"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1XPAcx1D2AiEG7QC9MyeGzg_hu_141e7d984578407f.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1XPAcx1D2AiEG7QC9MyeGzg_hu_7f5fdd9c356518f0.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="252"
+data-flex-basis="604px"
+>&lt;/p>
+&lt;h4 id="scope">Scope
+&lt;/h4>&lt;p>Please note that the settings described in this article only apply to Auto Attendants. It’s currently not possible with Teams native features to configure a global schedule for all of your company’s numbers or to configure Holidays for Teams Users. To achieve something like this, you need to use Direct Routing and an SBC which offers time-based routing, like &lt;a class="link" href="https://www.anynode.de/technical-data/" target="_blank" rel="noopener"
+>Anynode&lt;/a> does for example.&lt;/p>
+&lt;p>Again, if you treat all your Holidays the same, for example play back a message and then forward to voicemail, your configuration will be much easier to build and maintain. You will only need to update the schedules once a year. There’s no need to touch the call handlings again with this approach.&lt;/p>
+&lt;h4 id="holiday-lists">Holiday Lists
+&lt;/h4>&lt;p>The third thing we need is a Holiday list. The terminology might be a little confusing here. In TAC they’re simply called &lt;strong>Holidays.&lt;/strong> In &lt;a class="link" href="https://learn.microsoft.com/en-us/powershell/module/skype/new-csonlineschedule?view=skype-ps" target="_blank" rel="noopener"
+>PowerShell&lt;/a> they’re called &lt;strong>Schedules.&lt;/strong>&lt;/p>
+&lt;p>If we add a new Holiday in TAC, it uses the singular form Holiday, even though this can have multiple entries. This essentially makes it a Holiday list from my point of view.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1aEtINYXUX2i7UtbWDzbzbA.png"
+width="1277"
+height="269"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1aEtINYXUX2i7UtbWDzbzbA_hu_9df8b344a323d19a.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1aEtINYXUX2i7UtbWDzbzbA_hu_8b4f41f1ebc621cb.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="474"
+data-flex-basis="1139px"
+>&lt;/p>
+&lt;p>While Holidays can be created from inside the configuration menu of an Auto Attendant, these lists are actually stored outside of an Auto Attendant. You can find them in Teams Admin Center under &lt;a class="link" href="https://admin.teams.microsoft.com/company-wide-settings/holidays" target="_blank" rel="noopener"
+>&lt;strong>Voice\Holidays&lt;/strong>&lt;/a>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1hVJdRxmQDMLykXkxp0GEsg.png"
+width="2174"
+height="760"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1hVJdRxmQDMLykXkxp0GEsg_hu_93395874ac3ce712.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1hVJdRxmQDMLykXkxp0GEsg_hu_567a2f72a7fc0990.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="286"
+data-flex-basis="686px"
+>&lt;/p>
+&lt;p>A Holiday list can be linked to multiple Auto Attendants. Because of that, I recommend to always edit Holiday schedules under &lt;a class="link" href="https://admin.teams.microsoft.com/company-wide-settings/holidays" target="_blank" rel="noopener"
+>&lt;strong>Voice\Holidays&lt;/strong>&lt;/a> and not directly on the Attendant itself. This should minimize mistakes and confusion.&lt;/p>
+&lt;p>I don’t recommend including the year into the schedule’s name. The year is already included in each entry. Besides that, it’s also highly likely that you will have a Holiday for New Year&amp;rsquo;s Eve which overlaps into the next year which kind of messes with the naming scheme.&lt;/p>
+&lt;h4 id="limits">Limits
+&lt;/h4>&lt;p>A Holiday list can have up to ten entries. And an Auto Attendant can have up to 20 Holiday call handlings. While I haven’t verified this, it means that in theory, you should be able to have a maximum of 200 Holidays per Auto Attendant, assuming that each entry only spans one day. Only having 165 working days, what a life that would be.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/19kci3K5qI70JBfn20eY1tQ.png"
+width="1073"
+height="721"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/19kci3K5qI70JBfn20eY1tQ_hu_af5bc53cf8e20f01.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/19kci3K5qI70JBfn20eY1tQ_hu_47ab5379d3ce284a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="148"
+data-flex-basis="357px"
+>&lt;/p>
+&lt;h4 id="understanding-thedates">Understanding The Dates
+&lt;/h4>&lt;p>A Holiday consists of a start and end date and a start and end time. This means that we can also configure partial Holidays which for example start at noon or later. Our Auto Attendant might have business hours which allow calls to get through until 5 p.m. If we configure a Holiday to start at 4 p.m. we can close the lines 1 hour earlier without touching our business hours.&lt;/p>
+&lt;p>The end date and time is usually 12:00 a.m. of the following day. So, if we want to close the Auto Attendant for the entire day on October 31st, we configure the Holiday like this:&lt;/p>
+&lt;p>Start: 31.10.2022 12:00 AM&lt;br>
+End: 01.11.2022 12:00 AM&lt;/p>
+&lt;p>This is &lt;a class="link" href="https://learn.microsoft.com/en-us/microsoftteams/set-up-holidays-in-teams" target="_blank" rel="noopener"
+>documented&lt;/a> and recommended by Microsoft.&lt;/p>
+&lt;p>When the new day begins, the Auto Attendant will go back to evaluating business hours as usual.&lt;/p>
+&lt;p>It’s important to point out that Holiday lists do not store any information about time zones. Time zones are configured on Auto Attendants. Remember that the same list can be associated with multiple Auto Attendants. This allows you to have consolidated Holiday lists which automatically adjust to the relevant time zones based on the Auto Attendant configuration.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1GvD76p2agULlleuMkd3A.png"
+width="959"
+height="229"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1GvD76p2agULlleuMkd3A_hu_6abd6dcdd31f09da.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1GvD76p2agULlleuMkd3A_hu_dd9a213e26510887.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="418"
+data-flex-basis="1005px"
+>&lt;/p>
+&lt;h4 id="configuring-holidays-on-an-auto-attendant">Configuring Holidays on an Auto Attendant
+&lt;/h4>&lt;p>If you create a new call handling for an Auto Attendant, you need to select a Holiday (list/schedule) from your Holidays. This again means that if you want to have an individual greeting or action per Holiday, you can only have one Holiday per list. Thus, you need to take the limit of twenty call handlings per Attendant into consideration.&lt;/p>
+&lt;p>If you need to configure more than twenty call handlings, you will need to update the configuration sometime during the year. Without removing call handlings of past Holidays, you won’t be able to add new ones for the rest of the year.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1J4pgmSGCkJ9VPULBb1fpJw.png"
+width="975"
+height="1006"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1J4pgmSGCkJ9VPULBb1fpJw_hu_1917439bd23589bd.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1J4pgmSGCkJ9VPULBb1fpJw_hu_5e1a32495f47b239.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="96"
+data-flex-basis="232px"
+>&lt;/p>
+&lt;p>When I built my first Auto Attendants many years ago, I used to include the year in the name of the call handling. This was an awfully bad idea, and I learned my lesson. I had to update all the schedules and all call handling names.&lt;/p>
+&lt;p>Because of the administrative overhead, I usually recommend my customers to have one list for dynamic Holidays and one for fixed Holidays. Since I came up with these terms on my own, I’m not sure if they’re popular. But they should be self-explanatory. Dynamic days are the ones which occur e.g., every third Monday of April. Fixed days are the ones which fall on the same day each year. E.g., Fourth of July. Because there are usually more than ten Holidays in a year, we need two lists anyway. Splitting between dynamic and fixed days seemed like the most obvious way to me.&lt;/p>
+&lt;p>If you have more than ten fixed or dynamic Holidays, you can just create a second list and add a call handling with the same settings for those days as well. There’s no way around that.&lt;/p>
+&lt;p>Editing a Holiday will open its own sub menu which has a &lt;strong>Save&lt;/strong> button. Never forget to also click &lt;strong>Submit&lt;/strong> on the Auto Attendant after you have saved a Holiday call handling. If you don’t save the Auto Attendant as well, changes to your Holidays won’t be saved.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1RyzPgNVfqMPskxGV6CrDaw.png"
+width="1229"
+height="643"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1RyzPgNVfqMPskxGV6CrDaw_hu_c28852539acd6401.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1RyzPgNVfqMPskxGV6CrDaw_hu_cb1967e227308797.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="191"
+data-flex-basis="458px"
+>&lt;/p>
+&lt;h4 id="some-exceptions">Some Exceptions
+&lt;/h4>&lt;p>If your company also has annual Holidays, which typically last one or two weeks, I suggest creating a separate list and call handling for these weeks.&lt;/p>
+&lt;p>You can create one entry for the entire timespan and configure a custom greeting because it isn’t obvious when the next working day will be.&lt;/p>
+&lt;p>Also, you can’t create multiple call handlings with the same start time on the same Auto Attendant. However, it is possible to create Holidays, where one Holiday occurs during another, multi-day Holiday. To test this, I’ve created the following Holidays.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1DofZ4VAaXsLi6YarxKEvg.png"
+width="1066"
+height="296"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1DofZ4VAaXsLi6YarxKEvg_hu_a914252474b03a37.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1DofZ4VAaXsLi6YarxKEvg_hu_72af2991710c5991.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="360"
+data-flex-basis="864px"
+>&lt;/p>
+&lt;p>The date 31.10.2022 is also in the range of the following Holiday which starts one day before, on 30.10.2022.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1iBXZ4wDNepWvZvBEgTQj7A.png"
+width="1069"
+height="290"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1iBXZ4wDNepWvZvBEgTQj7A_hu_b54c2fce2ebb0088.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1iBXZ4wDNepWvZvBEgTQj7A_hu_e174a64da39a58d7.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="368"
+data-flex-basis="884px"
+>&lt;/p>
+&lt;p>Next, I created another Holiday which wraps around both previous Holidays.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1vFgMTWt3euwkq5lI0j7U5A.png"
+width="1279"
+height="359"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1vFgMTWt3euwkq5lI0j7U5A_hu_5688fb5032a66a67.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1vFgMTWt3euwkq5lI0j7U5A_hu_923f8ef6a2d0cefe.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="356"
+data-flex-basis="855px"
+>&lt;/p>
+&lt;p>I then created a call handling for each of them.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1iVxHOpIvLdlMXHRwAqnIxw.png"
+width="1226"
+height="599"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1iVxHOpIvLdlMXHRwAqnIxw_hu_3043800737f9a9f7.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1iVxHOpIvLdlMXHRwAqnIxw_hu_228c48abedf1aee5.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="204"
+data-flex-basis="491px"
+>&lt;/p>
+&lt;p>To find out, which call handling is effective, I called my Auto Attendant. Because I’ve configured a different greeting for each of them, I was able to easily determine which one was active.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1Wec7TKqb5GlOaz8mQFFDuA.png"
+width="863"
+height="456"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1Wec7TKqb5GlOaz8mQFFDuA_hu_ad503dc534699e19.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1Wec7TKqb5GlOaz8mQFFDuA_hu_831fb3bf5a9a56a4.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="189"
+data-flex-basis="454px"
+>&lt;/p>
+&lt;p>It turns out, that Teams is smart enough to always prioritize the one which is the most precise. In this case, it’s the one which only includes a single day.&lt;/p>
+&lt;p>To be absolutely sure, I even removed the other two call handlings and saved the Auto Attendant. I then added them again to see if the order in which they are configured makes a difference, but it doesn’t.&lt;/p>
+&lt;p>Im not sure if this will be a feature that anyone will ever need but it’s still good to know. In theory we could set up a Holiday for an entire week but still have a different greeting and/or action on e.g. Wednesday if we configure a separate Holiday for it.&lt;/p>
+&lt;h4 id="further-reading">Further Reading
+&lt;/h4>&lt;p>If you’ve found these insights about Auto Attendants and Holidays useful, please also see &lt;a class="link" href="https://heusser.pro/p/automatically-notify-users-to-update-teams-holidays-for-next-year-cb1f6f9c6471" >this article&lt;/a>, where I explain how the entire process of updating (not creating) schedules can be outsourced to users without granting them Teams Administrator rights.&lt;/p>
+&lt;p>And of course, Holiday Tables which are configured on an Auto Attendant can also be visually displayed using the &lt;a class="link" href="https://github.com/mozziemozz/M365CallFlowVisualizer" target="_blank" rel="noopener"
+>M365 Call Flow Visualizer&lt;/a>.&lt;/p>
+&lt;p>Based on feedback from the community, I’ve added the name of the call handling and the linked Holiday list to the diagram for more clarity.&lt;/p>
+&lt;p>You can see that there’s a name for both the &lt;strong>Call Handling&lt;/strong> and the linked &lt;strong>Holiday Schedule&lt;/strong> in the flow chart**.**&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1FpF50ssn2tmTJPC7zAbeSQ.png"
+width="1357"
+height="1584"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1FpF50ssn2tmTJPC7zAbeSQ_hu_b4e766564a623bd4.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-teams-holidays-2b5374667743/1FpF50ssn2tmTJPC7zAbeSQ_hu_6c19e90cbe9602d3.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="85"
+data-flex-basis="205px"
+>&lt;/p>
+&lt;h4 id="final-note">Final Note
+&lt;/h4>&lt;p>In Teams Admin Center, Holidays are chronologically configured and displayed after the business hours have been configured. But in practice, any Holiday gets prioritized over business hours. The M365 Call Flow Visualizer correctly represents this in its diagram outputs.&lt;/p>
+&lt;p>I hope that this article helps you prepare for the Holidays so that you can leave for the Holidays with the peace of mind you need.&lt;/p></description></item><item><title>Everything you ever wanted to know about Microsoft Teams Phone and Shared Voicemail</title><link>https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/</link><pubDate>Sat, 07 May 2022 20:16:33 +0000</pubDate><guid>https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/</guid><description>&lt;p>Shared Voicemail has been available in Teams Phone for quite some time now. I still thought that it would be helpful to do a proper write up.&lt;/p>
+&lt;h4 id="the-basics">The Basics
+&lt;/h4>&lt;p>A shared voicemail always has to be a Microsoft 365 Group. This group doesn’t need to be Teams enabled but it can be. As of the time of writing, I do not know of a way to forward a call straight to shared voicemail without configuring an auto attendant or a call queue in front of it.&lt;/p>
+&lt;p>&lt;strong>Update 27.01.2023&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>As it turns out, it’s now possible to also set Distribution Lists or Mail Enabled Security Groups as shared voicemail targets. I’ve put together a new article about that &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1" >here&lt;/a>.&lt;/p>&lt;/blockquote>
+&lt;p>&lt;strong>/Update&lt;/strong>&lt;/p>
+&lt;h4 id="skimping-onlicenses">Skimping on Licenses
+&lt;/h4>&lt;p>If Teams &lt;a class="link" href="https://docs.microsoft.com/en-us/microsoftteams/teams-add-on-licensing/virtual-user#virtual-user-license-allocation" target="_blank" rel="noopener"
+>Phone Standard — Virtual User Licenses&lt;/a> are scarce in your tenant, this trick might help you out. &lt;a class="link" href="https://docs.microsoft.com/en-us/microsoftteams/routing-calls-to-unassigned-numbers" target="_blank" rel="noopener"
+>Teams Unassigned Number treatments&lt;/a> are usually used to handle incoming calls to numbers which are not assigned to any user or resource account. Since you specify the matching rule with a regular expression, it’s also possible to match whole numbers explicitly.&lt;/p>
+&lt;p>An Unassigned Number Treatment can only be configured to forward to a resource account or an announcement. It’s not possible to forward directly to a shared voicemail. If you match the whole number without any wildcards, it’s possible to forward external calls to a shared voicemail without assigning a Teams Phone Standard — Virtual User License. However, an auto attendant or a call queue is still needed to forward the call to voicemail.&lt;/p>
+&lt;p>Bonus Tip for Unassigned Number Treatments: While it’s possible to play back an announcement without having to setup an auto attendant or a call queue, an announcement will only play back the call and not disconnect the call after the announcement has been played back. If you want to automatically disconnect the call after playing back a message, choose an auto attendant to play back your announcement.&lt;/p>
+&lt;h4 id="setup-shared-voicemail">Setup Shared Voicemail
+&lt;/h4>&lt;p>I won’t go into the details on how to setup a complete auto attendant or a call queue in this article. This is only to show you where you would configure a redirection to a shared voicemail. Anywhere where you can choose a redirection target on an auto attendant or a call queue, you can choose to forward to shared voicemail. Remember, this has to be a Microsoft 365 Group.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1SJZHPoU2AeDf3sIREfdA.png"
+width="1389"
+height="667"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1SJZHPoU2AeDf3sIREfdA_hu_6bb054e591a1b24e.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1SJZHPoU2AeDf3sIREfdA_hu_2652f63e7664e4a6.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="208"
+data-flex-basis="499px"
+>&lt;/p>
+&lt;p>Now let’s see where shared voicemails land, once a customer has left a message.&lt;/p>
+&lt;h4 id="microsoft-365groups">Microsoft 365 Groups
+&lt;/h4>&lt;p>Shared voicemails are delivered to M365 Group’s inboxes, not to a channel email address or similar. A customer might tell you which users need to be able to receive and access these voicemails. Naturally, you start adding members to this group in M365 Admin or Azure AD.&lt;/p>
+&lt;p>Based on my personal experience this usually results in two problems.&lt;/p>
+&lt;p>1. Group inboxes are often neglected or completely forgotten by users, even though they’re visible and accessible in most Outlook clients. This can lead to potentially unhappy customers because their calls are never returned.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1UB44J9XqnSeuSmsiFVgRw.png"
+width="1894"
+height="1020"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1UB44J9XqnSeuSmsiFVgRw_hu_9317f0b036fb272c.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1UB44J9XqnSeuSmsiFVgRw_hu_8880c6984d0c4c5d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="185"
+data-flex-basis="445px"
+>&lt;/p>
+&lt;p>Microsoft 365 Groups offer various settings which can be configured. Some of these settings can only be configured after the group has been created.&lt;/p>
+&lt;p>By default, the “Send copies of team emails and events to team member’s inboxes” is disabled.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1ACMhAeuVmlXodIbuKfpGw.png"
+width="881"
+height="768"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1ACMhAeuVmlXodIbuKfpGw_hu_3107919ee8442316.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1ACMhAeuVmlXodIbuKfpGw_hu_f43da9d41259111e.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="114"
+data-flex-basis="275px"
+>&lt;/p>
+&lt;p>This means that emails to this group will not find it’s way to the member’s inboxes. Members have to open the group mailbox proactively.&lt;/p>
+&lt;p>From a user’s perspective, their settings look like this. This is the default setting for new groups.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/12dq53yL2p15n9Pg4yHBbZw.png"
+width="428"
+height="718"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/12dq53yL2p15n9Pg4yHBbZw_hu_1bf90a7ff7b1a628.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/12dq53yL2p15n9Pg4yHBbZw_hu_d988403959818b04.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="59"
+data-flex-basis="143px"
+>&lt;/p>
+&lt;p>So, let’s head back to M365 Admin and change the setting for “Send copies of team emails and events to team member’s inboxes”.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1dvOIE9fcyqLSV6lzA4EEg.png"
+width="873"
+height="481"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1dvOIE9fcyqLSV6lzA4EEg_hu_bcae2519e51b5fc7.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1dvOIE9fcyqLSV6lzA4EEg_hu_402021925eb60a14.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="435px"
+>&lt;/p>
+&lt;p>After a few seconds, this change will be reflected in the user’s mailbox settings as well.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1Hah5CoH3mR9L4Oz3LTJSg.png"
+width="428"
+height="705"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1Hah5CoH3mR9L4Oz3LTJSg_hu_c3eddfeceeda7fda.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1Hah5CoH3mR9L4Oz3LTJSg_hu_aa92d0abe235bcec.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="60"
+data-flex-basis="145px"
+>&lt;/p>
+&lt;p>Of course, a user can always override his own settings by going into groups and clicking on settings.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1OSjGMbMU8oB1CWAEe3zvg.png"
+width="664"
+height="400"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1OSjGMbMU8oB1CWAEe3zvg_hu_34f3a4b64d396d06.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1OSjGMbMU8oB1CWAEe3zvg_hu_67b1dbf21d0db632.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="166"
+data-flex-basis="398px"
+>&lt;/p>
+&lt;p>When I last tested this about 1–2 years ago, the setting would only apply to new members for the group. Already existing member’s settings were not changed. It seems like Microsoft has updated this behavior which is a very welcome change. However, disabling it again from M365 Admin doesn’t seem to also disable it for the group&amp;rsquo;s members again.&lt;/p>
+&lt;p>The equivalent PowerShell parameter for this setting is still called &lt;code>AutoSubscribeNewMembers&lt;/code>and the &lt;a class="link" href="https://docs.microsoft.com/en-us/powershell/module/exchange/set-unifiedgroup?view=exchange-ps" target="_blank" rel="noopener"
+>official documentation&lt;/a> says the following.&lt;/p>
+&lt;blockquote>
+&lt;p>The AutoSubscribeNewMembers switch specifies whether to automatically subscribe new members that are added to the Microsoft 365 Group to conversations and calendar events. &lt;strong>Only users that are added to the group after you enable this setting are automatically subscribed to the group.&lt;/strong>&lt;/p>&lt;/blockquote>
+&lt;p>Based on my testing, setting it via PowerShell really does not enable “Follow in Inbox” for existing users. The setting is only enabled if it’s configured via the portal. If you disable, save and enable it again from the portal, existing members will be subscribed to all emails again.&lt;/p>
+&lt;p>While that solves the problem of users missing voicemails because they’re lost in a group inbox, it introduces problem number two.&lt;/p>
+&lt;p>2. When multiple people get an email with a voicemail message, coordination and clear communication within the team is key to prevent either multiple people calling back a customer or nobody at all calling back a customer.&lt;/p>
+&lt;h4 id="what-about-shared-mailboxes">What about Shared Mailboxes?
+&lt;/h4>&lt;p>Can’t we just use a shared mailbox as a target for shared voicemail where we already have established routines, rules and shifts on who processes which messages on which days etc.?&lt;/p>
+&lt;p>The answer is both yeas and no. Technically no. At least can’t we choose a shared mailbox as voicemail target in Teams Admin Center. It is however possible to just add a shared mailbox as the only member of a M365 Group and enable “Follow in Inbox” for the group&amp;rsquo;s members. This way, all voicemails will be delivered to a shared mailbox and the group’s actual inbox can be completely ignored without feeling guilty at all.&lt;/p>
+&lt;h3 id="voicemails-in-teamsclient">Voicemails in Teams Client
+&lt;/h3>&lt;h4 id="personal-voicemails">Personal Voicemails
+&lt;/h4>&lt;p>Let’s check out all the places a user can see voicemail notifications. Even though this article is focusing on shared voicemail, I’ll start with personal voicemails for a complete overview.&lt;/p>
+&lt;p>The first thing you will probably notice when you get a new voicemail is the Teams feed notification which looks like this.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1xJeMRVve3aCWVRwYhX5fkw.png"
+width="581"
+height="237"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1xJeMRVve3aCWVRwYhX5fkw_hu_cc5c41cbc94fc899.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1xJeMRVve3aCWVRwYhX5fkw_hu_a0f2bce2d459123f.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="245"
+data-flex-basis="588px"
+>&lt;/p>
+&lt;p>Of course, you can also go to the Calls app and filter your history by “Voicemail”.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1LVXePzkv5dPv7rSQWfdHA.png"
+width="1896"
+height="1020"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1LVXePzkv5dPv7rSQWfdHA_hu_bde004db6e29da32.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1LVXePzkv5dPv7rSQWfdHA_hu_df301331503cceea.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="185"
+data-flex-basis="446px"
+>&lt;/p>
+&lt;p>You can also find your voicemails as an *.mp3 attachment in your personal inbox.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1gCb35wXXp7uOa0RC3lu9A.png"
+width="2736"
+height="1248"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1gCb35wXXp7uOa0RC3lu9A_hu_fae9658db1e79453.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1gCb35wXXp7uOa0RC3lu9A_hu_688e455de15f59f2.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="219"
+data-flex-basis="526px"
+>&lt;/p>
+&lt;p>The Teams client actually searches your inbox for emails which meet certain criteria to display them in the Teams Client. Unfortunately, I don’t know the exact criteria Teams is evaluating but I’ve seen some cases where voicemails did not show up in a user&amp;rsquo;s Teams Client because an external anti-virus solution was scanning emails and manipulated the message headers before they were delivered into the user’s inboxes. That is definitely something to keep in mind if you’re facing similar issues.&lt;/p>
+&lt;h4 id="shared-voicemails">Shared Voicemails
+&lt;/h4>&lt;p>The interesting part is that this also applies to shared voicemails. If a user has subscribed to receive all group emails in their inbox, the shared voicemail will also be delivered into the personal inbox of the user.&lt;/p>
+&lt;p>As you can see, the email received at 19:17 is a shared voicemail. The subject contains “Geteilte Voicemail” which means “Shared Voicemail” in English and also includes the Name of the Call Queue on which the voicemail was received.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1OCbUZEp7MkfiJ28fJQj4ig.png"
+width="2736"
+height="1179"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1OCbUZEp7MkfiJ28fJQj4ig_hu_3fad94ff0d911e23.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1OCbUZEp7MkfiJ28fJQj4ig_hu_5f98625d063474fd.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="232"
+data-flex-basis="556px"
+>&lt;/p>
+&lt;p>In this case, it’s indeed the name of a call queue or auto attendant and not the display name of the resource account associated with one of the afore mentioned voice apps.&lt;/p>
+&lt;p>Here you can see that I have a call queue named “MS Test CQ” but the associated resource account is actually called “Team Green CQ”.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1RRrb2OMw41FgNW2LZe0zg.png"
+width="1860"
+height="702"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1RRrb2OMw41FgNW2LZe0zg_hu_dddf9aed01065032.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1RRrb2OMw41FgNW2LZe0zg_hu_9c96320722ea359e.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="264"
+data-flex-basis="635px"
+>&lt;/p>
+&lt;p>And here you can see that the subject shows the call queue’s name.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1O3VPwMqCVfPXvvbWSBNjNQ.png"
+width="1265"
+height="833"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1O3VPwMqCVfPXvvbWSBNjNQ_hu_595e1d0f07bff628.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1O3VPwMqCVfPXvvbWSBNjNQ_hu_7919e42434692ac7.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="151"
+data-flex-basis="364px"
+>&lt;/p>
+&lt;p>But let’s get back to Teams. The call history now shows both the personal and the shared voicemail in the user’s personal call history. There’s no indication whatsoever that the voicemail received at 19:17 is a shared one. The user can only get this information in Outlook.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/15B2FqT5vcqKs0E5Ot3cGA.png"
+width="2736"
+height="1738"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/15B2FqT5vcqKs0E5Ot3cGA_hu_77c74b1b72cd9bb0.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/15B2FqT5vcqKs0E5Ot3cGA_hu_60dfdbb3e647f6ea.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="157"
+data-flex-basis="377px"
+>&lt;/p>
+&lt;h4 id="voice-enabledchannels">Voice Enabled Channels
+&lt;/h4>&lt;p>Teams Channels can also be configured as “Voice Enabled Channels”, also known as “Collaborative Calling Channels”. A channel becomes voice enabled if a Team and a Channel are used as a call queue’s &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0" >agent list&lt;/a>.&lt;/p>
+&lt;p>Here you can see that I’ve selected the “General” channel from the Team “CQ Agents Escalation” as the call queue’s agent list.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1Pipfuped1OuKx47jS1nIA.png"
+width="1833"
+height="515"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1Pipfuped1OuKx47jS1nIA_hu_cefc43c89cd66019.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1Pipfuped1OuKx47jS1nIA_hu_18e647b1ec66b2c2.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="355"
+data-flex-basis="854px"
+>&lt;/p>
+&lt;p>Voice enabled channels are only visible/available on Desktop Clients. Web, mobile or desk phones are not supported yet. It’s important to mention that this has absolutely no impact on the delivery of call queue calls. Even if a channel is used for the agent list, mobile, web and desk phone clients can still receive calls from the call queue. They just won’t be able to see the “Calls” tab inside the channel.&lt;/p>
+&lt;p>On the Desktop Client, the “Calls” tab is added automatically when a channel is configured to receive calls. This tab cannot be added from the Teams Client itself. Assigning it to a call queue in TAC is the only way to do it.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1oOGcAgu4wPmwWGHlv8Wo8w.png"
+width="1295"
+height="355"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1oOGcAgu4wPmwWGHlv8Wo8w_hu_bcc9e35916fb84e.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1oOGcAgu4wPmwWGHlv8Wo8w_hu_f6329dcff3db76c5.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="364"
+data-flex-basis="875px"
+>&lt;/p>
+&lt;p>The Calls Tab includes its own call history. Unfortunately, this is a bit misleading. The history will only show incoming calls which were answered by the signed in user. It doesn’t show missed calls on the queue at all.&lt;/p>
+&lt;p>If notifications about missed calls on call queues are essential to you, I suggest to take a look at &lt;a class="link" href="https://twincapfirst.ch/teams-easy-call-report-en/" target="_blank" rel="noopener"
+>the service&lt;/a> I developed at my previous employer which does just that.&lt;/p>
+&lt;p>If we switch the filter to Voicemail, it gets even weirder. Here we can see the same shared voicemail from 19:17.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1iC0xQLcRWs72b0Ke13osfQ.png"
+width="1295"
+height="351"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1iC0xQLcRWs72b0Ke13osfQ_hu_ac6c2b471d85460a.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1iC0xQLcRWs72b0Ke13osfQ_hu_5c021aab9c362067.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="368"
+data-flex-basis="885px"
+>&lt;/p>
+&lt;p>Note that I’ve set a different group as shared voicemail target than the Team which is configured as voice enabled channel. It seems that the Teams Client is evaluating all the M365 Groups which are configured on this particular call queue and whether or not the signed in user is a member of these groups. A call queue can have a maximum of two different voicemail targets. One for the overflow action and one for the timeout action.&lt;/p>
+&lt;p>Right now, I’ve only configured shared voicemail as the overflow action.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1aINhOLqNZ1Rxc0FhyDldQ.png"
+width="1851"
+height="870"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1aINhOLqNZ1Rxc0FhyDldQ_hu_e3d377ba8062fce6.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1aINhOLqNZ1Rxc0FhyDldQ_hu_3914227f8630e032.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="212"
+data-flex-basis="510px"
+>&lt;/p>
+&lt;p>Since the signed in user is a member of that group, the voicemails will show up in the voice enabled channel.&lt;/p>
+&lt;p>If I remove the shared voicemail target from the queue in TAC and refresh the Teams Client, the entry is gone.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1pkYwDCSYzHnoFLI6wrF5w.png"
+width="1278"
+height="341"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1pkYwDCSYzHnoFLI6wrF5w_hu_460d740cdd604845.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1pkYwDCSYzHnoFLI6wrF5w_hu_bf27372c6e43cf1f.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="374"
+data-flex-basis="899px"
+>&lt;/p>
+&lt;p>This call queue also has shared voicemail configured for its timeout action. The M365 Group for voicemail on timeout is called “Axe Capital Reception Voicemail”.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1ctREaNsrYDpLO6R2XJeMpw.png"
+width="1843"
+height="879"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1ctREaNsrYDpLO6R2XJeMpw_hu_dc9745519174c288.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1ctREaNsrYDpLO6R2XJeMpw_hu_1a5c2fbbc67108c9.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="209"
+data-flex-basis="503px"
+>&lt;/p>
+&lt;p>The signed in user is not a member of this group yet, hence the voicemails in the group mailbox do not show up in the calls tab. I’ve now added the user to this group as well and signed out and in again in Teams.&lt;/p>
+&lt;p>Suddenly, the user sees a lot more shared voicemails in the calls tab because they have been fetched from the M365 Group “Axe Capital Reception Voicemail”. The list is now aggregated across both M365 Groups which are configured in the call queue and the user is a member of. As you can see, the first entry is still the shared voicemail from the “Shared Voicemail Demo” group from 19:17.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1KyPwYmmbvi75WvFtovFygg.png"
+width="1292"
+height="625"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1KyPwYmmbvi75WvFtovFygg_hu_8a3d7541c9ee9fca.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1KyPwYmmbvi75WvFtovFygg_hu_43ac8aec1e3ba309.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="206"
+data-flex-basis="496px"
+>&lt;/p>
+&lt;h4 id="best-practices">Best Practices
+&lt;/h4>&lt;p>These are my recommendations for most shared voicemail scenarios.&lt;/p>
+&lt;ol>
+&lt;li>Create a new, dedicated M365 Group without a Team for shared voicemails.&lt;/li>
+&lt;li>Make sure “Send copies of team emails and events to team member’s inboxes” is enabled.&lt;/li>
+&lt;li>Add an existing or new shared mailbox as the group’s only member.&lt;/li>
+&lt;li>Manage responsibilities of calling back or delegating through existing processes and staff for already existing shared mailboxes.&lt;/li>
+&lt;/ol>
+&lt;p>By creating a new, dedicated group instead of using an existing group or Team we can make sure that this group only ever receives voicemail messages and prevent unwanted emails from making its way into the shared mailbox.&lt;/p>
+&lt;p>If you’re going to use voice enabled channels, also use the same Team as shared voicemail target. Otherwise, you need to make sure that all the Team’s members are also members of the M365 groups used for shared voicemail. Different users seeing different voicemails in their Calls tab will only create confusion among them. Unless of course you deliberately want only select members of the Team to see shared voicemails.&lt;/p>
+&lt;p>Another way of efficiently handling shared voicemails would be to set up a Power Automate Flow which triggers on new emails in a shared mailbox, saves the audio files to SharePoint and sends an adaptive card with the link to the mp3 file to a channel. I plan to do a separate post about that though.&lt;/p>
+&lt;h3 id="bonus-tips">Bonus Tips
+&lt;/h3>&lt;p>Even though call queues and auto attendants are quite similar, there are some differences which can be quite significant to some customers.&lt;/p>
+&lt;h4 id="voicemail-on-an-auto-attendant">Voicemail on an Auto Attendant
+&lt;/h4>&lt;p>When you configure shared voicemail on an auto attendant, there’s no option to configure the greeting for the voicemail itself. Instead, you configure the greeting one layer above, on the call flow.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/15Pi1yTy8oNo9uSYzbNhS0Q.png"
+width="950"
+height="822"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/15Pi1yTy8oNo9uSYzbNhS0Q_hu_1b520f47025a6d9.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/15Pi1yTy8oNo9uSYzbNhS0Q_hu_1e83aac95becfefd.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="115"
+data-flex-basis="277px"
+>&lt;/p>
+&lt;p>By default, an auto attendant will play a “system greeting” after your custom greeting has been played back or synthesized by the Azure Text-To-Speech service. The system greeting will sound like this:&lt;/p>
+&lt;blockquote>
+&lt;p>Please leave a message after the tone. When you have finished, please hang up.&lt;/p>&lt;/blockquote>
+&lt;p>You can suppress the system greeting by enabling the toggle switch for “Skip voicemail system message”. Because the greeting is configured outside of the scope of the call routing options, this can be configured for both TTS and audio file greetings.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1kx6GV9cGcWgew5uwhoDgpw.png"
+width="1348"
+height="801"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1kx6GV9cGcWgew5uwhoDgpw_hu_dd2c9a25ecb4eaea.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1kx6GV9cGcWgew5uwhoDgpw_hu_4e2ba6427780767c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="168"
+data-flex-basis="403px"
+>&lt;/p>
+&lt;h4 id="voicemail-on-a-callqueue">Voicemail on a Call Queue
+&lt;/h4>&lt;p>For call queues, this is slightly different. There is no option to suppress the system greeting. A call queue’s primary purpose is to route calls to agents so there are only routing options for overflow or timeout scenarios. This also means that there’s no option to configure a greeting inside the scope of an overflow or a timeout action.&lt;/p>
+&lt;p>When you upload your own audio file, the system greeting is automatically suppressed by the call queue. There’s no option to enable it. (Why would you anyway?)&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1UqMt8oNZmM3JyqMp3sCUA.png"
+width="1394"
+height="1057"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1UqMt8oNZmM3JyqMp3sCUA_hu_bf3be3e7ee43e721.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1UqMt8oNZmM3JyqMp3sCUA_hu_b6a9e8cce8bd32b3.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="316px"
+>&lt;/p>
+&lt;p>If you’re using a TTS greeting, there’s no option to disable it. In this case the system greeting is always played back after your custom TTS greeting.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1frpCn0up1cMvTHed5cEXg.png"
+width="1389"
+height="606"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1frpCn0up1cMvTHed5cEXg_hu_e1e37704e8eb6c89.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1frpCn0up1cMvTHed5cEXg_hu_a503a11acfb57745.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="229"
+data-flex-basis="550px"
+>&lt;/p>
+&lt;p>If you absolutely need to have a TTS greeting but also need to suppress the system greeting your only options are to use Azure Cognitive Services to generate and upload an audio file from your TTS greeting or to create another auto attendant which will have the sole purpose of playing back the TTS greeting and then forward to shared voicemail.&lt;/p>
+&lt;p>&lt;strong>Update 06.04.2023&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>Skip voicemail system message&lt;/strong> is now available in TAC. It now supports both audio files and TTS greetings. I don’t remember when exactly it was added but it was a long time ago since I already wrote about it in &lt;a class="link" href="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb" >this article&lt;/a> in December 2023.&lt;/p>&lt;/blockquote>
+&lt;p>&lt;strong>/Update&lt;/strong>&lt;/p>
+&lt;h4 id="one-lastcaveat">One Last Caveat
+&lt;/h4>&lt;p>But there’s another catch I recently discovered with this approach. If an auto attendant forwards to shared voicemail, the caller will hear two different beeps before the message can be recorded.&lt;/p>
+&lt;p>The auto attendant will play back the greeting and then transfer the call to shared voicemail. The caller will hear one beep for the transfer and most likely starts to record the message while the call is still being transferred to shared voicemail. Once the transfer has been completed, there will be a second beep which sounds slightly different. This is the actual beep which will indicate that the recording has started. This can be quite confusing for both the caller and the callee. It’s possible that the first one or two seconds or so are cut off from the recording or that the caller gets confused and loses focus because his recording is interrupted by the second beep.&lt;/p>
+&lt;p>To mitigate this issue, the only workaround at the moment is to forward the call to a call queue which goes straight to voicemail by using an &lt;a class="link" href="https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6" >overflow threshold of 0&lt;/a>. But keep in mind that you can’t use a TTS greeting if you also want to suppress the system greeting when using this method. This will, however, play back one beep for the transfer to the queue, play back your configured greeting on the queue and then play the second beep to indicate that the recording has started.&lt;/p>
+&lt;p>Even though these seem like minor issues, I hope that Microsoft addresses them in a timely manner. I think that’s all I know about Teams Phone and Voicemail. I hope it helped you demystify some stuff.&lt;/p></description></item><item><title>Creating Microsoft Teams Calling Deep Links</title><link>https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd/</link><pubDate>Tue, 15 Mar 2022 21:51:21 +0000</pubDate><guid>https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd/</guid><description>&lt;p>Creating links for phone numbers on a desktop operating system is easy. Just like mailto: links, Windows PCs have link handlers for callto: or tel: URLs. These kinds of links are often found on websites or google search results and provide great convenience because a user just has to click a link to start dialing.&lt;/p>
+&lt;p>Even though there are many different protocols, the most popular ones are:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">callto:&amp;lt;phone number&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">tel:&amp;lt;phone number&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>If you haven’t already configured a default App for calling on Windows, you’ll be prompted to choose an app for calling links.&lt;/p>
+&lt;p>And that’s it. Next time you click on a phone number link, your PC will automatically use Teams to make the call.&lt;/p>
+&lt;h4 id="using-deep-links-on-mobilephones">Using Deep Links on Mobile Phones
+&lt;/h4>&lt;p>Mobile operating systems are a different story. Because they are very restricted in terms of customization, clicking on a callto: or tel: link will most likely start a call using your mobile number/network — which makes total sense.&lt;/p>
+&lt;p>But what if you have a business application or an internal website and would like your users to initiate calls using their business number configured in Microsoft Teams instead of their mobile number?&lt;/p>
+&lt;p>It’s definitely possible but it requires a bit of work. To be specific, to achieve this, we need a specific deep link. But what are deep links?&lt;/p>
+&lt;p>Basically, they are just links followed by some application specific stuff which will not only open the App but also start an action inside said App. For example, we can use a deep link to open a specific channel or even a tab inside a channel in Teams.&lt;/p>
+&lt;p>This &lt;a class="link" href="https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/build-and-test/deep-links#generate-a-deep-link-to-a-call" target="_blank" rel="noopener"
+>Microsoft Docs Article&lt;/a> provides a detailed overview of all available deep links for Teams. As you can see, there are also deep links to initiate call actions within Teams.&lt;/p>
+&lt;p>If you want a link which will launch Teams and start a PSTN call, you need to create the link like this. The most important part is the “4;” placed just before the phone number. This will tell Teams to call a PSTN participant.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">https://teams.microsoft.com/l/call/0/0?users=&amp;lt;user1&amp;gt;,4:&amp;lt;phonenumber&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The &lt;code>&amp;lt;user&amp;gt;&lt;/code> part of the URL is actually optional. So a real world example would look something like this.&lt;/p>
+&lt;p>&lt;a class="link" href="https://teams.microsoft.com/l/call/0/0?users=4:&amp;#43;448719762819" target="_blank" rel="noopener"
+>https://teams.microsoft.com/l/call/0/0?users=4:+448719762819&lt;/a>&lt;/p>
+&lt;p>Since this is a simple URL, we can also prettify the link by giving it a title.&lt;/p>
+&lt;p>&lt;a class="link" href="https://teams.microsoft.com/l/call/0/0?users=4:&amp;#43;448719762819" target="_blank" rel="noopener"
+>Call Speaking Clock via Teams&lt;/a>&lt;/p>
+&lt;p>This will start a call to a &lt;a class="link" href="https://telephonesuk.org.uk/speaking-clock/" target="_blank" rel="noopener"
+>UK Speaking Clock&lt;/a>. If you’re already using Teams Telephony you can try this by yourself. This link works on desktop and mobile devices. (Beware of the costs though! According to the site linked above, calls to this number cost 13p (Pence) per minute. If you’re calling from outside the UK, the cost may vary.) If you want to test this with a local number instead, just copy the URL and change the phone number.&lt;/p>
+&lt;h4 id="example-gifs">Example Gifs
+&lt;/h4>&lt;p>To finish off, here are some Gifs of how it looks on an iPhone and an Android device.&lt;/p>
+&lt;p>Clicking a Teams calling deep link from within the app on Android.&lt;/p>
+&lt;p>Clicking a Teams calling deep link from within the app on iOS.&lt;/p>
+&lt;p>Clicking a Teams calling deep link from another App/Website on Android (works on iOS too.)&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd/1ZNgQP7PbMMRQnBjFgvrw.gif"
+width="720"
+height="1600"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="45"
+data-flex-basis="108px"
+>&lt;/p>
+&lt;h4 id="update">Update
+&lt;/h4>&lt;p>When launching a deep link starting with https:// as demonstrated above, it will always open your default browser, before the Teams App is launched. Unless, you’re clicking the deep link from within Teams as shown in the first two Gifs.&lt;/p>
+&lt;p>Twitter User &lt;a class="link" href="https://twitter.com/pilzi" target="_blank" rel="noopener"
+>pilzi&lt;/a> was kind enough to share some additional info. By adding the prefix msteams:// in front of the URL, we can open calling deep links directly in the Teams App without opening the browser first. It seems like the msteams:// URI scheme doesn’t like + signs though. We need to write the plus sign as “%2b” for it to work.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">msteams://teams.microsoft.com/l/call/0/0?users=4:%2b448719762819
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Thanks again for the tip!&lt;/p></description></item></channel></rss>

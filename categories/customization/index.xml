@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Customization on HEUSSER.PRO</title><link>https://heusser.pro/categories/customization/</link><description>Recent content in Customization on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Fri, 06 Jan 2023 08:23:26 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/customization/index.xml" rel="self" type="application/rss+xml"/><item><title>Launch Windows Terminal as Admin from Windows 11 Context Menu</title><link>https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/</link><pubDate>Fri, 06 Jan 2023 08:23:26 +0000</pubDate><guid>https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/</guid><description>&lt;p>In the article “11 Must-Have Apps for Windows 11” I talked about how much I love Windows 11 despite its few shortcomings. One of those is particularly annoying for IT folks like you and me. There’s no way of launching PowerShell or rather Windows Terminal as Administrator directly from File Explorer.&lt;/p>
+&lt;p>While looking for a plausible solution, I stumbled upon a Windows App called &lt;a class="link" href="https://www.microsoft.com/store/productId/9PC7BZZ28G0X" target="_blank" rel="noopener"
+>Custom Context Menu&lt;/a>. Despite the app being listed for $1, there’s an unlimited free trial. But please consider buying the app if you want to support the Dev.&lt;/p>
+&lt;p>This app allows you to create your own modern context menu entries for specific file types or folders. These are the settings which you need to add in order to add “Open in Windows Terminal (Admin)” to your Windows 11 Context Menu.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image.png"
+width="1400"
+height="844"
+srcset="https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image_hu_f868e54a006cf9d4.png 480w, https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image_hu_babb5ba4ad1f978e.png 1024w"
+loading="lazy"
+decoding="async"
+alt="alt text"
+class="gallery-image"
+data-flex-grow="165"
+data-flex-basis="398px"
+>&lt;/p>
+&lt;p>Choose &lt;code>C:\Windows\System32\cmd.exe&lt;/code> as your executable and use the following code as your Param. As with any syntax, the exact order and number of double quotes is extremely important here. It took me quite a few tries to get it right.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="s2">&amp;#34;cmd /c &amp;#34;&lt;/span>&lt;span class="nb">cd &lt;/span>&lt;span class="s2">&amp;#34;{path}&amp;#34;&lt;/span> &lt;span class="p">&amp;amp;&lt;/span> &lt;span class="n">powershell&lt;/span> &lt;span class="nb">Start-Process&lt;/span> &lt;span class="n">wt&lt;/span> &lt;span class="n">-verb&lt;/span> &lt;span class="n">runas&lt;/span>&lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Enter a path for whatever icon you want under Icon and only toggle the Match Folder switch.&lt;/p>
+&lt;p>Alternatively, you can also click on the folder icon located in the top left corner and just create a new JSON file with the following content.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;title&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Open in Windows Terminal (Admin)&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;exe&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;\&amp;#34;C:\\Windows\\System32\\cmd.exe\&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;param&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;\&amp;#34;cmd /c \&amp;#34;cd \&amp;#34;{path}\&amp;#34; &amp;amp; powershell Start-Process wt -verb runas\&amp;#34;\&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;icon&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;\&amp;#34;C:\\Temp\\wtAdmin\\Terminal2.ico\&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;acceptExts&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;acceptDirectory&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;acceptFile&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">false&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;acceptMultipleFilesFlag&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;pathDelimiter&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;paramForMultipleFiles&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;index&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>If you like, you can give your context menu entry a custom name by clicking the gear icon in the bottom right corner.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image-1.png"
+width="537"
+height="290"
+srcset="https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image-1_hu_40c2c3193a5d10e7.png 480w, https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image-1_hu_6e472f4ebfa53fe9.png 1024w"
+loading="lazy"
+decoding="async"
+alt="There’s only one menu entry for all your custom entries.
+"
+class="gallery-image"
+data-flex-grow="185"
+data-flex-basis="444px"
+>&lt;/p>
+&lt;p>Click save and either restart explorer.exe or your PC. This is very important as the menu won’t load without a restart.&lt;/p>
+&lt;h2 id="how-it-looks-and-behaves">How It Looks and Behaves
+&lt;/h2>&lt;p>When you right click in any folder, you should see your custom context menu and choose “Open in Windows Terminal (Admin)” or whatever name you entered.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image-2.png"
+width="1378"
+height="1060"
+srcset="https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image-2_hu_17ec4d2f09a7d499.png 480w, https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image-2_hu_92e8527d5b1100a9.png 1024w"
+loading="lazy"
+decoding="async"
+alt="This will launch CMD, which will prompt for UAC and finally open WT (PS) as admin in the current folder.
+"
+class="gallery-image"
+data-flex-grow="130"
+data-flex-basis="312px"
+>&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image-3.png"
+width="1400"
+height="773"
+srcset="https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image-3_hu_e5b5aaecfec18009.png 480w, https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image-3_hu_fb814fe703509c71.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Once PowerShell is opened, the CMD window will close automatically.
+"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;p>Make sure that you’ve set the Starting directory of the PowerShell Profile in Windows Terminal to “Use parent process directory”. Otherwise, Windows Terminal will not start in the current folder where you right clicked in Explorer.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image-4.png"
+width="1400"
+height="773"
+srcset="https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image-4_hu_ea8c380f734e2dcb.png 480w, https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image-4_hu_8f65389aa818af3.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Windows Terminal Settings
+"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>&lt;/p>
+&lt;h2 id="adding-more-entries">Adding More Entries
+&lt;/h2>&lt;p>If you also want to add “Open in VS Code” to the modern context menu in Windows 11, you can add a second entry using the following code or configuration.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;title&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Open with VS Code&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;exe&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;\&amp;#34;C:\\Users\\marti\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe\&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;param&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;\&amp;#34;{path}\&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;icon&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;\&amp;#34;C:\\Users\\marti\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe\&amp;#34;,0&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;acceptExts&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;.json .txt .ps1 .cmd .bat .py .yaml .md .html .js&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;acceptDirectory&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;acceptFile&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;acceptMultipleFilesFlag&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;pathDelimiter&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;paramForMultipleFiles&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;index&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">3&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image-5.png"
+width="1400"
+height="905"
+srcset="https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image-5_hu_9202d97ef3e6d577.png 480w, https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image-5_hu_e4c14537730190f3.png 1024w"
+loading="lazy"
+decoding="async"
+alt="We can also use Match File here to bring up the custom menu for specific file types.
+"
+class="gallery-image"
+data-flex-grow="154"
+data-flex-basis="371px"
+>&lt;/p>
+&lt;p>I hope that the option to launch Windows Terminal as admin or any other app really, also helps you be more productive. Initially, I discovered this app because I was looking for an easy way to bulk convert HEIC or HEIF images to JPG. Once I realized the potential of this App, I just had to figure out the correct params to launch WT as admin. I will definitely write another blog post about how to convert HEIC images to JPG using the same app and &lt;a class="link" href="https://imagemagick.org/script/command-line-processing.php" target="_blank" rel="noopener"
+>ImageMagick CLI&lt;/a>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image-6.png"
+width="904"
+height="114"
+srcset="https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image-6_hu_a355024c96de5665.png 480w, https://heusser.pro/p/launch-windows-terminal-as-admin-from-windows-11-context-menu-8eb2abe7b28b/image-6_hu_940b6ecdd1c04e1a.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Sneak-Peak of HEIC to JPG conversion in Windows 11 Custom Context Menu
+"
+class="gallery-image"
+data-flex-grow="792"
+data-flex-basis="1903px"
+>&lt;/p></description></item></channel></rss>

@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>IOS Shortcuts on HEUSSER.PRO</title><link>https://heusser.pro/categories/ios-shortcuts/</link><description>Recent content in IOS Shortcuts on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 26 Oct 2023 19:22:01 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/ios-shortcuts/index.xml" rel="self" type="application/rss+xml"/><item><title>Teams Clipboard Dialer</title><link>https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/</link><pubDate>Thu, 26 Oct 2023 19:22:01 +0000</pubDate><guid>https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/</guid><description>&lt;p>As you may know, I try to blog at least once a month. Although I’m a little behind this month, I’m still well on track to reach my goal in 2023 again.&lt;/p>
+&lt;p>I still got plenty of topics to blog about in my backlog but what I like most is when I discover something new and get so hyped out about it that I can’t just not blog about it right away.&lt;/p>
+&lt;p>Thanks to my awesome Discord community (join &lt;a class="link" href="https://heusser.pro/discord.html" target="_blank" rel="noopener"
+>here&lt;/a>) which is full of enthusiastic Teams Phone admins like myself, it was brought to my attention that Microsoft is making some changes to how normalization rules in Teams dial plans are applied.&lt;/p>
+&lt;h4 id="tldr">TLDR;
+&lt;/h4>&lt;p>I’ve created an app which allows you to call any phone number which has been copied to the clipboard simply by clicking an app on the taskbar or by pressing a hotkey. Skip to the bottom of this post if you’re only interested in the app.&lt;/p>
+&lt;h3 id="what-are-dial-plans-and-normalization-rules">What are Dial Plans and Normalization Rules?
+&lt;/h3>&lt;p>Normalization rules are regular expressions which change certain phone numbers before they’re dialed in Teams. An easy example is e.g. that any Swiss phone number which is entered in the national format (with a leading &lt;code>0&lt;/code>) is converted to &lt;a class="link" href="https://en.wikipedia.org/wiki/E.164" target="_blank" rel="noopener"
+>&lt;strong>&lt;em>E.164&lt;/em>&lt;/strong>&lt;/a>.&lt;/p>
+&lt;p>E.g. &lt;code>044 123 45 67&lt;/code> is changed to &lt;code>+41441234567&lt;/code> before it’s dialed.&lt;/p>
+&lt;p>This rule is actually part of the system dial plans which are already included in Teams. Admins can create their own dial plans by creating so called &lt;strong>Tenant Dial Plans&lt;/strong>.&lt;/p>
+&lt;p>You can view the built-in dial plans by entering the following in a Teams PowerShell session. Replace &lt;code>CH&lt;/code> with the country you want to check.&lt;/p>
+&lt;p>Get-CsDialPlan -Identity CH&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18JxlggrooV95RMwJMIRvA.png"
+width="1734"
+height="870"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18JxlggrooV95RMwJMIRvA_hu_4346f5b7eb286da8.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18JxlggrooV95RMwJMIRvA_hu_e8a3b1df73616a98.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="199"
+data-flex-basis="478px"
+>&lt;/p>
+&lt;h4 id="tenant-dialplans">Tenant Dial Plans
+&lt;/h4>&lt;p>With tenant dial plans, it’s possible to create much more complex rules such as &lt;a class="link" href="https://ucken.blogspot.com/2016/03/trunk-prefixes-in-skype4b.html" target="_blank" rel="noopener"
+>this&lt;/a> one which contains a monster regular expression created by no other than Ken Lasko (&lt;a class="link" href="https://www.ucdialplans.com/" target="_blank" rel="noopener"
+>UCDialPlans.com — Dial Plan Tools&lt;/a>).&lt;/p>
+&lt;p>I don’t know why there are still people on this planet who think it’s a good idea to list a phone number in a format in which it &lt;strong>&lt;em>simply does not exist&lt;/em>&lt;/strong>. &lt;code>+41 (0) 44 123 45 67&lt;/code> or &lt;code>+41 0 44 123 45 67&lt;/code> are not valid phone numbers. That’s effectively the same as if I told people that my email address is &lt;code>mozzie(0)@heusser.pro&lt;/code> when in fact it’s &lt;code>mozzie@heusser.pro&lt;/code> . It’s either &lt;code>+41 44 123 45 67&lt;/code> (when calling internationally) or &lt;code>044 123 45 67&lt;/code> (when calling from the same country).&lt;/p>
+&lt;p>From my experience many people also don’t know that you can dial an E.164 number even when calling from the same country. I wouldn’t be surprised if there is an exception to this rule in some countries, but it works in almost every case.&lt;/p>
+&lt;p>Unfortunately, the normalization rules which are built into Teams, don’t fix these numbers for us. If people dial a number with an &lt;strong>&lt;em>illegal zero&lt;/em>&lt;/strong> after the international prefix, the call will fail, since it’s an invalid number.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/14YWX8uJZeF4KVKsxtPQE3A.png"
+width="2136"
+height="957"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/14YWX8uJZeF4KVKsxtPQE3A_hu_d88ada5f906578b7.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/14YWX8uJZeF4KVKsxtPQE3A_hu_5400acf23c936607.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="223"
+data-flex-basis="535px"
+>&lt;/p>
+&lt;p>Since we can’t possibly knock some sense into every website owner that lists their phone number incorrectly or access and fix everybody’s precious personal Outlook contacts, adding Ken’s rule to a tenant dial plan &lt;strong>&lt;em>was&lt;/em>&lt;/strong> a great way of solving this particular issue.&lt;/p>
+&lt;p>&lt;strong>&lt;em>But now Microsoft is taking this away from us.&lt;/em>&lt;/strong>&lt;/p>
+&lt;p>This was the link that was shared on Discord: &lt;br>
+&lt;a class="link" href="https://petri.com/microsoft-changelog/m365-changelog-changes-in-normalization/" target="_blank" rel="noopener"
+>M365 Changelog: (Updated) Changes in Normalization — Petri IT Knowledgebase&lt;/a>&lt;/p>
+&lt;p>There is a Message Center post about this as well: &lt;strong>MC536885&lt;/strong>. It mentions the following:&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>Stopping normalization on number that starts with plus sign (+)&lt;/strong>&lt;/p>&lt;/blockquote>
+&lt;blockquote>
+&lt;p>Normalization in Microsoft Teams was not designed to do normalization when the phone number starts with plus sign (+) as documented, but we’ve never enforced this in the Teams desktop or Web client. We are planning to enforce this in the future but for now we recommend avoiding this pattern.&lt;/p>&lt;/blockquote>
+&lt;blockquote>
+&lt;p>We are making this change to align with our Calling Service, other Teams services, Azure Communication Services SDKs, and other Microsoft services. Numbers that start with a plus sign (+) will not pass through any normalization rules.&lt;/p>&lt;/blockquote>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1wyBIMDRn3qkDKckT1EsU0Q.png"
+width="759"
+height="499"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1wyBIMDRn3qkDKckT1EsU0Q_hu_af0488ae5253e452.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1wyBIMDRn3qkDKckT1EsU0Q_hu_b56b99cf3df52bd2.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="152"
+data-flex-basis="365px"
+>&lt;/p>
+&lt;p>&lt;strong>Update 10.11.2023&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>The Message Center post was updated by Microsoft. They’re not following through with this anymore.&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>Updated November 2, 2023: Based on customer feedback we will not be moving forward with this change at this time. You can safely disregard this message. Thank you for your feedback.&lt;/p>&lt;/blockquote>
+&lt;p>&lt;strong>/Update&lt;/strong>&lt;/p>
+&lt;h3 id="testing-with-powershell">Testing with PowerShell
+&lt;/h3>&lt;p>I’ve noticed that something was not right, when the PowerShell commands to test dialed numbers against a tenant dial plan stopped matching numbers which start with a plus.&lt;/p>
+&lt;p>I have a tenant dial plan in Teams which contains Ken Lasko’s awesome normalization rule.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WteEwba1CLM2fqkpj4joYg.png"
+width="1885"
+height="481"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WteEwba1CLM2fqkpj4joYg_hu_54107192aa6e8101.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WteEwba1CLM2fqkpj4joYg_hu_ced0f566d019915c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="391"
+data-flex-basis="940px"
+>&lt;/p>
+&lt;p>We can use the following PowerShell command to test a user’s normalization rules.&lt;/p>
+&lt;p>Get-CsEffectiveTenantDialPlan -Identity &lt;a class="link" href="mailto:user@domain.com" >user@domain.com&lt;/a> | Test-CsEffectiveTenantDialPlan -DialedNumber +410441234567 -TenantScopeOnly&lt;/p>
+&lt;p>As you can see in the screenshot below, the number starting with &lt;code>+&lt;/code> does not match any rules despite the fact the rule exists. The number starting with &lt;code>00&lt;/code> is matched by another rule in the same dial plan.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1uvHzgIINJYK9QYvItJig.png"
+width="2122"
+height="957"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1uvHzgIINJYK9QYvItJig_hu_2f4d79802b89dc3b.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1uvHzgIINJYK9QYvItJig_hu_a4826682fa21d6d4.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="221"
+data-flex-basis="532px"
+>&lt;/p>
+&lt;p>Verifying Ken Lasko’s regular expression with &lt;a class="link" href="https://regex101.com/" target="_blank" rel="noopener"
+>regex101.com&lt;/a> proves that it’s 100% correct.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1OSqAxfdvyF5gUfUXDihhdQ.png"
+width="1224"
+height="1191"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1OSqAxfdvyF5gUfUXDihhdQ_hu_c54862dbb26bc984.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1OSqAxfdvyF5gUfUXDihhdQ_hu_974922c907bad25b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="102"
+data-flex-basis="246px"
+>&lt;/p>
+&lt;h4 id="what-about-the-teamsclient">What about the Teams Client?
+&lt;/h4>&lt;p>Interesting enough, the Teams client still seems to match the rule from the tenant dial plan.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1M60DOscRIwosemXqbylQbQ.png"
+width="2135"
+height="1422"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1M60DOscRIwosemXqbylQbQ_hu_b70ebbda6de0173a.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1M60DOscRIwosemXqbylQbQ_hu_588ed72b8f651825.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="150"
+data-flex-basis="360px"
+>&lt;/p>
+&lt;p>However, I suspect it’s only a matter of time before this stops working too.&lt;/p>
+&lt;h4 id="starting-calls-fromoutlook">Starting Calls from Outlook
+&lt;/h4>&lt;p>If Teams is registered as the chat app for Microsoft 365 Apps (such as Outlook) we can call numbers which are stored on Outlook contacts.&lt;/p>
+&lt;p>The problem with this is that classic Outlook does not apply any normalization rules either. The number is called as it’s stored on the contact.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WFO6dkLuWfJOYCPJliJlcw.png"
+width="943"
+height="497"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WFO6dkLuWfJOYCPJliJlcw_hu_b12b54c6eec36c80.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1WFO6dkLuWfJOYCPJliJlcw_hu_15c6eecb9929f6ce.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="189"
+data-flex-basis="455px"
+>&lt;/p>
+&lt;p>When I try to call this number, the call fails. You can see that the illegal zero was not dropped in the title bar of the call window.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18VYzjecFvrfoqqiYl4Fuog.png"
+width="1451"
+height="996"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18VYzjecFvrfoqqiYl4Fuog_hu_7acb78a14b00d81.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/18VYzjecFvrfoqqiYl4Fuog_hu_fd5262e9130710a6.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="145"
+data-flex-basis="349px"
+>&lt;/p>
+&lt;p>It’s noteworthy that clicking a number in the old Outlook will start a call directly without prompting you to start the call in Teams.&lt;/p>
+&lt;p>In my tests with the new Outlook, the number was normalized correctly, even for a user who didn’t have a tenant dial plan assigned. This makes me believe that it’s actually the new Outlook which is applying the normalization rules. When you click a number in the new Outlook, you’ll get a prompt to start the call in Teams.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1Z5Jm7DSGlTyJLl3YYr8ww.png"
+width="883"
+height="232"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1Z5Jm7DSGlTyJLl3YYr8ww_hu_6ceed7ab82232759.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1Z5Jm7DSGlTyJLl3YYr8ww_hu_2b68cfc6d2109c0d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="380"
+data-flex-basis="913px"
+>&lt;/p>
+&lt;p>However, every time a number is clicked in the new Outlook, an annoying blank pop up is opened and it doesn’t even close once you have made the call.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1q1b8uLbj997HaUMbFxMVg.png"
+width="1211"
+height="322"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1q1b8uLbj997HaUMbFxMVg_hu_2faf666580b1546c.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1q1b8uLbj997HaUMbFxMVg_hu_10c28a737472b42d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="376"
+data-flex-basis="902px"
+>&lt;/p>
+&lt;p>Time to look for alternatives.&lt;/p>
+&lt;h3 id="alternative-solutions">Alternative Solutions
+&lt;/h3>&lt;p>Dialing phone numbers from other apps and links or even through a hotkey is not an uncommon ask from users.&lt;/p>
+&lt;p>If you’ve received this request before, you’ve probably stumbled upon this free app called &lt;a class="link" href="http://www.lyncwizard.com/products.html" target="_blank" rel="noopener"
+>&lt;strong>Teams Wizard&lt;/strong>&lt;/a>. This will allow you to start Teams PSTN calls by selecting a phone number and pressing the configured hotkey.&lt;/p>
+&lt;p>In Teams Wizard’s settings, there’s a setting called &lt;strong>Enable normalization of phone numbers&lt;/strong> (Normalisierung der Telefonnummern aktivieren).&lt;/p>
+&lt;p>On first sight, it looks like this only goes as far as the Teams built in dial plans and won’t drop the illegal zero after the E.164 prefix.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/16e4K0bnpbbbU5jRv1aWYA.png"
+width="1321"
+height="495"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/16e4K0bnpbbbU5jRv1aWYA_hu_ee88d4e3dac43064.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/16e4K0bnpbbbU5jRv1aWYA_hu_2f69e04c86d2293b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="266"
+data-flex-basis="640px"
+>&lt;/p>
+&lt;p>However, when you click on &lt;strong>Yes&lt;/strong> (Ja) the number appears correct in Teams, even if the user does not have a special tenant dial plan assigned.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1oqAqO3GVoYrPRFPJJVYw.png"
+width="877"
+height="231"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1oqAqO3GVoYrPRFPJJVYw_hu_337a3391f970009b.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1oqAqO3GVoYrPRFPJJVYw_hu_2176d6280e499ade.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="379"
+data-flex-basis="911px"
+>&lt;/p>
+&lt;p>So far so good. But the hotkey only works when you’ve selected a phone number with your mouse. Although it’s possible to just select a contact in old Outlook and then press the hotkey, the success rate is quite low. First of all, many contacts hold multiple numbers and it’s not possible to tell Teams Wizard which number should be called. Secondly, it’s not possible to select a number with your mouse in old Outlook. They can only be copied. But Teams Wizard does not monitor your clipboard. And copy/paste the number into another app (like Notepad) just to select it and then press the hotkey seems like one step too many.&lt;/p>
+&lt;p>While it’s possible to select phone numbers of contacts in the new Outlook, the experience isn’t great either. Because the new Outlook is also based on web technology, selecting a number with your mouse without triggering the calling link is a very tricky undertaking. And don’t forget all the ugly blank pop ups this will open.&lt;/p>
+&lt;p>If the new Outlook really does (and keeps on doing) number normalization, then I guess this problem will be mitigated at &lt;strong>&lt;em>some point&lt;/em>&lt;/strong> in the future. But a future where everybody only uses the new Outlook is likely still very far off. But I don’t even want to go into a discussion of new vs. classic Outlook and how some folks will cope (&lt;strong>&lt;em>or not&lt;/em>&lt;/strong>) with the new Outlook.&lt;/p>
+&lt;p>Therefore, I don’t think that it hurts to prepare ourselves for a world in which we can apply normalization rules outside of Teams and Outlook.&lt;/p>
+&lt;p>All of this got me thinking… &lt;strong>&lt;em>wouldn’t it be awesome if we could have a way to instantly normalize and dial any number that has been copied to the clipboard…?&lt;/em>&lt;/strong>&lt;/p>
+&lt;p>…Because copying a number with only &lt;strong>one click&lt;/strong> is possible in both the &lt;strong>new&lt;/strong> and the &lt;strong>old&lt;/strong> Outlook.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1PPyoBA3xszRe0nDk5cNOHQ.png"
+width="1335"
+height="405"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1PPyoBA3xszRe0nDk5cNOHQ_hu_7e835ed68670efa2.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1PPyoBA3xszRe0nDk5cNOHQ_hu_77d4ee1b8a6afed7.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="329"
+data-flex-basis="791px"
+>
+&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/10qv6ML4d6FBZkV9LCg4Yxg.png"
+width="986"
+height="462"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/10qv6ML4d6FBZkV9LCg4Yxg_hu_ee2ecd7e58565e5.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/10qv6ML4d6FBZkV9LCg4Yxg_hu_dc1218a041ea0c0d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="213"
+data-flex-basis="512px"
+>&lt;/p>
+&lt;p>Copying the number before calling it also provides great flexibility. Be it multiple numbers on a single contact or any phone number in any app or website. Heck, we could even use PowerToys’ text extractor feature (&lt;code>Win + Shift + T&lt;/code> ) or the new Snipping Tool to extract and copy phone numbers from screenshots which got sent our way by people who were too lazy to put the number in a reusable format.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1vSbtxT9dKxd0bCYVaEzlw.png"
+width="1182"
+height="742"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1vSbtxT9dKxd0bCYVaEzlw_hu_daabd681086a012b.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1vSbtxT9dKxd0bCYVaEzlw_hu_d595962952a7b224.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="159"
+data-flex-basis="382px"
+>&lt;/p>
+&lt;h3 id="i-proudly-present-teams-clipboard-dialer">I Proudly Present: Teams Clipboard Dialer
+&lt;/h3>&lt;p>I don’t know how to write and compile a proper app, but I like to think that I do know my way around PowerShell. And I think I’ve come up with a very neat solution here.&lt;/p>
+&lt;p>The &lt;strong>Teams Clipboard Dialer&lt;/strong> consists of a PowerShell script and a Desktop shortcut which calls that script. The script reads phone numbers from the clipboard, normalizes the number, and then passes it to Teams to start the call.&lt;/p>
+&lt;p>All you have to do to start a call is to copy a phone number and either click the icon on the taskbar or press the configured hotkey.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1KtHkD1MmZaahl5R81h7W5Q.png"
+width="1181"
+height="71"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1KtHkD1MmZaahl5R81h7W5Q_hu_fa73ae56b0cf26e4.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1KtHkD1MmZaahl5R81h7W5Q_hu_c5a85831a3e5b1df.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="1663"
+data-flex-basis="3992px"
+>&lt;/p>
+&lt;p>If your clipboard is empty or doesn’t contain a phone number, a notification will be shown.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1rxi8ME2LgGTx4g9ioQdSKg.png"
+width="1110"
+height="251"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1rxi8ME2LgGTx4g9ioQdSKg_hu_ac6d062d083e7434.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1rxi8ME2LgGTx4g9ioQdSKg_hu_4df8ad81b94bc45a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="442"
+data-flex-basis="1061px"
+>&lt;/p>
+&lt;p>If your clipboard does contain a phone number, Teams will launch and ask you to start the call.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1NlTAypYtlbm83Q6xFjlKg.png"
+width="2141"
+height="1383"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1NlTAypYtlbm83Q6xFjlKg_hu_48472eba593fd6d9.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1NlTAypYtlbm83Q6xFjlKg_hu_fdb48e65ebe79614.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="154"
+data-flex-basis="371px"
+>&lt;/p>
+&lt;p>It’s even possible to call 1–4 digit long extension numbers or emergency numbers. Because these numbers don’t start with a &lt;code>+&lt;/code> the Teams tenant dial plan (if you have one configured) will still apply the normalization rules and convert the extensions to full E.164 numbers.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1z4gcS6aqm4MUiWPbGm6Dg.png"
+width="882"
+height="231"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1z4gcS6aqm4MUiWPbGm6Dg_hu_ebd030fb97f3276b.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1z4gcS6aqm4MUiWPbGm6Dg_hu_ab80164c99c372cf.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="381"
+data-flex-basis="916px"
+>&lt;/p>
+&lt;p>&lt;strong>&lt;em>And no, there’s no browser pop up.&lt;/em>&lt;/strong> Teams is opened directly. Luckily, I remembered that I blogged about &lt;a class="link" href="https://heusser.pro/p/creating-microsoft-teams-calling-deep-links-f7c9d62eacdd#:~:text=By%20adding%20the%20prefix%20msteams%3A%2F%2F%20in%20front%20of,plus%20sign%20as%20%E2%80%9C%252b%E2%80%9D%20for%20it%20to%20work." >creating Teams calling deep links&lt;/a> a while ago, so I already knew how to create calling deep links. The part about how I can open Teams directly (without the detour in Edge) &lt;strong>and&lt;/strong> have it start a call, I figured out by &lt;strong>&lt;em>mere luck&lt;/em>&lt;/strong>.&lt;/p>
+&lt;p># Launch Teams to dial the number&lt;br>
+Start-Process ms-teams &amp;ldquo;&lt;a class="link" href="https://teams.microsoft.com/l/call/0/0?users=4:$phoneNumber%22" target="_blank" rel="noopener"
+>https://teams.microsoft.com/l/call/0/0?users=4:$phoneNumber"&lt;/a>&lt;/p>
+&lt;p>&lt;strong>I’ve only tested the Teams Clipboard Dialer on Windows 11 and Teams 2.1.&lt;/strong>&lt;/p>
+&lt;h4 id="setup">Setup
+&lt;/h4>&lt;p>I also created an install script which copies the script to &lt;code>$env:APPDATA\OneDrive\TeamsClipboardDialer&lt;/code> and creates a shortcut in &lt;code>$env:OneDrive\Desktop&lt;/code> . Unfortunately, I didn’t find a way to automatically pin the app to the taskbar. When you run the script, you’ll see a pop up message which will pause the script and give you time to pin the app manually to the taskbar.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/078v39dCn4iWwIiR6.png"
+width="1749"
+height="739"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/078v39dCn4iWwIiR6_hu_5ddcf138e91077ce.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/078v39dCn4iWwIiR6_hu_7e7ca65566377ddc.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="236"
+data-flex-basis="568px"
+>&lt;/p>
+&lt;p>By default, the hotkey &lt;code>Ctrl + Shift + F8&lt;/code> is assigned to launch the app and dial numbers. You can change this by running the &lt;code>Createshortcut.ps1&lt;/code> script with the parameter &lt;code>-HotKey &amp;quot;Your hotkey combo&amp;quot;&lt;/code> .&lt;/p>
+&lt;p>You can find all the files in my &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/tree/main/TeamsClipboardDialer" target="_blank" rel="noopener"
+>GitHub repo&lt;/a>. Also make sure to read the script headers carefully for more information on the available parameters.&lt;/p>
+&lt;p>If you’re interested in what normalization rules are applied, you can examine the script &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/TeamsClipboardDialer/TeamsClipboardDialer.ps1" target="_blank" rel="noopener"
+>here&lt;/a>. Basically, it removes any special characters like whitespaces, brackets, hyphens, dots etc. from copied phone numbers and then also applies Ken Lasko’s rule to get rid of those damn illegal zeros. You can read more about it in detail &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/TeamsClipboardDialer/ReadMe.md#normalization-rule-behavior" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/p>
+&lt;p>By applying the normalization rules outside of Outlook and Teams, we get more control over it since we can do whatever we want. I guess if Microsoft won’t let us match numbers starting with &lt;code>+&lt;/code> any longer, we have to do it ourselves. Compared to the Teams Wizard, my solution gives us way more flexibility and visibility in terms of how numbers are normalized before they’re dialed.&lt;/p>
+&lt;h3 id="hold-on-i-am-not-doneyet">Hold on… I Am Not Done Yet!
+&lt;/h3>&lt;p>When I realized that I was on to something, I just couldn’t let it go. &lt;strong>&lt;em>I replicated the whole functionality in an iOS shortcut&lt;/em>&lt;/strong>. I don’t know why but every time an Android Fanboy asks me why I prefer the iPhone over Android I forget to mention Shortcuts. &lt;strong>&lt;em>It’s literally the most underrated feature of iOS.&lt;/em>&lt;/strong>&lt;/p>
+&lt;p>The shortcut uses the exact same regular expressions as the PowerShell script to normalize the numbers. (Yes, that’s possible in Shortcuts.) It also gets the phone number from the clipboard and will display the same hints if there’s no phone number stored in the clipboard.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1ZvBMJVHFO1jdr8Bl5rESrg.png"
+width="2279"
+height="890"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1ZvBMJVHFO1jdr8Bl5rESrg_hu_2139a0b51a08c0ca.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1ZvBMJVHFO1jdr8Bl5rESrg_hu_c924da5bc79dc2ac.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="256"
+data-flex-basis="614px"
+>&lt;/p>
+&lt;p>Once the number has been normalized, the Shortcut will ask you to start or cancel the call. On iOS this step is handled by the Shortcut and not in the Teams app itself like it is the case on the Teams desktop client.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/13qugvQ8xQsLHYZKjNKAbZQ.png"
+width="1125"
+height="725"
+srcset="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/13qugvQ8xQsLHYZKjNKAbZQ_hu_e32dfa5b670a8d11.png 480w, https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/13qugvQ8xQsLHYZKjNKAbZQ_hu_db28eb0e21c08d09.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="155"
+data-flex-basis="372px"
+>&lt;/p>
+&lt;h4 id="get-theshortcut">Get the Shortcut
+&lt;/h4>&lt;p>You can download and import the Shortcut via &lt;a class="link" href="https://www.icloud.com/shortcuts/45b99b70ef0f40adab6726e220cf4e7b" target="_blank" rel="noopener"
+>iCould&lt;/a>.&lt;/p>
+&lt;p>I’ve tested the shortcut on an iPad and an iPhone both running iOS/iPad OS 17.0.3. When you run it for the first time, you will need to confirm a couple of privacy prompts and allow it to run all the actions without asking again. After that, you’re good to go.&lt;/p>
+&lt;h4 id="showtime">Showtime
+&lt;/h4>&lt;p>This animated gif demonstrates how it works on iOS. The number has already been copied to the clipboard before the shortcut was executed.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/teams-clipboard-dialer-c5cb737f37f3/1sCzx0j6auIV4gBlO343cQ.gif"
+width="886"
+height="1920"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+>&lt;/p>
+&lt;h3 id="summary">Summary
+&lt;/h3>&lt;p>When I first read the MC post about normalization rules no longer matching numbers starting with a &lt;code>+&lt;/code> I panicked a little. But now that I’ve done the research and came to the conclusion that having an app which normalizes and calls numbers from the clipboard, is actually a very nice and versatile solution and I’m very much relieved. And having the same functionality on iOS is an awesome bonus.&lt;/p>
+&lt;p>I hope you like what I’ve done and that you can make use of it as well. As always, all the code for the Teams Clipboard Dialer is provided free of charge. If you would still like to support my work, feel free to buy me a coffee over at &lt;a class="link" href="https://github.com/sponsors/mozziemozz?frequency=one-time" target="_blank" rel="noopener"
+>GitHub Sponsors&lt;/a>.&lt;/p></description></item><item><title>Forward SMS Verification Codes From iPhone To a Windows PC</title><link>https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/</link><pubDate>Sun, 27 Nov 2022 12:46:25 +0000</pubDate><guid>https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/</guid><description>&lt;p>A few days ago, I wrote “&lt;a class="link" href="https://heusser.pro/p/how-to-handle-password-and-2fa-madness-like-a-pro-1647abaf96e6" >How To Handle Password and 2FA Madness Like a Pro&lt;/a>”. In this article I explained why I think it’s better to use a full-fledged password manager instead of a basic Authenticator App such as Microsoft or Google Authenticator to handle your 2FA codes.&lt;/p>
+&lt;p>These types of apps work well when the service for which you want to enable 2FA allows you to add a secret key to your authenticator app. But what about services which don’t support such apps and instead only send you an SMS with a verification code? Unfortunately, there are still some services which will only allow one-time codes sent by SMS.&lt;/p>
+&lt;p>If you’re using an iPhone and a MAC for example, this shouldn’t be too big of an issue since you can seamlessly sync your clipboard across devices (at least that’s what I’ve heard).&lt;/p>
+&lt;p>If you’re using an Android phone together with Phone Link on Windows, you can easily access your SMS from there. But if you use an iPhone and a Windows PC, there’s no way to seamlessly transfer a code received by SMS on your iPhone to your PC.&lt;/p>
+&lt;p>In &lt;a class="link" href="https://heusser.pro/p/11-must-have-apps-for-windows-11-2c362809db3/" >11 Must-Have Apps for Windows 11&lt;/a> I wrote about Clipt which allows you to transfer content between an iPhone and a Windows PC through their Chromium extension.&lt;/p>
+&lt;p>When you use this method, you must open the message containing the verification code and manually select and copy it. Once the code is in your iPhone&amp;rsquo;s clipboard, you need to open Clipt and click Send. The copied content will be added to your PCs clipboard automatically and you’re ready to paste it.&lt;/p>
+&lt;p>I didn’t quite like the manual steps involved on the iPhone. So I thought why not tinker around with Siri Shortcuts again, like I did in &lt;a class="link" href="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa" >this&lt;/a> article.&lt;/p>
+&lt;h3 id="siri-automation">Siri Automation
+&lt;/h3>&lt;h4 id="building-the-automation">Building the Automation
+&lt;/h4>&lt;p>The good thing is that there is a trigger for &lt;em>“When I get a message containing &lt;keyword>”.&lt;/em> The bad thing is that there’s no way of running it truly automated. You will still need to confirm running the automation each time it’s triggered.&lt;/p>
+&lt;p>But that’s only one manual interaction on the iPhone compared to four with Clipt (Open messages, copy code, open clipt, send content).&lt;/p>
+&lt;p>I set the trigger to match all messages which contain the string &lt;strong>“verification code”&lt;/strong>. If that should not work for the messages you receive, you can adjust it to your liking or create multiple automations with different words.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1hvOkUTfWoJtXfbbsied89g.png"
+width="1125"
+height="2436"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1hvOkUTfWoJtXfbbsied89g_hu_2d3b82805d8368d6.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1hvOkUTfWoJtXfbbsied89g_hu_cf99e3b124afba09.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+>&lt;/p>
+&lt;p>Let’s take a look at the actions. First, we’re going to use the regular expression &lt;code>\d{6,}&lt;/code> to match all strings which consist of only numbers and are at least six digits long.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FUqHjHbQq1UXAqH7gkHug.png"
+width="1361"
+height="263"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FUqHjHbQq1UXAqH7gkHug_hu_6ff2be61f073fb62.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FUqHjHbQq1UXAqH7gkHug_hu_cb3a1ba44a67b79d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="517"
+data-flex-basis="1241px"
+>&lt;/p>
+&lt;p>Then we’re going to create a note in Apple Notes with the extracted verification code. After 60 seconds, we’re going to delete the note.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1KUBIIWC2Zk7hIm6K29sD2A.png"
+width="1125"
+height="2436"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1KUBIIWC2Zk7hIm6K29sD2A_hu_5483008a953500fb.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1KUBIIWC2Zk7hIm6K29sD2A_hu_fe37ea6ef61e7083.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+>&lt;/p>
+&lt;h4 id="configuring-ios">Configuring iOS
+&lt;/h4>&lt;p>You might ask yourself what good does it do if the verification code is stored in Apple Notes when I want to access it on my PC?&lt;/p>
+&lt;p>If you configure your Outlook.com or work or school account as the default account for Notes in iOS settings, your notes will automatically synchronize with Microsoft Sticky Notes. Of course, I’m assuming that you’ve already added a Microsoft Account to iOS at this point.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1eK5EzyD2ps2osajFS6Zmw.png"
+width="1125"
+height="2436"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1eK5EzyD2ps2osajFS6Zmw_hu_4cf78c58ebabd855.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1eK5EzyD2ps2osajFS6Zmw_hu_e42466a8ee32fb44.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+>&lt;/p>
+&lt;h4 id="demo-of-the-automation-inaction">Demo of the Automation in Action
+&lt;/h4>&lt;p>To show off the automation, I just sent myself an SMS from Skype to my mobile number containing the following text.&lt;/p>
+&lt;blockquote>
+&lt;p>Here’s your verification code: 456789. Thanks for using it.&lt;/p>&lt;/blockquote>
+&lt;p>I added the code between other text and added a full stop right after the code to demonstrate how powerful regular expressions are.&lt;/p>
+&lt;p>This is what it looks like on an iPhone. First there will be a notification for the new message. Shortly after, the automation will be triggered, and we’ll need to click it, and then click &lt;em>“Ausführen”&lt;/em> (German for &lt;em>“Run”&lt;/em>).&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1Cd58DqlhiHJsmyJ43qnR1Q.gif"
+width="886"
+height="1920"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="110px"
+>&lt;/p>
+&lt;h4 id="accessing-copied-codes-onwindows">Accessing Copied Codes on Windows
+&lt;/h4>&lt;p>There are many Apps from which you access to your Sticky Notes on Windows.&lt;/p>
+&lt;p>The most obvious one is &lt;strong>Sticky Notes&lt;/strong> of course.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1gj6ozy5v4BuGa4RWlxETNw.png"
+width="648"
+height="1035"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1gj6ozy5v4BuGa4RWlxETNw_hu_4a3b4d205cfbe0d5.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1gj6ozy5v4BuGa4RWlxETNw_hu_3b81f501717a1b9c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="62"
+data-flex-basis="150px"
+>&lt;/p>
+&lt;p>You can also access them in &lt;strong>Outlook&lt;/strong> or &lt;strong>Outlook on the Web&lt;/strong>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1UOcsgxeQRRwdEEur32BwRg.png"
+width="1684"
+height="873"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1UOcsgxeQRRwdEEur32BwRg_hu_2a9c910007c55137.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1UOcsgxeQRRwdEEur32BwRg_hu_9583e154b3ef9913.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="192"
+data-flex-basis="462px"
+>&lt;/p>
+&lt;p>And finally, they’re also available in your &lt;strong>OneNote&lt;/strong> Feed.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1MYZQMg0ggzjHrsx6lBk0w.png"
+width="471"
+height="1103"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1MYZQMg0ggzjHrsx6lBk0w_hu_3360fffe8c5abb41.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1MYZQMg0ggzjHrsx6lBk0w_hu_3aeec37f1b64e249.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="42"
+data-flex-basis="102px"
+>&lt;/p>
+&lt;h4 id="copying-the-verification-code">Copying the Verification Code
+&lt;/h4>&lt;p>Unfortunately, Stick Notes does not support copying the contents of a note from a right-click.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1T3wMGAbPW9enWGJClr1Q.png"
+width="697"
+height="489"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1T3wMGAbPW9enWGJClr1Q_hu_b03123b41fea6216.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1T3wMGAbPW9enWGJClr1Q_hu_2d21adad88458b6c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="342px"
+>&lt;/p>
+&lt;p>We need to open the note, select the text, and then copy it.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1vrDPnDLy9MS7pR4ynTxCEw.png"
+width="462"
+height="471"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1vrDPnDLy9MS7pR4ynTxCEw_hu_d09fc54fdc7d9ae5.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1vrDPnDLy9MS7pR4ynTxCEw_hu_66c018ef487da2b9.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="98"
+data-flex-basis="235px"
+>&lt;/p>
+&lt;p>The &lt;a class="link" href="https://apps.microsoft.com/store/detail/outlook-for-windows/9NRX63209R7B" target="_blank" rel="noopener"
+>new Outlook&lt;/a> or Outlook on the Web or OneNote allow you to copy the contents of the note using a right-click though.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1w0YaPyh8JvP8zGVeXsMag.png"
+width="620"
+height="620"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1w0YaPyh8JvP8zGVeXsMag_hu_e82a42ac7834e670.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1w0YaPyh8JvP8zGVeXsMag_hu_787f2755e0c01937.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="100"
+data-flex-basis="240px"
+>&lt;/p>
+&lt;p>This also works well in the OneNote (for Windows 10) Feed. While it does work in the new, &lt;a class="link" href="https://techcommunity.microsoft.com/t5/microsoft-365-blog/refreshing-the-onenote-app-on-windows/ba-p/3401914" target="_blank" rel="noopener"
+>refreshed version of OneNote&lt;/a>, it was quite buggy and sluggish for me. I’ll let that slide since that’s an Insider Build.&lt;/p>
+&lt;p>OneNote for Windows 10 is not listed in Microsoft Store Search anymore, but you can still get it from &lt;a class="link" href="https://www.microsoft.com/store/productId/9WZDNCRFHVJL" target="_blank" rel="noopener"
+>this&lt;/a> link. I will keep using OneNote for Windows 10 until the new OneNote also supports vertical sections in &lt;a class="link" href="https://www.microsoft.com/en-us/microsoft-365/roadmap?filters=&amp;amp;searchterms=100492" target="_blank" rel="noopener"
+>March 2023&lt;/a>.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FhUKm1MGidjVrNEd74YA.png"
+width="463"
+height="746"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FhUKm1MGidjVrNEd74YA_hu_89b1522215d5c61a.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1FhUKm1MGidjVrNEd74YA_hu_c7df97196ada57b6.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="62"
+data-flex-basis="148px"
+>&lt;/p>
+&lt;p>Once the code has been copied from Outlook or OneNote for Windows 10, it will be in your clipboard as plain text without any trailing whitespaces or line breaks so that you’re ready to paste it wherever you need it.&lt;/p>
+&lt;p>This was not the case with the new OneNote App. In this case there were two line breaks before the code and one after.&lt;/p>
+&lt;p>While it’s theoretically possible to also copy the code from the classic Outlook App, the experience is not the same as with the modern Outlook or OWA.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1HXrJSz8Q8JxGFYiZ0kGvCw.png"
+width="1007"
+height="308"
+srcset="https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1HXrJSz8Q8JxGFYiZ0kGvCw_hu_dd662b68786d11a9.png 480w, https://heusser.pro/p/forward-verification-codes-from-iphone-to-a-windows-pc-2c2b5eb762f5/1HXrJSz8Q8JxGFYiZ0kGvCw_hu_aa0d53d8d3bfbff1.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="326"
+data-flex-basis="784px"
+>&lt;/p>
+&lt;p>When you copy the code from there, it will include additional, unwanted metadata such as the subject and date created.&lt;/p>
+&lt;p>Subject Created Categories&lt;/p>
+&lt;p>456789 So 27.11.2022 11:59&lt;/p>
+&lt;p>I like the experience of copying the verification code from the modern Outlook or OWA the best. It will only show Sticky Notes and allows me to copy the raw code by a right-click. I usually have Outlook open all day anyway so it’s very convenient to just switch from inbox to notes to copy a new verification code.&lt;/p>
+&lt;p>Because the note is only used to store a temporary verification code and we want to avoid clutter, the Automation will remove the note 60 seconds after it has been created. This should give you plenty of time to copy it from your notes.&lt;/p>
+&lt;h3 id="conclusion">Conclusion
+&lt;/h3>&lt;p>Both methods, Clipt and Automation + Sticky Notes require manual user interaction, so none of them are perfect. Clipt requires you to do more manual tasks on the phone and Sticky Notes needs more actions on Windows. I like using the Automation + Sticky Notes more because I believe that working on a Desktop with mouse and keyboard is still king in terms of how fast things can get done. I also like that no additional apps or services are required, especially that no Chromium Extension which runs in the background, even when the browser is closed is needed.&lt;/p></description></item><item><title>Use Siri Shortcuts to make Microsoft Graph Requests</title><link>https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/</link><pubDate>Sat, 16 Jul 2022 11:46:03 +0000</pubDate><guid>https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/</guid><description>&lt;p>Just two days ago I published &lt;a class="link" href="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6" >Set your Teams Status to In a Call when using other Calling &amp;amp; Meeting Apps on iOS&lt;/a>. In this article, I explained how we can leverage Siri Shortcuts on iOS to call an Azure Function which then executes web requests against the Microsoft Graph API.&lt;/p>
+&lt;p>Today I wanted to see if I’m able to get it working without the use of an Azure Function as a middleman. Spoiler alert: I totally was.&lt;/p>
+&lt;p>You can import the Siri Shortcut from &lt;a class="link" href="https://www.icloud.com/shortcuts/0c59afb62e5d401f80341e86e0492ad6" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/p>
+&lt;p>Of course, you need to have an Azure App Registration with the desired permissions ready to use this. Once you’ve imported the shortcut, just fill in the required information in the text fileds. We need the App Id, the App secret and the name (domain) or Id of the tenant.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1e3EoKpzxjpK6m0Ii7Wsw.png"
+width="750"
+height="1334"
+srcset="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1e3EoKpzxjpK6m0Ii7Wsw_hu_d1b2b5fd48f1c5aa.png 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1e3EoKpzxjpK6m0Ii7Wsw_hu_ed9404ac97cf98c5.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="134px"
+>&lt;/p>
+&lt;p>Let’s take a detailed look of what’s going on inside the Shortcut.&lt;/p>
+&lt;p>First, an http POST request is made to request the access token. Client_id and client_secret are passed to the request body as variables from the Text fields you populated at the top of the Shortcut.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1QlYK0AE2DSj3SKPpfSJaug.jpeg"
+width="750"
+height="917"
+srcset="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1QlYK0AE2DSj3SKPpfSJaug_hu_b04b071bb1e0dacc.jpeg 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1QlYK0AE2DSj3SKPpfSJaug_hu_9d631585e7688229.jpeg 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="81"
+data-flex-basis="196px"
+>&lt;/p>
+&lt;p>The Microsoft authentication endpoint returns a JSON string which is similar to what you get when you use &lt;code>Invoke-WebRequest&lt;/code> instead of &lt;code>Invoke-RestMethod&lt;/code> in PowerShell.&lt;/p>
+&lt;p>{&amp;ldquo;token_type&amp;rdquo;:&amp;ldquo;Bearer&amp;rdquo;,&amp;ldquo;expires_in&amp;rdquo;:3599,&amp;ldquo;ext_expires_in&amp;rdquo;:3599,&amp;ldquo;access_token&amp;rdquo;:&amp;ldquo;eyJ0eXAixboxOiJKV1QiLCJub25jZSI6ITUROWEtpblE4THcwNVN1Z1JMOU1aUUpwdXlqedasd1VpQXNjU3ciLseriesCJhbGciOiJSUzI1NiIsIng1dCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSIsImtpZCI6IXjJaUXBKM1VBWVhZR2FYRUp&amp;rdquo;}&lt;/p>
+&lt;p>This means that we’ll have to get the &lt;code>value&lt;/code> of both the &lt;code>keys&lt;/code> “token_type” and “access_token”.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1VKksWkNAJ7ESWUEjkQWd7Q.jpeg"
+width="750"
+height="850"
+srcset="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1VKksWkNAJ7ESWUEjkQWd7Q_hu_ccf255239ae94f5.jpeg 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1VKksWkNAJ7ESWUEjkQWd7Q_hu_79176f4ff4cee612.jpeg 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="88"
+data-flex-basis="211px"
+>&lt;/p>
+&lt;p>The access token is now stored in the variables &lt;code>token_type&lt;/code> (Bearer ) and &lt;code>access_token&lt;/code> (Actual token) and available to use in this Shortcut and subsequent web requests. To see if it’s working, we’re just going to make a GET request and return some Azure AD Users.&lt;/p>
+&lt;p>Here you can see that we use both variables to include the access token in the &lt;code>Authorization&lt;/code> Header.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1RCYyCinwNHAg14Dd1DKWUw.jpeg"
+width="750"
+height="562"
+srcset="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1RCYyCinwNHAg14Dd1DKWUw_hu_5d9968cdf9f44a09.jpeg 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/1RCYyCinwNHAg14Dd1DKWUw_hu_f79dfd3a65a566ff.jpeg 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>&lt;/p>
+&lt;p>Because this is an OData query, the values will be stored in the &lt;code>value&lt;/code> key. So we need to get the value of the &lt;code>value&lt;/code> key one more time to see some results.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/12rVXLaYUXZyyNAMla6kjGA.png"
+width="750"
+height="1334"
+srcset="https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/12rVXLaYUXZyyNAMla6kjGA_hu_bb9bcbd4116ecfbd.png 480w, https://heusser.pro/p/use-siri-shortcuts-to-make-microsoft-graph-requests-3804f80adbfa/12rVXLaYUXZyyNAMla6kjGA_hu_32b4cbb6c69808cc.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="134px"
+>&lt;/p>
+&lt;p>Of course, this is just an example to prove that the authentication is working without an Azure Function or any PowerShell code. Everything is running on an iOS device. Receiving data from Graph on an iPhone is probably not what people want to use this for, but it was the easiest example.&lt;/p>
+&lt;p>Using Shortcuts to make http Post requests is much more interesting. Think about all the possibilities here for a second. We could basically do any Post request we want. And then, we can add Shortcuts to the iPhone Homescreen, ask Siri to run Shortcuts or even launch them from an Apple Watch. Amazing.&lt;/p></description></item><item><title>Set your Teams Status to In a Call when using other Calling &amp; Meeting Apps on iOS</title><link>https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/</link><pubDate>Thu, 14 Jul 2022 21:59:48 +0000</pubDate><guid>https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/</guid><description>&lt;p>Hello everybody. I try my best to blog about new and unique Microsoft Teams related stuff at least once a month. If you’re new to my stories, feel free to check out my previous articles &lt;a class="link" href="https://heusser.pro/p" >here&lt;/a>.&lt;/p>
+&lt;p>Today we’re going to take a look at something very cool. A few months ago, I wrote this little code snippet which lets you change a Teams user’s presence by using PowerShell and the Microsoft Graph API. The API endpoint is documented &lt;a class="link" href="https://docs.microsoft.com/en-us/graph/api/presence-setpresence?view=graph-rest-1.0&amp;amp;tabs=http" target="_blank" rel="noopener"
+>here&lt;/a>. You might be asking yourself: why would we want to do this in the first place? Teams already updates our presence if we’re in a call, a meeting or just busy because of an Outlook appointment, right?&lt;/p>
+&lt;h4 id="use-cases">Use Cases
+&lt;/h4>&lt;p>Setting the presence of a user can be very useful if for example not all your users are on Teams yet. Let’s say that we’ve still got a legacy PBX system with SIP devices registered to it, but we use Teams for internal calls. There’s no way to know that a user is already on the phone unless the user specifically updates his status to Busy or Do not disturb. A user can’t set his own status to “In a call” or “In a meeting” though.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ.png"
+width="548"
+height="680"
+srcset="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ_hu_648f9c40fc984f87.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Z6KHSlNLLNCOK0AK8XeiyQ_hu_edce78d7f28f910d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="80"
+data-flex-basis="193px"
+>&lt;/p>
+&lt;p>If we’re using an &lt;a class="link" href="https://www.anynode.de/supervision/" target="_blank" rel="noopener"
+>anynode SBC&lt;/a> for example, we could implement a Route Supervision which calls an Azure Function, whenever a user receives or starts a call on a legacy PBX system. The Azure Function would then send an http POST request to the Graph API to change the presence status of the user.&lt;/p>
+&lt;p>Since Microsoft has now released the &lt;a class="link" href="https://docs.microsoft.com/en-us/microsoftteams/sip-gateway-plan" target="_blank" rel="noopener"
+>SIP Gateway&lt;/a> the need for such a solution has significantly decreased because the SIP Gateway already handles Teams presence out of the box. If you’re interested in learning more about the SIP Gateway for Teams, please check out this session from Commsverse from my colleague &lt;a class="link" href="https://twitter.com/tpickhan" target="_blank" rel="noopener"
+>Thorsten Pickhan&lt;/a>.&lt;/p>
+&lt;h4 id="what-about-other-usecases">What about other use cases?
+&lt;/h4>&lt;p>I know, we all love Teams but sometimes we do need to use other calling and meeting apps such as Skype, Zoom, WhatsApp, or Discord. Don’t you just hate it that Teams doesn’t know when you’re already on a call in another app? Today, we’re going to change that!&lt;/p>
+&lt;h4 id="the-power-ofsiri">The Power of Siri
+&lt;/h4>&lt;p>If you have an iPhone or iPad you probably know about Siri Shortcuts and Automations. If you don’t know them already, I highly recommend checking them out. Shortcuts and automations are like local Power Automate Flows which are created and executed on your iOS device. Today I discovered that you can actually do http POST requests with Shortcuts. How cool is that?&lt;/p>
+&lt;p>Granted, coding or building shortcuts is quite a hassle on such a small screen but there’s an easy workaround for that. We’re just using the Shortcut to call an Azure Function and let the Function do all the work for us.&lt;/p>
+&lt;h4 id="creating-an-azure-ad-app-registration">Creating an Azure AD App Registration
+&lt;/h4>&lt;p>First, we need an Azure AD App where we can grant the required permissions to set and clear the Teams presence. There’s an exceptional tutorial &lt;a class="link" href="https://adamtheautomator.com/powershell-graph-api/" target="_blank" rel="noopener"
+>here&lt;/a>. (I also used the example code to acquire the token from this website.)&lt;/p>
+&lt;p>“Presence.ReadWrite.All” is the permission we need.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA.png"
+width="851"
+height="537"
+srcset="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA_hu_1d751e4de83ced88.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1vWX5aB7074iXuLcnpJjGhA_hu_15724bde0f579e68.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="158"
+data-flex-basis="380px"
+>&lt;/p>
+&lt;h4 id="create-an-azurefunction">Create an Azure Function
+&lt;/h4>&lt;p>Next, we create an Azure Function. If you’re not familiar with Azure Functions, please read this &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-self-service-auto-attendants-without-premium-connectors-27e6f1281851" >article&lt;/a>. The creating of a Function App and a Function is described under “Create the Refresh Card Function”.&lt;/p>
+&lt;p>Copy and paste the following code into your function. Populate the variables on lines 10–14 with your tenant specific information.&lt;/p>
+&lt;script src="https://gist.github.com/mozziemozz/5b08518eff2dd7c579c61cab23e25e95.js">&lt;/script>
+&lt;h4 id="create-the-sirishortcut">Create the Siri Shortcut
+&lt;/h4>&lt;p>Now, we’ll create a new Siri Shortcut. Choose “Get contents of URL” as your first action. Now go back to your Azure Function and copy its URL.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g.png"
+width="1840"
+height="247"
+srcset="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g_hu_a0bc7eac5c8b078a.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1VQBnbft1BSu02gpwe7Zl3g_hu_12a7a185baa80efc.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="744"
+data-flex-basis="1787px"
+>&lt;/p>
+&lt;p>Paste the URL into the Shortcut. I always use Sticky Notes to quickly synchronize text between my Windows PC and my iPhone.&lt;/p>
+&lt;p>Next, expand the action by clicking on the circled arrow which points right. This will reveal additional options. Change the Method to POST and add a key and a value (Text) to the Request Body. I used “Name”: “Azure”.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1JPlHNIr6mVHsBIA1HLoOqA.jpeg"
+width="750"
+height="1334"
+srcset="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1JPlHNIr6mVHsBIA1HLoOqA_hu_a763cccb72152ed2.jpeg 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1JPlHNIr6mVHsBIA1HLoOqA_hu_5614208e557998af.jpeg 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="134px"
+>&lt;/p>
+&lt;p>That’s it for the shortcut. You should now be able to run the shortcut. Every time you do so, your iOS device will call the Azure Function which will request a token and then set the defined user&amp;rsquo;s presence to In a Call.&lt;/p>
+&lt;p>By now, I hope you can understand why I didn’t bother to try and also build the authentication flow using only Shortcuts.&lt;/p>
+&lt;h4 id="building-the-siri-automation">Building the Siri Automation
+&lt;/h4>&lt;p>The last piece we need to do is to create an Automation which will trigger the Shortcut. Unfortunately, there aren’t as many triggers as I had wished but using “When an App is opened” does the trick, sort of.&lt;/p>
+&lt;p>In Shortcuts, switch from My Shortcuts to Automation on the bottom. Click + to create a new Automation. You want to create a Personal Automation.&lt;/p>
+&lt;p>Select “App” as your trigger and then select one or multiple calling Apps.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA.png"
+width="750"
+height="1334"
+srcset="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA_hu_2f64e433906efd87.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1Qi4dsjTt9HZZOb1tkTRRVA_hu_eea79e627e5dd85c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="134px"
+>&lt;/p>
+&lt;p>Then, add an action and search for “Run Shortcut”. Click on Shortcut and select the previously created Shortcut from the list.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA.png"
+width="750"
+height="1334"
+srcset="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA_hu_275816a54e453ee.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1c9TA4amw9yA5TGJHnvOueA_hu_df1303d254abdb04.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="134px"
+>&lt;/p>
+&lt;p>Click Next and then Done. Leave “Ask Before Running” enabled. This way you’ll be asked if you want to update your Teams presence each time you open one of the selected Apps. If you’re not making a call, you can just ignore or close the notification banner.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg.png"
+width="750"
+height="1334"
+srcset="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg_hu_15b0f625b2f294b3.png 480w, https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1xnsJrcVZZlXYiUnOFGfqfg_hu_dabc1e1de634dce5.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="134px"
+>&lt;/p>
+&lt;p>Now you’re all set. Every time you open one of your selected Apps (just Skype in my case) the automation will be triggered and ask you, if you want to set your Teams presence to In a call.&lt;/p>
+&lt;p>If you like, you can repeat all the steps and create another Function, Shortcut and Automation to clear the presence again, if you’re done with your call on the other App.&lt;/p>
+&lt;p>In this case, just replace line 42–51 with this code in the “Clear Presence Function” and choose “When an App is closed” as the Siri Automation trigger.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">$Body&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="sh">@&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh">{
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh"> &amp;#34;sessionId&amp;#34;: &amp;#34;bf3cbc08-e5b0-47bb-a4f0-89e3e3f7adac&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh">}
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sh">&amp;#34;@&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Invoke-RestMethod&lt;/span> &lt;span class="n">-Method&lt;/span> &lt;span class="n">Post&lt;/span> &lt;span class="n">-Uri&lt;/span> &lt;span class="s2">&amp;#34;https://graph.microsoft.com/v1.0/users/&lt;/span>&lt;span class="nv">$UserId&lt;/span>&lt;span class="s2">/presence/clearPresence&amp;#34;&lt;/span> &lt;span class="n">-Headers&lt;/span> &lt;span class="nv">$Header&lt;/span> &lt;span class="n">-Body&lt;/span> &lt;span class="nv">$Body&lt;/span> &lt;span class="n">-ContentType&lt;/span> &lt;span class="s2">&amp;#34;application/json&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="demo">Demo
+&lt;/h4>&lt;p>Here you can see the Automation in Action. At first, the user’s Teams presence is “Available”. When Skype is opened, the Automation is triggered and confirmed by the user. When Teams is opened again, we can see that the status has changed from “Available” to “In a call”. Because Skype was closed/minimized when Teams was opened, the second Automation, which clears the Teams presence again is triggered and allowed to run. This resets the Teams presence to its original state. Teams is closed and opened again to force a refresh of the presence.&lt;/p>
+&lt;p>&lt;img src="https://heusser.pro/p/set-your-teams-status-to-in-a-call-when-using-other-calling-meeting-apps-on-ios-3409d68aceb6/1WA9VV3zTsQF3ov8DnQGfog.gif"
+width="600"
+height="1067"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="56"
+data-flex-basis="134px"
+>&lt;/p>
+&lt;p>What’s cool is that this even works when you’re getting an incoming call in an App like Skype, WhatsApp etc. When you accept the call, the App is opened and thus triggers the automation. I can’t record that on video because iOS screen recording is stopped if an incoming call gets accepted and the notification does not show up, when screen sharing through AirPlay is active.&lt;/p>
+&lt;h4 id="bonus">Bonus
+&lt;/h4>&lt;p>Because we now have Shortcuts to set our Teams presence to “In a call” or clear the presence again, we can also use Siri to execute these Shortcuts. All we have to say is Hey Siri, followed by the name of the Shortcut. E.g. “Hey Siri, Set Teams Presence” or “Hey Siri, Clear Teams Presence”.&lt;/p></description></item></channel></rss>
