@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Voicemail on HEUSSER.PRO</title><link>https://heusser.pro/categories/voicemail/</link><description>Recent content in Voicemail on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 23 Feb 2025 12:34:32 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/voicemail/index.xml" rel="self" type="application/rss+xml"/><item><title>Update: Teams Shared Voicemail for Basic Call Flows (Fix Call Back Links)</title><link>https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/</link><pubDate>Sun, 23 Feb 2025 12:34:32 +0000</pubDate><guid>https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/</guid><description>&lt;img src="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/cover.png" alt="Featured image of post Update: Teams Shared Voicemail for Basic Call Flows (Fix Call Back Links)" /&gt;&lt;p&gt;This is an update to my previous blog post &lt;a class="link" href="https://heusser.pro/p/teams-shared-voicemail-for-basic-call-flows-1qru2qqlx0ju" &gt;Teams Shared Voicemail for Basic Call Flows&lt;/a&gt; initially published on January 17, 2024. Microsoft recently made some changes to the way in which Teams voicemails are sent to inboxes. This change was announced in &lt;a class="link" href="https://mc.merill.net/message/MC987329" target="_blank" rel="noopener"
+&gt;MC987329&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Previously, voicemails from unknown numbers were sent with the phone number as the sender. Now they&amp;rsquo;re sent from &lt;code&gt;noreply@skype.voicemail.microsoft.com&lt;/code&gt; which broke the deep links on call back buttons on the adaptive cards sent to Teams.&lt;/p&gt;
+&lt;h2 id="flow-updates"&gt;Flow Updates
+&lt;/h2&gt;&lt;p&gt;I&amp;rsquo;ve updated my flow to address this change and include working deep links on the adaptive cards again. Prior to this change, all the information (From address and From name) could be accessed directly in the trigger outputs.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image.png"
+width="2154"
+height="865"
+srcset="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image_hu_7a52b044a3deceb6.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image_hu_34e067f104d6772a.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Composing From Address or Number and Name in old Flow"
+class="gallery-image"
+data-flex-grow="249"
+data-flex-basis="597px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Since the from address is now &lt;code&gt;noreply@skype.voicemail.microsoft.com&lt;/code&gt; the phone number needs to be extracted from the email body. To make this work, I&amp;rsquo;m initializing two more variables at the beginning of the flow and then check if the from address matches &lt;code&gt;noreply&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-1.png"
+width="2149"
+height="648"
+srcset="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-1_hu_822d9f11f0d43783.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-1_hu_11e53a75c09bd82d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="New variables"
+class="gallery-image"
+data-flex-grow="331"
+data-flex-basis="795px"
+&gt; &lt;img src="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-2.png"
+width="2149"
+height="880"
+srcset="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-2_hu_9fafd2ec105cdd7c.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-2_hu_d92389184d5a9933.png 1024w"
+loading="lazy"
+decoding="async"
+alt="If email match noreply"
+class="gallery-image"
+data-flex-grow="244"
+data-flex-basis="586px"
+&gt;&lt;/p&gt;
+&lt;p&gt;If that&amp;rsquo;s the case, the phone number and the name will be extracted from the email body and stored in the new variables. If not (in case the voicemail was left by an internal user or a known contact), the values of the trigger outputs will be written to the new variables.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-3.png"
+width="2155"
+height="1146"
+srcset="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-3_hu_98dbf8624ca2b99b.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-3_hu_67e8bdfadc2e5cf4.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Extract phone number and name from email body in new flow version"
+class="gallery-image"
+data-flex-grow="188"
+data-flex-basis="451px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Finally, I had to replace the &lt;code&gt;Outputs&lt;/code&gt; of the original compose actions with the variables in all places (i.e. in the adaptive cards) where they were referenced.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-4.png"
+width="912"
+height="947"
+srcset="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-4_hu_7f0b41962483c658.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-4_hu_7b0aebc27ebfc68a.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Old flow"
+class="gallery-image"
+data-flex-grow="96"
+data-flex-basis="231px"
+&gt; &lt;img src="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-5.png"
+width="913"
+height="861"
+srcset="https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-5_hu_772eb7b4f12b19f5.png 480w, https://heusser.pro/p/update-teams-shared-voicemail-for-basic-call-flows-fix-call-back-links-l4gwdggabxl8/image-5_hu_f1fa041d53bbc212.png 1024w"
+loading="lazy"
+decoding="async"
+alt="New flow"
+class="gallery-image"
+data-flex-grow="106"
+data-flex-basis="254px"
+&gt;&lt;/p&gt;
+&lt;h2 id="download-updated-flow"&gt;Download Updated Flow
+&lt;/h2&gt;&lt;p&gt;You can download the updated version of the flow &lt;a class="link" href="https://raw.githubusercontent.com/mozziemozz/TeamsPhoneAutomation/main/Scripts/PowerAutomate/Flows/TeamsSharedVoicemailBasicV3%28M365GroupInbox%29_GitHub.zip" target="_blank" rel="noopener"
+&gt;here&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Everything you ever wanted to know about Microsoft Teams Phone and Shared Voicemail</title><link>https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/</link><pubDate>Sat, 07 May 2022 20:16:33 +0000</pubDate><guid>https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/</guid><description>&lt;p&gt;Shared Voicemail has been available in Teams Phone for quite some time now. I still thought that it would be helpful to do a proper write up.&lt;/p&gt;
+&lt;h4 id="the-basics"&gt;The Basics
+&lt;/h4&gt;&lt;p&gt;A shared voicemail always has to be a Microsoft 365 Group. This group doesn’t need to be Teams enabled but it can be. As of the time of writing, I do not know of a way to forward a call straight to shared voicemail without configuring an auto attendant or a call queue in front of it.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Update 27.01.2023&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;As it turns out, it’s now possible to also set Distribution Lists or Mail Enabled Security Groups as shared voicemail targets. I’ve put together a new article about that &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-shared-voicemail-now-supports-distribution-lists-and-mail-enabled-security-groups-cc6453f88f1" &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;/Update&lt;/strong&gt;&lt;/p&gt;
+&lt;h4 id="skimping-onlicenses"&gt;Skimping on Licenses
+&lt;/h4&gt;&lt;p&gt;If Teams &lt;a class="link" href="https://docs.microsoft.com/en-us/microsoftteams/teams-add-on-licensing/virtual-user#virtual-user-license-allocation" target="_blank" rel="noopener"
+&gt;Phone Standard — Virtual User Licenses&lt;/a&gt; are scarce in your tenant, this trick might help you out. &lt;a class="link" href="https://docs.microsoft.com/en-us/microsoftteams/routing-calls-to-unassigned-numbers" target="_blank" rel="noopener"
+&gt;Teams Unassigned Number treatments&lt;/a&gt; are usually used to handle incoming calls to numbers which are not assigned to any user or resource account. Since you specify the matching rule with a regular expression, it’s also possible to match whole numbers explicitly.&lt;/p&gt;
+&lt;p&gt;An Unassigned Number Treatment can only be configured to forward to a resource account or an announcement. It’s not possible to forward directly to a shared voicemail. If you match the whole number without any wildcards, it’s possible to forward external calls to a shared voicemail without assigning a Teams Phone Standard — Virtual User License. However, an auto attendant or a call queue is still needed to forward the call to voicemail.&lt;/p&gt;
+&lt;p&gt;Bonus Tip for Unassigned Number Treatments: While it’s possible to play back an announcement without having to setup an auto attendant or a call queue, an announcement will only play back the call and not disconnect the call after the announcement has been played back. If you want to automatically disconnect the call after playing back a message, choose an auto attendant to play back your announcement.&lt;/p&gt;
+&lt;h4 id="setup-shared-voicemail"&gt;Setup Shared Voicemail
+&lt;/h4&gt;&lt;p&gt;I won’t go into the details on how to setup a complete auto attendant or a call queue in this article. This is only to show you where you would configure a redirection to a shared voicemail. Anywhere where you can choose a redirection target on an auto attendant or a call queue, you can choose to forward to shared voicemail. Remember, this has to be a Microsoft 365 Group.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1SJZHPoU2AeDf3sIREfdA.png"
+width="1389"
+height="667"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1SJZHPoU2AeDf3sIREfdA_hu_4e7eb6048d6a76c5.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1SJZHPoU2AeDf3sIREfdA_hu_9cbd7186093f5fa9.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="208"
+data-flex-basis="499px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Now let’s see where shared voicemails land, once a customer has left a message.&lt;/p&gt;
+&lt;h4 id="microsoft-365groups"&gt;Microsoft 365 Groups
+&lt;/h4&gt;&lt;p&gt;Shared voicemails are delivered to M365 Group’s inboxes, not to a channel email address or similar. A customer might tell you which users need to be able to receive and access these voicemails. Naturally, you start adding members to this group in M365 Admin or Azure AD.&lt;/p&gt;
+&lt;p&gt;Based on my personal experience this usually results in two problems.&lt;/p&gt;
+&lt;p&gt;1. Group inboxes are often neglected or completely forgotten by users, even though they’re visible and accessible in most Outlook clients. This can lead to potentially unhappy customers because their calls are never returned.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1UB44J9XqnSeuSmsiFVgRw.png"
+width="1894"
+height="1020"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1UB44J9XqnSeuSmsiFVgRw_hu_583685eb2febf4f6.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1UB44J9XqnSeuSmsiFVgRw_hu_a0dda19e3cc00243.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="185"
+data-flex-basis="445px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Microsoft 365 Groups offer various settings which can be configured. Some of these settings can only be configured after the group has been created.&lt;/p&gt;
+&lt;p&gt;By default, the “Send copies of team emails and events to team member’s inboxes” is disabled.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1ACMhAeuVmlXodIbuKfpGw.png"
+width="881"
+height="768"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1ACMhAeuVmlXodIbuKfpGw_hu_a4f4037ed873c199.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1ACMhAeuVmlXodIbuKfpGw_hu_5f58bae4163a9dd6.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="114"
+data-flex-basis="275px"
+&gt;&lt;/p&gt;
+&lt;p&gt;This means that emails to this group will not find it’s way to the member’s inboxes. Members have to open the group mailbox proactively.&lt;/p&gt;
+&lt;p&gt;From a user’s perspective, their settings look like this. This is the default setting for new groups.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/12dq53yL2p15n9Pg4yHBbZw.png"
+width="428"
+height="718"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/12dq53yL2p15n9Pg4yHBbZw_hu_9d2dda69e12ea537.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/12dq53yL2p15n9Pg4yHBbZw_hu_fc75b2a56b93594d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="59"
+data-flex-basis="143px"
+&gt;&lt;/p&gt;
+&lt;p&gt;So, let’s head back to M365 Admin and change the setting for “Send copies of team emails and events to team member’s inboxes”.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1dvOIE9fcyqLSV6lzA4EEg.png"
+width="873"
+height="481"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1dvOIE9fcyqLSV6lzA4EEg_hu_8b7999e6afbc459d.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1dvOIE9fcyqLSV6lzA4EEg_hu_58d2f2b826668cdc.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="435px"
+&gt;&lt;/p&gt;
+&lt;p&gt;After a few seconds, this change will be reflected in the user’s mailbox settings as well.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1Hah5CoH3mR9L4Oz3LTJSg.png"
+width="428"
+height="705"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1Hah5CoH3mR9L4Oz3LTJSg_hu_a9f0cb9acb93ad0b.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1Hah5CoH3mR9L4Oz3LTJSg_hu_e71281e34df3ab7c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="60"
+data-flex-basis="145px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Of course, a user can always override his own settings by going into groups and clicking on settings.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1OSjGMbMU8oB1CWAEe3zvg.png"
+width="664"
+height="400"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1OSjGMbMU8oB1CWAEe3zvg_hu_388868904b48967a.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1OSjGMbMU8oB1CWAEe3zvg_hu_7fb45aeb38cf6974.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="166"
+data-flex-basis="398px"
+&gt;&lt;/p&gt;
+&lt;p&gt;When I last tested this about 1–2 years ago, the setting would only apply to new members for the group. Already existing member’s settings were not changed. It seems like Microsoft has updated this behavior which is a very welcome change. However, disabling it again from M365 Admin doesn’t seem to also disable it for the group&amp;rsquo;s members again.&lt;/p&gt;
+&lt;p&gt;The equivalent PowerShell parameter for this setting is still called &lt;code&gt;AutoSubscribeNewMembers&lt;/code&gt;and the &lt;a class="link" href="https://docs.microsoft.com/en-us/powershell/module/exchange/set-unifiedgroup?view=exchange-ps" target="_blank" rel="noopener"
+&gt;official documentation&lt;/a&gt; says the following.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The AutoSubscribeNewMembers switch specifies whether to automatically subscribe new members that are added to the Microsoft 365 Group to conversations and calendar events. &lt;strong&gt;Only users that are added to the group after you enable this setting are automatically subscribed to the group.&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Based on my testing, setting it via PowerShell really does not enable “Follow in Inbox” for existing users. The setting is only enabled if it’s configured via the portal. If you disable, save and enable it again from the portal, existing members will be subscribed to all emails again.&lt;/p&gt;
+&lt;p&gt;While that solves the problem of users missing voicemails because they’re lost in a group inbox, it introduces problem number two.&lt;/p&gt;
+&lt;p&gt;2. When multiple people get an email with a voicemail message, coordination and clear communication within the team is key to prevent either multiple people calling back a customer or nobody at all calling back a customer.&lt;/p&gt;
+&lt;h4 id="what-about-shared-mailboxes"&gt;What about Shared Mailboxes?
+&lt;/h4&gt;&lt;p&gt;Can’t we just use a shared mailbox as a target for shared voicemail where we already have established routines, rules and shifts on who processes which messages on which days etc.?&lt;/p&gt;
+&lt;p&gt;The answer is both yeas and no. Technically no. At least can’t we choose a shared mailbox as voicemail target in Teams Admin Center. It is however possible to just add a shared mailbox as the only member of a M365 Group and enable “Follow in Inbox” for the group&amp;rsquo;s members. This way, all voicemails will be delivered to a shared mailbox and the group’s actual inbox can be completely ignored without feeling guilty at all.&lt;/p&gt;
+&lt;h3 id="voicemails-in-teamsclient"&gt;Voicemails in Teams Client
+&lt;/h3&gt;&lt;h4 id="personal-voicemails"&gt;Personal Voicemails
+&lt;/h4&gt;&lt;p&gt;Let’s check out all the places a user can see voicemail notifications. Even though this article is focusing on shared voicemail, I’ll start with personal voicemails for a complete overview.&lt;/p&gt;
+&lt;p&gt;The first thing you will probably notice when you get a new voicemail is the Teams feed notification which looks like this.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1xJeMRVve3aCWVRwYhX5fkw.png"
+width="581"
+height="237"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1xJeMRVve3aCWVRwYhX5fkw_hu_59a519af15083856.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1xJeMRVve3aCWVRwYhX5fkw_hu_2dde6e2a6723e60.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="245"
+data-flex-basis="588px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Of course, you can also go to the Calls app and filter your history by “Voicemail”.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1LVXePzkv5dPv7rSQWfdHA.png"
+width="1896"
+height="1020"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1LVXePzkv5dPv7rSQWfdHA_hu_d9094156ee628a55.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1LVXePzkv5dPv7rSQWfdHA_hu_2370fc19c4eeeb0c.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="185"
+data-flex-basis="446px"
+&gt;&lt;/p&gt;
+&lt;p&gt;You can also find your voicemails as an *.mp3 attachment in your personal inbox.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1gCb35wXXp7uOa0RC3lu9A.png"
+width="2736"
+height="1248"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1gCb35wXXp7uOa0RC3lu9A_hu_c0c95e4edbd0c52b.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1gCb35wXXp7uOa0RC3lu9A_hu_79744b44cb15a2df.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="219"
+data-flex-basis="526px"
+&gt;&lt;/p&gt;
+&lt;p&gt;The Teams client actually searches your inbox for emails which meet certain criteria to display them in the Teams Client. Unfortunately, I don’t know the exact criteria Teams is evaluating but I’ve seen some cases where voicemails did not show up in a user&amp;rsquo;s Teams Client because an external anti-virus solution was scanning emails and manipulated the message headers before they were delivered into the user’s inboxes. That is definitely something to keep in mind if you’re facing similar issues.&lt;/p&gt;
+&lt;h4 id="shared-voicemails"&gt;Shared Voicemails
+&lt;/h4&gt;&lt;p&gt;The interesting part is that this also applies to shared voicemails. If a user has subscribed to receive all group emails in their inbox, the shared voicemail will also be delivered into the personal inbox of the user.&lt;/p&gt;
+&lt;p&gt;As you can see, the email received at 19:17 is a shared voicemail. The subject contains “Geteilte Voicemail” which means “Shared Voicemail” in English and also includes the Name of the Call Queue on which the voicemail was received.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1OCbUZEp7MkfiJ28fJQj4ig.png"
+width="2736"
+height="1179"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1OCbUZEp7MkfiJ28fJQj4ig_hu_fbf1d29c27ca3dd6.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1OCbUZEp7MkfiJ28fJQj4ig_hu_c3d7144f5d2afc7b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="232"
+data-flex-basis="556px"
+&gt;&lt;/p&gt;
+&lt;p&gt;In this case, it’s indeed the name of a call queue or auto attendant and not the display name of the resource account associated with one of the afore mentioned voice apps.&lt;/p&gt;
+&lt;p&gt;Here you can see that I have a call queue named “MS Test CQ” but the associated resource account is actually called “Team Green CQ”.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1RRrb2OMw41FgNW2LZe0zg.png"
+width="1860"
+height="702"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1RRrb2OMw41FgNW2LZe0zg_hu_fea800c281c2900a.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1RRrb2OMw41FgNW2LZe0zg_hu_50a0c914d21fde03.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="264"
+data-flex-basis="635px"
+&gt;&lt;/p&gt;
+&lt;p&gt;And here you can see that the subject shows the call queue’s name.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1O3VPwMqCVfPXvvbWSBNjNQ.png"
+width="1265"
+height="833"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1O3VPwMqCVfPXvvbWSBNjNQ_hu_729028c5fee64657.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1O3VPwMqCVfPXvvbWSBNjNQ_hu_c7febae89581416e.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="151"
+data-flex-basis="364px"
+&gt;&lt;/p&gt;
+&lt;p&gt;But let’s get back to Teams. The call history now shows both the personal and the shared voicemail in the user’s personal call history. There’s no indication whatsoever that the voicemail received at 19:17 is a shared one. The user can only get this information in Outlook.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/15B2FqT5vcqKs0E5Ot3cGA.png"
+width="2736"
+height="1738"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/15B2FqT5vcqKs0E5Ot3cGA_hu_d069a1d609a1ecf1.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/15B2FqT5vcqKs0E5Ot3cGA_hu_ad7a4b04387a1ca1.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="157"
+data-flex-basis="377px"
+&gt;&lt;/p&gt;
+&lt;h4 id="voice-enabledchannels"&gt;Voice Enabled Channels
+&lt;/h4&gt;&lt;p&gt;Teams Channels can also be configured as “Voice Enabled Channels”, also known as “Collaborative Calling Channels”. A channel becomes voice enabled if a Team and a Channel are used as a call queue’s &lt;a class="link" href="https://heusser.pro/p/microsoft-teams-call-queue-agent-lists-and-how-to-force-sync-them-ef8092090df0" &gt;agent list&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Here you can see that I’ve selected the “General” channel from the Team “CQ Agents Escalation” as the call queue’s agent list.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1Pipfuped1OuKx47jS1nIA.png"
+width="1833"
+height="515"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1Pipfuped1OuKx47jS1nIA_hu_571332fad9c43e7a.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1Pipfuped1OuKx47jS1nIA_hu_1b48c44bebfa418a.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="355"
+data-flex-basis="854px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Voice enabled channels are only visible/available on Desktop Clients. Web, mobile or desk phones are not supported yet. It’s important to mention that this has absolutely no impact on the delivery of call queue calls. Even if a channel is used for the agent list, mobile, web and desk phone clients can still receive calls from the call queue. They just won’t be able to see the “Calls” tab inside the channel.&lt;/p&gt;
+&lt;p&gt;On the Desktop Client, the “Calls” tab is added automatically when a channel is configured to receive calls. This tab cannot be added from the Teams Client itself. Assigning it to a call queue in TAC is the only way to do it.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1oOGcAgu4wPmwWGHlv8Wo8w.png"
+width="1295"
+height="355"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1oOGcAgu4wPmwWGHlv8Wo8w_hu_d96fc66bccf76742.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1oOGcAgu4wPmwWGHlv8Wo8w_hu_79ad11f9b0a8028f.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="364"
+data-flex-basis="875px"
+&gt;&lt;/p&gt;
+&lt;p&gt;The Calls Tab includes its own call history. Unfortunately, this is a bit misleading. The history will only show incoming calls which were answered by the signed in user. It doesn’t show missed calls on the queue at all.&lt;/p&gt;
+&lt;p&gt;If notifications about missed calls on call queues are essential to you, I suggest to take a look at &lt;a class="link" href="https://twincapfirst.ch/teams-easy-call-report-en/" target="_blank" rel="noopener"
+&gt;the service&lt;/a&gt; I developed at my previous employer which does just that.&lt;/p&gt;
+&lt;p&gt;If we switch the filter to Voicemail, it gets even weirder. Here we can see the same shared voicemail from 19:17.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1iC0xQLcRWs72b0Ke13osfQ.png"
+width="1295"
+height="351"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1iC0xQLcRWs72b0Ke13osfQ_hu_6b61e5c2fc90edc9.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1iC0xQLcRWs72b0Ke13osfQ_hu_d40bc4816909dacf.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="368"
+data-flex-basis="885px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Note that I’ve set a different group as shared voicemail target than the Team which is configured as voice enabled channel. It seems that the Teams Client is evaluating all the M365 Groups which are configured on this particular call queue and whether or not the signed in user is a member of these groups. A call queue can have a maximum of two different voicemail targets. One for the overflow action and one for the timeout action.&lt;/p&gt;
+&lt;p&gt;Right now, I’ve only configured shared voicemail as the overflow action.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1aINhOLqNZ1Rxc0FhyDldQ.png"
+width="1851"
+height="870"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1aINhOLqNZ1Rxc0FhyDldQ_hu_507397646b9b769e.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1aINhOLqNZ1Rxc0FhyDldQ_hu_327e0c13cf37584d.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="212"
+data-flex-basis="510px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Since the signed in user is a member of that group, the voicemails will show up in the voice enabled channel.&lt;/p&gt;
+&lt;p&gt;If I remove the shared voicemail target from the queue in TAC and refresh the Teams Client, the entry is gone.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1pkYwDCSYzHnoFLI6wrF5w.png"
+width="1278"
+height="341"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1pkYwDCSYzHnoFLI6wrF5w_hu_d29902c3b446ee25.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1pkYwDCSYzHnoFLI6wrF5w_hu_d561dc6e501f1971.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="374"
+data-flex-basis="899px"
+&gt;&lt;/p&gt;
+&lt;p&gt;This call queue also has shared voicemail configured for its timeout action. The M365 Group for voicemail on timeout is called “Axe Capital Reception Voicemail”.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1ctREaNsrYDpLO6R2XJeMpw.png"
+width="1843"
+height="879"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1ctREaNsrYDpLO6R2XJeMpw_hu_ede273d1fc00cd02.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1ctREaNsrYDpLO6R2XJeMpw_hu_ca545cec5888bf8b.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="209"
+data-flex-basis="503px"
+&gt;&lt;/p&gt;
+&lt;p&gt;The signed in user is not a member of this group yet, hence the voicemails in the group mailbox do not show up in the calls tab. I’ve now added the user to this group as well and signed out and in again in Teams.&lt;/p&gt;
+&lt;p&gt;Suddenly, the user sees a lot more shared voicemails in the calls tab because they have been fetched from the M365 Group “Axe Capital Reception Voicemail”. The list is now aggregated across both M365 Groups which are configured in the call queue and the user is a member of. As you can see, the first entry is still the shared voicemail from the “Shared Voicemail Demo” group from 19:17.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1KyPwYmmbvi75WvFtovFygg.png"
+width="1292"
+height="625"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1KyPwYmmbvi75WvFtovFygg_hu_a6221b79221ed5fe.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1KyPwYmmbvi75WvFtovFygg_hu_abd0740938d3efd5.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="206"
+data-flex-basis="496px"
+&gt;&lt;/p&gt;
+&lt;h4 id="best-practices"&gt;Best Practices
+&lt;/h4&gt;&lt;p&gt;These are my recommendations for most shared voicemail scenarios.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Create a new, dedicated M365 Group without a Team for shared voicemails.&lt;/li&gt;
+&lt;li&gt;Make sure “Send copies of team emails and events to team member’s inboxes” is enabled.&lt;/li&gt;
+&lt;li&gt;Add an existing or new shared mailbox as the group’s only member.&lt;/li&gt;
+&lt;li&gt;Manage responsibilities of calling back or delegating through existing processes and staff for already existing shared mailboxes.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;By creating a new, dedicated group instead of using an existing group or Team we can make sure that this group only ever receives voicemail messages and prevent unwanted emails from making its way into the shared mailbox.&lt;/p&gt;
+&lt;p&gt;If you’re going to use voice enabled channels, also use the same Team as shared voicemail target. Otherwise, you need to make sure that all the Team’s members are also members of the M365 groups used for shared voicemail. Different users seeing different voicemails in their Calls tab will only create confusion among them. Unless of course you deliberately want only select members of the Team to see shared voicemails.&lt;/p&gt;
+&lt;p&gt;Another way of efficiently handling shared voicemails would be to set up a Power Automate Flow which triggers on new emails in a shared mailbox, saves the audio files to SharePoint and sends an adaptive card with the link to the mp3 file to a channel. I plan to do a separate post about that though.&lt;/p&gt;
+&lt;h3 id="bonus-tips"&gt;Bonus Tips
+&lt;/h3&gt;&lt;p&gt;Even though call queues and auto attendants are quite similar, there are some differences which can be quite significant to some customers.&lt;/p&gt;
+&lt;h4 id="voicemail-on-an-auto-attendant"&gt;Voicemail on an Auto Attendant
+&lt;/h4&gt;&lt;p&gt;When you configure shared voicemail on an auto attendant, there’s no option to configure the greeting for the voicemail itself. Instead, you configure the greeting one layer above, on the call flow.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/15Pi1yTy8oNo9uSYzbNhS0Q.png"
+width="950"
+height="822"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/15Pi1yTy8oNo9uSYzbNhS0Q_hu_60921a31d3de99cb.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/15Pi1yTy8oNo9uSYzbNhS0Q_hu_1a9ca6aff4e85cc9.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="115"
+data-flex-basis="277px"
+&gt;&lt;/p&gt;
+&lt;p&gt;By default, an auto attendant will play a “system greeting” after your custom greeting has been played back or synthesized by the Azure Text-To-Speech service. The system greeting will sound like this:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Please leave a message after the tone. When you have finished, please hang up.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;You can suppress the system greeting by enabling the toggle switch for “Skip voicemail system message”. Because the greeting is configured outside of the scope of the call routing options, this can be configured for both TTS and audio file greetings.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1kx6GV9cGcWgew5uwhoDgpw.png"
+width="1348"
+height="801"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1kx6GV9cGcWgew5uwhoDgpw_hu_7879c3f7dea52ee5.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1kx6GV9cGcWgew5uwhoDgpw_hu_76f6e6e6e84d7d60.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="168"
+data-flex-basis="403px"
+&gt;&lt;/p&gt;
+&lt;h4 id="voicemail-on-a-callqueue"&gt;Voicemail on a Call Queue
+&lt;/h4&gt;&lt;p&gt;For call queues, this is slightly different. There is no option to suppress the system greeting. A call queue’s primary purpose is to route calls to agents so there are only routing options for overflow or timeout scenarios. This also means that there’s no option to configure a greeting inside the scope of an overflow or a timeout action.&lt;/p&gt;
+&lt;p&gt;When you upload your own audio file, the system greeting is automatically suppressed by the call queue. There’s no option to enable it. (Why would you anyway?)&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1UqMt8oNZmM3JyqMp3sCUA.png"
+width="1394"
+height="1057"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1UqMt8oNZmM3JyqMp3sCUA_hu_f9ef96bc33bf47fa.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1UqMt8oNZmM3JyqMp3sCUA_hu_49c25c3dfa6283d3.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="316px"
+&gt;&lt;/p&gt;
+&lt;p&gt;If you’re using a TTS greeting, there’s no option to disable it. In this case the system greeting is always played back after your custom TTS greeting.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1frpCn0up1cMvTHed5cEXg.png"
+width="1389"
+height="606"
+srcset="https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1frpCn0up1cMvTHed5cEXg_hu_8badddc12f5eb18f.png 480w, https://heusser.pro/p/everything-you-ever-wanted-to-know-about-microsoft-teams-phone-and-shared-voicemail-4df01cb28e24/1frpCn0up1cMvTHed5cEXg_hu_749ee6d76c457ba6.png 1024w"
+loading="lazy"
+decoding="async"
+class="gallery-image"
+data-flex-grow="229"
+data-flex-basis="550px"
+&gt;&lt;/p&gt;
+&lt;p&gt;If you absolutely need to have a TTS greeting but also need to suppress the system greeting your only options are to use Azure Cognitive Services to generate and upload an audio file from your TTS greeting or to create another auto attendant which will have the sole purpose of playing back the TTS greeting and then forward to shared voicemail.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Update 06.04.2023&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Skip voicemail system message&lt;/strong&gt; is now available in TAC. It now supports both audio files and TTS greetings. I don’t remember when exactly it was added but it was a long time ago since I already wrote about it in &lt;a class="link" href="https://heusser.pro/p/teams-auto-attendant-stuff-you-didnt-know-about-4888a20df0fb" &gt;this article&lt;/a&gt; in December 2023.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;/Update&lt;/strong&gt;&lt;/p&gt;
+&lt;h4 id="one-lastcaveat"&gt;One Last Caveat
+&lt;/h4&gt;&lt;p&gt;But there’s another catch I recently discovered with this approach. If an auto attendant forwards to shared voicemail, the caller will hear two different beeps before the message can be recorded.&lt;/p&gt;
+&lt;p&gt;The auto attendant will play back the greeting and then transfer the call to shared voicemail. The caller will hear one beep for the transfer and most likely starts to record the message while the call is still being transferred to shared voicemail. Once the transfer has been completed, there will be a second beep which sounds slightly different. This is the actual beep which will indicate that the recording has started. This can be quite confusing for both the caller and the callee. It’s possible that the first one or two seconds or so are cut off from the recording or that the caller gets confused and loses focus because his recording is interrupted by the second beep.&lt;/p&gt;
+&lt;p&gt;To mitigate this issue, the only workaround at the moment is to forward the call to a call queue which goes straight to voicemail by using an &lt;a class="link" href="https://heusser.pro/p/how-to-permanently-forward-pstn-calls-in-microsoft-teams-without-license-baa0cb56b4c6" &gt;overflow threshold of 0&lt;/a&gt;. But keep in mind that you can’t use a TTS greeting if you also want to suppress the system greeting when using this method. This will, however, play back one beep for the transfer to the queue, play back your configured greeting on the queue and then play the second beep to indicate that the recording has started.&lt;/p&gt;
+&lt;p&gt;Even though these seem like minor issues, I hope that Microsoft addresses them in a timely manner. I think that’s all I know about Teams Phone and Voicemail. I hope it helped you demystify some stuff.&lt;/p&gt;</description></item></channel></rss>

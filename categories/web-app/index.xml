@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Web App on HEUSSER.PRO</title><link>https://heusser.pro/categories/web-app/</link><description>Recent content in Web App on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 16 Jul 2026 12:35:05 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/web-app/index.xml" rel="self" type="application/rss+xml"/><item><title>Introducing Digits - A Web App to Format any Phone Number Correctly</title><link>https://heusser.pro/p/introducing-digits---a-web-app-to-format-any-phone-number-correctly-dveo8donxc5f/</link><pubDate>Thu, 16 Jul 2026 12:35:05 +0000</pubDate><guid>https://heusser.pro/p/introducing-digits---a-web-app-to-format-any-phone-number-correctly-dveo8donxc5f/</guid><description>&lt;img src="https://heusser.pro/p/introducing-digits---a-web-app-to-format-any-phone-number-correctly-dveo8donxc5f/cover.png" alt="Featured image of post Introducing Digits - A Web App to Format any Phone Number Correctly" /&gt;&lt;p&gt;Any Teams Phone (or traditional PBX) admin deals knows the problem. We deal with phone numbers &lt;em&gt;a lot&lt;/em&gt; but in logs or API requests, these numbers are typically just a long string like &lt;code&gt;+12025550123&lt;/code&gt; and not something that is easily readable by humans like &lt;code&gt;+1 202 555 0123&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;As long as no human needs to read a number, an E.164 number (no spaces or formatting) is fine. However, once you need to read that number, it&amp;rsquo;s a hundred times more easy if the number is split up in segments. Luckily any half-way decent software already does this. Your iPhone does it and so does Teams.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/introducing-digits---a-web-app-to-format-any-phone-number-correctly-dveo8donxc5f/image.png"
+width="406"
+height="499"
+srcset="https://heusser.pro/p/introducing-digits---a-web-app-to-format-any-phone-number-correctly-dveo8donxc5f/image_hu_970e16bbf8ca90fb.png 480w, https://heusser.pro/p/introducing-digits---a-web-app-to-format-any-phone-number-correctly-dveo8donxc5f/image_hu_f7269f449d917a2e.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Example of formatted work phone number in Teams"
+class="gallery-image"
+data-flex-grow="81"
+data-flex-basis="195px"
+&gt;&lt;/p&gt;
+&lt;p&gt;This is not a new topic for me as I&amp;rsquo;ve written about using Google&amp;rsquo;s &lt;a class="link" href="https://github.com/google/libphonenumber" target="_blank" rel="noopener"
+&gt;libphonenumber&lt;/a&gt; &lt;a class="link" href="https://heusser.pro/p/prettify-and-sync-teams-phone-numbers-to-azure-ad-e973755f83d5/" &gt;before&lt;/a&gt;. But in that blog post, I showed how to format numbers locally using the Python port of that library. While that works, it might not be the best way for scripts that are ran by different team members as all of them would need to have Python and the phonenumbers library installed.&lt;/p&gt;
+&lt;h2 id="digits-api"&gt;Digits API
+&lt;/h2&gt;&lt;p&gt;Let&amp;rsquo;s say your team has a script that provisions user accounts and sets the Entra ID &lt;code&gt;BusinessPhones&lt;/code&gt; property but you want to have a prettily formatted number instead of just a plain E.164 string. In that case you can just use the Digits API to get a formatted number.&lt;/p&gt;
+&lt;h3 id="request-example"&gt;Request Example
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Invoke-RestMethod&lt;/span&gt; &lt;span class="n"&gt;-Method&lt;/span&gt; &lt;span class="n"&gt;Post&lt;/span&gt; &lt;span class="n"&gt;-Uri&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://digits.dialtoneapps.com/api/FormatPhoneNumber&amp;#34;&lt;/span&gt; &lt;span class="n"&gt;-ContentType&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;application/json&amp;#34;&lt;/span&gt; &lt;span class="n"&gt;-Body&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="vm"&gt;@&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="n"&gt;PhoneNumber&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;+12025550123&amp;#34;&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nb"&gt;ConvertTo-Json&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="output-example"&gt;Output example
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;OriginalPhoneNumber&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;+12025550123&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;CleanedPhoneNumber&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;+12025550123&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;E164PhoneNumber&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;+12025550123&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;InternationalPhoneNumberNoHyphens&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;+1 202 555 0123&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;InternationalPhoneNumber&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;+1 202-555-0123&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;NationalPhoneNumber&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;(202) 555-0123&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;CountryIsoCode&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;US&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;InvalidZeroAfterInternationalPrefixRemoved&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;As you can see, it also fixes invalid zeroes after the intl. prefix when somebody malformed a number as i.e. &lt;code&gt;+44 0 20 xxxx xxxx&lt;/code&gt; and will tell you if the number had to be fixed or not. See &lt;a class="link" href="#easter-eggs" &gt;Easter Eggs&lt;/a&gt; for more info on how to access the API reference.&lt;/p&gt;
+&lt;h2 id="web-app"&gt;Web App
+&lt;/h2&gt;&lt;p&gt;If you just want to convert an E.164 number into a formatted number, simply head to &lt;a class="link" href="https://digits.dialtoneapps.com" target="_blank" rel="noopener"
+&gt;digits.dialtoneapps.com&lt;/a&gt; and paste the number.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/introducing-digits---a-web-app-to-format-any-phone-number-correctly-dveo8donxc5f/image-1.png"
+width="707"
+height="506"
+srcset="https://heusser.pro/p/introducing-digits---a-web-app-to-format-any-phone-number-correctly-dveo8donxc5f/image-1_hu_906c245cc5f2e513.png 480w, https://heusser.pro/p/introducing-digits---a-web-app-to-format-any-phone-number-correctly-dveo8donxc5f/image-1_hu_c728f37124236a7.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Digits Web App"
+class="gallery-image"
+data-flex-grow="139"
+data-flex-basis="335px"
+&gt;&lt;/p&gt;
+&lt;p&gt;You can also type a national number and select the intl. prefix manually.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/introducing-digits---a-web-app-to-format-any-phone-number-correctly-dveo8donxc5f/image-2.png"
+width="693"
+height="144"
+srcset="https://heusser.pro/p/introducing-digits---a-web-app-to-format-any-phone-number-correctly-dveo8donxc5f/image-2_hu_b056573825d9e6f7.png 480w, https://heusser.pro/p/introducing-digits---a-web-app-to-format-any-phone-number-correctly-dveo8donxc5f/image-2_hu_8935e84539248875.png 1024w"
+loading="lazy"
+decoding="async"
+alt="National number example"
+class="gallery-image"
+data-flex-grow="481"
+data-flex-basis="1155px"
+&gt;&lt;/p&gt;
+&lt;h2 id="fair-use-limit"&gt;Fair Use Limit
+&lt;/h2&gt;&lt;p&gt;Both the website and API are limited to 1 request per second per client. This is not intended for high-volume production use. In that case, I recommend to deploy your own Azure Function to achieve that. I&amp;rsquo;ll likely write a separate blog post on that soon. However, if you just need to format a number from time to time, it&amp;rsquo;s absolutely no problem to use the Digits API.&lt;/p&gt;
+&lt;h2 id="easter-eggs"&gt;Easter Eggs
+&lt;/h2&gt;&lt;p&gt;I couldn&amp;rsquo;t help myself and add some fun easter eggs on the site. The only one I&amp;rsquo;ll disclose here is to type &lt;code&gt;API&lt;/code&gt; into the phone number field. That will take you to the API reference. Alternatively, you can also access the API reference directly at &lt;a class="link" href="https://digits.dialtoneapps.com/docs/api" target="_blank" rel="noopener"
+&gt;digits.dialtoneapps.com/docs/api&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;But do try to some well-known short numbers that don&amp;rsquo;t necessarily have something to do with telephony to find some hidden jokes.&lt;/p&gt;
+&lt;h2 id="under-the-hood"&gt;Under the Hood
+&lt;/h2&gt;&lt;p&gt;The site is built using TypeScript and &lt;a class="link" href="https://storybooks.fluentui.dev/react/?path=/docs/concepts-introduction--docs" target="_blank" rel="noopener"
+&gt;Fluent UI React V9&lt;/a&gt; and is hosted on &lt;a class="link" href="https://azure.microsoft.com/en-us/products/app-service/static?msockid=392c21fd33d0606d040034f3326861f4" target="_blank" rel="noopener"
+&gt;Azure Static Web Apps&lt;/a&gt;. Even the Free SKU of Static Web Apps supports managed functions which is perfect because that&amp;rsquo;s what the Digits API is using. Let me know if you&amp;rsquo;re interested in a blog post about how to build and deploy web apps like this in the comments.&lt;/p&gt;</description></item></channel></rss>

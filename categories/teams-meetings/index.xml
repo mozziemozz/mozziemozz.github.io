@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Teams Meetings on HEUSSER.PRO</title><link>https://heusser.pro/categories/teams-meetings/</link><description>Recent content in Teams Meetings on HEUSSER.PRO</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Fri, 10 Oct 2025 13:48:53 +0000</lastBuildDate><atom:link href="https://heusser.pro/categories/teams-meetings/index.xml" rel="self" type="application/rss+xml"/><item><title>How to Check Who Started a Teams Meeting Recording as a Teams Administrator</title><link>https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/</link><pubDate>Fri, 10 Oct 2025 13:48:53 +0000</pubDate><guid>https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/</guid><description>&lt;p&gt;The Teams Admin Center offers a lot of insights and logs for Teams Administrators. But some meeting related information like &lt;a class="link" href="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z" &gt;attendance reports&lt;/a&gt; or meeting chats are only accessible by meeting organizers and participants. Even with Teams administrator access, this kind of information can&amp;rsquo;t be viewed in TAC.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s assume that you need to check who started a meeting recording for a particular meeting and where that recording was saved. The easiest way to get this information is to just ask the meeting organizer to add you to the meeting so you can check the chat history yourself. This will give you &lt;em&gt;most&lt;/em&gt; of the data.&lt;/p&gt;
+&lt;p&gt;If you can&amp;rsquo;t get a hold of somebody to add you to a meeting chat, there&amp;rsquo;s still the Microsoft Graph way which at least gives you &lt;em&gt;some&lt;/em&gt; of the data.&lt;/p&gt;
+&lt;h2 id="system-event-messages"&gt;System Event Messages
+&lt;/h2&gt;&lt;p&gt;Messages that contain information about chat events, like when somebody was added/removed from a chat or when a meeting recording was started are called &lt;strong&gt;system event messages&lt;/strong&gt;. The &lt;strong&gt;messageType&lt;/strong&gt; in Graph is &lt;code&gt;systemEventMessage&lt;/code&gt; for these types of messages. The body doesn&amp;rsquo;t contain anything besides &lt;code&gt;&amp;lt;systemEventMessage/&amp;gt;&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image.png"
+width="1740"
+height="255"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image_hu_9395138a9c96e74c.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image_hu_3456ace784a2f977.png 1024w"
+loading="lazy"
+decoding="async"
+alt="System event message property example"
+class="gallery-image"
+data-flex-grow="682"
+data-flex-basis="1637px"
+&gt;&lt;/p&gt;
+&lt;p&gt;However, when a message like this is viewed in a Teams chat, it contains much more information.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-1.png"
+width="682"
+height="135"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-1_hu_1eae562a170b708e.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-1_hu_5bfaa96ba3df05e4.png 1024w"
+loading="lazy"
+decoding="async"
+alt="System event message examples in a chat"
+class="gallery-image"
+data-flex-grow="505"
+data-flex-basis="1212px"
+&gt;&lt;/p&gt;
+&lt;p&gt;For example, a system event message for when a meeting recording was started has a value of &lt;code&gt;||#microsoft.graph.callRecordingEventMessageDetail|&lt;/code&gt; in the chat message&amp;rsquo;s &lt;code&gt;eventDetail|&lt;/code&gt; property.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-10.png"
+width="1741"
+height="283"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-10_hu_f6f6f401cf938d8c.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-10_hu_8a3a961079667d62.png 1024w"
+loading="lazy"
+decoding="async"
+alt="System event message body"
+class="gallery-image"
+data-flex-grow="615"
+data-flex-basis="1476px"
+&gt; &lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-2.png"
+width="1738"
+height="424"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-2_hu_3146167b5c162a86.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-2_hu_71d003d309feee00.png 1024w"
+loading="lazy"
+decoding="async"
+alt="System event message for meeting recording started"
+class="gallery-image"
+data-flex-grow="409"
+data-flex-basis="983px"
+&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;initiator&lt;/code&gt; property includes an Entra ID user ID to tell us who started a recording.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-3.png"
+width="1739"
+height="332"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-3_hu_bc0417b8e20c2f95.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-3_hu_37d00c058817b7ac.png 1024w"
+loading="lazy"
+decoding="async"
+alt="System event message for meeting recording initiator"
+class="gallery-image"
+data-flex-grow="523"
+data-flex-basis="1257px"
+&gt;&lt;/p&gt;
+&lt;h2 id="not-everything-is-exposed-in-graph"&gt;Not everything is exposed in Graph
+&lt;/h2&gt;&lt;p&gt;Sadly, Graph doesn&amp;rsquo;t seem to expose everything. Obviously I can&amp;rsquo;t say for sure how exactly the Teams client works but it looks very much like that it&amp;rsquo;s able to access additional data before it determines which end user facing message is displayed in the chat.&lt;/p&gt;
+&lt;p&gt;For example, when a meeting recording is automatically started by the organizer&amp;rsquo;s setting, the following message is displayed in the chat.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-4.png"
+width="675"
+height="47"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-4_hu_3159698a874e3885.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-4_hu_e2b001a772f78b49.png 1024w"
+loading="lazy"
+decoding="async"
+alt="System event message for automatically started recording"
+class="gallery-image"
+data-flex-grow="1436"
+data-flex-basis="3446px"
+&gt;&lt;/p&gt;
+&lt;p&gt;But in Graph, I wasn&amp;rsquo;t able to find any reference to this. The system message looks just like when the recording was started manually by a participant.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-7.png"
+width="1739"
+height="667"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-7_hu_52e6f9226bc5f772.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-7_hu_5a414a5076b0b0c0.png 1024w"
+loading="lazy"
+decoding="async"
+alt="First object: automatically started recording, second object: manually started recording"
+class="gallery-image"
+data-flex-grow="260"
+data-flex-basis="625px"
+&gt;
+&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-5.png"
+width="1739"
+height="283"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-5_hu_6b291e1aa37b403e.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-5_hu_31ff155d163b78ea.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Automatically started recording"
+class="gallery-image"
+data-flex-grow="614"
+data-flex-basis="1474px"
+&gt; &lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-6.png"
+width="1739"
+height="275"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-6_hu_50671bbc161d5baa.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-6_hu_53c061e04479160d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Manually started recording"
+class="gallery-image"
+data-flex-grow="632"
+data-flex-basis="1517px"
+&gt;&lt;/p&gt;
+&lt;p&gt;I would have expected that when a meeting is recorded automatically by the organizer&amp;rsquo;s meeting options, that Graph would have some kind of reference under the &lt;code&gt;initiator.application&lt;/code&gt; property but that&amp;rsquo;s not the case.&lt;/p&gt;
+&lt;p&gt;Also, in my testing, Graph doesn&amp;rsquo;t differentiate when different users started and stopped a recording. Here is how it looks in Graph. It says that the meeting recording was started and stopped by Evelyn.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-8.png"
+width="2084"
+height="221"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-8_hu_9cef5e16a16b09c1.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-8_hu_253ef3d79dd8a283.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Data from Graph"
+class="gallery-image"
+data-flex-grow="942"
+data-flex-basis="2263px"
+&gt;&lt;/p&gt;
+&lt;p&gt;But in the Teams client, it says that the recording was started by Evelyn and stopped by Emma.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-9.png"
+width="400"
+height="82"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-9_hu_43273e0a959d3d3c.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-9_hu_3871e657a435cfae.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Messages in Teams"
+class="gallery-image"
+data-flex-grow="487"
+data-flex-basis="1170px"
+&gt;&lt;/p&gt;
+&lt;p&gt;The only explanation for this is that the Teams client does in fact have access to more data than what&amp;rsquo;s exposed in Graph.&lt;/p&gt;
+&lt;p&gt;The data provided by Graph is definitely not perfect but I think it can still be helpful, if you just need to check very basic information, like if a meeting has been recorded at all and where the recording was saved.&lt;/p&gt;
+&lt;h2 id="other-system-event-messages"&gt;Other System Event Messages
+&lt;/h2&gt;&lt;p&gt;Before we get to the script example, let&amp;rsquo;s take a look at all the different system event message types.
+These are the system message events I was able to find:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;th&gt;@odata.type&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Meeting started&lt;/td&gt;
+&lt;td&gt;&lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/callstartedeventmessagedetail?view=graph-rest-1.0" target="_blank" rel="noopener"
+&gt;#microsoft.graph.callStartedEventMessageDetail&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Meeting ended&lt;/td&gt;
+&lt;td&gt;&lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/callendedeventmessagedetail?view=graph-rest-1.0" target="_blank" rel="noopener"
+&gt;#microsoft.graph.callEndedEventMessageDetail&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Meeting chat was renamed&lt;/td&gt;
+&lt;td&gt;&lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/chatrenamedeventmessagedetail?view=graph-rest-1.0" target="_blank" rel="noopener"
+&gt;#microsoft.graph.chatRenamedEventMessageDetail&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Meeting recording started/saved/ended&lt;/td&gt;
+&lt;td&gt;&lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/callrecordingeventmessagedetail?view=graph-rest-1.0" target="_blank" rel="noopener"
+&gt;#microsoft.graph.callRecordingEventMessageDetail&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Meeting transcript started&lt;/td&gt;
+&lt;td&gt;&lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/calltranscripteventmessagedetail?view=graph-rest-1.0" target="_blank" rel="noopener"
+&gt;#microsoft.graph.callTranscriptEventMessageDetail&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Participant added to the meeting chat&lt;/td&gt;
+&lt;td&gt;&lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/membersaddedeventmessagedetail?view=graph-rest-1.0" target="_blank" rel="noopener"
+&gt;#microsoft.graph.membersAddedEventMessageDetail&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Participant joined the meeting&lt;/td&gt;
+&lt;td&gt;&lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/membersjoinedeventmessagedetail?view=graph-rest-1.0" target="_blank" rel="noopener"
+&gt;#microsoft.graph.membersJoinedEventMessageDetail&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Participant removed from the meeting chat&lt;/td&gt;
+&lt;td&gt;&lt;a class="link" href="https://learn.microsoft.com/en-us/graph/api/resources/membersdeletedeventmessagedetail?view=graph-rest-1.0" target="_blank" rel="noopener"
+&gt;#microsoft.graph.membersDeletedEventMessageDetail&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id="meeting-transcript-started"&gt;Meeting Transcript started
+&lt;/h3&gt;&lt;p&gt;One example where the meeting chat in Teams gives you less information than Graph is when a meeting participant starts the meeting transcription. In that case, no message is sent to the meeting chat but there is a system message returned by Graph.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-11.png"
+width="1736"
+height="334"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-11_hu_6225965bdea03063.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-11_hu_f4c5ed675cedd0c8.png 1024w"
+loading="lazy"
+decoding="async"
+alt="System event message for meeting transcription"
+class="gallery-image"
+data-flex-grow="519"
+data-flex-basis="1247px"
+&gt;&lt;/p&gt;
+&lt;p&gt;However, the system posts a card to the chat with the transcript.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-12.png"
+width="987"
+height="257"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-12_hu_a94edaa38cd34f51.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-12_hu_4919ba0ba39a562c.png 1024w"
+loading="lazy"
+decoding="async"
+alt="alt text"
+class="gallery-image"
+data-flex-grow="384"
+data-flex-basis="921px"
+&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;Transcript&lt;/strong&gt; button opens the transcript in a new window which then also shows the details of when and by whom the transcript was started.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-13.png"
+width="1121"
+height="935"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-13_hu_474611025c79e710.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-13_hu_d8dad214e7ed7cc2.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Meeting transcript details"
+class="gallery-image"
+data-flex-grow="119"
+data-flex-basis="287px"
+&gt;&lt;/p&gt;
+&lt;h2 id="sample-script"&gt;Sample Script
+&lt;/h2&gt;&lt;p&gt;You can find a sample script on my &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/Teams/Chats/Get-MeetingRecordingStartedByReport.ps1" target="_blank" rel="noopener"
+&gt;GitHub&lt;/a&gt;. It requires a service principal with the following application permissions: &lt;code&gt;Chat.Read.All&lt;/code&gt;, &lt;code&gt;ChatMessage.Read.All&lt;/code&gt;, &lt;code&gt;User.Read.All&lt;/code&gt;. The directory includes a script called &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/Teams/Chats/CreateAppRegistrationAndServicePrincipal.ps1" target="_blank" rel="noopener"
+&gt;&lt;strong&gt;CreateAppRegistrationAndServicePrincipal.ps1&lt;/strong&gt;&lt;/a&gt; which will create a new app registration and service principal with the required permissions automatically.&lt;/p&gt;
+&lt;p&gt;The script will filter the system event messages for meeting recording related events and output them in a grid view.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-15.png"
+width="3105"
+height="964"
+srcset="https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-15_hu_bcab24e1a871698.png 480w, https://heusser.pro/p/how-to-check-who-started-a-teams-meeting-recording-as-a-teams-administrator-4yhvwg6fcuh1/image-15_hu_55cb906fa47e9fec.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Script output example"
+class="gallery-image"
+data-flex-grow="322"
+data-flex-basis="773px"
+&gt;&lt;/p&gt;</description></item><item><title>Get Microsoft Teams Meeting Attendance Report Through Graph API</title><link>https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/</link><pubDate>Sat, 05 Oct 2024 09:38:20 +0000</pubDate><guid>https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/</guid><description>&lt;p&gt;Over a year ago I was asked if it&amp;rsquo;s possible to retrieve a Teams meeting attendance report if the organizer of the meeting isn&amp;rsquo;t available to get the report themselves. At the time, I created a quick and dirty script to get what was urgently needed but today I put it all in a nice and ready to use example.&lt;/p&gt;
+&lt;p&gt;Of course an organizer being out of office isn&amp;rsquo;t the only scenario why you&amp;rsquo;d need this. Another popular use case I can think of is to create an automation to automatically archive attendance reports for recurrent meetings.&lt;/p&gt;
+&lt;p&gt;First, let&amp;rsquo;s look at how an end user would access and view an attendance report.&lt;/p&gt;
+&lt;h2 id="tl-dr---i-know-what-i"&gt;TL; DR - &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/Teams/GetTeamsAttendanceReportAsApp.ps1" target="_blank" rel="noopener"
+&gt;I know what I&amp;rsquo;m doing, just give me the script already!&lt;/a&gt;
+&lt;/h2&gt;&lt;h2 id="view-meeting-attendance-report-as-organizer"&gt;View Meeting Attendance Report as Organizer
+&lt;/h2&gt;&lt;p&gt;Only meeting organizers have access to meeting attendance reports. To view an attendance report, organizers can simply open the meeting chat. Teams will automatically post the attendance report after a meeting has ended.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image.png"
+width="1997"
+height="1139"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image_hu_f5b0e29d00f2d1a7.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image_hu_504eaeb5503e8fcb.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Organizer View"
+class="gallery-image"
+data-flex-grow="175"
+data-flex-basis="420px"
+&gt; &lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-1.png"
+width="1997"
+height="1139"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-1_hu_e4d7c9b0d6852a95.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-1_hu_92f7d0c589fd1e84.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Attendee View"
+class="gallery-image"
+data-flex-grow="175"
+data-flex-basis="420px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Note that the attendance report is only shown in chat for the meeting organizers. Attendees can&amp;rsquo;t view see it. That&amp;rsquo;s also why we&amp;rsquo;re looking into how to get it through the Graph API today. Organizers also see a tab called &lt;strong&gt;Attendance&lt;/strong&gt;. This is where they can view the report directly in Teams.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-2.png"
+width="1997"
+height="1139"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-2_hu_47caa3bdb5dd2b8b.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-2_hu_4bdcf94d3b49649f.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Attendance Tab"
+class="gallery-image"
+data-flex-grow="175"
+data-flex-basis="420px"
+&gt;&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s also possible to download a CSV but it&amp;rsquo;s not very well structured which makes it kind of hard to further process the data.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3.png"
+width="1420"
+height="556"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3_hu_d67a32ccc699e55d.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3_hu_8fa03dbbfa0ed5ed.png 1024w"
+loading="lazy"
+decoding="async"
+alt="CSV Export"
+class="gallery-image"
+data-flex-grow="255"
+data-flex-basis="612px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s switch gears and make some graph requests.&lt;/p&gt;
+&lt;h2 id="get-meeting-attendance-report-through-graph-powershell"&gt;Get Meeting Attendance Report Through Graph PowerShell
+&lt;/h2&gt;&lt;p&gt;Since we&amp;rsquo;re accessing data without a signed in user, we need an Entra ID application with appropriate application permissions.&lt;/p&gt;
+&lt;h3 id="create-a-new-entra-id-app-registration"&gt;Create a new Entra ID App Registration.
+&lt;/h3&gt;&lt;p&gt;Note: You&amp;rsquo;ll need Global Admin access to grant the consent for your organization.&lt;/p&gt;
+&lt;p&gt;Go to the &lt;a class="link" href="https://entra.microsoft.com/" target="_blank" rel="noopener"
+&gt;Entra ID Portal&lt;/a&gt; and click on &lt;strong&gt;App registrations&lt;/strong&gt; under &lt;strong&gt;Applications&lt;/strong&gt; in the left navigation menu.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-4.png"
+width="395"
+height="849"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-4_hu_67662e91f1fb9983.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-4_hu_95a940fad0ea199d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="App registrations"
+class="gallery-image"
+data-flex-grow="46"
+data-flex-basis="111px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Then click &lt;strong&gt;+ New registration&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-5.png"
+width="1224"
+height="190"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-5_hu_66242278a4a887ce.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-5_hu_30c17f069a2c9dbc.png 1024w"
+loading="lazy"
+decoding="async"
+alt="New registration"
+class="gallery-image"
+data-flex-grow="644"
+data-flex-basis="1546px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Give your app registration a name and keep &lt;strong&gt;Accounts in this organizational directory only (&amp;ldquo;Org Name&amp;rdquo; only - Single tenant)&lt;/strong&gt;. Under &lt;strong&gt;Redirect URI (optional)&lt;/strong&gt; select &lt;strong&gt;Public client/native (mobile &amp;amp; desktop)&lt;/strong&gt; and enter &lt;code&gt;http://localhost&lt;/code&gt; as redirect URI.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-6.png"
+width="1316"
+height="1142"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-6_hu_82d4659dfe1d4d61.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-6_hu_d4312e31cf0f36af.png 1024w"
+loading="lazy"
+decoding="async"
+alt="App registration properties"
+class="gallery-image"
+data-flex-grow="115"
+data-flex-basis="276px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Click &lt;strong&gt;Register&lt;/strong&gt; to create the app registration.&lt;/p&gt;
+&lt;p&gt;Copy the &lt;strong&gt;Application (client) ID&lt;/strong&gt; and the &lt;strong&gt;Directory (tenant ID)&lt;/strong&gt;. You&amp;rsquo;ll need this later.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-7.png"
+width="2028"
+height="1054"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-7_hu_d5c5524b513b93b9.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-7_hu_2ffdc5adb826c9b0.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Copy Ids"
+class="gallery-image"
+data-flex-grow="192"
+data-flex-basis="461px"
+&gt;&lt;/p&gt;
+&lt;h4 id="add-permissions"&gt;Add Permissions
+&lt;/h4&gt;&lt;p&gt;Navigate to &lt;strong&gt;API permissions&lt;/strong&gt; in the left navigation pane and click &lt;strong&gt;+ Add a permission&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-8.png"
+width="2083"
+height="1042"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-8_hu_3a2b7b656c04cf6e.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-8_hu_dcdf12ba807079f9.png 1024w"
+loading="lazy"
+decoding="async"
+alt="API permissions"
+class="gallery-image"
+data-flex-grow="199"
+data-flex-basis="479px"
+&gt; &lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-9.png"
+width="2016"
+height="1151"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-9_hu_ec25e2d87c47b6da.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-9_hu_58f1319293f7df6d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Select Microsoft Graph"
+class="gallery-image"
+data-flex-grow="175"
+data-flex-basis="420px"
+&gt; &lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-10.png"
+width="2107"
+height="1146"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-10_hu_18338e0baa621175.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-10_hu_534be49446d29296.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Select Application permissions"
+class="gallery-image"
+data-flex-grow="183"
+data-flex-basis="441px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Search for &lt;code&gt;OnlineMeeting&lt;/code&gt; and expand the menus to select &lt;strong&gt;OnlineMeetingArtifact.Read.All&lt;/strong&gt; and &lt;strong&gt;OnlineMeetings.Read.All&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-11.png"
+width="2079"
+height="1217"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-11_hu_68abad632be3bde7.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-11_hu_e0a53fd4e4d23895.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Select permissions"
+class="gallery-image"
+data-flex-grow="170"
+data-flex-basis="409px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Click &lt;strong&gt;Add permissions&lt;/strong&gt; and then click &lt;strong&gt;Grant admin consent for &amp;ldquo;Org Name&amp;rdquo;&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-12.png"
+width="2090"
+height="1090"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-12_hu_b23aaf5764339972.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-12_hu_64218bf3a1a4c09a.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Grant Consent"
+class="gallery-image"
+data-flex-grow="191"
+data-flex-basis="460px"
+&gt; &lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-13.png"
+width="1139"
+height="199"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-13_hu_e78f80aa3ff601f9.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-13_hu_e3b779a7f42e327a.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Click Yes"
+class="gallery-image"
+data-flex-grow="572"
+data-flex-basis="1373px"
+&gt;&lt;/p&gt;
+&lt;h4 id="add-a-client-secret"&gt;Add a Client Secret
+&lt;/h4&gt;&lt;p&gt;Navigate to &lt;strong&gt;Certificates &amp;amp; secrets&lt;/strong&gt; in the left navigation pane. Under &lt;strong&gt;Client secrets (0)&lt;/strong&gt; click &lt;strong&gt;+ New client secret&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-14.png"
+width="1928"
+height="1032"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-14_hu_2c9490ce8e6827f4.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-14_hu_46deaacc3d911dd2.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Client secrets"
+class="gallery-image"
+data-flex-grow="186"
+data-flex-basis="448px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Give your secret a name and select after how many months it will expire.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-15.png"
+width="2102"
+height="1207"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-15_hu_a3e720a5430a8bf4.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-15_hu_afce2d6e0b11b81d.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Add a client secret"
+class="gallery-image"
+data-flex-grow="174"
+data-flex-basis="417px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Copy the secret from the portal. It will only be shown once and you&amp;rsquo;ll need it later.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-16.png"
+width="1928"
+height="1037"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-16_hu_83d30acecc00ab98.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-16_hu_2193213519696a49.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Copy secret"
+class="gallery-image"
+data-flex-grow="185"
+data-flex-basis="446px"
+&gt;&lt;/p&gt;
+&lt;p&gt;The configuration of the app registration is now complete.&lt;/p&gt;
+&lt;h3 id="run-the-script-to-get-an-attendance-report"&gt;Run the Script to get an Attendance Report
+&lt;/h3&gt;&lt;p&gt;The script can be found in my &lt;a class="link" href="https://github.com/mozziemozz/TeamsPhoneAutomation/blob/main/Scripts/MicrosoftGraph/Teams/GetTeamsAttendanceReportAsApp.ps1" target="_blank" rel="noopener"
+&gt;Teams Phone Automation Repo&lt;/a&gt; on GitHub. If you want to make use of the secret encryption feature, you&amp;rsquo;ll need to clone the entire repo because of the dependencies of other files in the repo.&lt;/p&gt;
+&lt;p&gt;To be able to retrieve an attendance report from Microsoft Graph, we need a meeting id. Unfortunately, this is not your typical GUID you could easily find in TAC. But we can, however find it easy enough by passing a &lt;strong&gt;Join meeting ID&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-25.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-25_hu_a08531ee25793c2c.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-25_hu_890c038e6cafae71.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Meeting Id example"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Luckily, anyone that was invited to the meeting in question can view the Meeting ID and send it to you. Alternatively, the meeting invite could also be forwarded to you. The meeting Id is located below the join link.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-17.png"
+width="1997"
+height="1139"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-17_hu_adad3f807055d8cf.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-17_hu_b9ac6fbdf06b3f8c.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Meeting ID in meeting invite body"
+class="gallery-image"
+data-flex-grow="175"
+data-flex-basis="420px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Once you have this ID, you&amp;rsquo;re ready to get the attendance report through PowerShell.&lt;/p&gt;
+&lt;h4 id="teams-application-access-policy"&gt;Teams Application Access Policy
+&lt;/h4&gt;&lt;p&gt;The Graph permissions alone are not enough to access the attendance report. We also need to create a new Teams Application Access Policy which includes the app id of the newly created Entra ID app and grant it to the meeting organizer. This is how you can do it in PowerShell.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# Create a new Teams Application Access Policy&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;New-CsApplicationAccessPolicy&lt;/span&gt; &lt;span class="n"&gt;-Identity&lt;/span&gt; &lt;span class="nv"&gt;$applicationAccessPolicyName&lt;/span&gt; &lt;span class="n"&gt;-AppIds&lt;/span&gt; &lt;span class="nv"&gt;$AppId&lt;/span&gt; &lt;span class="n"&gt;-Description&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;Access Meeting Data as Entra ID app on behalf of user&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;a class="link" href="https://learn.microsoft.com/en-us/powershell/module/teams/new-csapplicationaccesspolicy?view=teams-ps" target="_blank" rel="noopener"
+&gt;New-CsApplicationAccessPolicy&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# Assign a Teams Application Access Policy to a user&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Grant-CsApplicationAccessPolicy&lt;/span&gt; &lt;span class="n"&gt;-Identity&lt;/span&gt; &lt;span class="nv"&gt;$UserId&lt;/span&gt; &lt;span class="n"&gt;-PolicyName&lt;/span&gt; &lt;span class="nv"&gt;$applicationAccessPolicyName&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;a class="link" href="https://learn.microsoft.com/en-us/powershell/module/teams/grant-csapplicationaccesspolicy?view=teams-ps" target="_blank" rel="noopener"
+&gt;Grant-CsApplicationAccessPolicy&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;But the script does all of this automatically for you.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-19.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-19_hu_62cbf0e6b0aa9b9e.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-19_hu_6bfd42b38beeeb11.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Script output"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+&gt; &lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-20.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-20_hu_fb26126efc70e045.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-20_hu_10f0023184fa7459.png 1024w"
+loading="lazy"
+decoding="async"
+alt="PowerShell output"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+&gt;&lt;/p&gt;
+&lt;h5 id="unassign-teams-application-access-policy"&gt;Unassign Teams Application Access Policy
+&lt;/h5&gt;&lt;p&gt;If you only want to get an attendance report once and need to remove the application access to another user&amp;rsquo;s meeting details, you can unassign the policy again by using this code.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Grant-CsApplicationAccessPolicy&lt;/span&gt; &lt;span class="n"&gt;-Identity&lt;/span&gt; &lt;span class="nv"&gt;$UserId&lt;/span&gt; &lt;span class="n"&gt;-PolicyName&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="script-prompts"&gt;Script Prompts
+&lt;/h4&gt;&lt;p&gt;When the script runs for the first time it will ask you for your app secret. Paste it into the terminal. This will save your secret in an encrypted format. Only the signed in user (in Windows) can decrypt it and it can only be decrypted on the same machine on which it was encrypted. You&amp;rsquo;ll also be asked to sign into Teams PowerShell as well.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-18.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-18_hu_2169ee3135abc4cc.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-18_hu_fb567cf970ae91d9.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Paste secret"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+&gt; &lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-21.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-21_hu_d05a643e5229a99c.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-21_hu_7a0f7782ddb6aacf.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Sign into Teams"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+&gt;&lt;/p&gt;
+&lt;h4 id="results"&gt;Results
+&lt;/h4&gt;&lt;p&gt;Once the Application Access Policy already exists and was already granted to the organizer, the console output looks much less cluttered. The report will be saved to the current directory and it&amp;rsquo;s filename will include the subject of the meeting.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-22.png"
+width="1734"
+height="957"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-22_hu_b298e2c4aa86473a.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-22_hu_6a6604c3382e188b.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Script output"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+&gt;&lt;/p&gt;
+&lt;p&gt;If there are multiple attendance reports for a meeting, like when a meeting already ended and someone joined again after that or when it&amp;rsquo;s a recurring meeting, all reports will be combined into a single CSV. The CSV does include the report id in the last column.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s compare the CSV that was downloaded from the Teams client versus the one from my script.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3.png"
+width="1420"
+height="556"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3_hu_d67a32ccc699e55d.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-3_hu_8fa03dbbfa0ed5ed.png 1024w"
+loading="lazy"
+decoding="async"
+alt="CSV Export from Teams"
+class="gallery-image"
+data-flex-grow="255"
+data-flex-basis="612px"
+&gt; &lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-23.png"
+width="1424"
+height="150"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-23_hu_f1b9f99302056c18.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-23_hu_643c81abe8d848f6.png 1024w"
+loading="lazy"
+decoding="async"
+alt="CSV Export from Script"
+class="gallery-image"
+data-flex-grow="949"
+data-flex-basis="2278px"
+&gt;&lt;/p&gt;
+&lt;p&gt;As you can see, the output from my script gives you a nicely structured CSV which lists 1 participant per row so you can easily import it into other systems without manually changing the structure of the file. Because of that, I decided to create separate files for meeting/attendance summaries.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-24.png"
+width="1513"
+height="60"
+srcset="https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-24_hu_7ecbb11edabbea1e.png 480w, https://heusser.pro/p/get-microsoft-teams-meeting-attendance-report-through-graph-api-lhpctbnzht7z/image-24_hu_b6143b167695281a.png 1024w"
+loading="lazy"
+decoding="async"
+alt="Meeting Summary from Script"
+class="gallery-image"
+data-flex-grow="2521"
+data-flex-basis="6052px"
+&gt;&lt;/p&gt;
+&lt;h2 id="summary"&gt;Summary
+&lt;/h2&gt;&lt;p&gt;I personally believe that it&amp;rsquo;s very easy for organizers to access the reports themselves in Teams but having the possibility to get them as an admin via PowerShell as well is certainly a welcome addition to my script toolbox. This will be especially useful in case you&amp;rsquo;re asked to export attendance reports on a regular basis. While the fact that you need to know the unique meeting id before you can get an attendance report makes it a bit harder to truly automate this or you may have to chase other attendees for it, if you weren&amp;rsquo;t invited to the meeting yourself but overall, the join meeting Id should be easy enough to retrieve.&lt;/p&gt;</description></item></channel></rss>
